@@ -1,15 +1,15 @@
-[submodule "VorpalEngine/3rd/loguru"]
-	path = VorpalEngine/3rd/loguru
+[submodule "VorpalEngine/external/loguru"]
+	path = VorpalEngine/external/loguru
 	url = git@github.com:emilk/loguru.git
-[submodule "VorpalEngine/3rd/glfw"]
-	path = VorpalEngine/3rd/glfw
+[submodule "VorpalEngine/external/glfw"]
+	path = VorpalEngine/external/glfw
 	url = git@github.com:glfw/glfw.git
-[submodule "VorpalEngine/3rd/glm"]
-	path = VorpalEngine/3rd/glm
+[submodule "VorpalEngine/external/glm"]
+	path = VorpalEngine/external/glm
 	url = git@github.com:g-truc/glm.git
-[submodule "VorpalEngine/3rd/assimp"]
-	path = VorpalEngine/3rd/assimp
+[submodule "VorpalEngine/external/assimp"]
+	path = VorpalEngine/external/assimp
 	url = git@github.com:assimp/assimp.git
-[submodule "VorpalEngine/3rd/stb"]
-	path = VorpalEngine/3rd/stb
+[submodule "VorpalEngine/external/stb"]
+	path = VorpalEngine/external/stb
 	url = git@github.com:nothings/stb.git

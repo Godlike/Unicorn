@@ -1,23 +1,29 @@
-#pragma once 
+#ifndef VORPAL_VORPAL_ENGINE_HPP
+#define VORPAL_VORPAL_ENGINE_HPP
 
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
+#include <vorpal/utility.hpp>
+
+struct GLFWwindow;
 
 namespace vp
 {
-    class VorpalEngine {
-        public:
-        void init() {
-            glfwInit();
-            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-            glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-            window = glfwCreateWindow(WIDTH, HEIGHT, "Vulkan", nullptr, nullptr);
-        }
-        void run() 
-        {
-            while (!glfwWindowShouldClose(window)) {
-            glfwPollEvents();
-        }
-        }
+    class VORPAL_EXPORT VorpalEngine
+    {
+    public:
+        VorpalEngine();
+        ~VorpalEngine();
+
+        VorpalEngine(const VorpalEngine& other) = delete;
+        VorpalEngine(const VorpalEngine&& other) = delete;
+        VorpalEngine& operator=(const VorpalEngine& other) = delete;
+        VorpalEngine& operator=(const VorpalEngine&& other) = delete;
+
+        void init();
+        void run();
+
+    private:
+        GLFWwindow* m_window;
     };
 }
+
+#endif /* VORPAL_VORPAL_ENGINE_HPP */

@@ -1,4 +1,4 @@
-#include <VorpalEngine.hpp>
+#include <vorpal/VorpalEngine.hpp>
 
 using namespace std;
 
