@@ -1,0 +1,15 @@
+[submodule "VorpalEngine/3rd/loguru"]
+	path = VorpalEngine/3rd/loguru
+	url = git@github.com:emilk/loguru.git
+[submodule "VorpalEngine/3rd/glfw"]
+	path = VorpalEngine/3rd/glfw
+	url = git@github.com:glfw/glfw.git
+[submodule "VorpalEngine/3rd/glm"]
+	path = VorpalEngine/3rd/glm
+	url = git@github.com:g-truc/glm.git
+[submodule "VorpalEngine/3rd/assimp"]
+	path = VorpalEngine/3rd/assimp
+	url = git@github.com:assimp/assimp.git
+[submodule "VorpalEngine/3rd/stb"]
+	path = VorpalEngine/3rd/stb
+	url = git@github.com:nothings/stb.git
