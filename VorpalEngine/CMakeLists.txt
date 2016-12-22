@@ -31,6 +31,10 @@ add_subdirectory("external/glm")
 include(loguru)
 include(stb)
 
+if(UNIX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+endif()
+
 include_directories(
     ${VORPAL_ENGINE_INCLUDE_DIR}
     ${ASSIMP_INCLUDE_DIR}

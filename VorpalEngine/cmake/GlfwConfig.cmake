@@ -11,7 +11,7 @@ set(GLFW_DOCUMENT_INTERNALS OFF CACHE BOOL "Flag to override default GLFW_DOCUME
 set(GLFW_ROOT_DIR "${VORPAL_ENGINE_ROOT}/external/glfw" CACHE STRING "Path to GLFW root directory")
 set(GLFW_LIB "glfw" CACHE STRING "Name of GLFW library")
 set(GLFW_INCLUDE_DIR
-	"${GLFW_ROOT_DIR}/include"
-	"${GLFW_ROOT_DIR}/deps"
+    "${GLFW_ROOT_DIR}/include"
+    "${GLFW_ROOT_DIR}/deps"
 
-	CACHE LIST "List of GLFW include directories")
+    CACHE LIST "List of GLFW include directories")
