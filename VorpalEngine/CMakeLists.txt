@@ -49,10 +49,16 @@ if(BUILD_SHARED_LIBS)
 endif()
 
 add_library( ${VORPAL_ENGINE_LIB}
-
     include/vorpal/VorpalEngine.hpp
+    include/vorpal/video/Renderer.hpp
+    include/vorpal/video/Graphics.hpp
+    include/vorpal/core/Utility.hpp
+    include/vorpal/core/Timer.hpp
 
     sources/VorpalEngine.cpp
+    sources/Renderer.cpp
+    sources/Graphics.cpp
+    sources/Timer.cpp
 )
 
 target_link_libraries(${VORPAL_ENGINE_LIB} ${GLFW_LIB})

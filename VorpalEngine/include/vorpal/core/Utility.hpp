@@ -1,3 +1,5 @@
+// 73s studio
+
 #ifndef VORPAL_UTILITY_HPP
 #define VORPAL_UTILITY_HPP
 

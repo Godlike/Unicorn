@@ -1,9 +1,10 @@
+// 73s studio
+
 #ifndef VORPAL_VORPAL_ENGINE_HPP
 #define VORPAL_VORPAL_ENGINE_HPP
 
-#include <vorpal/utility.hpp>
-
-struct GLFWwindow;
+#include <vorpal/core/Utility.hpp>
+#include <vorpal/video/Graphics.hpp>
 
 namespace vp
 {
@@ -20,9 +21,9 @@ namespace vp
 
         void init();
         void run();
-
+        void deinit();
     private:
-        GLFWwindow* m_window;
+        video::Graphics* _pGraphics;
     };
 }
 
