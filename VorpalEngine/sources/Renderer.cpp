@@ -1,7 +1,8 @@
-#include <vorpal/video/Renderer.hpp>
+// 73s studio
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <vorpal/video/Renderer.hpp>
 
 
 void vp::video::Renderer::deinit()

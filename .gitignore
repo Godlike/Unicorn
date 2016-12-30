@@ -1,17 +1,12 @@
-# This file is used to ignore files which are generated
-# ----------------------------------------------------------------------------
-
+*.kdev4
 *~
 *.autosave
 *.a
 *.core
 *.moc
-*.o
 *.obj
 *.orig
 *.rej
-*.so
-*.so.*
 *_pch.h.cpp
 *_resource.rc
 *.qm
@@ -75,3 +70,6 @@ Thumbs.db
 
 .vscode/
 .build/
+.idea/
+cmake-build-debug/
+lib/

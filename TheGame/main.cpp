@@ -1,11 +1,10 @@
 #include <vorpal/VorpalEngine.hpp>
 
-using namespace std;
-
 int main(int argc, char *argv[])
 {
     vp::VorpalEngine engine;
     engine.init();
     engine.run();
+  engine.deinit();
     return 0;
 }

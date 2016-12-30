@@ -1,14 +1,13 @@
 // 73s studio
 
-#ifndef VORPAL_RENDERER_HPP
-#define VORPAL_RENDERER_HPP
-
-class Renderer;
+#ifndef VORPAL_GRAPHICS_HPP
+#define VORPAL_GRAPHICS_HPP
 
 namespace vp
 {
     namespace video
     {
+    class Renderer;
         /**
          * @brief The Graphics class abstract renderer.
          */
@@ -29,4 +28,4 @@ namespace vp
     }
 }
 
-#endif // VORPAL_RENDERER_HPP
+#endif // VORPAL_GRAPHICS_HPP

@@ -4,7 +4,10 @@
 #define VORPAL_VORPAL_ENGINE_HPP
 
 #include <vorpal/core/Utility.hpp>
-#include <vorpal/video/Graphics.hpp>
+
+namespace video {
+class Graphics;
+}
 
 namespace vp
 {

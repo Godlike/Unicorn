@@ -3,6 +3,8 @@
 #ifndef VORPAL_RENDERER_HPP
 #define VORPAL_RENDERER_HPP
 
+#include <vorpal/core/VkDeleter.hpp>
+
 struct GLFWwindow;
 
 namespace vp
@@ -25,6 +27,7 @@ namespace vp
             void update();
         private:
             GLFWwindow* _pWindow;
+          //VkDeleter<VkInstance> _vkInstance{vkDestroyInstance};
         };
     }    
 }

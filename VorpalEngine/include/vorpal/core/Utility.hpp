@@ -3,8 +3,8 @@
 #ifndef VORPAL_UTILITY_HPP
 #define VORPAL_UTILITY_HPP
 
-/*
- *  CMake will define VorpalEngine_EXPORTS when building the library.
+/**
+ *  @brief CMake will define VorpalEngine_EXPORTS when building the library.
  */
 
 #if defined(_WIN32) && defined(VORPAL_SHARED)

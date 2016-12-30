@@ -1,5 +1,7 @@
-#include <vorpal/video/Graphics.hpp>
+// 73s studio
+
 #include <vorpal/video/Renderer.hpp>
+#include <vorpal/video/Graphics.hpp>
 
 vp::video::Graphics::Graphics() : _pRenderer(nullptr)
 {
@@ -23,3 +25,4 @@ void vp::video::Graphics::update()
 {
     _pRenderer->update();
 }
+

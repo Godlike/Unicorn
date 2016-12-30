@@ -1,26 +1,33 @@
+// 73s studio
+
+#include <vorpal/video/Graphics.hpp>
 #include <vorpal/VorpalEngine.hpp>
 
-namespace vp
-{
-
-VorpalEngine::VorpalEngine()
+vp::VorpalEngine::VorpalEngine()
 {
 
 }
 
-VorpalEngine::~VorpalEngine()
+vp::VorpalEngine::~VorpalEngine()
 {
 
 }
 
-void VorpalEngine::init()
+void vp::VorpalEngine::init()
 {
-
+    _pGraphics = new video::Graphics();
+    _pGraphics->init();
 }
 
-void VorpalEngine::run()
+void vp::VorpalEngine::run()
 {
-
+    _pGraphics->update();
 }
 
+void vp::VorpalEngine::deinit() {
+    _pGraphics->deinit();
+    if (_pGraphics)
+        delete _pGraphics;
 }
+
+
