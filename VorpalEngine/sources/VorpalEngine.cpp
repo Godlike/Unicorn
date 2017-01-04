@@ -2,8 +2,6 @@
 #include <vorpal/VorpalEngine.hpp>
 #include <loguru.hpp>
 
-vp::VorpalEngine* vp::VorpalEngine::s_engine = nullptr;
-
 vp::VorpalEngine::VorpalEngine(std::string appName, unsigned int width, unsigned int height) : _applicationName(appName), m_width(width), _height(height)
 {
 
@@ -43,6 +41,13 @@ std::string vp::VorpalEngine::vorpalEngineName() const {
 void vp::VorpalEngine::logError(const std::string &&error)
 {
   LOG_F(ERROR ,error.c_str());
+}
+void vp::VorpalEngine::logWarning(const std::string &&warningMessage)
+{
+  LOG_F(WARNING ,warningMessage.c_str());
+}
+void vp::VorpalEngine::logInfo(const std::string &&information) {
+  LOG_F(INFO ,information.c_str());
 }
 
 

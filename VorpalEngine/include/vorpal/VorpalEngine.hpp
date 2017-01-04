@@ -7,6 +7,7 @@
 
 #include <vorpal/core/Utility.hpp>
 #include <vorpal/video/Graphics.hpp>
+#include <vorpal/core/Settings.hpp>
 
 namespace vp
 {
@@ -24,19 +25,15 @@ namespace vp
         void init();
         void run();
         void deinit();
-        static VorpalEngine* instance() {
-          if (!s_engine)
-            s_engine = new VorpalEngine;
-          return s_engine;
-        }
 
         std::string applicationName() const;
         unsigned int applicationHeight() const;
         unsigned int applicationWidth() const;
         std::string vorpalEngineName() const;
+        static void logInfo(const std::string&& information);
+        static void logWarning(const std::string&& warningMessage);
         static void logError(const std::string&& error);
     private:
-        static VorpalEngine* s_engine;
         unsigned int m_width, _height;
         std::string _applicationName;
         video::Graphics* _pGraphics;
