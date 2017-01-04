@@ -1,7 +1,7 @@
 // 73s studio
 
-#ifndef VORPAL_VORPAL_ENGINE_HPP
-#define VORPAL_VORPAL_ENGINE_HPP
+#ifndef VORPAL_ENGINE_HPP
+#define VORPAL_ENGINE_HPP
 
 #include <string>
 
@@ -34,12 +34,13 @@ namespace vp
         unsigned int applicationHeight() const;
         unsigned int applicationWidth() const;
         std::string vorpalEngineName() const;
+        static void logError(const std::string&& error);
     private:
-      static VorpalEngine* s_engine;
-      unsigned int _width, _height;
-      std::string _applicationName;
-      video::Graphics* _pGraphics;
+        static VorpalEngine* s_engine;
+        unsigned int m_width, _height;
+        std::string _applicationName;
+        video::Graphics* _pGraphics;
     };
 }
 
-#endif /* VORPAL_VORPAL_ENGINE_HPP */
+#endif /* VORPAL_ENGINE_HPP */

@@ -1,12 +1,8 @@
-// 73s studio
-
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+
 #include <vorpal/video/Renderer.hpp>
 #include <vorpal/VorpalEngine.hpp>
-#include <iostream>
-
-#define error_log(x) std::cout << x << std::endl;
 
 void vp::video::Renderer::deinit()
 {
@@ -22,9 +18,9 @@ void vp::video::Renderer::init()
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    if (glfwVulkanSupported())
+    if (!glfwVulkanSupported())
     {
-      error_log("Vulkan not supported");
+      VorpalEngine::logError("Vulkan not supported!");
     }
     _pWindow = glfwCreateWindow(VorpalEngine::instance()->applicationWidth(),
                                 VorpalEngine::instance()->applicationHeight(),
@@ -68,6 +64,6 @@ void vp::video::Renderer::_createInstance()
   createInfo.enabledLayerCount = 0;
 
   if (vkCreateInstance(&createInfo, nullptr, &_vkInstance) != VK_SUCCESS) {
-    error_log("failed to create instance!");
+    VorpalEngine::logError("Failed to create instance!");
   }
 }

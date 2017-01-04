@@ -1,0 +1,9 @@
+EXTENSIONS=`cat .extensionsToFormat|sed 's/^/-e \\\\./g'|sed 's/$/\\$/'|tr '\n' ' '`
+
+echo "$EXTENSIONS"
+for i in $(git diff --cached --name-only);do
+    [ -e "$i" ] || continue;
+    echo -ne $i|grep $AVOID && continue
+    echo -ne $i|grep -i $EXTENSIONS || continue
+    clang-format-3.6 -style=file -i "$i" && git add "$i"
+done
