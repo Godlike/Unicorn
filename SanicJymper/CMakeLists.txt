@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.0)
 
-project(TheGame)
+project(SanicJymper)
 
 include(VorpalEngineConfig)
 

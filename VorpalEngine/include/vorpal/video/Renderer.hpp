@@ -1,5 +1,3 @@
-// 73s studio
-
 #ifndef VORPAL_RENDERER_HPP
 #define VORPAL_RENDERER_HPP
 
@@ -23,14 +21,14 @@ namespace vp
             Renderer& operator=(const Renderer& other) = delete;
             Renderer& operator=(const Renderer&& other) = delete;
 
-            void init();
+            bool init();
             void deinit();
-            void update();
+            void render();
         private:
-            GLFWwindow* _pWindow;
-            VkInstance _vkInstance;
+            GLFWwindow* m_pWindow;
+            VkInstance m_vkInstance;
 
-            void _createInstance();
+            bool m_createInstance();
         };
     }    
 }

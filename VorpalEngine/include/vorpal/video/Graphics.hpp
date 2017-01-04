@@ -1,5 +1,3 @@
-// 73s studio
-
 #ifndef VORPAL_GRAPHICS_HPP
 #define VORPAL_GRAPHICS_HPP
 
@@ -19,11 +17,11 @@ namespace vp
             Graphics& operator=(const Renderer& other) = delete;
             Graphics& operator=(const Graphics&& other) = delete;
 
-            void init();
+            bool init();
             void deinit();
-            void update();
+            void render();
         private:
-            Renderer* _pRenderer;
+            Renderer* m_pRenderer;
         };
     }
 }

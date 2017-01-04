@@ -15,4 +15,4 @@
     #define VORPAL_EXPORT
 #endif
 
-#endif /* VORPAL_UTILITY_HPP */
+#endif // VORPAL_UTILITY_HPP

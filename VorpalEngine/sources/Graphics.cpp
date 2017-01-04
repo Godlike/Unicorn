@@ -1,28 +1,21 @@
 // 73s studio
 
-#include <vorpal/video/Renderer.hpp>
 #include <vorpal/video/Graphics.hpp>
+#include <vorpal/video/Renderer.hpp>
+#include <vorpal/core/Logger.hpp>
 
-vp::video::Graphics::Graphics() : _pRenderer(nullptr)
-{
+vp::video::Graphics::Graphics() : m_pRenderer(nullptr) {}
 
+bool vp::video::Graphics::init() {
+  m_pRenderer = new Renderer();
+  if(!m_pRenderer->init())
+    return false;
+  LOG_INFO("Graphics initialized correctly.");
+  return true;
 }
 
-void vp::video::Graphics::init()
-{
-    _pRenderer = new Renderer();
-    _pRenderer->init();
+void vp::video::Graphics::deinit() {
+  m_pRenderer->deinit();
 }
 
-void vp::video::Graphics::deinit()
-{
-    _pRenderer->deinit();
-    if(_pRenderer)
-        delete _pRenderer;
-}
-
-void vp::video::Graphics::update()
-{
-    _pRenderer->update();
-}
-
+void vp::video::Graphics::render() { m_pRenderer->render(); }

@@ -58,11 +58,13 @@ add_library(${VORPAL_ENGINE_LIB}
         include/vorpal/core/Utility.hpp
         include/vorpal/core/Timer.hpp
         include/vorpal/core/Settings.hpp
+        include/vorpal/core/Logger.hpp
 
         sources/VorpalEngine.cpp
         sources/Renderer.cpp
         sources/Graphics.cpp
         sources/Timer.cpp
-        sources/Settings.cpp)
+        sources/Settings.cpp
+        sources/Logger.cpp)
 
 target_link_libraries(${VORPAL_ENGINE_LIB} ${GLFW_LIB} ${VULKAN_LIBRARY})
