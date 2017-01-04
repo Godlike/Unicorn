@@ -31,6 +31,7 @@ add_subdirectory("external/glm")
 include(loguru)
 include(stb)
 
+find_library(Vulkan REQUIRED)
 if(UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 endif()
@@ -61,4 +62,4 @@ add_library( ${VORPAL_ENGINE_LIB}
     sources/Timer.cpp
 )
 
-target_link_libraries(${VORPAL_ENGINE_LIB} ${GLFW_LIB})
+target_link_libraries(${VORPAL_ENGINE_LIB} ${Vulkan_LIBRARIES} ${GLFW_LIB})
