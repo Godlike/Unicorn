@@ -9,7 +9,7 @@ void vp::video::Renderer::deinit()
     vkDestroyInstance(_vkInstance, nullptr);
     if (_pWindow)
     {
-        glfwDestroyWindow(_pWindow);
+      glfwDestroyWindow(_pWindow);
     }
 }
 
