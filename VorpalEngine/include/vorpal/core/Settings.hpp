@@ -7,27 +7,27 @@
 namespace vp {
 namespace core {
 class VORPAL_EXPORT Settings {
-public:
-  static Settings* instance() {
-    if(s_settings == nullptr)
+ public:
+  static Settings *instance() {
+    if (s_settings == nullptr)
       s_settings = new Settings;
     return s_settings;
   }
-  void init(int argc, char *argv[], const std::string&& logFileName);
+  void init(int argc, char *argv[], const std::string &&logFileName);
 
   std::string applicationName() const;
   unsigned int applicationHeight() const;
   unsigned int applicationWidth() const;
   std::string vorpalEngineName() const;
 
-  void applicationName(const std::string&& newName);
+  void applicationName(const std::string &&newName);
   void applicationHeight(unsigned int newHeight);
   void applicationWidth(unsigned int newWidth);
-  void vorpalEngineName(const std::string&& newName);
+  void vorpalEngineName(const std::string &&newName);
 
-private:
+ private:
   Settings();
-  static Settings* s_settings;
+  static Settings *s_settings;
 
   unsigned int m_width, m_height;
   std::string m_applicationName, m_vorpalEngineName;

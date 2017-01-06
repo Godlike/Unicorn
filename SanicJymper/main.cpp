@@ -5,8 +5,8 @@ int main(int argc, char *argv[]) {
   vp::core::Settings::instance()->init(argc, argv, "SANIC_JYMPER.log");
   vp::core::Settings::instance()->applicationName("SANIC JYMPER");
   vp::VorpalEngine *vpEngine = new vp::VorpalEngine;
-  vpEngine->init();
-  vpEngine->run();
+  if(vpEngine->init())
+    vpEngine->run();
   vpEngine->deinit();
   delete vpEngine;
   return 0;

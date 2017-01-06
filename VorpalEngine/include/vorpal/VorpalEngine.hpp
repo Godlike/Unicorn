@@ -6,25 +6,23 @@
 #include <vorpal/core/Utility.hpp>
 #include <vorpal/video/Graphics.hpp>
 
-namespace vp
-{
-    class VORPAL_EXPORT VorpalEngine
-    {
-    public:
-        VorpalEngine();
-        ~VorpalEngine();
+namespace vp {
+class VORPAL_EXPORT VorpalEngine {
+ public:
+  VorpalEngine();
+  ~VorpalEngine();
 
-        VorpalEngine(const VorpalEngine& other) = delete;
-        VorpalEngine(const VorpalEngine&& other) = delete;
-        VorpalEngine& operator=(const VorpalEngine& other) = delete;
-        VorpalEngine& operator=(const VorpalEngine&& other) = delete;
+  VorpalEngine(const VorpalEngine &other) = delete;
+  VorpalEngine(const VorpalEngine &&other) = delete;
+  VorpalEngine &operator=(const VorpalEngine &other) = delete;
+  VorpalEngine &operator=(const VorpalEngine &&other) = delete;
 
-        void init();
-        void run();
-        void deinit();
-    private:
-        video::Graphics* m_pGraphics;
-    };
+  bool init();
+  void run();
+  void deinit();
+ private:
+  video::Graphics *m_pGraphics;
+};
 }
 
 #endif // VORPAL_ENGINE_HPP
