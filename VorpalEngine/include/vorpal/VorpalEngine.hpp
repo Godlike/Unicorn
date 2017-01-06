@@ -1,8 +1,6 @@
 #ifndef VORPAL_ENGINE_HPP
 #define VORPAL_ENGINE_HPP
 
-#include <string>
-
 #include <vorpal/core/Utility.hpp>
 
 namespace vp {
