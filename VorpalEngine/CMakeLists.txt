@@ -31,10 +31,14 @@ add_subdirectory("external/glm")
 include(loguru)
 include(stb)
 
-find_library(Vulkan REQUIRED)
+
 
 if (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+    find_library(Vulkan REQUIRED)
+    include_directories(
+        ${VULKAN_INCLUDE_DIR}
+    )
 endif ()
 
 include_directories(
@@ -71,3 +75,6 @@ add_library(${VORPAL_ENGINE_LIB}
 )
 
 target_link_libraries(${VORPAL_ENGINE_LIB} ${GLFW_LIB} ${VULKAN_LIBRARY})
+if (UNIX)
+    target_link_libraries(${VORPAL_ENGINE_LIB} ${VULKAN_LIBRARY})
+endif ()
