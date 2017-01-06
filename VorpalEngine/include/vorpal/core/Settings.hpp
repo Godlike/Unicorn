@@ -1,38 +1,51 @@
-#ifndef VORPAL_SETTINGS_HPP
-#define VORPAL_SETTINGS_HPP
+#ifndef VORPAL_CORE_SETTINGS_HPP
+#define VORPAL_CORE_SETTINGS_HPP
 
-#include <vorpal/core/Utility.hpp>
+#include <vorpal/utility/SharedMacros.hpp>
+#include <vorpal/utility/templates/Singleton.hpp>
+
 #include <string>
+#include <cstdint>
 
-namespace vp {
-namespace core {
-class VORPAL_EXPORT Settings {
- public:
-  static Settings *instance() {
-    if (s_settings == nullptr)
-      s_settings = new Settings;
-    return s_settings;
-  }
-  void init(int argc, char *argv[], const std::string &&logFileName);
+namespace vp
+{
+    namespace core
+    {
+        class VORPAL_EXPORT Settings : public utility::templates::Singleton<Settings>
+        {
+        public:
+            void Init(int argc, char* argv[], const std::string&& logFileName);
 
-  std::string applicationName() const;
-  unsigned int applicationHeight() const;
-  unsigned int applicationWidth() const;
-  std::string vorpalEngineName() const;
+            uint32_t GetApplicationWidth() const { return m_width; }
+            uint32_t GetApplicationHeight() const { return m_height; }
 
-  void applicationName(const std::string &&newName);
-  void applicationHeight(unsigned int newHeight);
-  void applicationWidth(unsigned int newWidth);
-  void vorpalEngineName(const std::string &&newName);
+            void SetApplicationWidth(uint32_t width) { m_width = width; }
+            void SetApplicationHeight(uint32_t height) { m_height = height; }
 
- private:
-  Settings();
-  static Settings *s_settings;
+            const std::string& GetApplicationName() const { return m_applicationName; }
+            const std::string& GetVorpalEngineName() const { return m_vorpalEngineName; }
 
-  unsigned int m_width, m_height;
-  std::string m_applicationName, m_vorpalEngineName;
-};
+            void SetApplicationName(const std::string&& name) { m_applicationName = name; }
+            void SetVorpalEngineName(const std::string&& name) { m_vorpalEngineName = name; }
+
+        private:
+            friend class utility::templates::Singleton<Settings>;
+
+            Settings();
+            ~Settings() = default;
+
+            Settings(const Settings& other) = delete;
+            Settings(const Settings&& other) = delete;
+            Settings& operator=(const Settings& other) = delete;
+            Settings& operator=(const Settings&& other) = delete;
+
+            uint32_t m_width;
+            uint32_t m_height;
+
+            std::string m_applicationName;
+            std::string m_vorpalEngineName;
+        };
+    }
 }
-}
 
-#endif //VORPAL_SETTINGS_HPP
+#endif // VORPAL_CORE_SETTINGS_HPP
