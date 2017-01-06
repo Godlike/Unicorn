@@ -15,5 +15,5 @@ include(VorpalEngineConfig)
 add_subdirectory(${VORPAL_ENGINE_ROOT})
 
 if (${VORPAL_BUILD_DEMOS})
-	add_subdirectory(demo)
+	add_subdirectory(demos)
 endif()
