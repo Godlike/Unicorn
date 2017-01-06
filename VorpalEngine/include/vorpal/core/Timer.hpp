@@ -1,14 +1,17 @@
-#ifndef VORPAL_TIMER_HPP
-#define VORPAL_TIMER_HPP
+#ifndef VORPAL_CORE_TIMER_HPP
+#define VORPAL_CORE_TIMER_HPP
 
 #include <chrono>
 
-namespace vp {
-namespace core {
-class Timer {
+namespace vp
+{
+    namespace core
+    {
+        class Timer
+        {
 
-};
-}
+        };
+    }
 }
 
-#endif //VORPAL_TIMER_HPP
+#endif // VORPAL_CORE_TIMER_HPP

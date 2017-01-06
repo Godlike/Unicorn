@@ -38,13 +38,13 @@ if (UNIX)
 endif ()
 
 include_directories(
-        ${VORPAL_ENGINE_INCLUDE_DIR}
-        ${ASSIMP_INCLUDE_DIR}
-        ${GLFW_INCLUDE_DIR}
-        ${GLM_INCLUDE_DIR}
-        ${LOGURU_INCLUDE_DIR}
-        ${STB_INCLUDE_DIR}
-        ${VULKAN_INCLUDE_DIR}
+    ${VORPAL_ENGINE_INCLUDE_DIR}
+    ${ASSIMP_INCLUDE_DIR}
+    ${GLFW_INCLUDE_DIR}
+    ${GLM_INCLUDE_DIR}
+    ${LOGURU_INCLUDE_DIR}
+    ${STB_INCLUDE_DIR}
+    ${VULKAN_INCLUDE_DIR}
 )
 
 if (BUILD_SHARED_LIBS)
@@ -52,19 +52,22 @@ if (BUILD_SHARED_LIBS)
 endif ()
 
 add_library(${VORPAL_ENGINE_LIB}
-        include/vorpal/VorpalEngine.hpp
-        include/vorpal/video/Renderer.hpp
-        include/vorpal/video/Graphics.hpp
-        include/vorpal/core/Utility.hpp
-        include/vorpal/core/Timer.hpp
-        include/vorpal/core/Settings.hpp
-        include/vorpal/core/Logger.hpp
+    include/vorpal/core/Settings.hpp
+    include/vorpal/core/Timer.hpp
+    include/vorpal/utility/Logger.hpp
+    include/vorpal/utility/SharedMacros.hpp
+    include/vorpal/utility/templates/Singleton.hpp
+    include/vorpal/utility/templates/Singleton.imp
+    include/vorpal/video/Graphics.hpp
+    include/vorpal/video/Renderer.hpp
+    include/vorpal/VorpalEngine.hpp
 
-        sources/VorpalEngine.cpp
-        sources/Renderer.cpp
-        sources/Graphics.cpp
-        sources/Timer.cpp
-        sources/Settings.cpp
-        sources/Logger.cpp)
+    sources/core/Settings.cpp
+    sources/core/Timer.cpp
+    sources/utility/Logger.cpp
+    sources/video/Graphics.cpp
+    sources/video/Renderer.cpp
+    sources/VorpalEngine.cpp
+)
 
 target_link_libraries(${VORPAL_ENGINE_LIB} ${GLFW_LIB} ${VULKAN_LIBRARY})

@@ -1,5 +1,5 @@
-#ifndef VORPAL_LOGGER_HPP
-#define VORPAL_LOGGER_HPP
+#ifndef VORPAL_UTILITY_LOGGER_HPP
+#define VORPAL_UTILITY_LOGGER_HPP
 
 #include <loguru.hpp>
 
@@ -7,4 +7,5 @@
 #define LOG_WARNING(...)  LOG_F(WARNING, __VA_ARGS__)
 #define LOG_INFO(...)     LOG_F(INFO, __VA_ARGS__)
 #define LOG_DEBUG(...)    DLOG_F(INFO, __VA_ARGS__)
-#endif // VORPAL_LOGGER_HPP
+
+#endif // VORPAL_UTILITY_LOGGER_HPP
