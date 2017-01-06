@@ -1,5 +1,3 @@
-// 73s studio
-
 #include <vorpal/video/Graphics.hpp>
 #include <vorpal/video/Renderer.hpp>
 #include <vorpal/core/Logger.hpp>
