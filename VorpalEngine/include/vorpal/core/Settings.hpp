@@ -32,6 +32,12 @@ namespace vp
             friend class utility::templates::Singleton<Settings>;
 
             Settings();
+            ~Settings() = default;
+
+            Settings(const Settings& other) = delete;
+            Settings(const Settings&& other) = delete;
+            Settings& operator=(const Settings& other) = delete;
+            Settings& operator=(const Settings&& other) = delete;
 
             uint32_t m_width;
             uint32_t m_height;
