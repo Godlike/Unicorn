@@ -1,0 +1,34 @@
+#include <vorpal/utility/templates/Singleton.hpp>
+
+namespace vp
+{
+namespace utility
+{
+namespace templates
+{
+
+template<class C> C* Singleton<C>::s_instance = nullptr;
+
+template<class C> C& Singleton<C>::Instance()
+{
+    if (nullptr == s_instance)
+    {
+        s_instance = new C();
+    }
+
+    return *s_instance;
+}
+
+template<class C> void Singleton<C>::Destroy()
+{
+    if (nullptr != s_instance)
+    {
+        delete s_instance;
+
+        s_instance = nullptr;
+    }
+}
+
+}
+}
+}

@@ -1,5 +1,5 @@
-#ifndef VORPAL_UTILITY_HPP
-#define VORPAL_UTILITY_HPP
+#ifndef VORPAL_UTILITY_SHARED_MACROS_HPP
+#define VORPAL_UTILITY_SHARED_MACROS_HPP
 
 /**
  *  @brief CMake will define VorpalEngine_EXPORTS when building the library.
@@ -15,4 +15,4 @@
 #define VORPAL_EXPORT
 #endif
 
-#endif // VORPAL_UTILITY_HPP
+#endif // VORPAL_UTILITY_SHARED_MACROS_HPP
