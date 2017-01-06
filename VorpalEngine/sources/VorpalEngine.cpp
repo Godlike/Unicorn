@@ -1,6 +1,6 @@
-
 #include <vorpal/VorpalEngine.hpp>
 #include <vorpal/core/Logger.hpp>
+#include <vorpal/video/Graphics.hpp>
 
 vp::VorpalEngine::VorpalEngine() {
 

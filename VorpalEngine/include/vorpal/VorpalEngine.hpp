@@ -4,9 +4,13 @@
 #include <string>
 
 #include <vorpal/core/Utility.hpp>
-#include <vorpal/video/Graphics.hpp>
 
 namespace vp {
+
+namespace video {
+class Graphics;
+}
+
 class VORPAL_EXPORT VorpalEngine {
  public:
   VorpalEngine();

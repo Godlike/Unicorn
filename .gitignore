@@ -11,6 +11,9 @@
 *_resource.rc
 *.qm
 .#*
+*.so.*
+*.o
+*.so
 *.*#
 core
 !core/
