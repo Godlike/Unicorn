@@ -11,4 +11,4 @@ set(VORPAL_ENGINE_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/VorpalEngine" CACHE STRING "
 include(VorpalEngineConfig)
 
 add_subdirectory(${VORPAL_ENGINE_ROOT})
-add_subdirectory(TheGame)
+add_subdirectory(SanicJymper)

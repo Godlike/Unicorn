@@ -1,39 +1,23 @@
 #include <vorpal/VorpalEngine.hpp>
+#include <vorpal/core/Logger.hpp>
+#include <vorpal/video/Graphics.hpp>
 
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-
-namespace vp
-{
-
-VorpalEngine::VorpalEngine() : m_window(nullptr)
-{
+vp::VorpalEngine::VorpalEngine() {
 
 }
 
-VorpalEngine::~VorpalEngine()
-{
-    if (m_window)
-    {
-        glfwDestroyWindow(m_window);
-    }
+vp::VorpalEngine::~VorpalEngine() {}
+
+bool vp::VorpalEngine::init() {
+  LOG_INFO("Engine initialization started.");
+  m_pGraphics = new video::Graphics();
+  if (!m_pGraphics->init())
+    return false;
+  LOG_INFO("Engine initialization finished.");
 }
 
-void VorpalEngine::init()
-{
-    glfwInit();
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-
-    m_window = glfwCreateWindow(640, 480, "Vulkan", nullptr, nullptr);
+void vp::VorpalEngine::deinit() {
+  m_pGraphics->deinit();
+  LOG_INFO("Engine shutdown correctly.");
 }
-
-void VorpalEngine::run()
-{
-    while ( !glfwWindowShouldClose(m_window) )
-    {
-        glfwPollEvents();
-    }
-}
-
-}
+void vp::VorpalEngine::run() { m_pGraphics->render(); }
