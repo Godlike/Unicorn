@@ -19,23 +19,24 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
 endif (NOT CMAKE_BUILD_TYPE)
 
-include(AssimpConfig)
-add_subdirectory("external/assimp")
+if (UNIX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+endif()
+
+## Should be uncommented when Assimp library is used
+# include(AssimpConfig)
+# add_subdirectory(${ASSIMP_ROOT_DIR})
 
 include(GlfwConfig)
-add_subdirectory("external/glfw")
+add_subdirectory(${GLFW_ROOT_DIR})
 
 include(GlmConfig)
-add_subdirectory("external/glm")
+add_subdirectory(${GLM_ROOT_DIR})
 
 include(loguru)
 include(stb)
 
 find_library(Vulkan REQUIRED)
-
-if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-endif ()
 
 include_directories(
     ${VORPAL_ENGINE_INCLUDE_DIR}
