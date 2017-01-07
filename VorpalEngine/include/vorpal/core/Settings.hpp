@@ -35,9 +35,10 @@ namespace vp
             ~Settings() = default;
 
             Settings(const Settings& other) = delete;
-            Settings(const Settings&& other) = delete;
             Settings& operator=(const Settings& other) = delete;
-            Settings& operator=(const Settings&& other) = delete;
+
+            Settings(Settings&& other) = delete;
+            Settings& operator=(Settings&& other) = delete;
 
             uint32_t m_width;
             uint32_t m_height;

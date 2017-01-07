@@ -17,9 +17,10 @@ namespace vp
         ~VorpalEngine();
 
         VorpalEngine(const VorpalEngine& other) = delete;
-        VorpalEngine(const VorpalEngine&& other) = delete;
         VorpalEngine& operator=(const VorpalEngine& other) = delete;
-        VorpalEngine& operator=(const VorpalEngine&& other) = delete;
+
+        VorpalEngine(VorpalEngine&& other) = delete;
+        VorpalEngine& operator=(VorpalEngine&& other) = delete;
 
         bool Init();
         void Run();
