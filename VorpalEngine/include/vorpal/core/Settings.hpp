@@ -11,34 +11,33 @@ namespace vp
 {
     namespace core
     {
-        class Settings : public utility::templates::Singleton<Settings>
+        class VORPAL_EXPORT Settings : public utility::templates::Singleton<Settings>
         {
         public:
-            VORPAL_EXPORT void Init(int argc, char* argv[], const std::string& logFileName);
+            void Init(int argc, char* argv[], const std::string&& logFileName);
 
-            VORPAL_EXPORT uint32_t GetApplicationWidth() const { return m_width; }
-            VORPAL_EXPORT uint32_t GetApplicationHeight() const { return m_height; }
+            uint32_t GetApplicationWidth() const { return m_width; }
+            uint32_t GetApplicationHeight() const { return m_height; }
 
-            VORPAL_EXPORT void SetApplicationWidth(uint32_t width) { m_width = width; }
-            VORPAL_EXPORT void SetApplicationHeight(uint32_t height) { m_height = height; }
+            void SetApplicationWidth(uint32_t width) { m_width = width; }
+            void SetApplicationHeight(uint32_t height) { m_height = height; }
 
-            VORPAL_EXPORT const std::string& GetApplicationName() const { return m_applicationName; }
-            VORPAL_EXPORT const std::string& GetVorpalEngineName() const { return m_vorpalEngineName; }
+            const std::string& GetApplicationName() const { return m_applicationName; }
+            const std::string& GetVorpalEngineName() const { return m_vorpalEngineName; }
 
-            VORPAL_EXPORT void SetApplicationName(const std::string&& name) { m_applicationName = name; }
-            VORPAL_EXPORT void SetVorpalEngineName(const std::string&& name) { m_vorpalEngineName = name; }
+            void SetApplicationName(const std::string&& name) { m_applicationName = name; }
+            void SetVorpalEngineName(const std::string&& name) { m_vorpalEngineName = name; }
 
         private:
             friend class utility::templates::Singleton<Settings>;
 
-            VORPAL_EXPORT Settings();
+            Settings();
             ~Settings() = default;
 
             Settings(const Settings& other) = delete;
+            Settings(const Settings&& other) = delete;
             Settings& operator=(const Settings& other) = delete;
-
-            Settings(Settings&& other) = delete;
-            Settings& operator=(Settings&& other) = delete;
+            Settings& operator=(const Settings&& other) = delete;
 
             uint32_t m_width;
             uint32_t m_height;

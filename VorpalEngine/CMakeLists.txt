@@ -11,44 +11,26 @@ endif ()
 
 project(${VORPAL_ENGINE_NAME})
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
 endif (NOT CMAKE_BUILD_TYPE)
 
-if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-elseif(WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
-endif()
+include(AssimpConfig)
+add_subdirectory("external/assimp")
 
-## Should be uncommented when Assimp library is used
-# include(AssimpConfig)
-# add_subdirectory(${ASSIMP_ROOT_DIR})
-
-## GLFW
-# GLFW shall always be statically linked
 include(GlfwConfig)
+add_subdirectory("external/glfw")
 
-# Force BUILD_SHARED_LIBS to be OFF while saving initial value to temp variable
-set(TMP_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "Force GLFW to build static library" FORCE)
-
-add_subdirectory(${GLFW_ROOT_DIR})
-
-# Restore initial BUILD_SHARED_LIBS value
-set(BUILD_SHARED_LIBS ${TMP_BUILD_SHARED_LIBS} CACHE BOOL "Restored initial BUILD_SHARED_LIBS value" FORCE)
-
-## GLM
 include(GlmConfig)
-add_subdirectory(${GLM_ROOT_DIR})
+add_subdirectory("external/glm")
 
-## Loguru
 include(loguru)
-
-## STB
 include(stb)
+
 
 
 if (UNIX)
@@ -71,21 +53,11 @@ include_directories(
 
 if (BUILD_SHARED_LIBS)
     add_definitions(-DVORPAL_SHARED)
-endif()
-
-if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Werror")
-endif()
+endif ()
 
 add_library(${VORPAL_ENGINE_LIB}
     include/vorpal/core/Settings.hpp
     include/vorpal/core/Timer.hpp
-    include/vorpal/utility/asset/Content.hpp
-    include/vorpal/utility/asset/FileReader.hpp
-    include/vorpal/utility/asset/Handler.hpp
-    include/vorpal/utility/asset/SimpleStorage.hpp
-    include/vorpal/utility/asset/Storage.hpp
-    include/vorpal/utility/concurrent/UnorderedMap.hpp
     include/vorpal/utility/Logger.hpp
     include/vorpal/utility/SharedMacros.hpp
     include/vorpal/utility/templates/Singleton.hpp
@@ -96,11 +68,6 @@ add_library(${VORPAL_ENGINE_LIB}
 
     sources/core/Settings.cpp
     sources/core/Timer.cpp
-    sources/utility/asset/Content.cpp
-    sources/utility/asset/FileReader.cpp
-    sources/utility/asset/Handler.cpp
-    sources/utility/asset/SimpleStorage.cpp
-    sources/utility/asset/Storage.cpp
     sources/utility/Logger.cpp
     sources/video/Graphics.cpp
     sources/video/Renderer.cpp
