@@ -59,9 +59,9 @@ namespace vp
             bool CreateInstance();
             bool CheckValidationLayerSupport() const;
             bool PickPhysicalDevice();
-            bool IsDeviceSuitable(VkPhysicalDevice device);
+            bool IsDeviceSuitable(VkPhysicalDevice device);            
             std::vector<const char*> GetRequiredExtensions();
-            QueueFamilyIndices findQueueFamilies();
+            QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 
             bool SetupDebugCallback();            
             void DestroyDebugReportCallbackEXT();
