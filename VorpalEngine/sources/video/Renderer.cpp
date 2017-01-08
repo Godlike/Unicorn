@@ -1,9 +1,6 @@
 #include <vorpal/video/Renderer.hpp>
-
 #include <vorpal/core/Settings.hpp>
-
 #include <vorpal/utility/Logger.hpp>
-
 #include <cstring>
 
 namespace vp
@@ -24,7 +21,16 @@ VkResult CreateDebugReportCallbackEXT(VkInstance instance,
     }
     else
     {
+        LOG_ERROR("Can't find vkCreateDebugReportCallbackEXT");
         return VK_ERROR_EXTENSION_NOT_PRESENT;
+    }
+}
+
+void Renderer::DestroyDebugReportCallbackEXT()
+{
+    auto func = (PFN_vkDestroyDebugReportCallbackEXT) vkGetInstanceProcAddr(m_vkInstance, "vkDestroyDebugReportCallbackEXT");
+    if (func != nullptr) {
+        func(m_vkInstance, m_vulkanCallback, nullptr);
     }
 }
 
@@ -70,11 +76,9 @@ bool Renderer::Init()
         settings.GetApplicationName().c_str(),
         nullptr, nullptr);
 
-    if (!CreateInstance() && !SetupDebugCallback())
+     if (!CreateInstance() && !SetupDebugCallback())
     {
         Deinit();
-
-        return false;
     }
 
     m_isInitialized = true;
@@ -92,6 +96,11 @@ void Renderer::Deinit()
 
         m_vkInstance = VK_NULL_HANDLE;
     }
+
+//    if(m_vulkanCallback != VK_NULL_HANDLE)
+//    {
+//        DestroyDebugReportCallbackEXT();
+//    }
 
     if (m_pWindow)
     {
@@ -231,7 +240,7 @@ bool Renderer::SetupDebugCallback()
     createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
     createInfo.pfnCallback = DebugCallback;
 
-    return !(CreateDebugReportCallbackEXT(m_vkInstance, &createInfo, nullptr, &m_vulkanCallback) != VK_SUCCESS);
+    return CreateDebugReportCallbackEXT(m_vkInstance, &createInfo, nullptr, &m_vulkanCallback) == VK_SUCCESS;
 }
 
 VkBool32 Renderer::DebugCallback(VkDebugReportFlagsEXT flags,
@@ -243,10 +252,11 @@ VkBool32 Renderer::DebugCallback(VkDebugReportFlagsEXT flags,
     const char* msg,
     void* userData)
 {
+    //TODO Why is it not working?
     LOG_ERROR("Validation layer : ", msg);
-
     return VK_FALSE;
 }
+
 
 }
 }

@@ -37,7 +37,7 @@ namespace vp
             GLFWwindow *m_pWindow;
 
             VkInstance m_vkInstance;
-            const std::vector<const char*> m_validationLayers;
+            std::vector<const char*> m_validationLayers;
             VkDebugReportCallbackEXT m_vulkanCallback;
 
         #ifdef NDEBUG
@@ -59,6 +59,7 @@ namespace vp
                 const char* layerPrefix,
                 const char* msg,
                 void* userData);
+            void DestroyDebugReportCallbackEXT();
         };
     }
 }

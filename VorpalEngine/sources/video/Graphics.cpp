@@ -1,7 +1,5 @@
 #include <vorpal/video/Graphics.hpp>
-
 #include <vorpal/video/Renderer.hpp>
-
 #include <vorpal/utility/Logger.hpp>
 
 namespace vp
