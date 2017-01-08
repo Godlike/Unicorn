@@ -3,6 +3,7 @@
 
 #include <vorpal/utility/asset/Handler.hpp>
 #include <vorpal/utility/concurrent/UnorderedMap.hpp>
+#include <vorpal/utility/SharedMacros.hpp>
 #include <vorpal/utility/templates/Singleton.hpp>
 
 #include <condition_variable>
@@ -40,7 +41,7 @@ namespace vp
                  *
                  *  @param  count   number of worker threads
                  */
-                void InitializeWorkers(uint16_t count);
+                VORPAL_EXPORT void InitializeWorkers(uint16_t count);
 
                 /** @brief  Synchronously gets an asset identified by @p key
                  *
@@ -54,7 +55,7 @@ namespace vp
                  *
                  *  @return Handler shared object
                  */
-                Handler Get(const KeyType& key);
+                VORPAL_EXPORT Handler Get(const KeyType& key);
 
                 /** @brief  Asynchronously gets an asset identified by @p key
                  *
@@ -69,7 +70,7 @@ namespace vp
                  *
                  *  @return shared future object on a Handler
                  */
-                std::shared_future<Handler> GetAsync(const KeyType& key, uint32_t priority = 100);
+                VORPAL_EXPORT std::shared_future<Handler> GetAsync(const KeyType& key, uint32_t priority = 100);
 
             private:
                 friend class utility::templates::Singleton<Storage>;
@@ -123,7 +124,7 @@ namespace vp
 
                 void WorkerThread();
 
-                Storage();
+                VORPAL_EXPORT Storage();
 
                 Storage(const Storage& other) = delete;
                 Storage& operator=(const Storage& other) = delete;
@@ -131,7 +132,7 @@ namespace vp
                 Storage(Storage&& other) = delete;
                 Storage& operator=(Storage&& other) = delete;
 
-                ~Storage();
+                VORPAL_EXPORT ~Storage();
 
                 ConcurrentHandlerMap m_entries;
 

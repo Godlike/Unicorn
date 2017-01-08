@@ -2,6 +2,7 @@
 #define VORPAL_UTILITY_ASSET_SIMPLE_STORAGE_HPP
 
 #include <vorpal/utility/asset/Handler.hpp>
+#include <vorpal/utility/SharedMacros.hpp>
 #include <vorpal/utility/templates/Singleton.hpp>
 
 #include <cstdint>
@@ -33,7 +34,7 @@ namespace vp
                  *
                  *  @return Handler shared object
                  */
-                Handler Get(const KeyType& key);
+                VORPAL_EXPORT Handler Get(const KeyType& key);
 
             private:
                 friend class utility::templates::Singleton<SimpleStorage>;
