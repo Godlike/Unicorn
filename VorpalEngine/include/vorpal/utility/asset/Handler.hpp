@@ -21,6 +21,12 @@ namespace vp
             class Handler
             {
             public:
+                /** @brief  Constructs an empty handler
+                 *
+                 *  Created object does not have any data associated with it
+                 */
+                Handler();
+
                 /** @brief  Constructs a shared data object around @p pContent
                  *
                  *  Initializes all required shared data

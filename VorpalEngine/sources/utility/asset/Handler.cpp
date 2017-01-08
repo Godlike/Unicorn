@@ -7,6 +7,15 @@ namespace utility
 namespace asset
 {
 
+Handler::Handler()
+    : m_pName(nullptr)
+    , m_pContent(nullptr)
+    , m_pRefCounter(nullptr)
+    , m_pLastReferenceTimestamp(nullptr)
+{
+
+}
+
 Handler::Handler(const std::string& name, Content* pContent)
     : m_pName(nullptr)
     , m_pContent(pContent)
@@ -37,6 +46,8 @@ Handler& Handler::operator=(const Handler& other)
     m_pLastReferenceTimestamp = other.m_pLastReferenceTimestamp;
 
     Subscribe();
+
+    return *this;
 }
 
 Handler::Handler(Handler&& other)
@@ -66,6 +77,8 @@ Handler& Handler::operator=(Handler&& other)
     Subscribe();
 
     other.Unsubscribe();
+
+    return *this;
 }
 
 Handler::~Handler()

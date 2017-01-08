@@ -50,7 +50,11 @@ include_directories(
 
 if (BUILD_SHARED_LIBS)
     add_definitions(-DVORPAL_SHARED)
-endif ()
+endif()
+
+if (UNIX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Werror")
+endif()
 
 add_library(${VORPAL_ENGINE_LIB}
     include/vorpal/core/Settings.hpp
