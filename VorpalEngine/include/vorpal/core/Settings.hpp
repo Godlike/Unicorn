@@ -14,7 +14,7 @@ namespace vp
         class VORPAL_EXPORT Settings : public utility::templates::Singleton<Settings>
         {
         public:
-            void Init(int argc, char* argv[], const std::string&& logFileName);
+            void Init(int argc, char* argv[], const std::string& logFileName);
 
             uint32_t GetApplicationWidth() const { return m_width; }
             uint32_t GetApplicationHeight() const { return m_height; }
