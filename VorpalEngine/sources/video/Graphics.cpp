@@ -1,7 +1,5 @@
 #include <vorpal/video/Graphics.hpp>
-
 #include <vorpal/video/Renderer.hpp>
-
 #include <vorpal/utility/Logger.hpp>
 
 namespace vp
@@ -58,13 +56,14 @@ void Graphics::Deinit()
     }
 
     m_isInitialized = false;
+    LOG_INFO("Graphics shutdown correctly.");
 }
 
 void Graphics::Render()
 {
     if (m_isInitialized && m_pRenderer)
     {
-        m_pRenderer->Render();
+       m_pRenderer->Render();
     }
 }
 

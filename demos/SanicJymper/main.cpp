@@ -15,12 +15,9 @@ int main(int argc, char *argv[])
     {
         vpEngine->Run();
     }
-
     vpEngine->Deinit();
-
     delete vpEngine;
 
     vp::core::Settings::Destroy();
-
     return 0;
 }
