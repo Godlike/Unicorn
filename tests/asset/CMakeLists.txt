@@ -15,8 +15,14 @@ endif ()
 
 add_executable(SimpleStorageTest SimpleStorageTest.cpp)
 target_link_libraries(SimpleStorageTest ${VORPAL_ENGINE_LIB})
-add_test(SimpleStorageTest SimpleStorageTest)
+add_test(
+    NAME SimpleStorageTest
+    COMMAND SimpleStorageTest
+)
 
 add_executable(StorageTest StorageTest.cpp)
 target_link_libraries(StorageTest ${VORPAL_ENGINE_LIB} ${CMAKE_THREAD_LIBS_INIT})
-add_test(StorageTest StorageTest)
+add_test(
+    NAME StorageTest
+    COMMAND StorageTest
+)
