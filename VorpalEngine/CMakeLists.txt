@@ -11,8 +11,6 @@ endif ()
 
 project(${VORPAL_ENGINE_NAME})
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
-
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 if (NOT CMAKE_BUILD_TYPE)
@@ -75,6 +73,12 @@ endif()
 add_library(${VORPAL_ENGINE_LIB}
     include/vorpal/core/Settings.hpp
     include/vorpal/core/Timer.hpp
+    include/vorpal/utility/asset/Content.hpp
+    include/vorpal/utility/asset/FileReader.hpp
+    include/vorpal/utility/asset/Handler.hpp
+    include/vorpal/utility/asset/SimpleStorage.hpp
+    include/vorpal/utility/asset/Storage.hpp
+    include/vorpal/utility/concurrent/UnorderedMap.hpp
     include/vorpal/utility/Logger.hpp
     include/vorpal/utility/SharedMacros.hpp
     include/vorpal/utility/templates/Singleton.hpp
@@ -85,6 +89,11 @@ add_library(${VORPAL_ENGINE_LIB}
 
     sources/core/Settings.cpp
     sources/core/Timer.cpp
+    sources/utility/asset/Content.cpp
+    sources/utility/asset/FileReader.cpp
+    sources/utility/asset/Handler.cpp
+    sources/utility/asset/SimpleStorage.cpp
+    sources/utility/asset/Storage.cpp
     sources/utility/Logger.cpp
     sources/video/Graphics.cpp
     sources/video/Renderer.cpp

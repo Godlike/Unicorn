@@ -16,11 +16,14 @@ Settings::Settings()
 
 }
 
-void Settings::Init(int argc, char** argv, const std::string&& logFileName)
+void Settings::Init(int argc, char** argv, const std::string& logFileName)
 {
     loguru::init(argc, argv);
 
-    loguru::add_file(logFileName.c_str(), loguru::Append, loguru::Verbosity_INFO);
+    if (!logFileName.empty())
+    {
+        loguru::add_file(logFileName.c_str(), loguru::Append, loguru::Verbosity_INFO);
+    }
 }
 
 }
