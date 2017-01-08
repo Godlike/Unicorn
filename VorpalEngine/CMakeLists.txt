@@ -59,6 +59,8 @@ add_library(${VORPAL_ENGINE_LIB}
     include/vorpal/utility/asset/FileReader.hpp
     include/vorpal/utility/asset/Handler.hpp
     include/vorpal/utility/asset/SimpleStorage.hpp
+    include/vorpal/utility/asset/Storage.hpp
+    include/vorpal/utility/concurrent/UnorderedMap.hpp
     include/vorpal/utility/Logger.hpp
     include/vorpal/utility/SharedMacros.hpp
     include/vorpal/utility/templates/Singleton.hpp
@@ -73,6 +75,7 @@ add_library(${VORPAL_ENGINE_LIB}
     sources/utility/asset/FileReader.cpp
     sources/utility/asset/Handler.cpp
     sources/utility/asset/SimpleStorage.cpp
+    sources/utility/asset/Storage.cpp
     sources/utility/Logger.cpp
     sources/video/Graphics.cpp
     sources/video/Renderer.cpp
