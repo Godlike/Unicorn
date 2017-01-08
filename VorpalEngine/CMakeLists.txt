@@ -11,8 +11,6 @@ endif ()
 
 project(${VORPAL_ENGINE_NAME})
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
-
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 if (NOT CMAKE_BUILD_TYPE)
@@ -29,13 +27,27 @@ endif()
 # include(AssimpConfig)
 # add_subdirectory(${ASSIMP_ROOT_DIR})
 
+## GLFW
+# GLFW shall always be statically linked
 include(GlfwConfig)
+
+# Force BUILD_SHARED_LIBS to be OFF while saving initial value to temp variable
+set(TMP_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Force GLFW to build static library" FORCE)
+
 add_subdirectory(${GLFW_ROOT_DIR})
 
+# Restore initial BUILD_SHARED_LIBS value
+set(BUILD_SHARED_LIBS ${TMP_BUILD_SHARED_LIBS} CACHE BOOL "Restored initial BUILD_SHARED_LIBS value" FORCE)
+
+## GLM
 include(GlmConfig)
 add_subdirectory(${GLM_ROOT_DIR})
 
+## Loguru
 include(loguru)
+
+## STB
 include(stb)
 
 find_library(Vulkan REQUIRED)
