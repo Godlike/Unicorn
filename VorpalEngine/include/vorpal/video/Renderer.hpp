@@ -13,6 +13,14 @@ namespace vp
 {
     namespace video
     {
+
+        struct QueueFamilyIndices {
+            int graphicsFamily = -1;    // -1 mean not found.
+
+            bool isComplete() {
+                return graphicsFamily >= 0;
+            }
+        };
         /** @brief  Vulkan renderer class
          *
          *  Initializes and controls Vulkan API
@@ -37,7 +45,9 @@ namespace vp
             GLFWwindow *m_pWindow;
 
             VkInstance m_vkInstance;
+            VkPhysicalDevice m_vkPhysicalDevice;
             std::vector<const char*> m_validationLayers;
+            std::vector<const char*> m_extensions;
             VkDebugReportCallbackEXT m_vulkanCallback;
 
         #ifdef NDEBUG
@@ -48,18 +58,14 @@ namespace vp
 
             bool CreateInstance();
             bool CheckValidationLayerSupport() const;
-            static std::vector<const char*> GetRequiredExtensions();
+            bool PickPhysicalDevice();
+            bool IsDeviceSuitable(VkPhysicalDevice device);
+            std::vector<const char*> GetRequiredExtensions();
+            QueueFamilyIndices findQueueFamilies();
 
-            bool SetupDebugCallback();
-            static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
-                VkDebugReportObjectTypeEXT objType,
-                uint64_t obj,
-                size_t location,
-                int32_t code,
-                const char* layerPrefix,
-                const char* msg,
-                void* userData);
+            bool SetupDebugCallback();            
             void DestroyDebugReportCallbackEXT();
+            VkResult CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo);
         };
     }
 }
