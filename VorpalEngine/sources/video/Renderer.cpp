@@ -93,7 +93,8 @@ bool Renderer::Init()
         LOG_ERROR("Can't setup debug callback'");
     if(!PickPhysicalDevice())
         return false;
-
+    if(!CreateLogicalDevice())
+        return  false;
     m_isInitialized = true;
 
     LOG_INFO("Vulkan render initialized correctly.");
@@ -108,19 +109,22 @@ void Renderer::Deinit()
         DestroyDebugReportCallbackEXT();
     }
 
+    if(m_vkLogicalDevice!= VK_NULL_HANDLE) {
+        vkDestroyDevice(m_vkLogicalDevice, nullptr);
+        m_vkLogicalDevice = VK_NULL_HANDLE;
+    }
+
     //Instance must be freed last but before glfw window.
     if (m_vkInstance != VK_NULL_HANDLE)
     {
         vkDestroyInstance(m_vkInstance, nullptr);
-
         m_vkInstance = VK_NULL_HANDLE;
-    }   
+    }
 
     if (m_pWindow)
     {
         glfwSetWindowShouldClose(m_pWindow, GLFW_TRUE);
         glfwDestroyWindow(m_pWindow);
-
         m_pWindow = nullptr;
     }
 
@@ -153,7 +157,7 @@ QueueFamilyIndices Renderer::FindQueueFamilies(VkPhysicalDevice device)
 }
 
 VkResult Renderer::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo) {
-    auto func = (PFN_vkCreateDebugReportCallbackEXT) vkGetInstanceProcAddr(m_vkInstance, "vkCreateDebugReportCallbackEXT");
+    auto func = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(vkGetInstanceProcAddr(m_vkInstance, "vkCreateDebugReportCallbackEXT"));
     if (func != nullptr) {
         return func(m_vkInstance, pCreateInfo, nullptr, &m_vulkanCallback);
     } else {
@@ -162,7 +166,7 @@ VkResult Renderer::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreat
 }
 
 void Renderer::DestroyDebugReportCallbackEXT() {
-    auto func = (PFN_vkDestroyDebugReportCallbackEXT) vkGetInstanceProcAddr(m_vkInstance, "vkDestroyDebugReportCallbackEXT");
+    auto func = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(vkGetInstanceProcAddr(m_vkInstance, "vkDestroyDebugReportCallbackEXT"));
     if (func != nullptr) {
         func(m_vkInstance, m_vulkanCallback, nullptr);
     }
@@ -254,6 +258,42 @@ bool Renderer::PickPhysicalDevice()
     return true;
 }
 
+bool Renderer::CreateLogicalDevice()
+{
+    QueueFamilyIndices indices = FindQueueFamilies(m_vkPhysicalDevice);
+
+    VkDeviceQueueCreateInfo queueCreateInfo = {};
+    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily;
+    queueCreateInfo.queueCount = 1;
+    float queuePriority = 1.0f;
+    queueCreateInfo.pQueuePriorities = &queuePriority;
+
+    VkPhysicalDeviceFeatures deviceFeatures = {}; // No features for now.
+
+    VkDeviceCreateInfo createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+
+    createInfo.pQueueCreateInfos = &queueCreateInfo;
+    createInfo.queueCreateInfoCount = 1;
+    createInfo.pEnabledFeatures = &deviceFeatures;
+    createInfo.enabledExtensionCount = 0; // Need swap chain here.
+
+    if (s_enableValidationLayers) {
+        createInfo.enabledLayerCount = m_validationLayers.size();
+        createInfo.ppEnabledLayerNames = m_validationLayers.data();
+    } else {
+        createInfo.enabledLayerCount = 0;
+    }
+    if (vkCreateDevice(m_vkPhysicalDevice, &createInfo, nullptr, &m_vkLogicalDevice) != VK_SUCCESS) {
+        LOG_ERROR("Can't initialize Vulkan logical device!");
+        return false;
+    }
+    vkGetDeviceQueue(m_vkLogicalDevice, indices.graphicsFamily, 0, &m_graphicsQueue);
+
+    return true;
+}
+
 bool Renderer::IsDeviceSuitable(VkPhysicalDevice device) {
     VkPhysicalDeviceProperties deviceProperties;
     VkPhysicalDeviceFeatures deviceFeatures;
@@ -331,7 +371,7 @@ bool Renderer::SetupDebugCallback()
                         VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT |
                         VK_DEBUG_REPORT_WARNING_BIT_EXT;
     createInfo.pfnCallback = DebugCallback;    
-    return CreateDebugReportCallbackEXT(&createInfo);
+    return CreateDebugReportCallbackEXT(&createInfo) == VK_SUCCESS;
 }
 
 }

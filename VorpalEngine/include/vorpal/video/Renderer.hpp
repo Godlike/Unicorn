@@ -46,6 +46,8 @@ namespace vp
 
             VkInstance m_vkInstance;
             VkPhysicalDevice m_vkPhysicalDevice;
+            VkDevice m_vkLogicalDevice;
+            VkQueue m_graphicsQueue;
             std::vector<const char*> m_validationLayers;
             std::vector<const char*> m_extensions;
             VkDebugReportCallbackEXT m_vulkanCallback;
@@ -59,6 +61,7 @@ namespace vp
             bool CreateInstance();
             bool CheckValidationLayerSupport() const;
             bool PickPhysicalDevice();
+            bool CreateLogicalDevice();
             bool IsDeviceSuitable(VkPhysicalDevice device);            
             std::vector<const char*> GetRequiredExtensions();
             QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
