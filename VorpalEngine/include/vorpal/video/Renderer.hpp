@@ -15,10 +15,11 @@ namespace vp
     {
 
         struct QueueFamilyIndices {
-            int graphicsFamily = -1;    // -1 mean not found.
+            int graphicsFamily = -1;
+            int presentFamily = -1;
 
             bool isComplete() {
-                return graphicsFamily >= 0;
+                 return graphicsFamily >= 0 && presentFamily >= 0;
             }
         };
         /** @brief  Vulkan renderer class
@@ -48,6 +49,8 @@ namespace vp
             VkPhysicalDevice m_vkPhysicalDevice;
             VkDevice m_vkLogicalDevice;
             VkQueue m_graphicsQueue;
+            VkQueue m_presentQueue;
+            VkSurfaceKHR m_vkWindowSurface;
             std::vector<const char*> m_validationLayers;
             std::vector<const char*> m_extensions;
             VkDebugReportCallbackEXT m_vulkanCallback;
@@ -62,6 +65,7 @@ namespace vp
             bool CheckValidationLayerSupport() const;
             bool PickPhysicalDevice();
             bool CreateLogicalDevice();
+            bool CreateSurface();
             bool IsDeviceSuitable(VkPhysicalDevice device);            
             std::vector<const char*> GetRequiredExtensions();
             QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);

@@ -1,8 +1,10 @@
 #include <vorpal/video/Renderer.hpp>
 #include <vorpal/core/Settings.hpp>
 #include <vorpal/utility/Logger.hpp>
+
 #include <cstring>
 #include <iostream>
+#include <set>
 
 namespace vp
 {
@@ -87,14 +89,13 @@ bool Renderer::Init()
         settings.GetApplicationHeight(),
         settings.GetApplicationName().c_str(),
         nullptr, nullptr);
-    if (!CreateInstance())    
-        return false;   
-    if(SetupDebugCallback() != VK_SUCCESS)
-        LOG_ERROR("Can't setup debug callback'");
-    if(!PickPhysicalDevice())
-        return false;
-    if(!CreateLogicalDevice())
-        return  false;
+    if (!CreateInstance()
+        || !SetupDebugCallback()
+        || !CreateSurface()
+        || !PickPhysicalDevice()
+        || !CreateLogicalDevice())
+    return false;
+
     m_isInitialized = true;
 
     LOG_INFO("Vulkan render initialized correctly.");
@@ -112,6 +113,12 @@ void Renderer::Deinit()
     if(m_vkLogicalDevice!= VK_NULL_HANDLE) {
         vkDestroyDevice(m_vkLogicalDevice, nullptr);
         m_vkLogicalDevice = VK_NULL_HANDLE;
+    }
+
+    if(m_vkWindowSurface != VK_NULL_HANDLE)
+    {
+        vkDestroySurfaceKHR(m_vkInstance ,m_vkWindowSurface, nullptr);
+        m_vkWindowSurface = VK_NULL_HANDLE;
     }
 
     //Instance must be freed last but before glfw window.
@@ -147,6 +154,14 @@ QueueFamilyIndices Renderer::FindQueueFamilies(VkPhysicalDevice device)
             LOG_DEBUG("Found queue with graphics bit enabled!");
             indices.graphicsFamily = i;
         }
+        //TODO optimize?
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, m_vkWindowSurface, &presentSupport);
+
+        if (queueFamily.queueCount > 0 && presentSupport) {
+             indices.presentFamily = i;
+         }
+
         if (indices.isComplete()) {
             break;
         }
@@ -160,7 +175,8 @@ VkResult Renderer::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreat
     auto func = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(vkGetInstanceProcAddr(m_vkInstance, "vkCreateDebugReportCallbackEXT"));
     if (func != nullptr) {
         return func(m_vkInstance, pCreateInfo, nullptr, &m_vulkanCallback);
-    } else {
+    } else {        
+        LOG_ERROR("Can't setup debug callback'");
         return VK_ERROR_EXTENSION_NOT_PRESENT;
     }
 }
@@ -262,20 +278,26 @@ bool Renderer::CreateLogicalDevice()
 {
     QueueFamilyIndices indices = FindQueueFamilies(m_vkPhysicalDevice);
 
-    VkDeviceQueueCreateInfo queueCreateInfo = {};
-    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily;
-    queueCreateInfo.queueCount = 1;
+    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+    std::set<int> uniqueQueueFamilies = {indices.graphicsFamily, indices.presentFamily};
     float queuePriority = 1.0f;
-    queueCreateInfo.pQueuePriorities = &queuePriority;
+
+    for (int queueFamily : uniqueQueueFamilies) {
+        VkDeviceQueueCreateInfo queueCreateInfo = {};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = queueFamily;
+        queueCreateInfo.queueCount = 1;
+        queueCreateInfo.pQueuePriorities = &queuePriority;
+        queueCreateInfos.push_back(queueCreateInfo);
+    }
 
     VkPhysicalDeviceFeatures deviceFeatures = {}; // No features for now.
 
     VkDeviceCreateInfo createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 
-    createInfo.pQueueCreateInfos = &queueCreateInfo;
-    createInfo.queueCreateInfoCount = 1;
+    createInfo.pQueueCreateInfos = queueCreateInfos.data();
+    createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
     createInfo.pEnabledFeatures = &deviceFeatures;
     createInfo.enabledExtensionCount = 0; // Need swap chain here.
 
@@ -290,7 +312,17 @@ bool Renderer::CreateLogicalDevice()
         return false;
     }
     vkGetDeviceQueue(m_vkLogicalDevice, indices.graphicsFamily, 0, &m_graphicsQueue);
+    vkGetDeviceQueue(m_vkLogicalDevice, indices.presentFamily, 0, &m_presentQueue);
 
+    return true;
+}
+
+bool Renderer::CreateSurface()
+{
+    if (glfwCreateWindowSurface(m_vkInstance, m_pWindow, nullptr, &m_vkWindowSurface) != VK_SUCCESS) {
+           LOG_ERROR("Failed to create window surface!");
+           return false;
+    }
     return true;
 }
 
