@@ -66,6 +66,7 @@ namespace vp
             VkDebugReportCallbackEXT m_vulkanCallback;
             std::string m_gpuName;
             std::vector<VkImage> m_swapChainImages;
+            std::vector<VkImageView> m_swapChainImageViews; //TODO: delete
         #ifdef NDEBUG
             static const bool s_enableValidationLayers = false;
         #else
@@ -78,6 +79,7 @@ namespace vp
             bool CreateLogicalDevice();
             bool CreateSurface();
             bool CreateSwapChain();
+            bool CreateImageViews();
             bool IsDeviceSuitable(VkPhysicalDevice device);
             bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
             std::vector<const char*> GetRequiredExtensions();

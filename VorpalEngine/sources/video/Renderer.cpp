@@ -96,7 +96,8 @@ bool Renderer::Init()
         || !CreateSurface()
         || !PickPhysicalDevice()
         || !CreateLogicalDevice()
-        || !CreateSwapChain())
+        || !CreateSwapChain()
+        || !CreateImageViews())
     return false;
 
     m_isInitialized = true;
@@ -112,6 +113,12 @@ void Renderer::Deinit()
     {
         DestroyDebugReportCallbackEXT();
     }
+
+    for(VkImageView& view: m_swapChainImageViews)
+    {
+        vkDestroyImageView(m_vkLogicalDevice, view, nullptr);
+    }
+    m_swapChainImageViews.clear();
 
     if(m_vkSwapChain != VK_NULL_HANDLE) {
         vkDestroySwapchainKHR(m_vkLogicalDevice, m_vkSwapChain, nullptr);
@@ -451,6 +458,32 @@ bool Renderer::CreateSwapChain()
     m_swapChainExtent = extent;
 
     return true;
+}
+
+bool Renderer::CreateImageViews()
+{
+     m_swapChainImageViews.resize(m_swapChainImages.size());
+     for (uint32_t i = 0; i < m_swapChainImages.size(); i++) {
+         VkImageViewCreateInfo createInfo = {};
+         createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+         createInfo.image = m_swapChainImages[i];
+         createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+         createInfo.format = m_swapChainImageFormat;
+         createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+         createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+         createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+         createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+         createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+         createInfo.subresourceRange.baseMipLevel = 0;
+         createInfo.subresourceRange.levelCount = 1;
+         createInfo.subresourceRange.baseArrayLayer = 0;
+         createInfo.subresourceRange.layerCount = 1;
+         if (vkCreateImageView(m_vkLogicalDevice, &createInfo, nullptr, &m_swapChainImageViews[i]) != VK_SUCCESS) {
+             LOG_ERROR("Failed to create image views!");
+             return false;
+         }
+     }
+     return true;
 }
 
 bool Renderer::IsDeviceSuitable(VkPhysicalDevice device) {
