@@ -5,6 +5,7 @@
 #include <cstring>
 #include <iostream>
 #include <set>
+#include <algorithm>
 
 namespace vp
 {
@@ -54,6 +55,7 @@ Renderer::Renderer()
     , m_vkInstance(VK_NULL_HANDLE)
     , m_vkPhysicalDevice(VK_NULL_HANDLE)
     , m_validationLayers( {"VK_LAYER_LUNARG_standard_validation"} )
+    , m_deviceExtensions( {VK_KHR_SWAPCHAIN_EXTENSION_NAME})
 {
 }
 
@@ -93,7 +95,8 @@ bool Renderer::Init()
         || !SetupDebugCallback()
         || !CreateSurface()
         || !PickPhysicalDevice()
-        || !CreateLogicalDevice())
+        || !CreateLogicalDevice()
+        || !CreateSwapChain())
     return false;
 
     m_isInitialized = true;
@@ -110,6 +113,11 @@ void Renderer::Deinit()
         DestroyDebugReportCallbackEXT();
     }
 
+    if(m_vkSwapChain != VK_NULL_HANDLE) {
+        vkDestroySwapchainKHR(m_vkLogicalDevice, m_vkSwapChain, nullptr);
+        m_vkSwapChain = VK_NULL_HANDLE;
+    }
+
     if(m_vkLogicalDevice!= VK_NULL_HANDLE) {
         vkDestroyDevice(m_vkLogicalDevice, nullptr);
         m_vkLogicalDevice = VK_NULL_HANDLE;
@@ -119,7 +127,7 @@ void Renderer::Deinit()
     {
         vkDestroySurfaceKHR(m_vkInstance ,m_vkWindowSurface, nullptr);
         m_vkWindowSurface = VK_NULL_HANDLE;
-    }
+    }    
 
     //Instance must be freed last but before glfw window.
     if (m_vkInstance != VK_NULL_HANDLE)
@@ -151,7 +159,6 @@ QueueFamilyIndices Renderer::FindQueueFamilies(VkPhysicalDevice device)
     int i = 0;
     for (const auto& queueFamily : queueFamilies) {
         if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-            LOG_DEBUG("Found queue with graphics bit enabled!");
             indices.graphicsFamily = i;
         }
         //TODO optimize?
@@ -169,6 +176,71 @@ QueueFamilyIndices Renderer::FindQueueFamilies(VkPhysicalDevice device)
     }
 
     return indices;
+}
+
+SwapChainSupportDetails Renderer::QuerySwapChainSupport(VkPhysicalDevice device)
+{
+    SwapChainSupportDetails details;
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, m_vkWindowSurface, &details.capabilities);
+
+    uint32_t formatCount;
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_vkWindowSurface, &formatCount, nullptr);
+
+    if (formatCount != 0) {
+        details.formats.resize(formatCount);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_vkWindowSurface, &formatCount, details.formats.data());
+    }
+
+    uint32_t presentModeCount;
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_vkWindowSurface, &presentModeCount, nullptr);
+
+    if (presentModeCount != 0) {
+        details.presentModes.resize(presentModeCount);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_vkWindowSurface, &presentModeCount, details.presentModes.data());
+    }
+    return details;
+}
+
+VkSurfaceFormatKHR Renderer::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats)
+{
+    if (availableFormats.size() == 1 && availableFormats[0].format == VK_FORMAT_UNDEFINED) {
+           return {VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR};
+       }
+
+       for (const auto& availableFormat : availableFormats) {
+           if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+               return availableFormat;
+           }
+       }
+
+       return availableFormats[0];
+}
+
+VkPresentModeKHR Renderer::ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes)
+{
+    for (const auto& availablePresentMode : availablePresentModes) {
+           if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
+               return availablePresentMode;
+           }
+       }
+    return VK_PRESENT_MODE_FIFO_KHR;
+}
+
+VkExtent2D Renderer::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities)
+{
+    const core::Settings& settings = core::Settings::Instance();
+
+    if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
+        return capabilities.currentExtent;
+    } else {
+        VkExtent2D actualExtent = {settings.GetApplicationWidth(),
+                                   settings.GetApplicationHeight()};
+
+        actualExtent.width = std::max(capabilities.minImageExtent.width, std::min(capabilities.maxImageExtent.width, actualExtent.width));
+        actualExtent.height = std::max(capabilities.minImageExtent.height, std::min(capabilities.maxImageExtent.height, actualExtent.height));
+
+        return actualExtent;
+    }
 }
 
 VkResult Renderer::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo) {
@@ -299,10 +371,11 @@ bool Renderer::CreateLogicalDevice()
     createInfo.pQueueCreateInfos = queueCreateInfos.data();
     createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
     createInfo.pEnabledFeatures = &deviceFeatures;
-    createInfo.enabledExtensionCount = 0; // Need swap chain here.
+    createInfo.enabledExtensionCount = m_deviceExtensions.size();
+    createInfo.ppEnabledExtensionNames = m_deviceExtensions.data();
 
     if (s_enableValidationLayers) {
-        createInfo.enabledLayerCount = m_validationLayers.size();
+        createInfo.enabledLayerCount = static_cast<uint32_t>(m_validationLayers.size());
         createInfo.ppEnabledLayerNames = m_validationLayers.data();
     } else {
         createInfo.enabledLayerCount = 0;
@@ -326,6 +399,60 @@ bool Renderer::CreateSurface()
     return true;
 }
 
+bool Renderer::CreateSwapChain()
+{
+    SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(m_vkPhysicalDevice);
+    VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
+    VkPresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
+    VkExtent2D extent = ChooseSwapExtent(swapChainSupport.capabilities);
+
+    uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+    if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
+        imageCount = swapChainSupport.capabilities.maxImageCount;
+    }
+
+    VkSwapchainCreateInfoKHR createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    createInfo.surface = m_vkWindowSurface;
+    createInfo.minImageCount = imageCount;
+    createInfo.imageFormat = surfaceFormat.format;
+    createInfo.imageColorSpace = surfaceFormat.colorSpace;
+    createInfo.imageExtent = extent;
+    createInfo.imageArrayLayers = 1;
+    createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; //VK_IMAGE_USAGE_TRANSFER_DST_BIT for post processing.
+
+    QueueFamilyIndices indices = FindQueueFamilies(m_vkPhysicalDevice);
+    uint32_t queueFamilyIndices[] = {(uint32_t) indices.graphicsFamily, (uint32_t) indices.presentFamily};
+
+    if (indices.graphicsFamily != indices.presentFamily) {
+        createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+        createInfo.queueFamilyIndexCount = 2;
+        createInfo.pQueueFamilyIndices = queueFamilyIndices;
+    } else {
+        createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        createInfo.queueFamilyIndexCount = 0; // Optional
+        createInfo.pQueueFamilyIndices = nullptr; // Optional
+    }
+
+    createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
+    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+    createInfo.presentMode = presentMode;
+    createInfo.clipped = VK_TRUE;
+    createInfo.oldSwapchain = VK_NULL_HANDLE;
+    if (vkCreateSwapchainKHR(m_vkLogicalDevice, &createInfo, nullptr, &m_vkSwapChain) != VK_SUCCESS) {
+        LOG_ERROR("Failed to create Vulkan swap chain!");
+    }
+
+    vkGetSwapchainImagesKHR(m_vkLogicalDevice, m_vkSwapChain, &imageCount, nullptr);
+    m_swapChainImages.resize(imageCount);
+    vkGetSwapchainImagesKHR(m_vkLogicalDevice, m_vkSwapChain, &imageCount, m_swapChainImages.data());
+
+    m_swapChainImageFormat = surfaceFormat.format;
+    m_swapChainExtent = extent;
+
+    return true;
+}
+
 bool Renderer::IsDeviceSuitable(VkPhysicalDevice device) {
     VkPhysicalDeviceProperties deviceProperties;
     VkPhysicalDeviceFeatures deviceFeatures;
@@ -333,7 +460,38 @@ bool Renderer::IsDeviceSuitable(VkPhysicalDevice device) {
     vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
     LOG_INFO("Found GPU : %s", deviceProperties.deviceName);
     QueueFamilyIndices indices = FindQueueFamilies(device);
-    return deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU  &&  indices.isComplete();
+    bool extensionsSupported = CheckDeviceExtensionSupport(device);
+    bool swapChainAcceptable = false;
+    if (extensionsSupported) {
+        SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(device);
+        swapChainAcceptable = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
+    }
+    if(deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU
+            && indices.isComplete()
+            && extensionsSupported
+            && swapChainAcceptable) {
+        LOG_INFO("Picked as main GPU : %s", deviceProperties.deviceName);
+        m_gpuName = deviceProperties.deviceName;
+        return true;
+    } else
+        return false;
+}
+
+bool Renderer::CheckDeviceExtensionSupport(VkPhysicalDevice device)
+{
+    uint32_t extensionCount;
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+
+    std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+    std::set<std::string> requiredExtensions(m_deviceExtensions.begin(), m_deviceExtensions.end());
+
+    for (const auto& extension : availableExtensions) {
+        requiredExtensions.erase(extension.extensionName);
+    }
+
+    return requiredExtensions.empty();
 }
 
 bool Renderer::CheckValidationLayerSupport() const
@@ -374,7 +532,8 @@ bool Renderer::CheckValidationLayerSupport() const
 }
 
 std::vector<const char*> Renderer::GetRequiredExtensions()
-{
+{    
+    std::vector<const char*> m_extensions;
     unsigned int glfwExtensionCount = 0;
     const char** glfwExtensions;
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);

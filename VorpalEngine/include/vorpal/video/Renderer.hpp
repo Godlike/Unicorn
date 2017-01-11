@@ -22,6 +22,13 @@ namespace vp
                  return graphicsFamily >= 0 && presentFamily >= 0;
             }
         };
+
+        struct SwapChainSupportDetails {
+            VkSurfaceCapabilitiesKHR capabilities;
+            std::vector<VkSurfaceFormatKHR> formats;
+            std::vector<VkPresentModeKHR> presentModes;
+        };
+
         /** @brief  Vulkan renderer class
          *
          *  Initializes and controls Vulkan API
@@ -48,13 +55,17 @@ namespace vp
             VkInstance m_vkInstance;
             VkPhysicalDevice m_vkPhysicalDevice;
             VkDevice m_vkLogicalDevice;
+            VkSwapchainKHR m_vkSwapChain;
             VkQueue m_graphicsQueue;
             VkQueue m_presentQueue;
             VkSurfaceKHR m_vkWindowSurface;
+            VkFormat m_swapChainImageFormat;
+            VkExtent2D m_swapChainExtent;
             std::vector<const char*> m_validationLayers;
-            std::vector<const char*> m_extensions;
+            std::vector<const char*> m_deviceExtensions;
             VkDebugReportCallbackEXT m_vulkanCallback;
-
+            std::string m_gpuName;
+            std::vector<VkImage> m_swapChainImages;
         #ifdef NDEBUG
             static const bool s_enableValidationLayers = false;
         #else
@@ -66,10 +77,15 @@ namespace vp
             bool PickPhysicalDevice();
             bool CreateLogicalDevice();
             bool CreateSurface();
-            bool IsDeviceSuitable(VkPhysicalDevice device);            
+            bool CreateSwapChain();
+            bool IsDeviceSuitable(VkPhysicalDevice device);
+            bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
             std::vector<const char*> GetRequiredExtensions();
             QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
-
+            SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
+            VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+            VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
+            VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
             bool SetupDebugCallback();            
             void DestroyDebugReportCallbackEXT();
             VkResult CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo);
