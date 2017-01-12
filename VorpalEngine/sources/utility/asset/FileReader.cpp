@@ -52,7 +52,7 @@ void FileReader::LazyAccess()
 
             //! This would work for file sizes up to size_t
             in.seekg(0, std::ios_base::end);
-            size_t size = static_cast<size_t>(std::min<std::ifstream::pos_type>(in.tellg(), SIZE_MAX));
+            size_t size = in.tellg();
             in.seekg(0, std::ios_base::beg);
 
             m_buffer.clear();
