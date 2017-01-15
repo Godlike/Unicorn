@@ -122,7 +122,9 @@ bool Renderer::Init()
         || !CreateImageViews()
         || !CreateRenderPass()
         || !CreateGraphicsPipeline()
-        || !CreateFramebuffers())
+        || !CreateFramebuffers()
+        || !CreateCommandPool()
+        || !CreateCommandBuffers())
     return false;
 
     m_isInitialized = true;
@@ -155,6 +157,12 @@ void Renderer::Deinit()
     {
         vkDestroyPipelineLayout(m_vkLogicalDevice, m_pipelineLayout, nullptr);
         m_pipelineLayout = VK_NULL_HANDLE;
+    }
+
+    if(m_commandPool != VK_NULL_HANDLE)
+    {
+        vkDestroyCommandPool(m_vkLogicalDevice, m_commandPool, nullptr);
+        m_commandPool = VK_NULL_HANDLE;
     }
 
     if(m_renderPass != VK_NULL_HANDLE)
@@ -738,6 +746,69 @@ bool Renderer::CreateFramebuffers()
 
         if (vkCreateFramebuffer(m_vkLogicalDevice, &framebufferInfo, nullptr, &m_swapChainFramebuffers[i]) != VK_SUCCESS) {
             LOG_ERROR("failed to create framebuffer!");
+            return false;
+        }
+    }
+    return true;
+}
+
+bool Renderer::CreateCommandPool()
+{
+    QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(m_vkPhysicalDevice);
+
+    VkCommandPoolCreateInfo poolInfo = {};
+    poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
+    poolInfo.flags = 0;
+
+    if (vkCreateCommandPool(m_vkLogicalDevice, &poolInfo, nullptr, &m_commandPool) != VK_SUCCESS) {
+        LOG_ERROR("Failed to create command pool!");
+        return false;
+    }
+
+    return true;
+}
+
+bool Renderer::CreateCommandBuffers()
+{
+    m_commandBuffers.resize(m_swapChainFramebuffers.size());
+
+    VkCommandBufferAllocateInfo allocInfo = {};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.commandPool = m_commandPool;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandBufferCount = (uint32_t) m_commandBuffers.size();
+
+    if (vkAllocateCommandBuffers(m_vkLogicalDevice, &allocInfo, m_commandBuffers.data()) != VK_SUCCESS) {
+        LOG_ERROR("Failed to allocate command buffers!");
+        return false;
+    }
+
+    for (size_t i = 0; i < m_commandBuffers.size(); i++) {
+        VkCommandBufferBeginInfo beginInfo = {};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+
+        vkBeginCommandBuffer(m_commandBuffers[i], &beginInfo);
+
+        VkRenderPassBeginInfo renderPassInfo = {};
+        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        renderPassInfo.renderPass = m_renderPass;
+        renderPassInfo.framebuffer = m_swapChainFramebuffers[i];
+        renderPassInfo.renderArea.offset = {0, 0};
+        renderPassInfo.renderArea.extent = m_swapChainExtent;
+
+        VkClearValue clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
+        renderPassInfo.clearValueCount = 1;
+        renderPassInfo.pClearValues = &clearColor;
+
+        vkCmdBeginRenderPass(m_commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+        vkCmdBindPipeline(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
+        vkCmdDraw(m_commandBuffers[i], 3, 1, 0, 0);
+        vkCmdEndRenderPass(m_commandBuffers[i]);
+
+        if (vkEndCommandBuffer(m_commandBuffers[i]) != VK_SUCCESS) {
+            LOG_ERROR("Failed to record command buffer!");
             return false;
         }
     }

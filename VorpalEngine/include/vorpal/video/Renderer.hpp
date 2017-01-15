@@ -64,6 +64,7 @@ namespace vp
             VkPipelineLayout m_pipelineLayout;
             VkPipeline m_graphicsPipeline;
             VkRenderPass m_renderPass;
+            VkCommandPool m_commandPool;
             std::vector<const char*> m_validationLayers;
             std::vector<const char*> m_deviceExtensions;
             VkDebugReportCallbackEXT m_vulkanCallback;
@@ -71,6 +72,7 @@ namespace vp
             std::vector<VkImage> m_swapChainImages;
             std::vector<VkImageView> m_swapChainImageViews;
             std::vector<VkFramebuffer> m_swapChainFramebuffers;
+            std::vector<VkCommandBuffer> m_commandBuffers;
         #ifdef NDEBUG
             static const bool s_enableValidationLayers = false;
         #else
@@ -87,6 +89,8 @@ namespace vp
             bool CreateRenderPass();
             bool CreateGraphicsPipeline();
             bool CreateFramebuffers();
+            bool CreateCommandPool();
+            bool CreateCommandBuffers();
             bool CreateShaderModule(const std::vector<char>& code, VkShaderModule &shaderModule);
             bool IsDeviceSuitable(VkPhysicalDevice device);
             bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
