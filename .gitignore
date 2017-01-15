@@ -1,4 +1,5 @@
 *.kdev4
+*.spv
 *~
 *.autosave
 *.a
@@ -77,3 +78,4 @@ Thumbs.db
 cmake-build-debug/
 lib/
 *.lnk
+*.log

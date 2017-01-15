@@ -1,8 +1,7 @@
 #include <vorpal/VorpalEngine.hpp>
-
 #include <vorpal/utility/Logger.hpp>
-
 #include <vorpal/video/Graphics.hpp>
+#include <vorpal/utility/asset/SimpleStorage.hpp>
 
 namespace vp
 {
@@ -22,7 +21,7 @@ VorpalEngine::~VorpalEngine()
 bool VorpalEngine::Init()
 {
     if (m_isInitialized) return false;
-
+    vp::utility::asset::SimpleStorage::Instance();
     LOG_INFO("Engine initialization started.");
 
     m_pGraphics = new video::Graphics();
@@ -51,10 +50,8 @@ void VorpalEngine::Deinit()
 
         m_pGraphics = nullptr;
     }
-
-    m_isInitialized = false;
-
-    LOG_INFO("Engine shutdown correctly.");
+    if(!m_isInitialized) LOG_INFO("Engine shutdown correctly.");
+    m_isInitialized = false;    
 }
 
 void VorpalEngine::Run()

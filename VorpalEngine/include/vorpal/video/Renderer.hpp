@@ -61,12 +61,13 @@ namespace vp
             VkSurfaceKHR m_vkWindowSurface;
             VkFormat m_swapChainImageFormat;
             VkExtent2D m_swapChainExtent;
+            VkPipelineLayout m_pipelineLayout;
             std::vector<const char*> m_validationLayers;
             std::vector<const char*> m_deviceExtensions;
             VkDebugReportCallbackEXT m_vulkanCallback;
             std::string m_gpuName;
             std::vector<VkImage> m_swapChainImages;
-            std::vector<VkImageView> m_swapChainImageViews; //TODO: delete
+            std::vector<VkImageView> m_swapChainImageViews; //TODO: delete in deinit
         #ifdef NDEBUG
             static const bool s_enableValidationLayers = false;
         #else
@@ -80,6 +81,8 @@ namespace vp
             bool CreateSurface();
             bool CreateSwapChain();
             bool CreateImageViews();
+            bool CreateGraphicsPipeline();
+            bool CreateShaderModule(const std::vector<char>& code, VkShaderModule &shaderModule);
             bool IsDeviceSuitable(VkPhysicalDevice device);
             bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
             std::vector<const char*> GetRequiredExtensions();
