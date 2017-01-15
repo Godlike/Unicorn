@@ -62,6 +62,8 @@ namespace vp
             VkFormat m_swapChainImageFormat;
             VkExtent2D m_swapChainExtent;
             VkPipelineLayout m_pipelineLayout;
+            VkPipeline m_graphicsPipeline;
+            VkRenderPass m_renderPass;
             std::vector<const char*> m_validationLayers;
             std::vector<const char*> m_deviceExtensions;
             VkDebugReportCallbackEXT m_vulkanCallback;
@@ -81,6 +83,7 @@ namespace vp
             bool CreateSurface();
             bool CreateSwapChain();
             bool CreateImageViews();
+            bool CreateRenderPass();
             bool CreateGraphicsPipeline();
             bool CreateShaderModule(const std::vector<char>& code, VkShaderModule &shaderModule);
             bool IsDeviceSuitable(VkPhysicalDevice device);
