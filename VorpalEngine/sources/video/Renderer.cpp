@@ -124,7 +124,8 @@ bool Renderer::Init()
         || !CreateGraphicsPipeline()
         || !CreateFramebuffers()
         || !CreateCommandPool()
-        || !CreateCommandBuffers())
+        || !CreateCommandBuffers()
+        || !CreateSemaphores())
     return false;
 
     m_isInitialized = true;
@@ -153,7 +154,19 @@ void Renderer::Deinit()
     }
     m_swapChainFramebuffers.clear();
 
-    if(m_pipelineLayout != VK_NULL_HANDLE )
+    if(m_imageAvailableSemaphore != VK_NULL_HANDLE)
+    {
+        vkDestroySemaphore(m_vkLogicalDevice, m_imageAvailableSemaphore, nullptr);
+        m_imageAvailableSemaphore = VK_NULL_HANDLE;
+    }
+
+    if(m_renderFinishedSemaphore != VK_NULL_HANDLE)
+    {
+        vkDestroySemaphore(m_vkLogicalDevice, m_renderFinishedSemaphore, nullptr);
+        m_renderFinishedSemaphore = VK_NULL_HANDLE;
+    }
+
+    if(m_pipelineLayout != VK_NULL_HANDLE)
     {
         vkDestroyPipelineLayout(m_vkLogicalDevice, m_pipelineLayout, nullptr);
         m_pipelineLayout = VK_NULL_HANDLE;
@@ -330,7 +343,10 @@ void Renderer::Render()
         while (!glfwWindowShouldClose(m_pWindow))
         {
             glfwPollEvents();
+            if(!Frame())
+                break;
         }
+        vkDeviceWaitIdle(m_vkLogicalDevice); // wait for async tasks
     }
 }
 
@@ -815,6 +831,18 @@ bool Renderer::CreateCommandBuffers()
     return true;
 }
 
+bool Renderer::CreateSemaphores()
+{
+    VkSemaphoreCreateInfo semaphoreInfo = {};
+    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+    if (vkCreateSemaphore(m_vkLogicalDevice, &semaphoreInfo, nullptr, &m_imageAvailableSemaphore) != VK_SUCCESS ||
+        vkCreateSemaphore(m_vkLogicalDevice, &semaphoreInfo, nullptr, &m_renderFinishedSemaphore) != VK_SUCCESS) {
+         LOG_ERROR("Failed to create semaphores!");
+         return false;
+    }
+    return true;
+}
+
 bool Renderer::CreateShaderModule(const std::vector<char> &code, VkShaderModule& shaderModule)
 {
     VkShaderModuleCreateInfo createInfo = {};
@@ -867,6 +895,46 @@ bool Renderer::CheckDeviceExtensionSupport(VkPhysicalDevice device)
     }
 
     return requiredExtensions.empty();
+}
+
+bool Renderer::Frame()
+{
+    uint32_t imageIndex;
+    vkAcquireNextImageKHR(m_vkLogicalDevice, m_vkSwapChain, std::numeric_limits<uint64_t>::max(),
+                          m_imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+    VkSubmitInfo submitInfo = {};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+
+    VkSemaphore waitSemaphores[] = { m_imageAvailableSemaphore };
+    VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+    submitInfo.waitSemaphoreCount = 1;
+    submitInfo.pWaitSemaphores = waitSemaphores;
+    submitInfo.pWaitDstStageMask = waitStages;
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &m_commandBuffers[imageIndex];
+
+    VkSemaphore signalSemaphores[] = { m_renderFinishedSemaphore };
+    submitInfo.signalSemaphoreCount = 1;
+    submitInfo.pSignalSemaphores = signalSemaphores;
+
+    if (vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS) {
+        LOG_ERROR("failed to submit draw command buffer!");
+        return false;
+    }
+    VkPresentInfoKHR presentInfo = {};
+    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores = signalSemaphores;
+
+    VkSwapchainKHR swapChains[] = {m_vkSwapChain};
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = swapChains;
+
+    presentInfo.pImageIndices = &imageIndex;
+
+    vkQueuePresentKHR(m_presentQueue, &presentInfo);
+    return true;
 }
 
 bool Renderer::CheckValidationLayerSupport() const

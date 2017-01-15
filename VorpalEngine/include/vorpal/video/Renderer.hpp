@@ -65,6 +65,8 @@ namespace vp
             VkPipeline m_graphicsPipeline;
             VkRenderPass m_renderPass;
             VkCommandPool m_commandPool;
+            VkSemaphore m_imageAvailableSemaphore;
+            VkSemaphore m_renderFinishedSemaphore;
             std::vector<const char*> m_validationLayers;
             std::vector<const char*> m_deviceExtensions;
             VkDebugReportCallbackEXT m_vulkanCallback;
@@ -91,9 +93,11 @@ namespace vp
             bool CreateFramebuffers();
             bool CreateCommandPool();
             bool CreateCommandBuffers();
+            bool CreateSemaphores();
             bool CreateShaderModule(const std::vector<char>& code, VkShaderModule &shaderModule);
             bool IsDeviceSuitable(VkPhysicalDevice device);
             bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
+            bool Frame();
             std::vector<const char*> GetRequiredExtensions();
             QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
             SwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
