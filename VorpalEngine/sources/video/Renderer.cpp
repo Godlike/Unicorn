@@ -121,7 +121,8 @@ bool Renderer::Init()
         || !CreateSwapChain()
         || !CreateImageViews()
         || !CreateRenderPass()
-        || !CreateGraphicsPipeline())
+        || !CreateGraphicsPipeline()
+        || !CreateFramebuffers())
     return false;
 
     m_isInitialized = true;
@@ -143,6 +144,12 @@ void Renderer::Deinit()
         vkDestroyImageView(m_vkLogicalDevice, view, nullptr);
     }
     m_swapChainImageViews.clear();
+
+    for(VkFramebuffer& framebuffer: m_swapChainFramebuffers)
+    {
+        vkDestroyFramebuffer(m_vkLogicalDevice, framebuffer, nullptr);
+    }
+    m_swapChainFramebuffers.clear();
 
     if(m_pipelineLayout != VK_NULL_HANDLE )
     {
@@ -709,6 +716,31 @@ bool Renderer::CreateGraphicsPipeline()
     vkDestroyShaderModule(m_vkLogicalDevice, vertShaderModule, nullptr);
     vkDestroyShaderModule(m_vkLogicalDevice, fragShaderModule, nullptr);
 
+    return true;
+}
+
+bool Renderer::CreateFramebuffers()
+{
+    m_swapChainFramebuffers.resize(m_swapChainImageViews.size());
+    for (size_t i = 0; i < m_swapChainImageViews.size(); i++) {
+        VkImageView attachments[] = {
+            m_swapChainImageViews[i]
+        };
+
+        VkFramebufferCreateInfo framebufferInfo = {};
+        framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+        framebufferInfo.renderPass = m_renderPass;
+        framebufferInfo.attachmentCount = 1;
+        framebufferInfo.pAttachments = attachments;
+        framebufferInfo.width = m_swapChainExtent.width;
+        framebufferInfo.height = m_swapChainExtent.height;
+        framebufferInfo.layers = 1;
+
+        if (vkCreateFramebuffer(m_vkLogicalDevice, &framebufferInfo, nullptr, &m_swapChainFramebuffers[i]) != VK_SUCCESS) {
+            LOG_ERROR("failed to create framebuffer!");
+            return false;
+        }
+    }
     return true;
 }
 
