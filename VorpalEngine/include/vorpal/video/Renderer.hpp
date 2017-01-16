@@ -97,7 +97,7 @@ namespace vp
             bool CreateCommandPool();
             bool CreateCommandBuffers();
             bool CreateSemaphores();
-            bool CreateShaderModule(const std::vector<char>& code, VkShaderModule &shaderModule);
+            bool CreateShaderModule(const std::vector<uint8_t>& code, VkShaderModule &shaderModule);
             bool IsDeviceSuitable(VkPhysicalDevice device);
             bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
             bool Frame();

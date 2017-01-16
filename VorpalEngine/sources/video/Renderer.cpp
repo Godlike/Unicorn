@@ -8,22 +8,6 @@
 #include <set>
 #include <algorithm>
 
-//@todo temp until Dmitry will fix load code
-#include <fstream>
-static std::vector<char> readFile(const std::string& filename)
-{
-   std::ifstream file(filename, std::ios::ate | std::ios::binary);
-   if (!file.is_open()) {
-       throw std::runtime_error("Failed to open file!");
-   }
-   size_t fileSize = (size_t) file.tellg();
-   std::vector<char> buffer(fileSize);
-   file.seekg(0);
-   file.read(buffer.data(), fileSize);
-   file.close();
-   return buffer;
-}
-
 namespace vp
 {
 namespace video
@@ -655,22 +639,19 @@ bool Renderer::CreateGraphicsPipeline()
         m_graphicsPipeline = VK_NULL_HANDLE;
     }
 
-    //TODO: real loading code.
-    //    vp::utility::asset::SimpleStorage& storage = vp::utility::asset::SimpleStorage::Instance();
-    //    vp::utility::asset::Handler simpleVertShaderHandler = storage.Get("data/shaders/vert.spv");
-    //    vp::utility::asset::Handler simpleFragShaderHandler = storage.Get("data/shaders/frag.spv");
-    //    if(!simpleVertShaderHandler.IsValid()
-    //            || !simpleFragShaderHandler.IsValid()) {
-    //        LOG_ERROR("Can't find shaders!");
-    //        return false;
-    //    }
+    vp::utility::asset::SimpleStorage& storage = vp::utility::asset::SimpleStorage::Instance();
+    vp::utility::asset::Handler simpleVertShaderHandler = storage.Get("data/shaders/vert.spv");
+    vp::utility::asset::Handler simpleFragShaderHandler = storage.Get("data/shaders/frag.spv");
+    if(!simpleVertShaderHandler.IsValid()
+            || !simpleFragShaderHandler.IsValid()) {
+        LOG_ERROR("Can't find shaders!");
+        return false;
+    }
 
-    auto vertShaderCode = readFile("data/shaders/vert.spv");
-    auto fragShaderCode = readFile("data/shaders/frag.spv");
     VkShaderModule vertShaderModule = {};
     VkShaderModule fragShaderModule = {};
-    bool shadersCreatedFailed = !CreateShaderModule(vertShaderCode, vertShaderModule)
-                       || !CreateShaderModule(fragShaderCode, fragShaderModule);
+    bool shadersCreatedFailed = !CreateShaderModule(simpleVertShaderHandler.GetContent().GetBuffer(), vertShaderModule)
+                       || !CreateShaderModule(simpleFragShaderHandler.GetContent().GetBuffer(), fragShaderModule);
 
     VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
     vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -910,7 +891,7 @@ bool Renderer::CreateSemaphores()
     return true;
 }
 
-bool Renderer::CreateShaderModule(const std::vector<char> &code, VkShaderModule& shaderModule)
+bool Renderer::CreateShaderModule(const std::vector<uint8_t>& code, VkShaderModule& shaderModule)
 {
     VkShaderModuleCreateInfo createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;

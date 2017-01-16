@@ -106,7 +106,4 @@ add_library(${VORPAL_ENGINE_LIB}
     sources/VorpalEngine.cpp
 )
 
-target_link_libraries(${VORPAL_ENGINE_LIB} ${GLFW_LIB})
-if (UNIX)
-    target_link_libraries(${VORPAL_ENGINE_LIB} ${VULKAN_LIBRARY})
-endif ()
+target_link_libraries(${VORPAL_ENGINE_LIB} ${GLFW_LIB} ${VULKAN_LIBRARY})
