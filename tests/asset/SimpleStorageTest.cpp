@@ -31,16 +31,20 @@ int main(int argc, char *argv[])
 
     vp::utility::asset::SimpleStorage& storage = vp::utility::asset::SimpleStorage::Instance();
 
-    printf("Request sync /tmp/derp\n");
-    vp::utility::asset::Handler derpHandler = storage.Get("/tmp/derp");
+    // Files should be located in WORKING_DIRECTORY of the test
+    const std::string testFile1( "derp.txt" );
+    const std::string testFile2( "herp.txt" );
 
-    printf("Request sync /tmp/derp\n");
-    vp::utility::asset::Handler derp2Handler = storage.Get("/tmp/derp");
+    printf("Request sync %s\n", testFile1.c_str());
+    vp::utility::asset::Handler derpHandler = storage.Get(testFile1);
 
-    printf("Request sync /tmp/herp\n");
-    vp::utility::asset::Handler herpHandler = storage.Get("/tmp/herp");
+    printf("Request sync %s\n", testFile1.c_str());
+    vp::utility::asset::Handler derp2Handler = storage.Get(testFile1);
 
-    printf("/tmp/derp handlers are equal: %d\n", derpHandler == derp2Handler);
+    printf("Request sync %s\n", testFile2.c_str());
+    vp::utility::asset::Handler herpHandler = storage.Get(testFile2);
+
+    printf("%s handlers are equal: %d\n", testFile1.c_str(), derpHandler == derp2Handler);
     if (derpHandler != derp2Handler) return EXIT_FAILURE;
 
     PrintHandlerContent(derpHandler);
