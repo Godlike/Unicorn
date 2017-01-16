@@ -8,7 +8,7 @@
 #include <set>
 #include <algorithm>
 
-//TODO temp until Dmitry will fix load code
+//@todo temp until Dmitry will fix load code
 #include <fstream>
 static std::vector<char> readFile(const std::string& filename)
 {
@@ -23,7 +23,6 @@ static std::vector<char> readFile(const std::string& filename)
    file.close();
    return buffer;
 }
-// TODO still temp
 
 namespace vp
 {
@@ -31,13 +30,13 @@ namespace video
 {
 
 static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
-                                                    VkDebugReportObjectTypeEXT objType, 
-                                                    uint64_t obj, 
-                                                    size_t location, 
-                                                    int32_t code, 
-                                                    const char* layerPrefix, 
-                                                    const char* msg, 
-                                                    void* userData)
+                                                        VkDebugReportObjectTypeEXT objType,
+                                                        uint64_t obj,
+                                                        size_t location,
+                                                        int32_t code,
+                                                        const char* layerPrefix,
+                                                        const char* msg,
+                                                        void* userData)
 {
     // Error that may result in undefined behaviour
     if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
@@ -240,7 +239,7 @@ QueueFamilyIndices Renderer::FindQueueFamilies(VkPhysicalDevice device)
         if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
             indices.graphicsFamily = i;
         }
-        //TODO optimize?
+        //@todo optimize?
         VkBool32 presentSupport = false;
         vkGetPhysicalDeviceSurfaceSupportKHR(device, i, m_vkWindowSurface, &presentSupport);
 
@@ -251,7 +250,7 @@ QueueFamilyIndices Renderer::FindQueueFamilies(VkPhysicalDevice device)
         if (indices.isComplete()) {
             break;
         }
-        i++;
+        ++i;
     }
 
     return indices;
@@ -283,25 +282,25 @@ SwapChainSupportDetails Renderer::QuerySwapChainSupport(VkPhysicalDevice device)
 VkSurfaceFormatKHR Renderer::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats)
 {
     if (availableFormats.size() == 1 && availableFormats[0].format == VK_FORMAT_UNDEFINED) {
-           return {VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR};
-       }
+        return {VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR};
+    }
 
-       for (const auto& availableFormat : availableFormats) {
-           if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
-               return availableFormat;
-           }
+    for (const auto& availableFormat : availableFormats) {
+       if (availableFormat.format == VK_FORMAT_B8G8R8A8_UNORM && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+           return availableFormat;
        }
+    }
 
-       return availableFormats[0];
+    return availableFormats[0];
 }
 
 VkPresentModeKHR Renderer::ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes)
 {
     for (const auto& availablePresentMode : availablePresentModes) {
-           if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
-               return availablePresentMode;
-           }
+       if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
+           return availablePresentMode;
        }
+    }
     return VK_PRESENT_MODE_FIFO_KHR;
 }
 
@@ -670,7 +669,7 @@ bool Renderer::CreateGraphicsPipeline()
     auto fragShaderCode = readFile("data/shaders/frag.spv");
     VkShaderModule vertShaderModule = {};
     VkShaderModule fragShaderModule = {};
-    bool shadersCreated = !CreateShaderModule(vertShaderCode, vertShaderModule)
+    bool shadersCreatedFailed = !CreateShaderModule(vertShaderCode, vertShaderModule)
                        || !CreateShaderModule(fragShaderCode, fragShaderModule);
 
     VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
@@ -770,7 +769,7 @@ bool Renderer::CreateGraphicsPipeline()
         return false;
     }
 
-    if(shadersCreated) {
+    if(shadersCreatedFailed) {
         LOG_ERROR("Can't create shader module!");
         return  false;
     }
@@ -945,8 +944,9 @@ bool Renderer::IsDeviceSuitable(VkPhysicalDevice device)
         LOG_INFO("Picked as main GPU : %s", deviceProperties.deviceName);
         m_gpuName = deviceProperties.deviceName;
         return true;
-    } else
+    } else {
         return false;
+    }
 }
 
 bool Renderer::CheckDeviceExtensionSupport(VkPhysicalDevice device)
@@ -1061,8 +1061,7 @@ std::vector<const char*> Renderer::GetRequiredExtensions()
 {    
     std::vector<const char*> m_extensions;
     unsigned int glfwExtensionCount = 0;
-    const char** glfwExtensions;
-    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+    const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
     for (unsigned int i = 0; i < glfwExtensionCount; i++)
     {

@@ -52,7 +52,6 @@ include(stb)
 
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
     find_library(Vulkan REQUIRED)
     include_directories(
         ${VULKAN_INCLUDE_DIR}
@@ -107,7 +106,7 @@ add_library(${VORPAL_ENGINE_LIB}
     sources/VorpalEngine.cpp
 )
 
-target_link_libraries(${VORPAL_ENGINE_LIB} ${GLFW_LIB} ${VULKAN_LIBRARY})
+target_link_libraries(${VORPAL_ENGINE_LIB} ${GLFW_LIB})
 if (UNIX)
     target_link_libraries(${VORPAL_ENGINE_LIB} ${VULKAN_LIBRARY})
 endif ()
