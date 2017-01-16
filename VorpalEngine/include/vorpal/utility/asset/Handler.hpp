@@ -1,3 +1,8 @@
+/*
+* Copyright (C) 2017 by 73s studio
+* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+*/
+
 #ifndef VORPAL_UTILITY_ASSET_HANDLER_HPP
 #define VORPAL_UTILITY_ASSET_HANDLER_HPP
 
