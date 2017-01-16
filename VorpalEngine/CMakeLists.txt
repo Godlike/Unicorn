@@ -50,7 +50,13 @@ include(loguru)
 ## STB
 include(stb)
 
-find_library(Vulkan REQUIRED)
+
+if (UNIX)
+    find_library(Vulkan REQUIRED)
+    include_directories(
+        ${VULKAN_INCLUDE_DIR}
+    )
+endif ()
 
 include_directories(
     ${VORPAL_ENGINE_INCLUDE_DIR}
