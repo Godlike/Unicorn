@@ -56,7 +56,7 @@ void FileReader::LazyAccess()
             in.seekg(0, std::ios_base::beg);
 
             m_buffer.clear();
-            m_buffer.reserve(size);
+            m_buffer.resize(size);
 
             //! Safe to use reinterpret since char and unsigned char occupy same amount of storage
             if (in.read(reinterpret_cast<char*>(m_buffer.data()), size))

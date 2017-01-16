@@ -34,19 +34,24 @@ int main(int argc, char *argv[])
     storage.InitializeWorkers(10);
     storage.InitializeWorkers(1);
 
-    printf("Request async /tmp/derp\n");
-    std::shared_future<vp::utility::asset::Handler> derp2Handler = storage.GetAsync("/tmp/derp");
+    // Files should be located in WORKING_DIRECTORY of the test
+    const std::string testFile1( "derp.txt" );
+    const std::string testFile2( "derpiness.txt" );
+    const std::string testFile3( "herp.txt" );
 
-    printf("Request async /tmp/derpiness with priority 200\n");
-    storage.GetAsync("/tmp/derpiness", 200);
+    printf("Request async %s\n", testFile1.c_str());
+    std::shared_future<vp::utility::asset::Handler> derp2Handler = storage.GetAsync(testFile1);
 
-    printf("Request sync /tmp/derp\n");
-    vp::utility::asset::Handler derpHandler = storage.Get("/tmp/derp");
+    printf("Request async %s with priority 200\n", testFile2.c_str());
+    storage.GetAsync(testFile2, 200);
 
-    printf("Request sync /tmp/herp\n");
-    vp::utility::asset::Handler herpHandler = storage.Get("/tmp/herp");
+    printf("Request sync %s\n", testFile1.c_str());
+    vp::utility::asset::Handler derpHandler = storage.Get(testFile1);
 
-    printf("/tmp/derp handlers are equal: %d\n", derpHandler == derp2Handler.get());
+    printf("Request sync %s\n", testFile3.c_str());
+    vp::utility::asset::Handler herpHandler = storage.Get(testFile3.c_str());
+
+    printf("%s handlers are equal: %d\n", testFile1.c_str(), derpHandler == derp2Handler.get());
     if (derpHandler != derp2Handler.get()) return EXIT_FAILURE;
 
     PrintHandlerContent(derpHandler);
