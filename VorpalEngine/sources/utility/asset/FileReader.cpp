@@ -59,7 +59,7 @@ void FileReader::LazyAccess()
             m_buffer.reserve(size);
 
             //! Safe to use reinterpret since char and unsigned char occupy same amount of storage
-            if (in.read(reinterpret_cast<char *>(m_buffer.data()), size))
+            if (in.read(reinterpret_cast<char*>(m_buffer.data()), size))
             {
                 m_flags |= Flags::eof;
             }

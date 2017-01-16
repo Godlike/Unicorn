@@ -6,7 +6,6 @@
 
 #include <cstdint>
 #include <vector>
-#include <functional>
 
 struct GLFWwindow;
 
@@ -14,16 +13,19 @@ namespace vp
 {
     namespace video
     {
-        struct QueueFamilyIndices {
+        struct QueueFamilyIndices
+        {
             int graphicsFamily = -1;
             int presentFamily = -1;
 
-            bool isComplete() {
+            bool isComplete()
+            {
                  return graphicsFamily >= 0 && presentFamily >= 0;
             }
         };
 
-        struct SwapChainSupportDetails {
+        struct SwapChainSupportDetails
+        {
             VkSurfaceCapabilitiesKHR capabilities;
             std::vector<VkSurfaceFormatKHR> formats;
             std::vector<VkPresentModeKHR> presentModes;

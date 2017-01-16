@@ -8,23 +8,19 @@
 #include <set>
 #include <algorithm>
 
-//TODO temp until Dmitry will fix his code
+//TODO temp until Dmitry will fix load code
 #include <fstream>
-static std::vector<char> readFile(const std::string& filename) {
+static std::vector<char> readFile(const std::string& filename)
+{
    std::ifstream file(filename, std::ios::ate | std::ios::binary);
-
    if (!file.is_open()) {
-       throw std::runtime_error("failed to open file!");
+       throw std::runtime_error("Failed to open file!");
    }
-
    size_t fileSize = (size_t) file.tellg();
    std::vector<char> buffer(fileSize);
-
    file.seekg(0);
    file.read(buffer.data(), fileSize);
-
    file.close();
-
    return buffer;
 }
 // TODO still temp
@@ -41,7 +37,8 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
                                                     int32_t code, 
                                                     const char* layerPrefix, 
                                                     const char* msg, 
-                                                    void* userData) {
+                                                    void* userData)
+{
     // Error that may result in undefined behaviour
     if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
     {
@@ -325,7 +322,8 @@ VkExtent2D Renderer::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabiliti
     }
 }
 
-VkResult Renderer::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo) {
+VkResult Renderer::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo)
+{
     auto func = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(vkGetInstanceProcAddr(m_vkInstance, "vkCreateDebugReportCallbackEXT"));
     if (func != nullptr) {
         return func(m_vkInstance, pCreateInfo, nullptr, &m_vulkanCallback);
@@ -335,7 +333,8 @@ VkResult Renderer::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreat
     }
 }
 
-void Renderer::DestroyDebugReportCallbackEXT() {
+void Renderer::DestroyDebugReportCallbackEXT()
+{
     auto func = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(vkGetInstanceProcAddr(m_vkInstance, "vkDestroyDebugReportCallbackEXT"));
     if (func != nullptr) {
         func(m_vkInstance, m_vulkanCallback, nullptr);
@@ -361,7 +360,8 @@ void Renderer::Render()
     }
 }
 
-void Renderer::onWindowResized(GLFWwindow *window, int width, int height) {
+void Renderer::onWindowResized(GLFWwindow *window, int width, int height)
+{
     if (width == 0 || height == 0) return;
     Renderer* renderer = reinterpret_cast<Renderer*>(glfwGetWindowUserPointer(window));
     if(!renderer->RecreateSwapChain())
@@ -435,7 +435,7 @@ bool Renderer::PickPhysicalDevice()
     vkEnumeratePhysicalDevices(m_vkInstance, &deviceCount, nullptr);
 
     if (deviceCount == 0) {
-        LOG_ERROR("failed to find GPUs with Vulkan support!");
+        LOG_ERROR("Failed to find GPUs with Vulkan support!");
         return false;
     }
     std::vector<VkPhysicalDevice> devices(deviceCount);
@@ -449,7 +449,7 @@ bool Renderer::PickPhysicalDevice()
     }
 
     if (m_vkPhysicalDevice == VK_NULL_HANDLE) {
-        LOG_ERROR("failed to find a suitable GPU!");
+        LOG_ERROR("Failed to find a suitable GPU!");
         return false;
     }
 
@@ -645,14 +645,6 @@ bool Renderer::CreateRenderPass()
 
 bool Renderer::CreateGraphicsPipeline()
 {
-//    vp::utility::asset::SimpleStorage& storage = vp::utility::asset::SimpleStorage::Instance();
-//    vp::utility::asset::Handler simpleVertShaderHandler = storage.Get("data/shaders/vert.spv");
-//    vp::utility::asset::Handler simpleFragShaderHandler = storage.Get("data/shaders/frag.spv");
-//    if(!simpleVertShaderHandler.IsValid()
-//            || !simpleFragShaderHandler.IsValid()) {
-//        LOG_ERROR("Can't find shaders!");
-//        return false;
-//    }
     if(m_pipelineLayout != VK_NULL_HANDLE)
     {
         vkDestroyPipelineLayout(m_vkLogicalDevice, m_pipelineLayout, nullptr);
@@ -663,6 +655,16 @@ bool Renderer::CreateGraphicsPipeline()
         vkDestroyPipeline(m_vkLogicalDevice, m_graphicsPipeline,nullptr);
         m_graphicsPipeline = VK_NULL_HANDLE;
     }
+
+    //TODO: real loading code.
+    //    vp::utility::asset::SimpleStorage& storage = vp::utility::asset::SimpleStorage::Instance();
+    //    vp::utility::asset::Handler simpleVertShaderHandler = storage.Get("data/shaders/vert.spv");
+    //    vp::utility::asset::Handler simpleFragShaderHandler = storage.Get("data/shaders/frag.spv");
+    //    if(!simpleVertShaderHandler.IsValid()
+    //            || !simpleFragShaderHandler.IsValid()) {
+    //        LOG_ERROR("Can't find shaders!");
+    //        return false;
+    //    }
 
     auto vertShaderCode = readFile("data/shaders/vert.spv");
     auto fragShaderCode = readFile("data/shaders/frag.spv");
@@ -697,7 +699,7 @@ bool Renderer::CreateGraphicsPipeline()
     inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
     inputAssembly.primitiveRestartEnable = VK_FALSE;
 
-    VkViewport viewport = {}; //TODO : if we will using Super Sampling. Need to rethink.
+    VkViewport viewport = {}; //TODO : if we will using super sampling. Need to rethink.
     viewport.x = 0.0f;
     viewport.y = 0.0f;
     viewport.width = static_cast<float>(m_swapChainExtent.width);
@@ -708,7 +710,6 @@ bool Renderer::CreateGraphicsPipeline()
     VkRect2D scissor = {};
     scissor.offset = {0, 0};
     scissor.extent = m_swapChainExtent;
-
 
     VkPipelineViewportStateCreateInfo viewportState = {};
     viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -923,7 +924,8 @@ bool Renderer::CreateShaderModule(const std::vector<char> &code, VkShaderModule&
     return true;
 }
 
-bool Renderer::IsDeviceSuitable(VkPhysicalDevice device) {
+bool Renderer::IsDeviceSuitable(VkPhysicalDevice device)
+{
     VkPhysicalDeviceProperties deviceProperties;
     VkPhysicalDeviceFeatures deviceFeatures;
     vkGetPhysicalDeviceProperties(device, &deviceProperties);
@@ -1088,6 +1090,5 @@ bool Renderer::SetupDebugCallback()
     createInfo.pfnCallback = DebugCallback;    
     return CreateDebugReportCallbackEXT(&createInfo) == VK_SUCCESS;
 }
-
 }
 }

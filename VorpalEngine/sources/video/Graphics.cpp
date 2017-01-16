@@ -62,7 +62,7 @@ void Graphics::Render()
 {
     if (m_isInitialized && m_pRenderer)
     {
-       m_pRenderer->Render();
+        m_pRenderer->Render();
     }
 }
 
