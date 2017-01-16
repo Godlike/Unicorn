@@ -66,7 +66,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
     // Usually not helpful in terms of API usage, but may help to debug layer and loader problems 
     if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
     {
-        LOG_DEBUG("VULKAN LAYER DEBUG: %s",  msg);
+        LOG_INFO("VULKAN LAYER DEBUG: %s",  msg);
     }
     return VK_FALSE;
 }
@@ -79,6 +79,10 @@ Renderer::Renderer()
     , m_validationLayers( {"VK_LAYER_LUNARG_standard_validation"} )
     , m_deviceExtensions( {VK_KHR_SWAPCHAIN_EXTENSION_NAME})
 {
+    m_vkSwapChain = VK_NULL_HANDLE;
+    m_renderPass = VK_NULL_HANDLE;
+    m_pipelineLayout = VK_NULL_HANDLE;
+    m_graphicsPipeline = VK_NULL_HANDLE;
 }
 
 Renderer::~Renderer()
@@ -97,7 +101,7 @@ bool Renderer::Init()
 
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     if (!glfwVulkanSupported())
     {
@@ -113,6 +117,8 @@ bool Renderer::Init()
         settings.GetApplicationHeight(),
         settings.GetApplicationName().c_str(),
         nullptr, nullptr);
+    glfwSetWindowUserPointer(m_pWindow, this);
+    glfwSetWindowSizeCallback(m_pWindow, onWindowResized);
     if (!CreateInstance()
         || !SetupDebugCallback()
         || !CreateSurface()
@@ -336,6 +342,11 @@ void Renderer::DestroyDebugReportCallbackEXT() {
     }
 }
 
+void Renderer::waitAsyncEnd()
+{
+    vkDeviceWaitIdle(m_vkLogicalDevice);
+}
+
 void Renderer::Render()
 {
     if (m_isInitialized && m_pWindow)
@@ -346,8 +357,28 @@ void Renderer::Render()
             if(!Frame())
                 break;
         }
-        vkDeviceWaitIdle(m_vkLogicalDevice); // wait for async tasks
+        waitAsyncEnd();
     }
+}
+
+void Renderer::onWindowResized(GLFWwindow *window, int width, int height) {
+    if (width == 0 || height == 0) return;
+    Renderer* renderer = reinterpret_cast<Renderer*>(glfwGetWindowUserPointer(window));
+    if(!renderer->RecreateSwapChain())
+        LOG_ERROR("Can't recreate swapchain!");
+}
+
+bool Renderer::RecreateSwapChain()
+{
+    waitAsyncEnd();
+
+    CreateSwapChain();
+    CreateImageViews();
+    CreateRenderPass();
+    CreateGraphicsPipeline();
+    CreateFramebuffers();
+    CreateCommandBuffers();
+    return true;
 }
 
 bool Renderer::CreateInstance()
@@ -517,9 +548,18 @@ bool Renderer::CreateSwapChain()
     createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
     createInfo.presentMode = presentMode;
     createInfo.clipped = VK_TRUE;
-    createInfo.oldSwapchain = VK_NULL_HANDLE;
-    if (vkCreateSwapchainKHR(m_vkLogicalDevice, &createInfo, nullptr, &m_vkSwapChain) != VK_SUCCESS) {
+    VkSwapchainKHR oldSwapChain = m_vkSwapChain;
+    if(oldSwapChain != VK_NULL_HANDLE)
+        createInfo.oldSwapchain = oldSwapChain;
+    VkSwapchainKHR newSwapChain;
+    if (vkCreateSwapchainKHR(m_vkLogicalDevice, &createInfo, nullptr, &newSwapChain) != VK_SUCCESS) {
         LOG_ERROR("Failed to create Vulkan swap chain!");
+    }
+    m_vkSwapChain = newSwapChain;
+
+    if(oldSwapChain != VK_NULL_HANDLE) {
+        vkDestroySwapchainKHR(m_vkLogicalDevice, oldSwapChain, nullptr);
+        oldSwapChain = VK_NULL_HANDLE;
     }
 
     vkGetSwapchainImagesKHR(m_vkLogicalDevice, m_vkSwapChain, &imageCount, nullptr);
@@ -534,32 +574,41 @@ bool Renderer::CreateSwapChain()
 
 bool Renderer::CreateImageViews()
 {
-     m_swapChainImageViews.resize(m_swapChainImages.size());
-     for (uint32_t i = 0; i < m_swapChainImages.size(); i++) {
-         VkImageViewCreateInfo createInfo = {};
-         createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-         createInfo.image = m_swapChainImages[i];
-         createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-         createInfo.format = m_swapChainImageFormat;
-         createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
-         createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
-         createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
-         createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
-         createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-         createInfo.subresourceRange.baseMipLevel = 0;
-         createInfo.subresourceRange.levelCount = 1;
-         createInfo.subresourceRange.baseArrayLayer = 0;
-         createInfo.subresourceRange.layerCount = 1;
-         if (vkCreateImageView(m_vkLogicalDevice, &createInfo, nullptr, &m_swapChainImageViews[i]) != VK_SUCCESS) {
-             LOG_ERROR("Failed to create image views!");
-             return false;
-         }
-     }
-     return true;
+    for(VkImageView& view: m_swapChainImageViews)
+    {
+        vkDestroyImageView(m_vkLogicalDevice, view, nullptr);
+    }
+    m_swapChainImageViews.resize(m_swapChainImages.size());
+    for (uint32_t i = 0; i < m_swapChainImages.size(); i++) {
+        VkImageViewCreateInfo createInfo = {};
+        createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        createInfo.image = m_swapChainImages[i];
+        createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        createInfo.format = m_swapChainImageFormat;
+        createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        createInfo.subresourceRange.baseMipLevel = 0;
+        createInfo.subresourceRange.levelCount = 1;
+        createInfo.subresourceRange.baseArrayLayer = 0;
+        createInfo.subresourceRange.layerCount = 1;
+        if (vkCreateImageView(m_vkLogicalDevice, &createInfo, nullptr, &m_swapChainImageViews[i]) != VK_SUCCESS) {
+            LOG_ERROR("Failed to create image views!");
+            return false;
+        }
+    }
+    return true;
 }
 
 bool Renderer::CreateRenderPass()
 {
+    if(m_renderPass != VK_NULL_HANDLE)
+    {
+        vkDestroyRenderPass(m_vkLogicalDevice, m_renderPass, nullptr);
+        m_renderPass = VK_NULL_HANDLE;
+    }
     VkAttachmentDescription colorAttachment = {};
     colorAttachment.format = m_swapChainImageFormat;
     colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -604,6 +653,17 @@ bool Renderer::CreateGraphicsPipeline()
 //        LOG_ERROR("Can't find shaders!");
 //        return false;
 //    }
+    if(m_pipelineLayout != VK_NULL_HANDLE)
+    {
+        vkDestroyPipelineLayout(m_vkLogicalDevice, m_pipelineLayout, nullptr);
+        m_pipelineLayout = VK_NULL_HANDLE;
+    }
+    if(m_graphicsPipeline != VK_NULL_HANDLE)
+    {
+        vkDestroyPipeline(m_vkLogicalDevice, m_graphicsPipeline,nullptr);
+        m_graphicsPipeline = VK_NULL_HANDLE;
+    }
+
     auto vertShaderCode = readFile("data/shaders/vert.spv");
     auto fragShaderCode = readFile("data/shaders/frag.spv");
     VkShaderModule vertShaderModule = {};
@@ -745,6 +805,10 @@ bool Renderer::CreateGraphicsPipeline()
 
 bool Renderer::CreateFramebuffers()
 {
+    for(VkFramebuffer& framebuffer: m_swapChainFramebuffers)
+    {
+        vkDestroyFramebuffer(m_vkLogicalDevice, framebuffer, nullptr);
+    }
     m_swapChainFramebuffers.resize(m_swapChainImageViews.size());
     for (size_t i = 0; i < m_swapChainImageViews.size(); i++) {
         VkImageView attachments[] = {
@@ -787,6 +851,9 @@ bool Renderer::CreateCommandPool()
 
 bool Renderer::CreateCommandBuffers()
 {
+    if (m_commandBuffers.size() > 0) {
+        vkFreeCommandBuffers(m_vkLogicalDevice, m_commandPool, m_commandBuffers.size(), m_commandBuffers.data());
+    }
     m_commandBuffers.resize(m_swapChainFramebuffers.size());
 
     VkCommandBufferAllocateInfo allocInfo = {};
@@ -900,8 +967,15 @@ bool Renderer::CheckDeviceExtensionSupport(VkPhysicalDevice device)
 bool Renderer::Frame()
 {
     uint32_t imageIndex;
-    vkAcquireNextImageKHR(m_vkLogicalDevice, m_vkSwapChain, std::numeric_limits<uint64_t>::max(),
+    VkResult result = vkAcquireNextImageKHR(m_vkLogicalDevice, m_vkSwapChain, std::numeric_limits<uint64_t>::max(),
                           m_imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex);
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        RecreateSwapChain();
+        return true;
+    } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+        LOG_ERROR("Failed to acquire swap chain image!");
+        return false;
+    }
     VkSubmitInfo submitInfo = {};
     submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
@@ -933,7 +1007,14 @@ bool Renderer::Frame()
 
     presentInfo.pImageIndices = &imageIndex;
 
-    vkQueuePresentKHR(m_presentQueue, &presentInfo);
+    result = vkQueuePresentKHR(m_presentQueue, &presentInfo);
+    if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        RecreateSwapChain();
+        return true;
+    } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+        LOG_ERROR("Failed to acquire swap chain image!");
+        return false;
+    }
     return true;
 }
 

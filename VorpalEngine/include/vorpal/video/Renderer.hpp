@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <functional>
 
 struct GLFWwindow;
 
@@ -13,7 +14,6 @@ namespace vp
 {
     namespace video
     {
-
         struct QueueFamilyIndices {
             int graphicsFamily = -1;
             int presentFamily = -1;
@@ -47,7 +47,8 @@ namespace vp
             bool Init();
             void Deinit();
             void Render();
-
+            static void onWindowResized(GLFWwindow* window, int width, int height);
+            bool RecreateSwapChain();
         private:
             bool m_isInitialized;
             GLFWwindow *m_pWindow;
@@ -106,6 +107,7 @@ namespace vp
             VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
             bool SetupDebugCallback();            
             void DestroyDebugReportCallbackEXT();
+            void waitAsyncEnd();
             VkResult CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo);
         };
     }
