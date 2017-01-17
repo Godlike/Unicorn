@@ -1,3 +1,6 @@
+# Copyright (C) 2017 by Grapefruit Tech
+# This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+
 cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.0)
 

@@ -1,3 +1,6 @@
+# Copyright (C) 2017 by Grapefruit Tech
+# This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+
 set(VORPAL_ENGINE_NAME "VorpalEngine" CACHE STRING "Project name for VorpalEngine library")
 
 if (NOT DEFINED VORPAL_ENGINE_ROOT)
