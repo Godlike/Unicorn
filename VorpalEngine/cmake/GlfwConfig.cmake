@@ -1,3 +1,6 @@
+# Copyright (C) 2017 by Grapefruit Tech
+# This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Flag to override default GLFW_BUILD_EXAMPLES value")
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "Flag to override default GLFW_BUILD_TESTS value")
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "Flag to override default GLFW_BUILD_DOCS value")

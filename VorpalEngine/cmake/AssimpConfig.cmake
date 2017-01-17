@@ -1,3 +1,6 @@
+# Copyright (C) 2017 by Grapefruit Tech
+# This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+
 set(ASSIMP_DOUBLE_PRECISION OFF CACHE BOOL "Flag to override default ASSIMP_DOUBLE_PRECISION value")
 set(ASSIMP_OPT_BUILD_PACKAGES OFF CACHE BOOL "Flag to override default ASSIMP_OPT_BUILD_PACKAGES value")
 set(ASSIMP_ANDROID_JNIIOSYSTEM OFF CACHE BOOL "Flag to override default ASSIMP_ANDROID_JNIIOSYSTEM value")

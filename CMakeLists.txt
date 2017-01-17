@@ -1,6 +1,9 @@
+# Copyright (C) 2017 by Grapefruit Tech
+# This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+
 cmake_minimum_required(VERSION 3.0)
 
-project(73s-studio)
+project(GrapefruitTech)
 
 option(VORPAL_BUILD_DEMOS "Build VorpalEngine demo projects" ON)
 option(VORPAL_BUILD_TESTS "Build VorpalEngine tests" ON)
