@@ -384,18 +384,22 @@ void Renderer::Render()
         int nbFrames = 0;
         while (!glfwWindowShouldClose(m_pWindow))
         {
+#ifndef NDEBUG
             double currentTime = glfwGetTime();
             nbFrames++;
             if ( currentTime - lastTime >= 1.0 )
             {
-                std::string buf(core::Settings::Instance().GetApplicationName().c_str()); //TODO : debug purposes.
+                std::string buf(core::Settings::Instance().GetApplicationName().c_str());
                 buf.append(" MS/FPS ");
                 buf.append(std::to_string(1000.0/double(nbFrames)).c_str());
+                buf.append(" FPS ");
+                buf.append(std::to_string(double(nbFrames)).c_str());
                 glfwSetWindowTitle(m_pWindow, buf.c_str());
 
                 nbFrames = 0;
                 lastTime += 1.0;
             }
+#endif
             glfwPollEvents();
             if(!Frame())
                 break;
@@ -961,34 +965,23 @@ bool Renderer::CreateSemaphores()
 
 bool Renderer::CreateVertexBuffer()
 {
-    VkBufferCreateInfo bufferInfo = {};
-    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    bufferInfo.size = sizeof(m_vertices[0]) * m_vertices.size();
-    bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-    if (vkCreateBuffer(m_vkLogicalDevice, &bufferInfo, nullptr, &m_vertexBuffer) != VK_SUCCESS) {
-        LOG_ERROR("Failed to create vertex buffer!");
+    VkDeviceSize bufferSize = sizeof(m_vertices[0]) * m_vertices.size();
+    VkBuffer stagingBuffer ;
+    VkDeviceMemory stagingBufferMemory;
+    if(!CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory))
         return false;
-    }
-
-    VkMemoryRequirements memRequirements;
-    vkGetBufferMemoryRequirements(m_vkLogicalDevice, m_vertexBuffer, &memRequirements);
-
-    VkMemoryAllocateInfo allocInfo = {};
-    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    allocInfo.allocationSize = memRequirements.size;
-    if(!FindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, allocInfo.memoryTypeIndex))
-        return false;
-    if (vkAllocateMemory(m_vkLogicalDevice, &allocInfo, nullptr, &m_vertexBufferMemory) != VK_SUCCESS) {
-        LOG_ERROR("Failed to allocate vertex buffer memory!");
-        return false;
-    }
-    vkBindBufferMemory(m_vkLogicalDevice, m_vertexBuffer, m_vertexBufferMemory, 0);
     void* data;
-    vkMapMemory(m_vkLogicalDevice, m_vertexBufferMemory, 0, bufferInfo.size, 0, &data);
-    memcpy(data, m_vertices.data(), static_cast<size_t>(bufferInfo.size));
-    vkUnmapMemory(m_vkLogicalDevice, m_vertexBufferMemory);
+
+    vkMapMemory(m_vkLogicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
+        memcpy(data, m_vertices.data(), static_cast<size_t>(bufferSize));
+    vkUnmapMemory(m_vkLogicalDevice, stagingBufferMemory);
+
+    if(!CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT , VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_vertexBuffer, m_vertexBufferMemory))
+        return false;
+    if(!CopyBuffer(stagingBuffer, m_vertexBuffer, bufferSize))
+        return false;
+    vkFreeMemory(m_vkLogicalDevice, stagingBufferMemory, nullptr);
+    vkDestroyBuffer(m_vkLogicalDevice, stagingBuffer, nullptr);
     return true;
 }
 
@@ -1046,6 +1039,71 @@ bool Renderer::CheckDeviceExtensionSupport(VkPhysicalDevice device)
     }
 
     return requiredExtensions.empty();
+}
+
+bool Renderer::CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &bufferMemory)
+{
+    VkBufferCreateInfo bufferInfo = {};
+    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bufferInfo.size = size;
+    bufferInfo.usage = usage;
+    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    if (vkCreateBuffer(m_vkLogicalDevice, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
+        LOG_ERROR("Failed to create buffer!");
+        return false;
+    }
+
+    VkMemoryRequirements memRequirements;
+    vkGetBufferMemoryRequirements(m_vkLogicalDevice, buffer, &memRequirements);
+
+    VkMemoryAllocateInfo allocInfo = {};
+    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocInfo.allocationSize = memRequirements.size;
+    if(!FindMemoryType(memRequirements.memoryTypeBits, properties, allocInfo.memoryTypeIndex))
+            return false;
+
+    if (vkAllocateMemory(m_vkLogicalDevice, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS) {
+        LOG_ERROR("Failed to allocate buffer memory!");
+        return false;
+    }
+
+    vkBindBufferMemory(m_vkLogicalDevice, buffer, bufferMemory, 0);
+    return true;
+}
+
+bool Renderer::CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+{
+    VkCommandBufferAllocateInfo allocInfo = {};
+    allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    allocInfo.commandPool = m_commandPool; //TODO: look here, maybe we need to create temporary commandPool? Maybe inplace? Just profile it.
+    allocInfo.commandBufferCount = 1;
+
+    VkCommandBuffer commandBuffer;
+    vkAllocateCommandBuffers(m_vkLogicalDevice, &allocInfo, &commandBuffer);
+
+    VkCommandBufferBeginInfo beginInfo = {};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+    vkBeginCommandBuffer(commandBuffer, &beginInfo);
+        VkBufferCopy copyRegion = {};
+        copyRegion.srcOffset = 0;
+        copyRegion.dstOffset = 0;
+        copyRegion.size = size;
+        vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
+    vkEndCommandBuffer(commandBuffer);
+
+    VkSubmitInfo submitInfo = {};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submitInfo.commandBufferCount = 1;
+    submitInfo.pCommandBuffers = &commandBuffer;
+
+    vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+    vkQueueWaitIdle(m_graphicsQueue);
+    vkFreeCommandBuffers(m_vkLogicalDevice, m_commandPool, 1, &commandBuffer);
+    return true;
 }
 
 bool Renderer::Frame()

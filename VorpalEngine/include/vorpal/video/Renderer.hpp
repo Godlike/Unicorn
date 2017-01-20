@@ -139,6 +139,8 @@ namespace vp
             bool CreateShaderModule(const std::vector<uint8_t>& code, VkShaderModule &shaderModule);
             bool IsDeviceSuitable(VkPhysicalDevice device);
             bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
+            bool CreateBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+            bool CopyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
             bool Frame();
             std::vector<const char*> GetRequiredExtensions();
             QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
