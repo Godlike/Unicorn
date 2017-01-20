@@ -64,10 +64,21 @@ Renderer::Renderer()
     , m_validationLayers( {"VK_LAYER_LUNARG_standard_validation"} )
     , m_deviceExtensions( {VK_KHR_SWAPCHAIN_EXTENSION_NAME})
 {
+    m_vertices = {{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+                  {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+                  {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
     m_vkSwapChain = VK_NULL_HANDLE;
     m_renderPass = VK_NULL_HANDLE;
     m_pipelineLayout = VK_NULL_HANDLE;
     m_graphicsPipeline = VK_NULL_HANDLE;
+    m_vkLogicalDevice = VK_NULL_HANDLE;
+    m_vulkanCallback = VK_NULL_HANDLE;
+    m_imageAvailableSemaphore = VK_NULL_HANDLE;
+    m_renderFinishedSemaphore = VK_NULL_HANDLE;
+    m_commandPool = VK_NULL_HANDLE;
+    m_vkWindowSurface = VK_NULL_HANDLE;
+    m_vertexBuffer = VK_NULL_HANDLE;
+    m_vertexBufferMemory = VK_NULL_HANDLE;
 }
 
 Renderer::~Renderer()
@@ -115,7 +126,8 @@ bool Renderer::Init()
         || !CreateGraphicsPipeline()
         || !CreateFramebuffers()
         || !CreateCommandPool()
-        || !CreateCommandBuffers()
+        || !CreateVertexBuffer()
+        || !CreateCommandBuffers()        
         || !CreateSemaphores())
     return false;
 
@@ -128,6 +140,16 @@ bool Renderer::Init()
 
 void Renderer::Deinit()
 {
+    if(m_vertexBufferMemory != VK_NULL_HANDLE)
+    {
+        vkFreeMemory(m_vkLogicalDevice, m_vertexBufferMemory, nullptr);
+    }
+
+    if(m_vertexBuffer != VK_NULL_HANDLE)
+    {
+        vkDestroyBuffer(m_vkLogicalDevice, m_vertexBuffer, nullptr);
+    }
+
     if(m_vulkanCallback != VK_NULL_HANDLE)
     {
         DestroyDebugReportCallbackEXT();
@@ -308,6 +330,21 @@ VkExtent2D Renderer::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabiliti
 
         return actualExtent;
     }
+}
+
+bool Renderer::FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, uint32_t& memoryType)
+{
+    VkPhysicalDeviceMemoryProperties memProperties;
+    vkGetPhysicalDeviceMemoryProperties(m_vkPhysicalDevice, &memProperties);
+
+    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+        if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
+            memoryType = i;
+            return true;
+        }
+    }
+    LOG_ERROR("Failed to find suitable memory type!");
+    return false;
 }
 
 VkResult Renderer::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo)
@@ -672,12 +709,14 @@ bool Renderer::CreateGraphicsPipeline()
 
     VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragShaderStageInfo};
 
+    auto bindingDescription = Vertex::getBindingDescription();
+    auto attributeDescriptions = Vertex::getAttributeDescriptions();
     VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
     vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    vertexInputInfo.vertexBindingDescriptionCount = 0;
-    vertexInputInfo.pVertexBindingDescriptions = nullptr; // Optional
-    vertexInputInfo.vertexAttributeDescriptionCount = 0;
-    vertexInputInfo.pVertexAttributeDescriptions = nullptr; // Optional
+    vertexInputInfo.vertexBindingDescriptionCount = 1;
+    vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+    vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+    vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
 
     VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
     inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -811,7 +850,7 @@ bool Renderer::CreateFramebuffers()
         framebufferInfo.layers = 1;
 
         if (vkCreateFramebuffer(m_vkLogicalDevice, &framebufferInfo, nullptr, &m_swapChainFramebuffers[i]) != VK_SUCCESS) {
-            LOG_ERROR("failed to create framebuffer!");
+            LOG_ERROR("Failed to create framebuffer!");
             return false;
         }
     }
@@ -838,7 +877,7 @@ bool Renderer::CreateCommandPool()
 bool Renderer::CreateCommandBuffers()
 {
     if (m_commandBuffers.size() > 0) {
-        vkFreeCommandBuffers(m_vkLogicalDevice, m_commandPool, m_commandBuffers.size(), m_commandBuffers.data());
+        vkFreeCommandBuffers(m_vkLogicalDevice, m_commandPool, static_cast<uint32_t>(m_commandBuffers.size()), m_commandBuffers.data());
     }
     m_commandBuffers.resize(m_swapChainFramebuffers.size());
 
@@ -872,8 +911,13 @@ bool Renderer::CreateCommandBuffers()
         renderPassInfo.pClearValues = &clearColor;
 
         vkCmdBeginRenderPass(m_commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-        vkCmdBindPipeline(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
-        vkCmdDraw(m_commandBuffers[i], 3, 1, 0, 0);
+            vkCmdBindPipeline(m_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline);
+
+            VkBuffer vertexBuffers[] = {m_vertexBuffer};
+            VkDeviceSize offsets[] = {0};
+            vkCmdBindVertexBuffers(m_commandBuffers[i], 0, 1, vertexBuffers, offsets);
+
+            vkCmdDraw(m_commandBuffers[i], static_cast<uint32_t>(m_vertices.size()), 1, 0, 0);
         vkCmdEndRenderPass(m_commandBuffers[i]);
 
         if (vkEndCommandBuffer(m_commandBuffers[i]) != VK_SUCCESS) {
@@ -893,6 +937,39 @@ bool Renderer::CreateSemaphores()
          LOG_ERROR("Failed to create semaphores!");
          return false;
     }
+    return true;
+}
+
+bool Renderer::CreateVertexBuffer()
+{
+    VkBufferCreateInfo bufferInfo = {};
+    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bufferInfo.size = sizeof(m_vertices[0]) * m_vertices.size();
+    bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    if (vkCreateBuffer(m_vkLogicalDevice, &bufferInfo, nullptr, &m_vertexBuffer) != VK_SUCCESS) {
+        LOG_ERROR("Failed to create vertex buffer!");
+        return false;
+    }
+
+    VkMemoryRequirements memRequirements;
+    vkGetBufferMemoryRequirements(m_vkLogicalDevice, m_vertexBuffer, &memRequirements);
+
+    VkMemoryAllocateInfo allocInfo = {};
+    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocInfo.allocationSize = memRequirements.size;
+    if(!FindMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, allocInfo.memoryTypeIndex))
+        return false;
+    if (vkAllocateMemory(m_vkLogicalDevice, &allocInfo, nullptr, &m_vertexBufferMemory) != VK_SUCCESS) {
+        LOG_ERROR("Failed to allocate vertex buffer memory!");
+        return false;
+    }
+    vkBindBufferMemory(m_vkLogicalDevice, m_vertexBuffer, m_vertexBufferMemory, 0);
+    void* data;
+    vkMapMemory(m_vkLogicalDevice, m_vertexBufferMemory, 0, bufferInfo.size, 0, &data);
+    memcpy(data, m_vertices.data(), static_cast<size_t>(bufferInfo.size));
+    vkUnmapMemory(m_vkLogicalDevice, m_vertexBufferMemory);
     return true;
 }
 
@@ -980,7 +1057,7 @@ bool Renderer::Frame()
     submitInfo.pSignalSemaphores = signalSemaphores;
 
     if (vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE) != VK_SUCCESS) {
-        LOG_ERROR("failed to submit draw command buffer!");
+        LOG_ERROR("Failed to submit draw command buffer!");
         return false;
     }
     VkPresentInfoKHR presentInfo = {};
@@ -995,7 +1072,7 @@ bool Renderer::Frame()
 
     presentInfo.pImageIndices = &imageIndex;
 
-    result = vkQueuePresentKHR(m_presentQueue, &presentInfo);
+    result = vkQueuePresentKHR(m_presentQueue, &presentInfo); //TODO : some error here if no vertex data provided?
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
         RecreateSwapChain();
         return true;

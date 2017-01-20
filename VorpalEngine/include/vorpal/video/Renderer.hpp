@@ -8,9 +8,11 @@
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 #include <cstdint>
 #include <vector>
+#include <array>
 
 struct GLFWwindow;
 
@@ -18,6 +20,34 @@ namespace vp
 {
     namespace video
     {
+        struct Vertex {
+            glm::vec2 pos;
+            glm::vec3 color;
+
+        static VkVertexInputBindingDescription getBindingDescription() {
+            VkVertexInputBindingDescription bindingDescription = {};
+            bindingDescription.binding = 0;
+            bindingDescription.stride = sizeof(Vertex);
+            bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+            return bindingDescription;
+        }
+        static std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions() {
+            std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions = {};
+            attributeDescriptions[0].binding = 0;
+            attributeDescriptions[0].location = 0;
+            attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+            attributeDescriptions[0].offset = offsetof(Vertex, pos);
+
+            attributeDescriptions[1].binding = 0;
+            attributeDescriptions[1].location = 1;
+            attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
+            attributeDescriptions[1].offset = offsetof(Vertex, color);
+
+            return attributeDescriptions;
+        }
+        };
+
+
         struct QueueFamilyIndices
         {
             int graphicsFamily = -1;
@@ -73,6 +103,8 @@ namespace vp
             VkPipeline m_graphicsPipeline;
             VkRenderPass m_renderPass;
             VkCommandPool m_commandPool;
+            VkBuffer m_vertexBuffer;
+            VkDeviceMemory m_vertexBufferMemory;
             VkSemaphore m_imageAvailableSemaphore;
             VkSemaphore m_renderFinishedSemaphore;
             std::vector<const char*> m_validationLayers;
@@ -83,6 +115,7 @@ namespace vp
             std::vector<VkImageView> m_swapChainImageViews;
             std::vector<VkFramebuffer> m_swapChainFramebuffers;
             std::vector<VkCommandBuffer> m_commandBuffers;
+            std::vector<Vertex> m_vertices;
         #ifdef NDEBUG
             static const bool s_enableValidationLayers = false;
         #else
@@ -102,6 +135,7 @@ namespace vp
             bool CreateCommandPool();
             bool CreateCommandBuffers();
             bool CreateSemaphores();
+            bool CreateVertexBuffer();
             bool CreateShaderModule(const std::vector<uint8_t>& code, VkShaderModule &shaderModule);
             bool IsDeviceSuitable(VkPhysicalDevice device);
             bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
@@ -112,6 +146,7 @@ namespace vp
             VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
             VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> availablePresentModes);
             VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+            bool FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties, uint32_t& memoryType);
             bool SetupDebugCallback();            
             void DestroyDebugReportCallbackEXT();
             void waitAsyncEnd();
