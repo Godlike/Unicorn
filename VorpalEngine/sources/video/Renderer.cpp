@@ -143,27 +143,32 @@ void Renderer::Deinit()
     if(m_vertexBufferMemory != VK_NULL_HANDLE)
     {
         vkFreeMemory(m_vkLogicalDevice, m_vertexBufferMemory, nullptr);
+        m_vertexBufferMemory = VK_NULL_HANDLE;
     }
 
     if(m_vertexBuffer != VK_NULL_HANDLE)
     {
         vkDestroyBuffer(m_vkLogicalDevice, m_vertexBuffer, nullptr);
+        m_vertexBuffer = VK_NULL_HANDLE;
     }
 
     if(m_vulkanCallback != VK_NULL_HANDLE)
     {
         DestroyDebugReportCallbackEXT();
+        m_vulkanCallback = VK_NULL_HANDLE;
     }
 
     for(VkImageView& view: m_swapChainImageViews)
     {
         vkDestroyImageView(m_vkLogicalDevice, view, nullptr);
+        view = VK_NULL_HANDLE;
     }
     m_swapChainImageViews.clear();
 
     for(VkFramebuffer& framebuffer: m_swapChainFramebuffers)
     {
         vkDestroyFramebuffer(m_vkLogicalDevice, framebuffer, nullptr);
+        framebuffer = VK_NULL_HANDLE;
     }
     m_swapChainFramebuffers.clear();
 
@@ -375,8 +380,22 @@ void Renderer::Render()
 {
     if (m_isInitialized && m_pWindow)
     {
+        double lastTime = glfwGetTime();
+        int nbFrames = 0;
         while (!glfwWindowShouldClose(m_pWindow))
         {
+            double currentTime = glfwGetTime();
+            nbFrames++;
+            if ( currentTime - lastTime >= 1.0 )
+            {
+                std::string buf(core::Settings::Instance().GetApplicationName().c_str()); //TODO : debug purposes.
+                buf.append(" MS/FPS ");
+                buf.append(std::to_string(1000.0/double(nbFrames)).c_str());
+                glfwSetWindowTitle(m_pWindow, buf.c_str());
+
+                nbFrames = 0;
+                lastTime += 1.0;
+            }
             glfwPollEvents();
             if(!Frame())
                 break;
