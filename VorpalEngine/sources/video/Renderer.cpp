@@ -64,9 +64,15 @@ Renderer::Renderer()
     , m_validationLayers( {"VK_LAYER_LUNARG_standard_validation"} )
     , m_deviceExtensions( {VK_KHR_SWAPCHAIN_EXTENSION_NAME})
 {
-    m_vertices = {{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-                  {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-                  {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
+    m_vertices = {
+        {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+        {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+        {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+        {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+    };
+    m_indices = {
+        0, 1, 2, 2, 3, 0
+    };
     m_vkSwapChain = VK_NULL_HANDLE;
     m_renderPass = VK_NULL_HANDLE;
     m_pipelineLayout = VK_NULL_HANDLE;
@@ -79,6 +85,8 @@ Renderer::Renderer()
     m_vkWindowSurface = VK_NULL_HANDLE;
     m_vertexBuffer = VK_NULL_HANDLE;
     m_vertexBufferMemory = VK_NULL_HANDLE;
+    m_indexBuffer = VK_NULL_HANDLE;
+    m_indexBufferMemory = VK_NULL_HANDLE;
 }
 
 Renderer::~Renderer()
@@ -127,6 +135,7 @@ bool Renderer::Init()
         || !CreateFramebuffers()
         || !CreateCommandPool()
         || !CreateVertexBuffer()
+        || !CreateIndexBuffer()
         || !CreateCommandBuffers()        
         || !CreateSemaphores())
     return false;
@@ -140,6 +149,18 @@ bool Renderer::Init()
 
 void Renderer::Deinit()
 {
+    if(m_indexBufferMemory != VK_NULL_HANDLE)
+    {
+        vkFreeMemory(m_vkLogicalDevice, m_indexBufferMemory, nullptr);
+        m_indexBufferMemory = VK_NULL_HANDLE;
+    }
+
+    if(m_indexBuffer != VK_NULL_HANDLE)
+    {
+        vkDestroyBuffer(m_vkLogicalDevice, m_indexBuffer, nullptr);
+        m_indexBuffer = VK_NULL_HANDLE;
+    }
+
     if(m_vertexBufferMemory != VK_NULL_HANDLE)
     {
         vkFreeMemory(m_vkLogicalDevice, m_vertexBufferMemory, nullptr);
@@ -939,8 +960,9 @@ bool Renderer::CreateCommandBuffers()
             VkBuffer vertexBuffers[] = {m_vertexBuffer};
             VkDeviceSize offsets[] = {0};
             vkCmdBindVertexBuffers(m_commandBuffers[i], 0, 1, vertexBuffers, offsets);
+            vkCmdBindIndexBuffer(m_commandBuffers[i], m_indexBuffer, 0, VK_INDEX_TYPE_UINT16); //Be careful here, don't forget to change UINTxxx
 
-            vkCmdDraw(m_commandBuffers[i], static_cast<uint32_t>(m_vertices.size()), 1, 0, 0);
+            vkCmdDrawIndexed(m_commandBuffers[i], m_indices.size(), 1, 0, 0, 0);
         vkCmdEndRenderPass(m_commandBuffers[i]);
 
         if (vkEndCommandBuffer(m_commandBuffers[i]) != VK_SUCCESS) {
@@ -983,6 +1005,29 @@ bool Renderer::CreateVertexBuffer()
     vkFreeMemory(m_vkLogicalDevice, stagingBufferMemory, nullptr);
     vkDestroyBuffer(m_vkLogicalDevice, stagingBuffer, nullptr);
     return true;
+}
+
+bool Renderer::CreateIndexBuffer()
+{
+    VkDeviceSize bufferSize = sizeof(m_indices[0]) * m_indices.size();
+
+   VkBuffer stagingBuffer;
+   VkDeviceMemory stagingBufferMemory;
+   if(!CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory))
+       return false;
+   void* data;
+   vkMapMemory(m_vkLogicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
+   memcpy(data, m_indices.data(), (size_t) bufferSize);
+   vkUnmapMemory(m_vkLogicalDevice, stagingBufferMemory);
+
+   if(!CreateBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_indexBuffer, m_indexBufferMemory))
+        return false;
+
+   if(!CopyBuffer(stagingBuffer, m_indexBuffer, bufferSize))
+        return false;
+   vkFreeMemory(m_vkLogicalDevice, stagingBufferMemory, nullptr);
+   vkDestroyBuffer(m_vkLogicalDevice, stagingBuffer, nullptr);
+   return true;
 }
 
 bool Renderer::CreateShaderModule(const std::vector<uint8_t>& code, VkShaderModule& shaderModule)

@@ -103,8 +103,12 @@ namespace vp
             VkPipeline m_graphicsPipeline;
             VkRenderPass m_renderPass;
             VkCommandPool m_commandPool;
+            //TODO: make structs to peek this
             VkBuffer m_vertexBuffer;
             VkDeviceMemory m_vertexBufferMemory;
+            VkBuffer m_indexBuffer;
+            VkDeviceMemory m_indexBufferMemory;
+
             VkSemaphore m_imageAvailableSemaphore;
             VkSemaphore m_renderFinishedSemaphore;
             std::vector<const char*> m_validationLayers;
@@ -116,6 +120,7 @@ namespace vp
             std::vector<VkFramebuffer> m_swapChainFramebuffers;
             std::vector<VkCommandBuffer> m_commandBuffers;
             std::vector<Vertex> m_vertices;
+            std::vector<uint16_t> m_indices;
         #ifdef NDEBUG
             static const bool s_enableValidationLayers = false;
         #else
@@ -136,6 +141,7 @@ namespace vp
             bool CreateCommandBuffers();
             bool CreateSemaphores();
             bool CreateVertexBuffer();
+            bool CreateIndexBuffer();
             bool CreateShaderModule(const std::vector<uint8_t>& code, VkShaderModule &shaderModule);
             bool IsDeviceSuitable(VkPhysicalDevice device);
             bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
