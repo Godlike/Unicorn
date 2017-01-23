@@ -125,7 +125,7 @@ class Renderer
     VkDeviceMemory m_vertexBufferMemory;
     VkBuffer m_indexBuffer;
     VkDeviceMemory m_indexBufferMemory;
-
+    VkDescriptorPool m_descriptorPool;
     VkBuffer m_uniformStagingBuffer;
     VkDeviceMemory m_uniformStagingBufferMemory;
     VkBuffer m_uniformBuffer;
@@ -144,6 +144,7 @@ class Renderer
     std::vector<Vertex> m_vertices;
     std::vector<uint16_t> m_indices;
     core::Timer m_timer;
+    VkDescriptorSet m_descriptorSet;
 #ifdef NDEBUG
     static const bool s_enableValidationLayers = false;
 #else
@@ -168,6 +169,8 @@ class Renderer
     bool CreateUniformBuffer();
     void UpdateUniformBuffer();
     bool CreateDescriptorSetLayout();
+    bool CreateDescriptorPool();
+    bool CreateDescriptorSet();
     bool CreateShaderModule(
         const std::vector<uint8_t>& code, VkShaderModule& shaderModule);
     bool IsDeviceSuitable(VkPhysicalDevice device);
