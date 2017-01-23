@@ -1,25 +1,20 @@
-#!/bin/bash
+#!/bin/sh
+exe=$(which clang-format)
 
-STYLE=$(git config --get hooks.clangformat.style)
-if [ -n "${STYLE}" ] ; then
-  STYLEARG="-style=${STYLE}"
+if [ -n "$exe" ]
+then
+  IFS=$'\n'
+  for line in $(git status -s)
+  do
+    if [[ $line == A* || $line == M* ]]
+    then
+      if [[ $line == *.c || $line == *.cc || $line == *.h || $line == *.cpp ]]
+      then
+        clang-format -i -style=file $(pwd)/${line:3}
+        git add $(pwd)/${line:3}
+      fi
+    fi
+  done
 else
-  STYLEARG=""
+  echo "WARNING: clang-format was not found, cannot format files!"
 fi
-
-format_file() {
-  file="${1}"
-  clang-format -i ${STYLEARG} ${1}
-  git add ${1}
-}
-
-case "${1}" in
-  --about )
-    echo "Runs clang-format on source files"
-    ;;
-  * )
-    for file in `git diff-index --cached --name-only HEAD` ; do
-      format_file "${file}"
-    done
-    ;;
-esac
