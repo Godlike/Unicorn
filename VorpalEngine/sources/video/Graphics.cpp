@@ -1,6 +1,7 @@
 /*
 * Copyright (C) 2017 by Grapefruit Tech
-* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+* This code is licensed under the MIT license (MIT)
+* (http://opensource.org/licenses/MIT)
 */
 
 #include <vorpal/video/Graphics.hpp>
@@ -11,12 +12,8 @@ namespace vp
 {
 namespace video
 {
-
-Graphics::Graphics()
-    : m_isInitialized(false)
-    , m_pRenderer(nullptr)
+Graphics::Graphics() : m_isInitialized(false), m_pRenderer(nullptr)
 {
-
 }
 
 Graphics::~Graphics()
@@ -59,7 +56,8 @@ void Graphics::Deinit()
 
         m_pRenderer = nullptr;
     }
-    if(!m_isInitialized) LOG_INFO("Graphics shutdown correctly.");
+    if (!m_isInitialized)
+        LOG_INFO("Graphics shutdown correctly.");
     m_isInitialized = false;
 }
 
@@ -70,6 +68,5 @@ void Graphics::Render()
         m_pRenderer->Render();
     }
 }
-
 }
 }

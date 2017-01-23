@@ -1,6 +1,7 @@
 /*
 * Copyright (C) 2017 by Grapefruit Tech
-* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+* This code is licensed under the MIT license (MIT)
+* (http://opensource.org/licenses/MIT)
 */
 
 #include <vorpal/utility/asset/SimpleStorage.hpp>
@@ -16,7 +17,6 @@ namespace utility
 {
 namespace asset
 {
-
 Handler SimpleStorage::Get(const KeyType& key)
 {
     HandlerMap::const_iterator it = m_entries.find(key);
@@ -67,7 +67,6 @@ Handler SimpleStorage::CreateHandler(const KeyType& key)
 
     return Handler(key, content);
 }
-
 }
 }
 }

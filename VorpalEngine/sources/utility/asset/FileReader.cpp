@@ -1,6 +1,7 @@
 /*
 * Copyright (C) 2017 by Grapefruit Tech
-* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+* This code is licensed under the MIT license (MIT)
+* (http://opensource.org/licenses/MIT)
 */
 
 #include <vorpal/utility/asset/FileReader.hpp>
@@ -14,12 +15,9 @@ namespace utility
 {
 namespace asset
 {
-
 FileReader::FileReader(const char* path)
-    : m_flags(Flags::uninitialized)
-    , m_path(path)
+    : m_flags(Flags::uninitialized), m_path(path)
 {
-
 }
 
 bool FileReader::IsGood()
@@ -63,7 +61,8 @@ void FileReader::LazyAccess()
             m_buffer.clear();
             m_buffer.resize(size);
 
-            //! Safe to use reinterpret since char and unsigned char occupy same amount of storage
+            //! Safe to use reinterpret since char and unsigned char occupy same
+            //! amount of storage
             if (in.read(reinterpret_cast<char*>(m_buffer.data()), size))
             {
                 m_flags |= Flags::eof;
@@ -76,7 +75,6 @@ void FileReader::LazyAccess()
         }
     }
 }
-
 }
 }
 }
