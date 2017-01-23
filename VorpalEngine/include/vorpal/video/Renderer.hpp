@@ -20,6 +20,13 @@ namespace vp
 {
     namespace video
     {
+
+        struct UniformBufferObject {
+            glm::mat4 model;
+            glm::mat4 view;
+            glm::mat4 proj;
+        };
+
         struct Vertex {
             glm::vec2 pos;
             glm::vec3 color;
@@ -142,6 +149,7 @@ namespace vp
             bool CreateSemaphores();
             bool CreateVertexBuffer();
             bool CreateIndexBuffer();
+            bool CreateDescriptorSetLayout();
             bool CreateShaderModule(const std::vector<uint8_t>& code, VkShaderModule &shaderModule);
             bool IsDeviceSuitable(VkPhysicalDevice device);
             bool CheckDeviceExtensionSupport(VkPhysicalDevice device);

@@ -131,6 +131,7 @@ bool Renderer::Init()
         || !CreateSwapChain()
         || !CreateImageViews()
         || !CreateRenderPass()
+        || !CreateDescriptorSetLayout()
         || !CreateGraphicsPipeline()
         || !CreateFramebuffers()
         || !CreateCommandPool()
@@ -1028,6 +1029,18 @@ bool Renderer::CreateIndexBuffer()
    vkFreeMemory(m_vkLogicalDevice, stagingBufferMemory, nullptr);
    vkDestroyBuffer(m_vkLogicalDevice, stagingBuffer, nullptr);
    return true;
+}
+
+bool Renderer::CreateDescriptorSetLayout()
+{
+    VkDescriptorSetLayoutBinding uboLayoutBinding = {};
+    uboLayoutBinding.binding = 0;
+    uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+    uboLayoutBinding.descriptorCount = 1;
+    uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    uboLayoutBinding.pImmutableSamplers = nullptr;
+
+    return true;
 }
 
 bool Renderer::CreateShaderModule(const std::vector<uint8_t>& code, VkShaderModule& shaderModule)
