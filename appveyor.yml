@@ -1,0 +1,34 @@
+version: 1.0.{build}
+configuration: Debug, Release
+platform: Any CPU
+clone_folder: c:\VorpalEngine
+init:
+- ps: >-
+    New-Item -ItemType directory -Path C:\Vulkan
+
+    $url = "https://vulkan.lunarg.com/sdk/download/1.0.39.0/windows/VulkanSDK-1.0.39.0-Installer.exe"
+
+    $output = "c:\Vulkan\VulkanSDK-1.0.39.0-Installer.exe"
+
+    (New-Object System.Net.WebClient).DownloadFile($url, $output)
+
+    c:\Vulkan\VulkanSDK-1.0.39.0-Installer.exe
+
+    [Environment]::SetEnvironmentVariable("VULKAN_SDK", "c:\Vulkan\VulkanSDK\1.0.39.0\x86_64", "Machine")
+install:
+- cmd: >-
+    git submodule update --init --recursive
+
+    cmake -G "Visual Studio 14 2015 Win64" .
+build:
+  project: Vorpal-Engine\VorpalEngine.sln
+  parallel: true
+  verbosity: minimal
+notifications:
+- provider: Email
+  to:
+  - nikita.krupitskas@gmail.com
+  - odintsoff@gmail.com
+  on_build_success: false
+  on_build_failure: true
+  on_build_status_changed: true
