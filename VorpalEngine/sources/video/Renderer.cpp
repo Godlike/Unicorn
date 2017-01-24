@@ -30,12 +30,12 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
     // Error that may result in undefined behaviour
     if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
     {
-        LOG_ERROR("VULKAN LAYER ERROR: %s",  msg);  
+        LOG_ERROR("VULKAN LAYER ERROR: %s",  msg);
     };
     // Warnings may hint at unexpected / non-spec API usage
     if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
     {
-        LOG_WARNING("VULKAN LAYER WARNING: %s",  msg);        
+        LOG_WARNING("VULKAN LAYER WARNING: %s",  msg);
     };
     // May indicate sub-optimal usage of the API
     if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
@@ -48,7 +48,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
         LOG_INFO("VULKAN LAYER INFO: %s",  msg);
     }
     // Diagnostic info from the Vulkan loader and layers
-    // Usually not helpful in terms of API usage, but may help to debug layer and loader problems 
+    // Usually not helpful in terms of API usage, but may help to debug layer and loader problems
     if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
     {
         LOG_INFO("VULKAN LAYER DEBUG: %s",  msg);
@@ -195,7 +195,7 @@ void Renderer::Deinit()
     {
         vkDestroySurfaceKHR(m_vkInstance ,m_vkWindowSurface, nullptr);
         m_vkWindowSurface = VK_NULL_HANDLE;
-    }    
+    }
 
     //Instance must be freed last but before glfw window.
     if (m_vkInstance != VK_NULL_HANDLE)
@@ -315,7 +315,7 @@ VkResult Renderer::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreat
     auto func = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(vkGetInstanceProcAddr(m_vkInstance, "vkCreateDebugReportCallbackEXT"));
     if (func != nullptr) {
         return func(m_vkInstance, pCreateInfo, nullptr, &m_vulkanCallback);
-    } else {        
+    } else {
         LOG_ERROR("Can't setup debug callback'");
         return VK_ERROR_EXTENSION_NOT_PRESENT;
     }
@@ -417,7 +417,7 @@ bool Renderer::CreateInstance()
     return true;
 }
 
-bool Renderer::PickPhysicalDevice() 
+bool Renderer::PickPhysicalDevice()
 {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(m_vkInstance, &deviceCount, nullptr);
@@ -867,7 +867,7 @@ bool Renderer::CreateCommandBuffers()
         renderPassInfo.renderArea.offset = {0, 0};
         renderPassInfo.renderArea.extent = m_swapChainExtent;
 
-        VkClearValue clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
+        VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
         renderPassInfo.clearValueCount = 1;
         renderPassInfo.pClearValues = &clearColor;
 
@@ -1033,7 +1033,7 @@ bool Renderer::CheckValidationLayerSupport() const
 
             for (auto& requiredLayer : m_validationLayers)
             {
-                LOG_ERROR(requiredLayer);
+                LOG_ERROR("%s", requiredLayer);
             }
 
             return false;
@@ -1044,7 +1044,7 @@ bool Renderer::CheckValidationLayerSupport() const
 }
 
 std::vector<const char*> Renderer::GetRequiredExtensions()
-{    
+{
     std::vector<const char*> m_extensions;
     unsigned int glfwExtensionCount = 0;
     const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
@@ -1068,11 +1068,11 @@ bool Renderer::SetupDebugCallback()
 
     VkDebugReportCallbackCreateInfoEXT createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
-    createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | 
-                        VK_DEBUG_REPORT_INFORMATION_BIT_EXT | 
+    createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT |
+                        VK_DEBUG_REPORT_INFORMATION_BIT_EXT |
                         VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT |
                         VK_DEBUG_REPORT_WARNING_BIT_EXT;
-    createInfo.pfnCallback = DebugCallback;    
+    createInfo.pfnCallback = DebugCallback;
     return CreateDebugReportCallbackEXT(&createInfo) == VK_SUCCESS;
 }
 }

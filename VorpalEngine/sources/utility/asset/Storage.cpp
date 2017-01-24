@@ -60,13 +60,13 @@ std::shared_future<Handler> Storage::GetAsync(const KeyType& key, uint32_t prior
 
     if (entry.second)
     {
-        LOG_DEBUG("Requested async task \"%s\"[%zu] -> exists", key.c_str(), priority);
+        LOG_DEBUG("Requested async task \"%s\"[%d] -> exists", key.c_str(), priority);
 
         return entry.first->second;
     }
     else
     {
-        LOG_DEBUG("Requested async task \"%s\"[%zu] -> process", key.c_str(), priority);
+        LOG_DEBUG("Requested async task \"%s\"[%d] -> process", key.c_str(), priority);
 
         return ProcessAsyncHandlerCreation(key, priority);
     }
@@ -85,10 +85,10 @@ void Storage::StopWorkers()
 
         m_ordersCV.notify_all();
 
+        LOG_INFO("Joining threads");
+
         for (std::vector<std::thread>::iterator it = m_workers.begin(); it != m_workers.end(); ++it)
         {
-            LOG_INFO("Joining thread: %X", it->get_id());
-
             it->join();
         }
 
@@ -143,7 +143,7 @@ Handler Storage::ProcessHandlerCreation(const KeyType& key)
         {
             std::shared_future<Handler> result = m_entries.at(key);
 
-            LOG_DEBUG("Processing sync task \"%s\" -> snatched async task \"%s\"[%zu] -> creating handler", key.c_str(), task.key.c_str(), task.priority);
+            LOG_DEBUG("Processing sync task \"%s\" -> snatched async task \"%s\"[%d] -> creating handler", key.c_str(), task.key.c_str(), task.priority);
 
             //! Since we snatched it, we should also set the promise value
             Handler handler = CreateHandler(task.key);
@@ -176,7 +176,7 @@ std::shared_future<Handler> Storage::ProcessAsyncHandlerCreation(const KeyType& 
 
         if (requestFlag.second)
         {
-            LOG_DEBUG("Processing async task \"%s\"[%zu] -> creating entry", key.c_str(), priority);
+            LOG_DEBUG("Processing async task \"%s\"[%d] -> creating entry", key.c_str(), priority);
 
             result = promise.get_future().share();
             m_entries.insert(std::make_pair(key, result));
@@ -190,7 +190,7 @@ std::shared_future<Handler> Storage::ProcessAsyncHandlerCreation(const KeyType& 
         task.priority = priority;
         task.promise = std::move(promise);
 
-        LOG_DEBUG("Processing async task \"%s\"[%zu] -> pushing order", task.key.c_str(), priority);
+        LOG_DEBUG("Processing async task \"%s\"[%d] -> pushing order", task.key.c_str(), priority);
 
         {
             std::lock_guard<MutexType> lock(m_ordersMutex);
@@ -201,7 +201,7 @@ std::shared_future<Handler> Storage::ProcessAsyncHandlerCreation(const KeyType& 
     }
     else
     {
-        LOG_DEBUG("Processing async task \"%s\"[%zu] -> already requested; updating priority and reusing entry", key.c_str(), priority);
+        LOG_DEBUG("Processing async task \"%s\"[%d] -> already requested; updating priority and reusing entry", key.c_str(), priority);
 
         {
             std::lock_guard<MutexType> lock(m_ordersMutex);
@@ -327,14 +327,14 @@ void Storage::WorkerThread()
             break;
         }
 
-        Task task = std::move(m_orders.PopTop());
+        Task task = m_orders.PopTop();
         lock.unlock();
 
-        LOG_DEBUG("Async task \"%s\"[%zu] -> processing", task.key.c_str(), task.priority);
+        LOG_DEBUG("Async task \"%s\"[%d] -> processing", task.key.c_str(), task.priority);
 
         Handler handler = CreateHandler(task.key);
 
-        LOG_DEBUG("Async task \"%s\"[%zu] -> publishing handler to entry", task.key.c_str(), task.priority);
+        LOG_DEBUG("Async task \"%s\"[%d] -> publishing handler to entry", task.key.c_str(), task.priority);
 
         task.promise.set_value(handler);
     }
