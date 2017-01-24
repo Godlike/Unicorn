@@ -5,11 +5,20 @@ dist: xenial
 compiler:
   - clang
   - gcc
+addons:
+  apt:
+    packages:
+      - libassimp-dev
+      - libx11-xcb-dev
+      - libxrandr-dev 
+      - libxrandr-dev 
+      - libxinerama-dev
+git:
+  submodules: false
+before_install:
+  - git submodule update --init --recursive
 before_script:
   - sudo apt-get -qq update
-  - git submodule init
-  - git submodule update
-  - sudo apt-get install -y libassimp-dev libx11-xcb-dev libxrandr-dev
 script:
   - cmake .
   - make
