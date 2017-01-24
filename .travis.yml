@@ -1,25 +1,22 @@
 language: cpp
 sudo: required
 os: linux
+dist: xenial
 compiler:
+  - clang
   - gcc
-  
 before_script:
-  - wget "https://vulkan.lunarg.com/sdk/download/1.0.39.0/linux/vulkansdk-linux-x86_64-1.0.37.0.run"
-  - chmod ugo+x vulkansdk-linux-x86_64-1.0.39.0.run
-  - ./vulkansdk-linux-x86_64-1.0.39.0.run
-  - export VULKAN_SDK=./VulkanSDK/1.0.39.0/x86_64
-  - export PATH=$PATH:$VULKAN_SDK/x86_64/bi
-  - sudo apt-get install xorg-dev libglu1-mesa-dev ninja-build
+  - sudo apt-get -qq update
   - git submodule init
   - git submodule update
-  
+  - sudo apt-get install -y libassimp-dev libx11-xcb-dev libxrandr-dev
 script:
-  - mkdir VPDebugGcc
-  - cd VPDebugGcc
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ ..
+  - cmake .
   - make
-  - mkdir ../VPReleaseGcc
-  - cd ../VPReleaseGcc
-  - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ ..
-  - make
+notifications:
+  email:
+    recipients:
+      - nikita.krupitskas@gmail.com
+      - odintsoff@gmail.com 
+    on_success: change
+    on_failure: always
