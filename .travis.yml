@@ -8,7 +8,7 @@ compiler:
 addons:
   apt:
     packages:
-      - libassimp-dev
+      - libx11-dev
       - libx11-xcb-dev
       - libxrandr-dev 
       - libxinerama-dev
@@ -17,9 +17,8 @@ addons:
 git:
   submodules: false
 before_install:
-  - git submodule update --init --recursive
-before_script:
   - sudo apt-get -qq update
+  - git submodule update --init --recursive
 script:
   - cmake .
   - make
