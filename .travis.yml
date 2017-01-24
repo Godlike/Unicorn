@@ -11,8 +11,9 @@ addons:
       - libassimp-dev
       - libx11-xcb-dev
       - libxrandr-dev 
-      - libxrandr-dev 
       - libxinerama-dev
+      - xorg-dev 
+      - libglu1-mesa-dev
 git:
   submodules: false
 before_install:
