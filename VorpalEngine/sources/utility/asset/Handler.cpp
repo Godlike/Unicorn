@@ -1,6 +1,7 @@
 /*
 * Copyright (C) 2017 by Grapefruit Tech
-* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+* This code is licensed under the MIT license (MIT)
+* (http://opensource.org/licenses/MIT)
 */
 
 #include <vorpal/utility/asset/Handler.hpp>
@@ -11,14 +12,12 @@ namespace utility
 {
 namespace asset
 {
-
 Handler::Handler()
     : m_pName(nullptr)
     , m_pContent(nullptr)
     , m_pRefCounter(nullptr)
     , m_pLastReferenceTimestamp(nullptr)
 {
-
 }
 
 Handler::Handler(const std::string& name, Content* pContent)
@@ -93,8 +92,7 @@ Handler::~Handler()
 
 bool Handler::operator==(const Handler& other) const
 {
-    return m_pName == other.m_pName &&
-        m_pContent == other.m_pContent &&
+    return m_pName == other.m_pName && m_pContent == other.m_pContent &&
         m_pRefCounter == other.m_pRefCounter &&
         m_pLastReferenceTimestamp == other.m_pLastReferenceTimestamp;
 }
@@ -106,12 +104,17 @@ bool Handler::operator!=(const Handler& other) const
 
 std::chrono::milliseconds Handler::GetLastReferenceDuration() const
 {
-    std::chrono::milliseconds timestamp(m_pLastReferenceTimestamp->load(std::memory_order_acquire));
+    std::chrono::milliseconds timestamp(
+        m_pLastReferenceTimestamp->load(std::memory_order_acquire));
 
     if (timestamp.count() != 0)
     {
-        std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-        std::chrono::milliseconds nowInMs(std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count());
+        std::chrono::system_clock::time_point now =
+            std::chrono::system_clock::now();
+        std::chrono::milliseconds nowInMs(
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                now.time_since_epoch())
+                .count());
 
         return nowInMs - timestamp;
     }
@@ -138,8 +141,9 @@ void Handler::Unsubscribe()
             {
                 m_pLastReferenceTimestamp->store(
                     std::chrono::duration_cast<std::chrono::milliseconds>(
-                        std::chrono::system_clock::now().time_since_epoch()
-                    ).count(), std::memory_order_release);
+                        std::chrono::system_clock::now().time_since_epoch())
+                        .count(),
+                    std::memory_order_release);
                 break;
             }
             default:
@@ -166,7 +170,6 @@ void Handler::Subscribe()
         }
     }
 }
-
 }
 }
 }

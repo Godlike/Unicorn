@@ -1,6 +1,7 @@
 /*
 * Copyright (C) 2017 by Grapefruit Tech
-* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+* This code is licensed under the MIT license (MIT)
+* (http://opensource.org/licenses/MIT)
 */
 
 #include <vorpal/utility/asset/Storage.hpp>
@@ -18,7 +19,6 @@ namespace utility
 {
 namespace asset
 {
-
 void Storage::InitializeWorkers(uint16_t count)
 {
     if (m_workers.size() != count)
@@ -32,15 +32,18 @@ void Storage::InitializeWorkers(uint16_t count)
 
     for (unsigned int i = 0; i < count; ++i)
     {
-        m_workers.push_back( std::thread(&Storage::WorkerThread, this) );
+        m_workers.push_back(std::thread(&Storage::WorkerThread, this));
     }
 }
 
 Handler Storage::Get(const KeyType& key)
 {
-    std::pair<ConcurrentHandlerMap::iterator, bool> entry = m_entries.contains(key);
+    std::pair<ConcurrentHandlerMap::iterator, bool> entry =
+        m_entries.contains(key);
 
-    if (entry.second && std::future_status::ready == entry.first->second.wait_for(std::chrono::nanoseconds(0)))
+    if (entry.second &&
+        std::future_status::ready ==
+            entry.first->second.wait_for(std::chrono::nanoseconds(0)))
     {
         LOG_DEBUG("Requested sync task \"%s\" -> exists", key.c_str());
 
@@ -54,19 +57,25 @@ Handler Storage::Get(const KeyType& key)
     }
 }
 
-std::shared_future<Handler> Storage::GetAsync(const KeyType& key, uint32_t priority)
+std::shared_future<Handler> Storage::GetAsync(
+    const KeyType& key, uint32_t priority)
 {
-    std::pair<ConcurrentHandlerMap::iterator, bool> entry = m_entries.contains(key);
+    std::pair<ConcurrentHandlerMap::iterator, bool> entry =
+        m_entries.contains(key);
 
     if (entry.second)
     {
-        LOG_DEBUG("Requested async task \"%s\"[%zu] -> exists", key.c_str(), priority);
+        LOG_DEBUG("Requested async task \"%s\"[%zu] -> exists",
+            key.c_str(),
+            priority);
 
         return entry.first->second;
     }
     else
     {
-        LOG_DEBUG("Requested async task \"%s\"[%zu] -> process", key.c_str(), priority);
+        LOG_DEBUG("Requested async task \"%s\"[%zu] -> process",
+            key.c_str(),
+            priority);
 
         return ProcessAsyncHandlerCreation(key, priority);
     }
@@ -85,7 +94,9 @@ void Storage::StopWorkers()
 
         m_ordersCV.notify_all();
 
-        for (std::vector<std::thread>::iterator it = m_workers.begin(); it != m_workers.end(); ++it)
+        for (std::vector<std::thread>::iterator it = m_workers.begin();
+             it != m_workers.end();
+             ++it)
         {
             LOG_INFO("Joining thread: %X", it->get_id());
 
@@ -109,7 +120,8 @@ Handler Storage::ProcessHandlerCreation(const KeyType& key)
 
         if (requestFlag.second)
         {
-            LOG_DEBUG("Processing sync task \"%s\" -> creating entry", key.c_str());
+            LOG_DEBUG(
+                "Processing sync task \"%s\" -> creating entry", key.c_str());
 
             m_entries.insert(std::make_pair(key, promise.get_future().share()));
         }
@@ -117,11 +129,13 @@ Handler Storage::ProcessHandlerCreation(const KeyType& key)
 
     if (requestFlag.second)
     {
-        LOG_DEBUG("Processing sync task \"%s\" -> creating handler", key.c_str());
+        LOG_DEBUG(
+            "Processing sync task \"%s\" -> creating handler", key.c_str());
 
         Handler handler = CreateHandler(key);
 
-        LOG_DEBUG("Processing sync task \"%s\" -> publishing handler to entry", key.c_str());
+        LOG_DEBUG("Processing sync task \"%s\" -> publishing handler to entry",
+            key.c_str());
 
         promise.set_value(handler);
 
@@ -129,7 +143,8 @@ Handler Storage::ProcessHandlerCreation(const KeyType& key)
     }
     else
     {
-        //! If given key was already requested, we need to either snatch the order
+        //! If given key was already requested, we need to either snatch the
+        //! order
         //! to fulfill it ourselves or wait for the worker thread to process it
         Task task;
 
@@ -143,12 +158,18 @@ Handler Storage::ProcessHandlerCreation(const KeyType& key)
         {
             std::shared_future<Handler> result = m_entries.at(key);
 
-            LOG_DEBUG("Processing sync task \"%s\" -> snatched async task \"%s\"[%zu] -> creating handler", key.c_str(), task.key.c_str(), task.priority);
+            LOG_DEBUG("Processing sync task \"%s\" -> snatched async task "
+                      "\"%s\"[%zu] -> creating handler",
+                key.c_str(),
+                task.key.c_str(),
+                task.priority);
 
             //! Since we snatched it, we should also set the promise value
             Handler handler = CreateHandler(task.key);
 
-            LOG_DEBUG("Processing sync task \"%s\" -> publishing handler to entry", key.c_str());
+            LOG_DEBUG(
+                "Processing sync task \"%s\" -> publishing handler to entry",
+                key.c_str());
 
             task.promise.set_value(handler);
 
@@ -156,7 +177,9 @@ Handler Storage::ProcessHandlerCreation(const KeyType& key)
         }
         else
         {
-            LOG_DEBUG("Processing sync task \"%s\" -> waiting for async task finish", task.key.c_str());
+            LOG_DEBUG(
+                "Processing sync task \"%s\" -> waiting for async task finish",
+                task.key.c_str());
 
             //! We couldn't snatch it, so we should wait on the future
             return m_entries.at(key).get();
@@ -164,7 +187,8 @@ Handler Storage::ProcessHandlerCreation(const KeyType& key)
     }
 }
 
-std::shared_future<Handler> Storage::ProcessAsyncHandlerCreation(const KeyType& key, uint32_t priority)
+std::shared_future<Handler> Storage::ProcessAsyncHandlerCreation(
+    const KeyType& key, uint32_t priority)
 {
     std::pair<RequestsSet::iterator, bool> requestFlag;
     std::shared_future<Handler> result;
@@ -176,7 +200,9 @@ std::shared_future<Handler> Storage::ProcessAsyncHandlerCreation(const KeyType& 
 
         if (requestFlag.second)
         {
-            LOG_DEBUG("Processing async task \"%s\"[%zu] -> creating entry", key.c_str(), priority);
+            LOG_DEBUG("Processing async task \"%s\"[%zu] -> creating entry",
+                key.c_str(),
+                priority);
 
             result = promise.get_future().share();
             m_entries.insert(std::make_pair(key, result));
@@ -190,18 +216,23 @@ std::shared_future<Handler> Storage::ProcessAsyncHandlerCreation(const KeyType& 
         task.priority = priority;
         task.promise = std::move(promise);
 
-        LOG_DEBUG("Processing async task \"%s\"[%zu] -> pushing order", task.key.c_str(), priority);
+        LOG_DEBUG("Processing async task \"%s\"[%zu] -> pushing order",
+            task.key.c_str(),
+            priority);
 
         {
             std::lock_guard<MutexType> lock(m_ordersMutex);
-            m_orders.push( std::move(task) );
+            m_orders.push(std::move(task));
         }
 
         m_ordersCV.notify_one();
     }
     else
     {
-        LOG_DEBUG("Processing async task \"%s\"[%zu] -> already requested; updating priority and reusing entry", key.c_str(), priority);
+        LOG_DEBUG("Processing async task \"%s\"[%zu] -> already requested; "
+                  "updating priority and reusing entry",
+            key.c_str(),
+            priority);
 
         {
             std::lock_guard<MutexType> lock(m_ordersMutex);
@@ -234,11 +265,8 @@ Handler Storage::CreateHandler(const KeyType& key)
     return Handler(key, content);
 }
 
-Storage::Task::Task()
-    : key(KeyType())
-    , priority(0)
+Storage::Task::Task() : key(KeyType()), priority(0)
 {
-
 }
 
 Storage::Task::Task(Task&& other)
@@ -318,7 +346,8 @@ void Storage::WorkerThread()
     while (!m_workersStopFlag)
     {
         lock.lock();
-        m_ordersCV.wait(lock, [&](){ return !m_orders.empty() || m_workersStopFlag; });
+        m_ordersCV.wait(
+            lock, [&]() { return !m_orders.empty() || m_workersStopFlag; });
 
         if (m_workersStopFlag)
         {
@@ -330,11 +359,15 @@ void Storage::WorkerThread()
         Task task = std::move(m_orders.PopTop());
         lock.unlock();
 
-        LOG_DEBUG("Async task \"%s\"[%zu] -> processing", task.key.c_str(), task.priority);
+        LOG_DEBUG("Async task \"%s\"[%zu] -> processing",
+            task.key.c_str(),
+            task.priority);
 
         Handler handler = CreateHandler(task.key);
 
-        LOG_DEBUG("Async task \"%s\"[%zu] -> publishing handler to entry", task.key.c_str(), task.priority);
+        LOG_DEBUG("Async task \"%s\"[%zu] -> publishing handler to entry",
+            task.key.c_str(),
+            task.priority);
 
         task.promise.set_value(handler);
     }
@@ -342,14 +375,12 @@ void Storage::WorkerThread()
 
 Storage::Storage() : m_workersStopFlag(false)
 {
-
 }
 
 Storage::~Storage()
 {
     StopWorkers();
 }
-
 }
 }
 }

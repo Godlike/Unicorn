@@ -1,6 +1,7 @@
 /*
 * Copyright (C) 2017 by Grapefruit Tech
-* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+* This code is licensed under the MIT license (MIT)
+* (http://opensource.org/licenses/MIT)
 */
 
 #ifndef VORPAL_UTILITY_SHARED_MACROS_HPP
@@ -20,4 +21,4 @@
 #define VORPAL_EXPORT
 #endif
 
-#endif // VORPAL_UTILITY_SHARED_MACROS_HPP
+#endif  // VORPAL_UTILITY_SHARED_MACROS_HPP

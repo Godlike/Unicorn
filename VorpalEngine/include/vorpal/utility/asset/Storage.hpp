@@ -1,6 +1,7 @@
 /*
 * Copyright (C) 2017 by Grapefruit Tech
-* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+* This code is licensed under the MIT license (MIT)
+* (http://opensource.org/licenses/MIT)
 */
 
 #ifndef VORPAL_UTILITY_ASSET_STORAGE_HPP
@@ -23,136 +24,141 @@
 
 namespace vp
 {
-    namespace utility
+namespace utility
+{
+namespace asset
+{
+/** @brief  Controls thread safe asset access
+ *
+ *  Provides both sync and async methods to request assets
+ *
+ *  @todo   cleaning up idle Handler object
+ */
+class Storage : public templates::Singleton<Storage>
+{
+   public:
+    typedef std::string KeyType;
+
+    /** @brief  Initializes worker threads
+     *
+     *  If upon the calling of this method there already were
+     *  some worker threads, they will be stopped and after that
+     *  given number of threads will be created
+     *
+     *  @param  count   number of worker threads
+     */
+    VORPAL_EXPORT void InitializeWorkers(uint16_t count);
+
+    /** @brief  Synchronously gets an asset identified by @p key
+     *
+     *  If asset is available, returns it. Otherwise:
+     *  - if the asset was not yet requested, prepares and returns it
+     *  - if the asset task is in the worker queue, tries to snatch it:
+     *  -- if task was snatched, prepares and returns the asset
+     *  -- if task was not snatched, waits until worker provides the asset
+     *
+     *  @param  key asset identifier
+     *
+     *  @return Handler shared object
+     */
+    VORPAL_EXPORT Handler Get(const KeyType& key);
+
+    /** @brief  Asynchronously gets an asset identified by @p key
+     *
+     *  If asset is avaiable, returns its shared future. Otherwise
+     *  - if the asset was not yet requested, prepares asset loading task
+     *      and pushes it to the worker queue
+     *  - if the asset task is in the worker queue, notifies it of @p priority;
+     *      (the biggest of priorities is taken)
+     *
+     *  @param  key         asset identifier
+     *  @param  priority    asset loading priority
+     *
+     *  @return shared future object on a Handler
+     */
+    VORPAL_EXPORT std::shared_future<Handler> GetAsync(
+        const KeyType& key, uint32_t priority = 100);
+
+   private:
+    friend class utility::templates::Singleton<Storage>;
+
+    typedef concurrent::UnorderedMap<KeyType, std::shared_future<Handler>>
+        ConcurrentHandlerMap;
+    typedef std::set<KeyType> RequestsSet;
+    typedef std::shared_timed_mutex SharedMutexType;
+    typedef std::mutex MutexType;
+
+    /** @brief  Describes asset loading task */
+    struct Task
     {
-        namespace asset
+        KeyType key;
+        uint32_t priority;
+        std::promise<Handler> promise;
+
+        Task();
+
+        Task(const Task& other) = delete;
+        Task& operator=(const Task& other) = delete;
+
+        Task(Task&& other);
+        Task& operator=(Task&& other);
+
+        ~Task() = default;
+
+        struct ComparePriority
         {
-            /** @brief  Controls thread safe asset access
-             *
-             *  Provides both sync and async methods to request assets
-             *
-             *  @todo   cleaning up idle Handler object
-             */
-            class Storage : public templates::Singleton<Storage>
+            bool operator()(const Task& lhs, const Task& rhs) const
             {
-            public:
-                typedef std::string KeyType;
+                return lhs.priority < rhs.priority;
+            }
+        };
+    };
 
-                /** @brief  Initializes worker threads
-                 *
-                 *  If upon the calling of this method there already were
-                 *  some worker threads, they will be stopped and after that
-                 *  given number of threads will be created
-                 *
-                 *  @param  count   number of worker threads
-                 */
-                VORPAL_EXPORT void InitializeWorkers(uint16_t count);
+    /** @brief  Describes worker queue */
+    class TaskQueue : public std::priority_queue<Task,
+                          std::vector<Task>,
+                          Task::ComparePriority>
+    {
+       public:
+        Task Snatch(const KeyType& key);
+        Task PopTop();
+        void UpdatePriority(const KeyType& key, uint32_t priority);
+    };
 
-                /** @brief  Synchronously gets an asset identified by @p key
-                 *
-                 *  If asset is available, returns it. Otherwise:
-                 *  - if the asset was not yet requested, prepares and returns it
-                 *  - if the asset task is in the worker queue, tries to snatch it:
-                 *  -- if task was snatched, prepares and returns the asset
-                 *  -- if task was not snatched, waits until worker provides the asset
-                 *
-                 *  @param  key asset identifier
-                 *
-                 *  @return Handler shared object
-                 */
-                VORPAL_EXPORT Handler Get(const KeyType& key);
+    void StopWorkers();
 
-                /** @brief  Asynchronously gets an asset identified by @p key
-                 *
-                 *  If asset is avaiable, returns its shared future. Otherwise
-                 *  - if the asset was not yet requested, prepares asset loading task
-                 *      and pushes it to the worker queue
-                 *  - if the asset task is in the worker queue, notifies it of @p priority;
-                 *      (the biggest of priorities is taken)
-                 *
-                 *  @param  key         asset identifier
-                 *  @param  priority    asset loading priority
-                 *
-                 *  @return shared future object on a Handler
-                 */
-                VORPAL_EXPORT std::shared_future<Handler> GetAsync(const KeyType& key, uint32_t priority = 100);
+    Handler ProcessHandlerCreation(const KeyType& key);
+    std::shared_future<Handler> ProcessAsyncHandlerCreation(
+        const KeyType& key, uint32_t priority);
 
-            private:
-                friend class utility::templates::Singleton<Storage>;
+    Handler CreateHandler(const KeyType& key);
 
-                typedef concurrent::UnorderedMap< KeyType, std::shared_future<Handler> > ConcurrentHandlerMap;
-                typedef std::set<KeyType> RequestsSet;
-                typedef std::shared_timed_mutex SharedMutexType;
-                typedef std::mutex MutexType;
+    void WorkerThread();
 
-                /** @brief  Describes asset loading task */
-                struct Task
-                {
-                    KeyType key;
-                    uint32_t priority;
-                    std::promise<Handler> promise;
+    VORPAL_EXPORT Storage();
 
-                    Task();
+    Storage(const Storage& other) = delete;
+    Storage& operator=(const Storage& other) = delete;
 
-                    Task(const Task& other) = delete;
-                    Task& operator=(const Task& other) = delete;
+    Storage(Storage&& other) = delete;
+    Storage& operator=(Storage&& other) = delete;
 
-                    Task(Task&& other);
-                    Task& operator=(Task&& other);
+    VORPAL_EXPORT ~Storage();
 
-                    ~Task() = default;
+    ConcurrentHandlerMap m_entries;
 
-                    struct ComparePriority
-                    {
-                        bool operator()(const Task& lhs, const Task& rhs) const
-                        {
-                            return lhs.priority < rhs.priority;
-                        }
-                    };
-                };
+    RequestsSet m_requests;
+    SharedMutexType m_requestsMutex;
 
-                /** @brief  Describes worker queue */
-                class TaskQueue : public std::priority_queue<Task, std::vector<Task>, Task::ComparePriority>
-                {
-                public:
-                    Task Snatch(const KeyType& key);
-                    Task PopTop();
-                    void UpdatePriority(const KeyType& key, uint32_t priority);
-                };
+    std::vector<std::thread> m_workers;
 
-                void StopWorkers();
-
-                Handler ProcessHandlerCreation(const KeyType& key);
-                std::shared_future<Handler> ProcessAsyncHandlerCreation(const KeyType& key, uint32_t priority);
-
-                Handler CreateHandler(const KeyType& key);
-
-                void WorkerThread();
-
-                VORPAL_EXPORT Storage();
-
-                Storage(const Storage& other) = delete;
-                Storage& operator=(const Storage& other) = delete;
-
-                Storage(Storage&& other) = delete;
-                Storage& operator=(Storage&& other) = delete;
-
-                VORPAL_EXPORT ~Storage();
-
-                ConcurrentHandlerMap m_entries;
-
-                RequestsSet m_requests;
-                SharedMutexType m_requestsMutex;
-
-                std::vector<std::thread> m_workers;
-
-                TaskQueue m_orders;
-                MutexType m_ordersMutex;
-                bool m_workersStopFlag; //! is guarded by m_ordersMutex
-                std::condition_variable m_ordersCV;
-            };
-        }
-    }
+    TaskQueue m_orders;
+    MutexType m_ordersMutex;
+    bool m_workersStopFlag;  //! is guarded by m_ordersMutex
+    std::condition_variable m_ordersCV;
+};
+}
+}
 }
 
-#endif // VORPAL_UTILITY_ASSET_STORAGE_HPP
+#endif  // VORPAL_UTILITY_ASSET_STORAGE_HPP
