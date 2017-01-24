@@ -11,6 +11,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <string>
 
 struct GLFWwindow;
 
