@@ -3,10 +3,6 @@ sudo: required
 os: linux
 compiler:
   - gcc
-
-branches:
-  only:
-  - task_11/continues_integration_setup
   
 before_script:
   - wget "https://vulkan.lunarg.com/sdk/download/1.0.39.0/linux/vulkansdk-linux-x86_64-1.0.37.0.run"
