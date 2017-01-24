@@ -41,10 +41,11 @@ script:
   - cd build
   - cmake -DCMAKE_CXX_COMPILER=$COMPILER ..
   - make
+  - ctest -VV
 notifications:
   email:
     recipients:
       - nikita.krupitskas@gmail.com
-      - odintsoff@gmail.com 
+      - odintsoff@gmail.com
     on_success: change
     on_failure: always

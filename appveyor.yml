@@ -1,34 +1,37 @@
 version: 1.0.{build}
-configuration: Debug, Release
-platform: Any CPU
-clone_folder: c:\VorpalEngine
+configuration:
+  - Debug
+  - Release
+platform: x64
+clone_folder: "c:\\VorpalEngine"
+environment:
+  VULKAN_SDK: "c:\\VulkanSDK\\1.0.39.0\\"
+
 init:
-- ps: >-
-    New-Item -ItemType directory -Path C:\Vulkan
+  - curl -fsS -o vulkan-installer.exe https://vulkan.lunarg.com/sdk/download/1.0.39.0/windows/VulkanSDK-1.0.39.0-Installer.exe
+  - vulkan-installer.exe /S
+  - rm -f vulkan-installer.exe
 
-    $url = "https://vulkan.lunarg.com/sdk/download/1.0.39.0/windows/VulkanSDK-1.0.39.0-Installer.exe"
-
-    $output = "c:\Vulkan\VulkanSDK-1.0.39.0-Installer.exe"
-
-    (New-Object System.Net.WebClient).DownloadFile($url, $output)
-
-    c:\Vulkan\VulkanSDK-1.0.39.0-Installer.exe
-
-    [Environment]::SetEnvironmentVariable("VULKAN_SDK", "c:\Vulkan\VulkanSDK\1.0.39.0\x86_64", "Machine")
 install:
-- cmd: >-
-    git submodule update --init --recursive
+  - git submodule update --init --recursive
+  - mkdir build
+  - cd build
+  - cmake -G "Visual Studio 14 2015 Win64" ..
 
-    cmake -G "Visual Studio 14 2015 Win64" .
 build:
-  project: Vorpal-Engine\VorpalEngine.sln
+  project: "build\\GrapefruitTech.sln"
   parallel: true
   verbosity: minimal
+
+test_script:
+  - cd %APPVEYOR_BUILD_FOLDER%/build
+  - ctest -VV -C %CONFIGURATION%
+
 notifications:
 - provider: Email
   to:
-  - nikita.krupitskas@gmail.com
-  - odintsoff@gmail.com
+    - nikita.krupitskas@gmail.com
+    - odintsoff@gmail.com
   on_build_success: false
   on_build_failure: true
   on_build_status_changed: true
