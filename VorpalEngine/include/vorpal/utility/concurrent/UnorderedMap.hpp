@@ -6,6 +6,7 @@
 #ifndef VORPAL_UTILITY_CONCURRENT_UNORDERED_MAP_HPP
 #define VORPAL_UTILITY_CONCURRENT_UNORDERED_MAP_HPP
 
+#include <mutex>
 #include <shared_mutex>
 #include <unordered_map>
 
