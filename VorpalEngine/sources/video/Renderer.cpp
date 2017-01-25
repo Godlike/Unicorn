@@ -718,16 +718,16 @@ namespace video
         VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
 
         VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
-        vertexInputInfo.sType                           = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertexInputInfo.vertexBindingDescriptionCount   = 0;
-        vertexInputInfo.pVertexBindingDescriptions      = nullptr; // Optional
-        vertexInputInfo.vertexAttributeDescriptionCount = 0;
-        vertexInputInfo.pVertexAttributeDescriptions    = nullptr; // Optional
+        vertexInputInfo.sType                                = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+        vertexInputInfo.vertexBindingDescriptionCount        = 0;
+        vertexInputInfo.pVertexBindingDescriptions           = nullptr; // Optional
+        vertexInputInfo.vertexAttributeDescriptionCount      = 0;
+        vertexInputInfo.pVertexAttributeDescriptions         = nullptr; // Optional
 
         VkPipelineInputAssemblyStateCreateInfo inputAssembly = {};
-        inputAssembly.sType                  = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-        inputAssembly.topology               = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-        inputAssembly.primitiveRestartEnable = VK_FALSE;
+        inputAssembly.sType                                  = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+        inputAssembly.topology                               = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+        inputAssembly.primitiveRestartEnable                 = VK_FALSE;
 
         VkViewport viewport = {}; // TODO : if we will using super sampling. Need to rethink.
         viewport.x          = 0.0f;
@@ -754,12 +754,12 @@ namespace video
         rasterizer.rasterizerDiscardEnable                = VK_FALSE;
         rasterizer.polygonMode                            = VK_POLYGON_MODE_FILL;
         rasterizer.lineWidth                              = 1.0f;
-        rasterizer.cullMode        = VK_CULL_MODE_BACK_BIT; // TODO: do it needed for 2d?
-        rasterizer.frontFace       = VK_FRONT_FACE_CLOCKWISE;
-        rasterizer.depthBiasEnable = VK_FALSE;
-        rasterizer.depthBiasConstantFactor = 0.0f;
-        rasterizer.depthBiasClamp          = 0.0f;
-        rasterizer.depthBiasSlopeFactor    = 0.0f;
+        rasterizer.cullMode                               = VK_CULL_MODE_BACK_BIT; // TODO: do it needed for 2d?
+        rasterizer.frontFace                              = VK_FRONT_FACE_CLOCKWISE;
+        rasterizer.depthBiasEnable                        = VK_FALSE;
+        rasterizer.depthBiasConstantFactor                = 0.0f;
+        rasterizer.depthBiasClamp                         = 0.0f;
+        rasterizer.depthBiasSlopeFactor                   = 0.0f;
 
         VkPipelineMultisampleStateCreateInfo multisampling = {}; // TODO: configure MSAA
         multisampling.sType                                = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
@@ -979,7 +979,7 @@ namespace video
         if (extensionsSupported)
         {
             SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(device);
-            swapChainAcceptable = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
+            swapChainAcceptable                      = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
         }
         if (deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && indices.isComplete()
             && extensionsSupported
@@ -1141,7 +1141,7 @@ namespace video
 
         VkDebugReportCallbackCreateInfoEXT createInfo = {};
         createInfo.sType                              = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
-        createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_INFORMATION_BIT_EXT
+        createInfo.flags                              = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_INFORMATION_BIT_EXT
             | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
         createInfo.pfnCallback = DebugCallback;
         return CreateDebugReportCallbackEXT(&createInfo) == VK_SUCCESS;

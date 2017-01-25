@@ -19,7 +19,7 @@ BinPackParameters: 'false'
 BreakBeforeBraces: Allman
 BreakBeforeTernaryOperators: 'false'
 BreakConstructorInitializersBeforeComma: 'true'
-ColumnLimit: '120'
+ColumnLimit: '0'
 ConstructorInitializerIndentWidth: '4'
 DerivePointerAlignment: 'false'
 IndentCaseLabels: 'true'
