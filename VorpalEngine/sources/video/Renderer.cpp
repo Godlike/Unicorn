@@ -104,7 +104,10 @@ namespace video
                                      nullptr);
         glfwSetWindowUserPointer(m_pWindow, this);
         glfwSetWindowSizeCallback(m_pWindow, onWindowResized);
-        if (!CreateInstance() || !SetupDebugCallback() || !CreateSurface() || !PickPhysicalDevice()
+        if (!CreateInstance()
+            || !SetupDebugCallback()
+            || !CreateSurface()
+            || !PickPhysicalDevice()
             || !CreateLogicalDevice()
             || !CreateSwapChain()
             || !CreateImageViews()

@@ -16,6 +16,7 @@ AllowShortLoopsOnASingleLine: 'false'
 AlwaysBreakBeforeMultilineStrings: 'false'
 BinPackArguments: 'false'
 BinPackParameters: 'false'
+BreakBeforeBinaryOperators: All
 BreakBeforeBraces: Allman
 BreakBeforeTernaryOperators: 'false'
 BreakConstructorInitializersBeforeComma: 'true'
