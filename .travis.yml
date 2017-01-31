@@ -1,0 +1,51 @@
+sudo: required
+os: linux
+dist: trusty
+language: cpp
+compiler: gcc
+matrix:
+  exclude:
+    - compiler: gcc
+  include:
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env: COMPILER=g++-6
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.9
+          packages:
+            - clang-3.9
+      env: COMPILER=clang++-3.9
+git:
+  submodules: false
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libx11-xcb-dev libxrandr-dev libxinerama-dev libxcursor-dev
+  - git submodule update --init --recursive
+  - wget "https://vulkan.lunarg.com/sdk/download/1.0.39.0/linux/vulkansdk-linux-x86_64-1.0.39.0.run"
+  - chmod ugo+x vulkansdk-linux-x86_64-1.0.39.0.run
+  - ./vulkansdk-linux-x86_64-1.0.39.0.run
+  - export VULKAN_SDK="$(pwd)/VulkanSDK/1.0.39.0/x86_64"
+  - export PATH=$PATH:$VULKAN_SDK/x86_64/bin
+  - unset CXX && unset CC
+script:
+  - mkdir build
+  - cd build
+  - cmake -DCMAKE_CXX_COMPILER=$COMPILER ..
+  - make -j${nproc}
+  - ctest -VV
+notifications:
+  email:
+    recipients:
+      - nikita.krupitskas@gmail.com
+      - odintsoff@gmail.com
+    on_success: change
+    on_failure: always
