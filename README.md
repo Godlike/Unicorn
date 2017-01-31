@@ -1,6 +1,6 @@
 # Unicorn
 
-<a href="https://discord.gg/kQVvHQg">
+<a target="_blank" href="https://discord.gg/kQVvHQg">
   <img src="https://discordapp.com/assets/bb408e0343ddedc0967f246f7e89cebf.svg" alt="Join discord chat." width="100">
 </a>
 
