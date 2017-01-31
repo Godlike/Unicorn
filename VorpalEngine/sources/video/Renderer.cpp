@@ -21,6 +21,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
+
 namespace vp
 {
     namespace video
@@ -57,22 +60,7 @@ namespace vp
               , m_swapChainImageFormat()
               , m_validationLayers({"VK_LAYER_LUNARG_standard_validation"})
               , m_deviceExtensions({VK_KHR_SWAPCHAIN_EXTENSION_NAME})
-        {
-            m_vertices = {
-                { { -0.5f, -0.5f, 0.0f },{ 1.0f, 0.0f, 0.0f },{ 0.0f, 0.0f } },
-                { { 0.5f, -0.5f, 0.0f },{ 0.0f, 1.0f, 0.0f },{ 1.0f, 0.0f } },
-                { { 0.5f, 0.5f, 0.0f },{ 0.0f, 0.0f, 1.0f },{ 1.0f, 1.0f } },
-                { { -0.5f, 0.5f, 0.0f },{ 1.0f, 1.0f, 1.0f },{ 0.0f, 1.0f } },
-
-                { { -0.5f, -0.5f, -0.5f },{ 1.0f, 0.0f, 0.0f },{ 0.0f, 0.0f } },
-                { { 0.5f, -0.5f, -0.5f },{ 0.0f, 1.0f, 0.0f },{ 1.0f, 0.0f } },
-                { { 0.5f, 0.5f, -0.5f },{ 0.0f, 0.0f, 1.0f },{ 1.0f, 1.0f } },
-                { { -0.5f, 0.5f, -0.5f },{ 1.0f, 1.0f, 1.0f },{ 0.0f, 1.0f } }
-            };
-
-            m_indices = { 0, 1, 2, 2, 3, 0,
-                          4, 5, 6, 6, 7, 4 };
-
+        {            
             m_vkSwapChain = VK_NULL_HANDLE;
             m_renderPass = VK_NULL_HANDLE;
             m_pipelineLayout = VK_NULL_HANDLE;
@@ -102,7 +90,7 @@ namespace vp
             m_textureSampler = VK_NULL_HANDLE;
             m_depthImageMemory = VK_NULL_HANDLE;
             m_depthImageView = VK_NULL_HANDLE;
-            m_depthImageMemory = VK_NULL_HANDLE;
+            m_depthImage = VK_NULL_HANDLE;
         }
 
         Renderer::~Renderer()
@@ -155,6 +143,7 @@ namespace vp
                 || !CreateTextureImage()
                 || !CreateTextureImageView()
                 || !CreateTextureSampler()
+                || !LoadModel()
                 || !CreateVertexBuffer()
                 || !CreateIndexBuffer()
                 || !CreateUniformBuffer()
@@ -1394,7 +1383,7 @@ namespace vp
                 vkCmdBindIndexBuffer(m_commandBuffers[i],
                                      m_indexBuffer,
                                      0,
-                                     VK_INDEX_TYPE_UINT16); // Be careful here, don't forget to change
+                                     VK_INDEX_TYPE_UINT32);
                 // UINTxxx
                 vkCmdBindDescriptorSets(m_commandBuffers[i],
                                         VK_PIPELINE_BIND_POINT_GRAPHICS,
@@ -1655,10 +1644,45 @@ namespace vp
             return true;
         }
 
+        bool Renderer::LoadModel()
+        {
+            tinyobj::attrib_t attrib;
+            std::vector<tinyobj::shape_t> shapes;
+            std::vector<tinyobj::material_t> materials;
+            std::string err;
+
+            if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &err, m_modelPath.c_str())) {
+               LOG_ERROR(err.c_str());
+               return false;
+            }
+
+           for (const auto& shape : shapes) {
+               for (const auto& index : shape.mesh.indices) {
+                   Vertex vertex = {};
+
+                   vertex.pos = {
+                       attrib.vertices[3 * index.vertex_index + 0],
+                       attrib.vertices[3 * index.vertex_index + 1],
+                       attrib.vertices[3 * index.vertex_index + 2]
+                   };
+
+                   vertex.texCoord = {
+                       attrib.texcoords[2 * index.texcoord_index + 0],
+                       1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
+                   };
+
+                   vertex.color = {1.0f, 1.0f, 1.0f};
+                   m_vertices.push_back(vertex);
+                   m_indices.push_back(m_indices.size());
+               }
+           }
+            return true;
+        }
+
         bool Renderer::CreateTextureImage()
         {
             int texWidth, texHeight, texChannels;
-            stbi_uc* pixels = stbi_load("data/textures/texture.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+            stbi_uc* pixels = stbi_load(m_texturePath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
             //TODO: replace with Vorpal Loader
             VkDeviceSize imageSize = texWidth * texHeight * 4;
 

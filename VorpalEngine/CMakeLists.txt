@@ -26,9 +26,8 @@ elseif(WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
 endif()
 
-## Should be uncommented when TinyObjLoader library is used
-# include(TinyObjLoaderConfig)
-# add_subdirectory(${TINYOBJLOADER_ROOT_DIR})
+include(TinyObjLoaderConfig)
+add_subdirectory(${TINYOBJLOADER_ROOT_DIR})
 
 ## GLFW
 # GLFW shall always be statically linked

@@ -141,6 +141,8 @@ namespace vp
             VkDeviceMemory m_textureImageMemory;
             VkImageView m_textureImageView;
             VkSampler m_textureSampler;
+            const std::string m_modelPath = "data/models/cabin/chalet.obj";
+            const std::string m_texturePath = "data/models/cabin/chalet.jpg";
 
             VkSemaphore m_imageAvailableSemaphore;
             VkSemaphore m_renderFinishedSemaphore;
@@ -153,7 +155,7 @@ namespace vp
             std::vector<VkFramebuffer> m_swapChainFramebuffers;
             std::vector<VkCommandBuffer> m_commandBuffers;
             std::vector<Vertex> m_vertices;
-            std::vector<uint16_t> m_indices;
+            std::vector<uint32_t> m_indices;
             VkImage m_depthImage;
             VkDeviceMemory m_depthImageMemory;
             VkImageView m_depthImageView;
@@ -186,6 +188,7 @@ namespace vp
             bool CreateDescriptorSetLayout();
             bool CreateDescriptorPool();
             bool CreateDescriptorSet();
+            bool LoadModel();
             bool CreateTextureImage();
             bool CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, VkImageView& imageView);
             bool CreateTextureSampler();
