@@ -11,12 +11,10 @@ namespace vp
 {
 namespace video
 {
-
 Graphics::Graphics()
     : m_isInitialized(false)
     , m_pRenderer(nullptr)
 {
-
 }
 
 Graphics::~Graphics()
@@ -59,7 +57,12 @@ void Graphics::Deinit()
 
         m_pRenderer = nullptr;
     }
-    if(!m_isInitialized) LOG_INFO("Graphics shutdown correctly.");
+
+    if (!m_isInitialized)
+    {
+        LOG_INFO("Graphics shutdown correctly.");
+    }
+
     m_isInitialized = false;
 }
 
@@ -70,6 +73,5 @@ void Graphics::Render()
         m_pRenderer->Render();
     }
 }
-
 }
 }

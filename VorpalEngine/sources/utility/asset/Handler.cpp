@@ -11,14 +11,12 @@ namespace utility
 {
 namespace asset
 {
-
 Handler::Handler()
     : m_pName(nullptr)
     , m_pContent(nullptr)
     , m_pRefCounter(nullptr)
     , m_pLastReferenceTimestamp(nullptr)
 {
-
 }
 
 Handler::Handler(const std::string& name, Content* pContent)
@@ -138,8 +136,9 @@ void Handler::Unsubscribe()
             {
                 m_pLastReferenceTimestamp->store(
                     std::chrono::duration_cast<std::chrono::milliseconds>(
-                        std::chrono::system_clock::now().time_since_epoch()
-                    ).count(), std::memory_order_release);
+                        std::chrono::system_clock::now().time_since_epoch())
+                        .count(),
+                    std::memory_order_release);
                 break;
             }
             default:
@@ -166,7 +165,6 @@ void Handler::Subscribe()
         }
     }
 }
-
 }
 }
 }

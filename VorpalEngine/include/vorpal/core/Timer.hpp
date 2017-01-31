@@ -18,7 +18,7 @@ class Timer
     using Clock = std::chrono::high_resolution_clock;
     using Duration = Clock::duration;
 
-   public:
+public:
     Timer();
     void Start();
     Duration Elapsed() const;
@@ -29,10 +29,10 @@ class Timer
     long long Nanoseconds() const;
     long long Seconds() const;
 
-   private:
+private:
     Clock::time_point m_epoch;
 };
 }
 }
 
-#endif  // VORPAL_CORE_TIMER_HPP
+#endif // VORPAL_CORE_TIMER_HPP

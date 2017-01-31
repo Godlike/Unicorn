@@ -20,6 +20,7 @@ int main(int argc, char* argv[])
     {
         vpEngine->Run();
     }
+
     vpEngine->Deinit();
     delete vpEngine;
 

@@ -10,12 +10,10 @@
 
 namespace vp
 {
-
 VorpalEngine::VorpalEngine()
     : m_isInitialized(false)
     , m_pGraphics(nullptr)
 {
-
 }
 
 VorpalEngine::~VorpalEngine()
@@ -25,7 +23,11 @@ VorpalEngine::~VorpalEngine()
 
 bool VorpalEngine::Init()
 {
-    if (m_isInitialized) return false;
+    if (m_isInitialized)
+    {
+        return false;
+    }
+
     vp::utility::asset::SimpleStorage::Instance();
     LOG_INFO("Engine initialization started.");
 
@@ -55,8 +57,13 @@ void VorpalEngine::Deinit()
 
         m_pGraphics = nullptr;
     }
-    if(!m_isInitialized) LOG_INFO("Engine shutdown correctly.");
-    m_isInitialized = false;    
+
+    if (!m_isInitialized)
+    {
+        LOG_INFO("Engine shutdown correctly.");
+    }
+
+    m_isInitialized = false;
 }
 
 void VorpalEngine::Run()
@@ -66,5 +73,4 @@ void VorpalEngine::Run()
         m_pGraphics->Render();
     }
 }
-
 }

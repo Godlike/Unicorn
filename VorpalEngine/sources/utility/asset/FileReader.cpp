@@ -14,12 +14,10 @@ namespace utility
 {
 namespace asset
 {
-
 FileReader::FileReader(const char* path)
     : m_flags(Flags::uninitialized)
     , m_path(path)
 {
-
 }
 
 bool FileReader::IsGood()
@@ -76,7 +74,6 @@ void FileReader::LazyAccess()
         }
     }
 }
-
 }
 }
 }
