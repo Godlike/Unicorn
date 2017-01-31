@@ -12,4 +12,4 @@
 	url = https://github.com/nothings/stb.git
 [submodule "VorpalEngine/external/tinyobjloader"]
 	path = VorpalEngine/external/tinyobjloader
-	url = https://github.com/syoyo/tinyobjloader
+	url = https://github.com/syoyo/tinyobjloader.git
