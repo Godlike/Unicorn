@@ -1,4 +1,4 @@
-ASSIMP- library to load various 3D file formats, including Collada, 3DS, X, Obj, STL.
+TinyObjLoader - library for loading Obj 3D files.
 STB - we only need now for stb_image.h to load PNG, JPEG and so on.
 GLM - math library.
 GLFW - window and vulkan context intializer.

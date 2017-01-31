@@ -26,9 +26,9 @@ elseif(WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
 endif()
 
-## Should be uncommented when Assimp library is used
-# include(AssimpConfig)
-# add_subdirectory(${ASSIMP_ROOT_DIR})
+## Should be uncommented when TinyObjLoader library is used
+# include(TinyObjLoaderConfig)
+# add_subdirectory(${TINYOBJLOADER_ROOT_DIR})
 
 ## GLFW
 # GLFW shall always be statically linked
@@ -63,7 +63,7 @@ endif ()
 
 include_directories(
     ${VORPAL_ENGINE_INCLUDE_DIR}
-    ${ASSIMP_INCLUDE_DIR}
+    ${TINYOBJLOADER_INCLUDE_DIR}
     ${GLFW_INCLUDE_DIR}
     ${GLM_INCLUDE_DIR}
     ${LOGURU_INCLUDE_DIR}
