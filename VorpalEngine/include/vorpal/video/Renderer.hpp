@@ -33,7 +33,7 @@ namespace vp
 
         struct Vertex
         {
-            glm::vec2 pos;
+            glm::vec3 pos;
             glm::vec3 color;
             glm::vec2 texCoord;
 
@@ -53,7 +53,7 @@ namespace vp
                     {};
                 attributeDescriptions[0].binding = 0;
                 attributeDescriptions[0].location = 0;
-                attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+                attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
                 attributeDescriptions[0].offset = offsetof(Vertex, pos);
 
                 attributeDescriptions[1].binding = 0;
@@ -154,6 +154,9 @@ namespace vp
             std::vector<VkCommandBuffer> m_commandBuffers;
             std::vector<Vertex> m_vertices;
             std::vector<uint16_t> m_indices;
+            VkImage m_depthImage;
+            VkDeviceMemory m_depthImageMemory;
+            VkImageView m_depthImageView;
             core::Timer m_timer;
             VkDescriptorSet m_descriptorSet;
 #ifdef NDEBUG
@@ -173,6 +176,7 @@ namespace vp
             bool CreateGraphicsPipeline();
             bool CreateFramebuffers();
             bool CreateCommandPool();
+            bool CreateDepthResources();
             bool CreateCommandBuffers();
             bool CreateSemaphores();
             bool CreateVertexBuffer();
@@ -183,10 +187,11 @@ namespace vp
             bool CreateDescriptorPool();
             bool CreateDescriptorSet();
             bool CreateTextureImage();
-            bool CreateImageView(VkImage image, VkFormat format, VkImageView& imageView);
+            bool CreateImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags, VkImageView& imageView);
             bool CreateTextureSampler();
             bool CreateTextureImageView();
             bool CreateImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
+            bool HasStencilComponent(VkFormat format);
             bool CreateShaderModule(
                 const std::vector<uint8_t>& code, VkShaderModule& shaderModule) const;
             bool IsDeviceSuitable(VkPhysicalDevice device);
