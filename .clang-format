@@ -1,37 +1,49 @@
-﻿---
-BasedOnStyle: WebKit
-AccessModifierOffset: '-4'
-AlignAfterOpenBracket: Align
-AlignConsecutiveAssignments: 'true'
+---
+BasedOnStyle: Google
+AccessModifierOffset: -4
+AlignAfterOpenBracket: DontAlign
+AlignConsecutiveAssignments: 'false'
 AlignConsecutiveDeclarations: 'false'
-AlignEscapedNewlinesLeft: 'true'
 AlignOperands: 'false'
 AlignTrailingComments: 'true'
 AllowAllParametersOfDeclarationOnNextLine: 'true'
-AllowShortBlocksOnASingleLine: 'true'
+AllowShortBlocksOnASingleLine: 'false'
 AllowShortCaseLabelsOnASingleLine: 'false'
-AllowShortFunctionsOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Inline
 AllowShortIfStatementsOnASingleLine: 'false'
 AllowShortLoopsOnASingleLine: 'false'
 AlwaysBreakBeforeMultilineStrings: 'false'
 BinPackArguments: 'false'
 BinPackParameters: 'false'
-BreakBeforeBinaryOperators: All
-BreakBeforeBraces: Allman
+BraceWrapping:
+  AfterClass:      true
+  AfterControlStatement: true
+  AfterEnum:       true
+  AfterFunction:   true
+  AfterNamespace:  true
+  AfterObjCDeclaration: true
+  AfterStruct:     true
+  AfterUnion:      true
+  BeforeCatch:     true
+  BeforeElse:      true
+  IndentBraces:    false
+BreakBeforeBraces: Custom
 BreakBeforeTernaryOperators: 'false'
 BreakConstructorInitializersBeforeComma: 'true'
-ColumnLimit: '0'
-ConstructorInitializerIndentWidth: '4'
+ColumnLimit: 0
 DerivePointerAlignment: 'false'
 IndentCaseLabels: 'true'
 IndentWidth: '4'
 Language: Cpp
+MaxEmptyLinesToKeep: 1
 PointerAlignment: Left
+ReflowComments: 'true'
 SortIncludes: 'false'
 SpaceAfterCStyleCast: 'true'
 SpaceBeforeAssignmentOperators: 'true'
 SpaceBeforeParens: ControlStatements
 SpaceInEmptyParentheses: 'false'
+SpacesBeforeTrailingComments: 1
 Standard: Cpp11
 TabWidth: '4'
 UseTab: Never

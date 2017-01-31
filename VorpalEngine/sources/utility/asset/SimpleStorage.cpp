@@ -16,7 +16,6 @@ namespace utility
 {
 namespace asset
 {
-
 Handler SimpleStorage::Get(const KeyType& key)
 {
     HandlerMap::const_iterator it = m_entries.find(key);
@@ -67,7 +66,6 @@ Handler SimpleStorage::CreateHandler(const KeyType& key)
 
     return Handler(key, content);
 }
-
 }
 }
 }

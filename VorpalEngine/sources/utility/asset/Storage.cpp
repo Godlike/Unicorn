@@ -18,7 +18,6 @@ namespace utility
 {
 namespace asset
 {
-
 void Storage::InitializeWorkers(uint16_t count)
 {
     if (m_workers.size() != count)
@@ -32,7 +31,7 @@ void Storage::InitializeWorkers(uint16_t count)
 
     for (unsigned int i = 0; i < count; ++i)
     {
-        m_workers.push_back( std::thread(&Storage::WorkerThread, this) );
+        m_workers.push_back(std::thread(&Storage::WorkerThread, this));
     }
 }
 
@@ -194,7 +193,7 @@ std::shared_future<Handler> Storage::ProcessAsyncHandlerCreation(const KeyType& 
 
         {
             std::lock_guard<MutexType> lock(m_ordersMutex);
-            m_orders.push( std::move(task) );
+            m_orders.push(std::move(task));
         }
 
         m_ordersCV.notify_one();
@@ -238,7 +237,6 @@ Storage::Task::Task()
     : key(KeyType())
     , priority(0)
 {
-
 }
 
 Storage::Task::Task(Task&& other)
@@ -318,7 +316,7 @@ void Storage::WorkerThread()
     while (!m_workersStopFlag)
     {
         lock.lock();
-        m_ordersCV.wait(lock, [&](){ return !m_orders.empty() || m_workersStopFlag; });
+        m_ordersCV.wait(lock, [&]() { return !m_orders.empty() || m_workersStopFlag; });
 
         if (m_workersStopFlag)
         {
@@ -340,16 +338,15 @@ void Storage::WorkerThread()
     }
 }
 
-Storage::Storage() : m_workersStopFlag(false)
+Storage::Storage()
+    : m_workersStopFlag(false)
 {
-
 }
 
 Storage::~Storage()
 {
     StopWorkers();
 }
-
 }
 }
 }

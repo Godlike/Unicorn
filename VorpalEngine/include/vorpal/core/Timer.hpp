@@ -10,13 +10,12 @@
 
 namespace vp
 {
-    namespace core
-    {
-        class Timer
-        {
-
-        };
-    }
+namespace core
+{
+class Timer
+{
+};
+}
 }
 
 #endif // VORPAL_CORE_TIMER_HPP
