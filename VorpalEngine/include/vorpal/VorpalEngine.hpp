@@ -10,31 +10,31 @@
 
 namespace vp
 {
-    namespace video
-    {
-        class Graphics;
-    }
+namespace video
+{
+class Graphics;
+}
 
-    class VORPAL_EXPORT VorpalEngine
-    {
-    public:
-        VorpalEngine();
-        ~VorpalEngine();
+class VORPAL_EXPORT VorpalEngine
+{
+public:
+    VorpalEngine();
+    ~VorpalEngine();
 
-        VorpalEngine(const VorpalEngine& other) = delete;
-        VorpalEngine& operator=(const VorpalEngine& other) = delete;
+    VorpalEngine(const VorpalEngine& other) = delete;
+    VorpalEngine& operator=(const VorpalEngine& other) = delete;
 
-        VorpalEngine(VorpalEngine&& other) = delete;
-        VorpalEngine& operator=(VorpalEngine&& other) = delete;
+    VorpalEngine(VorpalEngine&& other) = delete;
+    VorpalEngine& operator=(VorpalEngine&& other) = delete;
 
-        bool Init();
-        void Run();
-        void Deinit();
+    bool Init();
+    void Run();
+    void Deinit();
 
-    private:
-        bool m_isInitialized;
-        video::Graphics* m_pGraphics;
-    };
+private:
+    bool m_isInitialized;
+    video::Graphics* m_pGraphics;
+};
 }
 
 #endif // VORPAL_ENGINE_HPP

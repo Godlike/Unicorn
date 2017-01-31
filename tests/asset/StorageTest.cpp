@@ -11,18 +11,20 @@ void PrintHandlerContent(const vp::utility::asset::Handler& handler)
     {
         const std::vector<uint8_t>& content = handler.GetContent().GetBuffer();
         printf("Handler \"%s\" content of size %zu\n", handler.GetName().c_str(), content.size());
+
         if (!content.empty())
         {
             for (auto i : content)
             {
                 printf("%x ", i);
             }
+
             printf("\n");
         }
     }
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     vp::core::Settings& settings = vp::core::Settings::Instance();
 
@@ -35,9 +37,9 @@ int main(int argc, char *argv[])
     storage.InitializeWorkers(1);
 
     // Files should be located in WORKING_DIRECTORY of the test
-    const std::string testFile1( "derp.txt" );
-    const std::string testFile2( "derpiness.txt" );
-    const std::string testFile3( "herp.txt" );
+    const std::string testFile1("derp.txt");
+    const std::string testFile2("derpiness.txt");
+    const std::string testFile3("herp.txt");
 
     printf("Request async %s\n", testFile1.c_str());
     std::shared_future<vp::utility::asset::Handler> derp2Handler = storage.GetAsync(testFile1);
@@ -52,7 +54,10 @@ int main(int argc, char *argv[])
     vp::utility::asset::Handler herpHandler = storage.Get(testFile3.c_str());
 
     printf("%s handlers are equal: %d\n", testFile1.c_str(), derpHandler == derp2Handler.get());
-    if (derpHandler != derp2Handler.get()) return EXIT_FAILURE;
+    if (derpHandler != derp2Handler.get())
+    {
+        return EXIT_FAILURE;
+    }
 
     PrintHandlerContent(derpHandler);
     PrintHandlerContent(herpHandler);
