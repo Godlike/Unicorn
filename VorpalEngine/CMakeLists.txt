@@ -53,7 +53,6 @@ include(loguru)
 ## STB
 include(stb)
 
-
 if (UNIX)
     find_library(Vulkan REQUIRED)
     include_directories(
@@ -94,6 +93,7 @@ add_library(${VORPAL_ENGINE_LIB}
     include/vorpal/utility/templates/Singleton.imp
     include/vorpal/video/Graphics.hpp
     include/vorpal/video/Renderer.hpp
+    include/vorpal/video/VkUtil.hpp
     include/vorpal/VorpalEngine.hpp
 
     sources/core/Settings.cpp
