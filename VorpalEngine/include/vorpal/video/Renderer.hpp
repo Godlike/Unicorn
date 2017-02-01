@@ -88,9 +88,9 @@ struct SwapChainSupportDetails
 };
 
 /** @brief  Vulkan renderer class
-         *
-         *  Initializes and controls Vulkan API
-         */
+ *
+ *  Initializes and controls Vulkan API
+ */
 class Renderer
 {
 public:

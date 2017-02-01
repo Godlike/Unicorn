@@ -29,13 +29,13 @@ namespace vp
 namespace video
 {
 static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
-    VkDebugReportObjectTypeEXT objType,
-    uint64_t obj,
-    size_t location,
-    int32_t code,
-    const char* layerPrefix,
+    VkDebugReportObjectTypeEXT /*objType*/,
+    uint64_t /*obj*/,
+    size_t /*location*/,
+    int32_t /*code*/,
+    const char* /*layerPrefix*/,
     const char* msg,
-    void* userData)
+    void* /*userData*/)
 {
     if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
     {
@@ -882,8 +882,8 @@ bool Renderer::CreateSwapChain()
     createInfo.imageExtent = extent;
     createInfo.imageArrayLayers = 1;
     createInfo.imageUsage =
-        VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // VK_IMAGE_USAGE_TRANSFER_DST_BIT
-    // for post processing.
+        VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;    // VK_IMAGE_USAGE_TRANSFER_DST_BIT
+                                                // for post processing.
 
     QueueFamilyIndices indices = FindQueueFamilies(m_vkPhysicalDevice);
     uint32_t queueFamilyIndices[] = {
@@ -1669,9 +1669,26 @@ bool Renderer::LoadModel()
 
 bool Renderer::CreateTextureImage()
 {
-    int texWidth, texHeight, texChannels;
-    stbi_uc* pixels = stbi_load(m_texturePath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-    //TODO: replace with Vorpal Loader
+    int texWidth = 0;
+    int texHeight = 0;
+    int texChannels = 0;
+    stbi_uc* pixels = nullptr;
+
+    {
+        vp::utility::asset::SimpleStorage& storage = vp::utility::asset::SimpleStorage::Instance();
+        vp::utility::asset::Handler textureHandler = storage.Get(m_texturePath.c_str());
+
+        if (!textureHandler.IsValid())
+        {
+            LOG_ERROR("Failed to load asset! Path: %s", m_texturePath.c_str());
+            return false;
+        }
+
+        const std::vector<uint8_t>& textureContent = textureHandler.GetContent().GetBuffer();
+
+        pixels = stbi_load_from_memory(textureContent.data(), textureContent.size(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+    }
+
     VkDeviceSize imageSize = texWidth * texHeight * 4;
 
     if (!pixels)
@@ -1744,7 +1761,7 @@ bool Renderer::CreateImageView(VkImage image, VkFormat format, VkImageAspectFlag
     viewInfo.image = image;
     viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
     viewInfo.format = format;
-    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    viewInfo.subresourceRange.aspectMask = aspectFlags;
     viewInfo.subresourceRange.baseMipLevel = 0;
     viewInfo.subresourceRange.levelCount = 1;
     viewInfo.subresourceRange.baseArrayLayer = 0;

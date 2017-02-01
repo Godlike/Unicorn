@@ -72,7 +72,7 @@ if (BUILD_SHARED_LIBS)
 endif()
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Werror")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wextra -Wall -Werror")
 endif()
 
 add_library(${VORPAL_ENGINE_LIB}
