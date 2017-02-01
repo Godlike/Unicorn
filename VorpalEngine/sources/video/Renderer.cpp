@@ -1001,7 +1001,7 @@ bool Renderer::CreateRenderPass()
     dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
     dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
-    std::array<VkAttachmentDescription, 2> attachments = {colorAttachment, depthAttachment};
+    std::array<VkAttachmentDescription, 2> attachments = {{colorAttachment, depthAttachment}};
     VkRenderPassCreateInfo renderPassInfo = {};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
     renderPassInfo.attachmentCount = attachments.size();
@@ -1236,9 +1236,10 @@ bool Renderer::CreateFramebuffers()
     {
         for (size_t i = 0; i < m_swapChainImageViews.size(); i++)
         {
-            std::array<VkImageView, 2> attachments = {
+            std::array<VkImageView, 2> attachments = {{
                 m_swapChainImageViews[i],
-                m_depthImageView};
+                m_depthImageView
+            }};
 
             VkFramebufferCreateInfo framebufferInfo = {};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
@@ -1352,7 +1353,7 @@ bool Renderer::CreateCommandBuffers()
         renderPassInfo.renderArea.extent = m_swapChainExtent;
 
         std::array<VkClearValue, 2> clearValues = {};
-        clearValues[0].color = {0.0f, 0.0f, 0.0f, 1.0f};
+        clearValues[0].color = {{0.0f, 0.0f, 0.0f, 1.0f}};
         clearValues[1].depthStencil = {1.0f, 0};
 
         renderPassInfo.clearValueCount = clearValues.size();
@@ -1543,7 +1544,7 @@ bool Renderer::CreateDescriptorSetLayout()
     samplerLayoutBinding.pImmutableSamplers = nullptr;
     samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 
-    std::array<VkDescriptorSetLayoutBinding, 2> bindings = {uboLayoutBinding, samplerLayoutBinding};
+    std::array<VkDescriptorSetLayoutBinding, 2> bindings = {{uboLayoutBinding, samplerLayoutBinding}};
     VkDescriptorSetLayoutCreateInfo layoutInfo = {};
     layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
     layoutInfo.bindingCount = bindings.size();
@@ -1640,7 +1641,7 @@ bool Renderer::LoadModel()
 
     if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &err, m_modelPath.c_str()))
     {
-        LOG_ERROR(err.c_str());
+        LOG_ERROR("%s", err.c_str());
         return false;
     }
 
@@ -1696,7 +1697,7 @@ bool Renderer::CreateTextureImage()
     void* data;
     vkMapMemory(m_vkLogicalDevice, stagingImageMemory, 0, imageSize, 0, &data);
 
-    if (stagingImageLayout.rowPitch == texWidth * 4)
+    if (stagingImageLayout.rowPitch == static_cast<VkDeviceSize>(texWidth * 4))
     {
         memcpy(data, pixels, (size_t) imageSize);
     }
@@ -2055,7 +2056,7 @@ bool Renderer::CheckValidationLayerSupport() const
 
             for (auto& requiredLayer : m_validationLayers)
             {
-                LOG_ERROR(requiredLayer);
+                LOG_ERROR("%s", requiredLayer);
             }
 
             return false;

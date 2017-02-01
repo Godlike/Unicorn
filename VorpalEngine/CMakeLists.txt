@@ -54,13 +54,11 @@ include(stb)
 
 if (UNIX)
     find_library(Vulkan REQUIRED)
-    include_directories(
-        ${VULKAN_INCLUDE_DIR}
-    )
 endif ()
 
-include_directories(
-    ${VORPAL_ENGINE_INCLUDE_DIR}
+include_directories( ${VORPAL_ENGINE_INCLUDE_DIR} )
+
+include_directories( SYSTEM
     ${TINYOBJLOADER_INCLUDE_DIR}
     ${GLFW_INCLUDE_DIR}
     ${GLM_INCLUDE_DIR}
@@ -109,3 +107,9 @@ add_library(${VORPAL_ENGINE_LIB}
 )
 
 target_link_libraries(${VORPAL_ENGINE_LIB} ${GLFW_LIB} ${VULKAN_LIBRARY})
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # Workaround for a bug regarding __builtin_cpu_supports("sse2") call on GCC 5+
+    # Call is made by STB but is not directly a bug in STB
+    target_link_libraries(${PROJECT_NAME} -lgcc_s -lgcc)
+endif()
