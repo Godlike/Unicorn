@@ -6,6 +6,8 @@
 #include <vorpal/VorpalEngine.hpp>
 #include <vorpal/utility/Logger.hpp>
 #include <vorpal/graphics/Graphics.hpp>
+#include <vorpal/graphics/Camera.hpp>
+#include <vorpal/graphics/SceneGraph.hpp>
 #include <vorpal/utility/asset/SimpleStorage.hpp>
 
 namespace vp
@@ -31,7 +33,9 @@ bool VorpalEngine::Init()
     vp::utility::asset::SimpleStorage::Instance();
     LOG_INFO("Engine initialization started.");
 
-    m_pGraphics = new graphics::Graphics();
+    m_pGraphics = new graphics::Graphics;
+    m_pCamera = new graphics::Camera;
+    m_pSceneGraph = new graphics::SceneGraph;
 
     if (!m_pGraphics->Init())
     {

@@ -1,10 +1,15 @@
 /*
 * Copyright (C) 2017 by Grapefruit Tech
-* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+* This code is licensed under the MIT license (MIT)
+* (http://opensource.org/licenses/MIT)
 */
 
 #ifndef VORPAL_VIDEO_GRAPHICS_HPP
 #define VORPAL_VIDEO_GRAPHICS_HPP
+
+#include <vector>
+
+#include <vorpal/graphics/GraphicsProcessingUnit.hpp>
 
 namespace vp
 {
@@ -34,6 +39,7 @@ public:
 private:
     bool m_isInitialized;
     VulkanRenderer* m_pRenderer;
+    std::vector<GPU> m_videoCards;
 };
 }
 }

@@ -13,6 +13,8 @@ namespace vp
 namespace graphics
 {
 class Graphics;
+class SceneGraph;
+class Camera;
 }
 
 class VORPAL_EXPORT VorpalEngine
@@ -34,6 +36,8 @@ public:
 private:
     bool m_isInitialized;
     graphics::Graphics* m_pGraphics;
+    graphics::Camera* m_pCamera;
+    graphics::SceneGraph* m_pSceneGraph;
 };
 }
 

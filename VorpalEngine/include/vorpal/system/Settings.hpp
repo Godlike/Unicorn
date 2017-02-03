@@ -3,8 +3,8 @@
 * This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
 */
 
-#ifndef VORPAL_CORE_SETTINGS_HPP
-#define VORPAL_CORE_SETTINGS_HPP
+#ifndef VORPAL_SYSTEM_SETTINGS_HPP
+#define VORPAL_SYSTEM_SETTINGS_HPP
 
 #include <vorpal/utility/SharedMacros.hpp>
 #include <vorpal/utility/templates/Singleton.hpp>
@@ -55,4 +55,4 @@ private:
 }
 }
 
-#endif // VORPAL_CORE_SETTINGS_HPP
+#endif // VORPAL_SYSTEM_SETTINGS_HPP

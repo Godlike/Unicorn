@@ -79,6 +79,7 @@ endif()
 add_library(${VORPAL_ENGINE_LIB}
     include/vorpal/system/Settings.hpp
     include/vorpal/system/Timer.hpp
+    include/vorpal/system/Window.hpp
     include/vorpal/utility/asset/Content.hpp
     include/vorpal/utility/asset/FileReader.hpp
     include/vorpal/utility/asset/Handler.hpp
@@ -91,14 +92,24 @@ add_library(${VORPAL_ENGINE_LIB}
     include/vorpal/utility/templates/Singleton.imp
     include/vorpal/graphics/Graphics.hpp
     include/vorpal/graphics/VulkanRenderer.hpp
-    include/vorpal/graphics/VulkanUtil.hpp
+    include/vorpal/graphics/VulkanUtils.hpp
+    include/vorpal/graphics/VulkanBuffer.hpp
     include/vorpal/graphics/Texture.hpp
     include/vorpal/graphics/Vertex.hpp
-    include/vorpal/graphics/Scene.hpp
+    include/vorpal/graphics/SceneGraph.hpp
+    include/vorpal/graphics/Drawable.hpp
+    include/vorpal/graphics/Camera.hpp
+    include/vorpal/graphics/GraphicsProcessingUnit.hpp
+    include/vorpal/graphics/VulkanSwapChain.hpp
+    include/vorpal/graphics/Mesh.hpp
+    include/vorpal/graphics/Model.hpp
+    include/vorpal/graphics/Sprite.hpp
+    include/vorpal/graphics/Shader.hpp
     include/vorpal/VorpalEngine.hpp
 
     sources/system/Settings.cpp
     sources/system/Timer.cpp
+    sources/system/Window.cpp
     sources/utility/asset/Content.cpp
     sources/utility/asset/FileReader.cpp
     sources/utility/asset/Handler.cpp
@@ -109,7 +120,14 @@ add_library(${VORPAL_ENGINE_LIB}
     sources/graphics/VulkanRenderer.cpp
     sources/graphics/Texture.cpp
     sources/graphics/Vertex.cpp
-    sources/graphics/Scene.cpp
+    sources/graphics/SceneGraph.cpp
+    sources/graphics/VulkanUtils.cpp
+    sources/graphics/Camera.cpp
+    sources/graphics/Mesh.cpp
+    sources/graphics/Model.cpp
+    sources/graphics/Shader.cpp
+    sources/graphics/Sprite.cpp
+    sources/graphics/VulkanSwapChain.cpp
     sources/VorpalEngine.cpp
 )
 

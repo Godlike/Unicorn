@@ -4,8 +4,8 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#ifndef VORPAL_CORE_TIMER_HPP
-#define VORPAL_CORE_TIMER_HPP
+#ifndef VORPAL_SYSTEM_TIMER_HPP
+#define VORPAL_SYSTEM_TIMER_HPP
 
 #include <chrono>
 
@@ -35,4 +35,4 @@ private:
 }
 }
 
-#endif // VORPAL_CORE_TIMER_HPP
+#endif // VORPAL_SYSTEM_TIMER_HPP

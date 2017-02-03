@@ -4,21 +4,15 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#ifndef VORPAL_GRAPHICS_SCENEGRAPH_HPP
-#define VORPAL_GRAPHICS_SCENEGRAPH_HPP
-
+#ifndef VORPAL_GRAPHICS_VULKANSWAPCHAIN_HPP
+#define VORPAL_GRAPHICS_VULKANSWAPCHAIN_HPP
 namespace vp
 {
 namespace graphics
 {
-class Texture
+class VulkanSwapChain
 {
-public:
-    bool LoadFromFile();
-
-private:
 };
 }
 }
-
-#endif // VORPAL_GRAPHICS_SCENEGRAPH_HPP
+#endif // VORPAL_GRAPHICS_VULKANSWAPCHAIN_HPP

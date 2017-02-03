@@ -8,6 +8,8 @@
 #include <vorpal/utility/Logger.hpp>
 #include <vorpal/utility/asset/SimpleStorage.hpp>
 #include <vorpal/graphics/VulkanRenderer.hpp>
+#include <vorpal/graphics/Vertex.hpp>
+#include <vorpal/graphics/VulkanUtils.hpp>
 
 #include <algorithm>
 #include <iostream>
@@ -711,7 +713,7 @@ bool VulkanRenderer::RecreateSwapChain()
 
 bool VulkanRenderer::CreateInstance()
 {
-    if (s_enableValidationLayers && !CheckValidationLayerSupport())
+    if (s_enableValidationLayers && !CheckValidationLayerSupport(m_validationLayers))
     {
         LOG_ERROR("Vulkan validation layers requested, but not available!");
         return false;
@@ -1659,7 +1661,6 @@ bool VulkanRenderer::LoadModel()
                 attrib.texcoords[2 * index.texcoord_index + 0],
                 1.0f - attrib.texcoords[2 * index.texcoord_index + 1]};
 
-            vertex.color = {1.0f, 1.0f, 1.0f};
             m_vertices.push_back(vertex);
             m_indices.push_back(static_cast<unsigned int>(m_indices.size()));
         }
@@ -2045,43 +2046,6 @@ bool VulkanRenderer::Frame()
         LOG_ERROR("Failed to acquire swap chain image!");
         return false;
     }
-    return true;
-}
-
-bool VulkanRenderer::CheckValidationLayerSupport() const
-{
-    uint32_t layerCount;
-    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-
-    std::vector<VkLayerProperties> availableLayers(layerCount);
-    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-
-    for (const char* layerName : m_validationLayers)
-    {
-        bool layerFound = false;
-
-        for (const auto& layerProperties : availableLayers)
-        {
-            if (strcmp(layerName, layerProperties.layerName) == 0)
-            {
-                layerFound = true;
-                break;
-            }
-        }
-
-        if (!layerFound)
-        {
-            LOG_ERROR("Can't find required Vulkan layers: ");
-
-            for (auto& requiredLayer : m_validationLayers)
-            {
-                LOG_ERROR("%s", requiredLayer);
-            }
-
-            return false;
-        }
-    }
-
     return true;
 }
 

@@ -7,16 +7,17 @@
 #ifndef VORPAL_GRAPHICS_SCENEGRAPH_HPP
 #define VORPAL_GRAPHICS_SCENEGRAPH_HPP
 
+#include <vector>
+#include <vorpal/graphics/Drawable.hpp>
+
 namespace vp
 {
 namespace graphics
 {
-class Texture
+class SceneGraph
 {
 public:
-    bool LoadFromFile();
-
-private:
+    std::vector<vp::graphics::Drawable> graph;
 };
 }
 }
