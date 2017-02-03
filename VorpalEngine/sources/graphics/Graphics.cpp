@@ -3,13 +3,13 @@
 * This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
 */
 
-#include <vorpal/video/Graphics.hpp>
-#include <vorpal/video/Renderer.hpp>
+#include <vorpal/graphics/Graphics.hpp>
+#include <vorpal/graphics/VulkanRenderer.hpp>
 #include <vorpal/utility/Logger.hpp>
 
 namespace vp
 {
-namespace video
+namespace graphics
 {
 Graphics::Graphics()
     : m_isInitialized(false)
@@ -31,7 +31,7 @@ bool Graphics::Init()
 
     LOG_INFO("Graphics initialization started.");
 
-    m_pRenderer = new Renderer();
+    m_pRenderer = new VulkanRenderer();
 
     if (!m_pRenderer->Init())
     {
@@ -58,7 +58,7 @@ void Graphics::Deinit()
         m_pRenderer = nullptr;
     }
 
-    if (!m_isInitialized)
+    if (m_isInitialized)
     {
         LOG_INFO("Graphics shutdown correctly.");
     }

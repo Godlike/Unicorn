@@ -8,9 +8,9 @@
 
 namespace vp
 {
-namespace video
+namespace graphics
 {
-class Renderer;
+class VulkanRenderer;
 
 /** @brief Abstract graphics renderer
  *
@@ -24,7 +24,7 @@ public:
 
     Graphics(const Graphics& other) = delete;
     Graphics(const Graphics&& other) = delete;
-    Graphics& operator=(const Renderer& other) = delete;
+    Graphics& operator=(const Graphics& other) = delete;
     Graphics& operator=(const Graphics&& other) = delete;
 
     bool Init();
@@ -33,7 +33,7 @@ public:
 
 private:
     bool m_isInitialized;
-    Renderer* m_pRenderer;
+    VulkanRenderer* m_pRenderer;
 };
 }
 }

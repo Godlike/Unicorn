@@ -10,7 +10,7 @@
 
 namespace vp
 {
-namespace video
+namespace graphics
 {
 class Graphics;
 }
@@ -33,7 +33,7 @@ public:
 
 private:
     bool m_isInitialized;
-    video::Graphics* m_pGraphics;
+    graphics::Graphics* m_pGraphics;
 };
 }
 

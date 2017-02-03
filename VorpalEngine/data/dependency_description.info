@@ -1,5 +1,0 @@
-TinyObjLoader - library for loading Obj 3D files.
-STB - we only need now for stb_image.h to load PNG, JPEG and so on.
-GLM - math library.
-GLFW - window and vulkan context intializer.
-loguru - simple logger.

@@ -1,5 +1,6 @@
 # Copyright (C) 2017 by Grapefruit Tech
-# This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+# This code is licensed under the MIT license (MIT)
+# (http://opensource.org/licenses/MIT)
 
 cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.0)
@@ -76,8 +77,8 @@ if (UNIX)
 endif()
 
 add_library(${VORPAL_ENGINE_LIB}
-    include/vorpal/core/Settings.hpp
-    include/vorpal/core/Timer.hpp
+    include/vorpal/system/Settings.hpp
+    include/vorpal/system/Timer.hpp
     include/vorpal/utility/asset/Content.hpp
     include/vorpal/utility/asset/FileReader.hpp
     include/vorpal/utility/asset/Handler.hpp
@@ -88,21 +89,27 @@ add_library(${VORPAL_ENGINE_LIB}
     include/vorpal/utility/SharedMacros.hpp
     include/vorpal/utility/templates/Singleton.hpp
     include/vorpal/utility/templates/Singleton.imp
-    include/vorpal/video/Graphics.hpp
-    include/vorpal/video/Renderer.hpp
-    include/vorpal/video/VkUtil.hpp
+    include/vorpal/graphics/Graphics.hpp
+    include/vorpal/graphics/VulkanRenderer.hpp
+    include/vorpal/graphics/VulkanUtil.hpp
+    include/vorpal/graphics/Texture.hpp
+    include/vorpal/graphics/Vertex.hpp
+    include/vorpal/graphics/Scene.hpp
     include/vorpal/VorpalEngine.hpp
 
-    sources/core/Settings.cpp
-    sources/core/Timer.cpp
+    sources/system/Settings.cpp
+    sources/system/Timer.cpp
     sources/utility/asset/Content.cpp
     sources/utility/asset/FileReader.cpp
     sources/utility/asset/Handler.cpp
     sources/utility/asset/SimpleStorage.cpp
     sources/utility/asset/Storage.cpp
     sources/utility/Logger.cpp
-    sources/video/Graphics.cpp
-    sources/video/Renderer.cpp
+    sources/graphics/Graphics.cpp
+    sources/graphics/VulkanRenderer.cpp
+    sources/graphics/Texture.cpp
+    sources/graphics/Vertex.cpp
+    sources/graphics/Scene.cpp
     sources/VorpalEngine.cpp
 )
 

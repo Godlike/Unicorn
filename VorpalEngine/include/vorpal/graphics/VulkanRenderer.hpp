@@ -15,13 +15,13 @@
 #include <vector>
 #include <array>
 
-#include <vorpal/core/Timer.hpp>
+#include <vorpal/system/Timer.hpp>
 
 struct GLFWwindow;
 
 namespace vp
 {
-namespace video
+namespace graphics
 
 {
 struct UniformBufferObject
@@ -91,16 +91,16 @@ struct SwapChainSupportDetails
  *
  *  Initializes and controls Vulkan API
  */
-class Renderer
+class VulkanRenderer
 {
 public:
-    Renderer();
-    ~Renderer();
+    VulkanRenderer();
+    ~VulkanRenderer();
 
-    Renderer(const Renderer& other) = delete;
-    Renderer(const Renderer&& other) = delete;
-    Renderer& operator=(const Renderer& other) = delete;
-    Renderer& operator=(const Renderer&& other) = delete;
+    VulkanRenderer(const VulkanRenderer& other) = delete;
+    VulkanRenderer(const VulkanRenderer&& other) = delete;
+    VulkanRenderer& operator=(const VulkanRenderer& other) = delete;
+    VulkanRenderer& operator=(const VulkanRenderer&& other) = delete;
 
     bool Init();
     void Deinit();
@@ -158,7 +158,7 @@ private:
     VkImage m_depthImage;
     VkDeviceMemory m_depthImageMemory;
     VkImageView m_depthImageView;
-    core::Timer m_timer;
+    system::Timer m_timer;
     VkDescriptorSet m_descriptorSet;
 #ifdef NDEBUG
     static const bool s_enableValidationLayers = false;

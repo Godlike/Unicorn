@@ -11,7 +11,7 @@
 
 namespace vp
 {
-namespace core
+namespace system
 {
 class Timer
 {
