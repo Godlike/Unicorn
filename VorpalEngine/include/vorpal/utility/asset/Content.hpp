@@ -22,6 +22,10 @@ namespace asset
 class Content
 {
 public:
+    /** @brief  Constructs an object
+     *
+     *  @param  buffer  buffer with asset contents
+     */
     Content(std::vector<uint8_t>&& buffer);
 
     Content(const Content& other) = delete;
@@ -32,9 +36,14 @@ public:
 
     ~Content() = default;
 
+    /** @brief  Returns stored buffer */
     const std::vector<uint8_t>& GetBuffer() const { return m_buffer; }
+
+    /** @brief  Returns the size of stored buffer */
     uintmax_t GetSize() const { return m_buffer.size(); }
+
 private:
+    //! Buffer with asset contents
     std::vector<uint8_t> m_buffer;
 };
 }

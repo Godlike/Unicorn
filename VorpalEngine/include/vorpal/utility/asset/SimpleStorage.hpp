@@ -29,6 +29,7 @@ namespace asset
 class SimpleStorage : public templates::Singleton<SimpleStorage>
 {
 public:
+    //! Alias to a key type used by underlying container
     typedef std::string KeyType;
 
     /** @brief  Gets an asset identified by @p key
@@ -38,16 +39,38 @@ public:
      *  @param  key asset identifier
      *
      *  @return Handler shared object
+     *
+     *  @sa ProcessHandlerCreation()
      */
     VORPAL_EXPORT Handler Get(const KeyType& key);
 
 private:
     friend class utility::templates::Singleton<SimpleStorage>;
 
+    //! Alias to underlying container
     typedef std::unordered_map<KeyType, Handler> HandlerMap;
 
+    /** @brief  Creates and stores a Handler
+     *
+     *  Creates handler via CreateHandler() call and inserts it
+     *  to @ref m_entries
+     *
+     *  @param  key asset identifier
+     *
+     *  @return created Handler
+     *
+     *  @sa CreateHandler()
+     */
     Handler ProcessHandlerCreation(const KeyType& key);
 
+    /** @brief  Creates a Handler for given @p key
+     *
+     *  Prepares asset contents from @p key and creates a Handler object.
+     *
+     *  @param  key asset identifier
+     *
+     *  @return created Handler
+     */
     Handler CreateHandler(const KeyType& key);
 
     SimpleStorage() = default;
@@ -60,6 +83,7 @@ private:
 
     ~SimpleStorage() = default;
 
+    //! Container of asset handlers
     HandlerMap m_entries;
 };
 }

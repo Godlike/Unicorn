@@ -14,16 +14,26 @@ namespace templates
 {
 /** @brief  Template class describing singleton implementation
  *
- *  To use singleton semantics the object shall be a child
- *  of this class. If necessary the child object shall friend
- *  this class in order to allow usage of non-public
+ *  To use singleton semantics class @c C shall be a child
+ *  of this class. If necessary, the child object shall friend
+ *  this class in order to allow the usage of non-public
  *  constructor and destructor.
+ *
+ *  @tparam C   class that inherits Singleton semantics
  */
 template <class C>
 class Singleton
 {
 public:
+    /** @brief  Returns the singleton instance
+     *
+     *  If no instance was stored, creates one
+     *
+     *  @return reference to singleton instance
+     */
     static C& Instance();
+
+    /** @brief  Destroys stored instance */
     static void Destroy();
 
 protected:
@@ -31,6 +41,7 @@ protected:
     ~Singleton() = default;
 
 private:
+    //! Pointer to singleton instance
     static C* s_instance;
 
     Singleton(const Singleton& other) = delete;
