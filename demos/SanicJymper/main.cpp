@@ -1,14 +1,15 @@
 /*
 * Copyright (C) 2017 by Grapefruit Tech
-* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+* This code is licensed under the MIT license (MIT)
+* (http://opensource.org/licenses/MIT)
 */
 
 #include <vorpal/VorpalEngine.hpp>
-#include <vorpal/core/Settings.hpp>
+#include <vorpal/system/Settings.hpp>
 
 int main(int argc, char* argv[])
 {
-    vp::core::Settings& settings = vp::core::Settings::Instance();
+    vp::system::Settings& settings = vp::system::Settings::Instance();
 
     settings.Init(argc, argv, "SANIC_JYMPER.log");
     settings.SetApplicationName("SANIC JYMPER");
@@ -23,6 +24,6 @@ int main(int argc, char* argv[])
     vpEngine->Deinit();
     delete vpEngine;
 
-    vp::core::Settings::Destroy();
+    vp::system::Settings::Destroy();
     return 0;
 }

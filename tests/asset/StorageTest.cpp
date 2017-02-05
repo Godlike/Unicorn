@@ -1,4 +1,4 @@
-#include <vorpal/core/Settings.hpp>
+#include <vorpal/system/Settings.hpp>
 
 #include <vorpal/utility/asset/Content.hpp>
 #include <vorpal/utility/asset/Storage.hpp>
@@ -26,7 +26,7 @@ void PrintHandlerContent(const vp::utility::asset::Handler& handler)
 
 int main(int argc, char* argv[])
 {
-    vp::core::Settings& settings = vp::core::Settings::Instance();
+    vp::system::Settings& settings = vp::system::Settings::Instance();
 
     settings.Init(argc, argv, "");
     settings.SetApplicationName("Asset storage test");
@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 
     vp::utility::asset::Storage::Destroy();
 
-    vp::core::Settings::Destroy();
+    vp::system::Settings::Destroy();
 
     return EXIT_SUCCESS;
 }

@@ -1,5 +1,6 @@
 # Copyright (C) 2017 by Grapefruit Tech
-# This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+# This code is licensed under the MIT license (MIT)
+# (http://opensource.org/licenses/MIT)
 
 cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.0)
@@ -26,9 +27,8 @@ elseif(WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
 endif()
 
-## Should be uncommented when TinyObjLoader library is used
-# include(TinyObjLoaderConfig)
-# add_subdirectory(${TINYOBJLOADER_ROOT_DIR})
+include(TinyObjLoaderConfig)
+add_subdirectory(${TINYOBJLOADER_ROOT_DIR})
 
 ## GLFW
 # GLFW shall always be statically linked
@@ -53,16 +53,13 @@ include(loguru)
 ## STB
 include(stb)
 
-
 if (UNIX)
     find_library(Vulkan REQUIRED)
-    include_directories(
-        ${VULKAN_INCLUDE_DIR}
-    )
 endif ()
 
-include_directories(
-    ${VORPAL_ENGINE_INCLUDE_DIR}
+include_directories( ${VORPAL_ENGINE_INCLUDE_DIR} )
+
+include_directories( SYSTEM
     ${TINYOBJLOADER_INCLUDE_DIR}
     ${GLFW_INCLUDE_DIR}
     ${GLM_INCLUDE_DIR}
@@ -76,12 +73,13 @@ if (BUILD_SHARED_LIBS)
 endif()
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Werror")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wextra -Wall -Werror")
 endif()
 
 add_library(${VORPAL_ENGINE_LIB}
-    include/vorpal/core/Settings.hpp
-    include/vorpal/core/Timer.hpp
+    include/vorpal/system/Settings.hpp
+    include/vorpal/system/Timer.hpp
+    include/vorpal/system/Window.hpp
     include/vorpal/utility/asset/Content.hpp
     include/vorpal/utility/asset/FileReader.hpp
     include/vorpal/utility/asset/Handler.hpp
@@ -92,21 +90,51 @@ add_library(${VORPAL_ENGINE_LIB}
     include/vorpal/utility/SharedMacros.hpp
     include/vorpal/utility/templates/Singleton.hpp
     include/vorpal/utility/templates/Singleton.imp
-    include/vorpal/video/Graphics.hpp
-    include/vorpal/video/Renderer.hpp
+    include/vorpal/graphics/Graphics.hpp
+    include/vorpal/graphics/VulkanRenderer.hpp
+    include/vorpal/graphics/VulkanUtils.hpp
+    include/vorpal/graphics/VulkanBuffer.hpp
+    include/vorpal/graphics/Texture.hpp
+    include/vorpal/graphics/Vertex.hpp
+    include/vorpal/graphics/SceneGraph.hpp
+    include/vorpal/graphics/Drawable.hpp
+    include/vorpal/graphics/Camera.hpp
+    include/vorpal/graphics/GraphicsProcessingUnit.hpp
+    include/vorpal/graphics/VulkanSwapChain.hpp
+    include/vorpal/graphics/Mesh.hpp
+    include/vorpal/graphics/Model.hpp
+    include/vorpal/graphics/Sprite.hpp
+    include/vorpal/graphics/Shader.hpp
     include/vorpal/VorpalEngine.hpp
 
-    sources/core/Settings.cpp
-    sources/core/Timer.cpp
+    sources/system/Settings.cpp
+    sources/system/Timer.cpp
+    sources/system/Window.cpp
     sources/utility/asset/Content.cpp
     sources/utility/asset/FileReader.cpp
     sources/utility/asset/Handler.cpp
     sources/utility/asset/SimpleStorage.cpp
     sources/utility/asset/Storage.cpp
     sources/utility/Logger.cpp
-    sources/video/Graphics.cpp
-    sources/video/Renderer.cpp
+    sources/graphics/Graphics.cpp
+    sources/graphics/VulkanRenderer.cpp
+    sources/graphics/Texture.cpp
+    sources/graphics/Vertex.cpp
+    sources/graphics/SceneGraph.cpp
+    sources/graphics/VulkanUtils.cpp
+    sources/graphics/Camera.cpp
+    sources/graphics/Mesh.cpp
+    sources/graphics/Model.cpp
+    sources/graphics/Shader.cpp
+    sources/graphics/Sprite.cpp
+    sources/graphics/VulkanSwapChain.cpp
     sources/VorpalEngine.cpp
 )
 
 target_link_libraries(${VORPAL_ENGINE_LIB} ${GLFW_LIB} ${VULKAN_LIBRARY})
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # Workaround for a bug regarding __builtin_cpu_supports("sse2") call on GCC 5+
+    # Call is made by STB but is not directly a bug in STB
+    target_link_libraries(${PROJECT_NAME} -lgcc_s -lgcc)
+endif()
