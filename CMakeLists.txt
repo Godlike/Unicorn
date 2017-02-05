@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(GrapefruitTech)
 
+option(VORPAL_BUILD_DOCUMENTATION "Build VorpalEngine documentation" ON)
 option(VORPAL_BUILD_DEMOS "Build VorpalEngine demo projects" ON)
 option(VORPAL_BUILD_TESTS "Build VorpalEngine tests" ON)
 
