@@ -13,6 +13,9 @@ namespace vp
 {
 namespace graphics
 {
+/**
+ * @brief The GraphicsProcessingUnit is GPUs found in system.
+ */
 struct GraphicsProcessingUnit
 {
     std::string gpuName;

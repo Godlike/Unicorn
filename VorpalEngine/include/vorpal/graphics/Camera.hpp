@@ -11,72 +11,32 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <vorpal/utility/SharedMacros.hpp>
 
 namespace vp
 {
 namespace graphics
 {
-class Camera
+/**
+ * @brief The Camera class need for Model View Projection conversations.
+ */
+class VORPAL_EXPORT Camera
 {
 public:
     Camera();
     ~Camera();
 
-    void SetPerspective(float fov, float aspect, float znear, float zfar)
-    {
-        m_fov = fov;
-        m_znear = znear;
-        m_zfar = zfar;
-        m_perspective = glm::perspective(glm::radians(fov), aspect, znear, zfar);
-    }
+    void SetPerspective(float fov, float aspect, float znear, float zfar);
 
-    void UpdateAspectRatio(float aspect)
-    {
-        m_perspective = glm::perspective(glm::radians(m_fov), aspect, m_znear, m_zfar);
-    }
-
-    void SetPosition(glm::vec3 position)
-    {
-        m_position = position;
-        UpdateViewMatrix();
-    }
-    void SetRotation(glm::vec3 rotation)
-    {
-        m_rotation = rotation;
-        UpdateViewMatrix();
-    }
-
-    void Rotate(glm::vec3 delta)
-    {
-        m_rotation += delta;
-        UpdateViewMatrix();
-    }
-
-    void SetTranslation(glm::vec3 translation)
-    {
-        m_position = translation;
-        UpdateViewMatrix();
-    }
-
-    void Translate(glm::vec3 delta)
-    {
-        m_position += delta;
-        UpdateViewMatrix();
-    }
+    void UpdateAspectRatio(float aspect);
+    void SetPosition(glm::vec3 position);
+    void SetRotation(glm::vec3 rotation);
+    void Rotate(glm::vec3 delta);
+    void SetTranslation(glm::vec3 translation);
+    void Translate(glm::vec3 delta);
 
 private:
-    void UpdateViewMatrix()
-    {
-        glm::mat4 rotM = glm::mat4();
-        glm::mat4 transM;
-
-        rotM = glm::rotate(rotM, glm::radians(m_rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-        rotM = glm::rotate(rotM, glm::radians(m_rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-        rotM = glm::rotate(rotM, glm::radians(m_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-
-        transM = glm::translate(glm::mat4(), m_position);
-        m_view = rotM * transM;
-    }
+    void UpdateViewMatrix();
 
     float m_fov;
     float m_znear;

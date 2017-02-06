@@ -11,6 +11,9 @@ namespace vp
 {
 namespace graphics
 {
+/**
+ * @brief The Mesh class have indices and vertices of loaded .obj file.
+ */
 class Mesh
 {
 };

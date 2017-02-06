@@ -16,7 +16,10 @@ class Graphics;
 class SceneGraph;
 class Camera;
 }
-
+namespace system
+{
+class Window;
+}
 class VORPAL_EXPORT VorpalEngine
 {
 public:
@@ -33,11 +36,13 @@ public:
     void Run();
     void Deinit();
 
+    graphics::SceneGraph* m_pSceneGraph;
+
 private:
     bool m_isInitialized;
+    system::Window* m_pWindow;
     graphics::Graphics* m_pGraphics;
     graphics::Camera* m_pCamera;
-    graphics::SceneGraph* m_pSceneGraph;
 };
 }
 

@@ -7,4 +7,14 @@
 #ifndef VORPAL_GRAPHICS_SPRITE_HPP
 #define VORPAL_GRAPHICS_SPRITE_HPP
 
+namespace vp
+{
+namespace graphics
+{
+class Sprite
+{
+};
+}
+}
+
 #endif // VORPAL_GRAPHICS_SPRITE_HPP

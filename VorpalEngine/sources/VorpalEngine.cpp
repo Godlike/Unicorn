@@ -9,12 +9,14 @@
 #include <vorpal/graphics/Camera.hpp>
 #include <vorpal/graphics/SceneGraph.hpp>
 #include <vorpal/utility/asset/SimpleStorage.hpp>
-
+#include <vorpal/system/Window.hpp>
 namespace vp
 {
 VorpalEngine::VorpalEngine()
     : m_isInitialized(false)
     , m_pGraphics(nullptr)
+    , m_pSceneGraph(nullptr)
+    , m_pWindow(nullptr)
 {
 }
 
@@ -32,15 +34,20 @@ bool VorpalEngine::Init()
 
     vp::utility::asset::SimpleStorage::Instance();
     LOG_INFO("Engine initialization started.");
-
+    m_pWindow = new system::Window;
     m_pGraphics = new graphics::Graphics;
     m_pCamera = new graphics::Camera;
     m_pSceneGraph = new graphics::SceneGraph;
 
+    if (!m_pWindow->Init())
+    {
+        Deinit();
+        return false;
+    }
+    m_pWindow->SetGraphicsEngine(m_pGraphics);
     if (!m_pGraphics->Init())
     {
         Deinit();
-
         return false;
     }
 
@@ -56,9 +63,7 @@ void VorpalEngine::Deinit()
     if (m_pGraphics)
     {
         m_pGraphics->Deinit();
-
         delete m_pGraphics;
-
         m_pGraphics = nullptr;
     }
 
@@ -72,8 +77,9 @@ void VorpalEngine::Deinit()
 
 void VorpalEngine::Run()
 {
-    if (m_pGraphics)
+    while (!m_pWindow->ShouldClose())
     {
+        m_pWindow->RetrieveEvents();
         m_pGraphics->Render();
     }
 }

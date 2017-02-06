@@ -9,13 +9,19 @@
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <cstdint>
 #include <vector>
 #include <array>
 
 #include <vorpal/system/Timer.hpp>
+#include <vorpal/graphics/VulkanBuffer.hpp>
+#include <vorpal/graphics/VulkanSwapChain.hpp>
 
 struct GLFWwindow;
 
@@ -73,7 +79,6 @@ public:
 
 private:
     bool m_isInitialized;
-    GLFWwindow* m_pWindow;
 
     VkInstance m_vkInstance;
     VkPhysicalDevice m_vkPhysicalDevice;
@@ -90,6 +95,7 @@ private:
     VkRenderPass m_renderPass;
     VkCommandPool m_commandPool;
     // TODO: make structs to peek this
+    VulkanBuffer m_vertBuffer;
     VkBuffer m_vertexBuffer;
     VkDeviceMemory m_vertexBufferMemory;
     VkBuffer m_indexBuffer;
@@ -179,10 +185,9 @@ private:
         uint32_t& memoryType);
     bool SetupDebugCallback();
     void DestroyDebugReportCallbackEXT() const;
-    void waitAsyncEnd() const;
     VkCommandBuffer BeginSingleTimeCommands();
     void EndSingleTimeCommands(VkCommandBuffer commandBuffer);
-    void TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+    bool TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
     void CopyImage(VkImage srcImage, VkImage dstImage, uint32_t width, uint32_t height);
     VkResult CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo);
 };

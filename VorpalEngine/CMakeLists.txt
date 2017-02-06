@@ -97,7 +97,6 @@ add_library(${VORPAL_ENGINE_LIB}
     include/vorpal/graphics/Texture.hpp
     include/vorpal/graphics/Vertex.hpp
     include/vorpal/graphics/SceneGraph.hpp
-    include/vorpal/graphics/Drawable.hpp
     include/vorpal/graphics/Camera.hpp
     include/vorpal/graphics/GraphicsProcessingUnit.hpp
     include/vorpal/graphics/VulkanSwapChain.hpp

@@ -1,16 +1,10 @@
-/*
-* Copyright (C) 2017 by Grapefruit Tech
-* This code is licensed under the MIT license (MIT) 
-* (http://opensource.org/licenses/MIT)
-*/
-
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-
+#include <vorpal/graphics/VulkanUtils.hpp>
 #include <vorpal/utility/Logger.hpp>
 
 #include <vector>
 
+namespace vp
+{
 bool CheckValidationLayerSupport(const std::vector<const char*>& requiredLayers)
 {
     uint32_t layerCount;
@@ -46,4 +40,10 @@ bool CheckValidationLayerSupport(const std::vector<const char*>& requiredLayers)
     }
 
     return true;
+}
+}
+
+void WaitVulkanDeviceIdle(const VkDevice& device)
+{
+    vkDeviceWaitIdle(device);
 }

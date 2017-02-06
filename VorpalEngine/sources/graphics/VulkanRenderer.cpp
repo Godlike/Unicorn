@@ -7,20 +7,13 @@
 #include <vorpal/system/Settings.hpp>
 #include <vorpal/utility/Logger.hpp>
 #include <vorpal/utility/asset/SimpleStorage.hpp>
-#include <vorpal/graphics/VulkanRenderer.hpp>
 #include <vorpal/graphics/Vertex.hpp>
 #include <vorpal/graphics/VulkanUtils.hpp>
-
+#include <vorpal/graphics/VulkanRenderer.hpp>
 #include <algorithm>
 #include <iostream>
 #include <set>
 
-#define GLM_FORCE_RADIANS
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE //Vulkan depth 0.0 to 1.0 instead -1.0 to 0.0
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 #define TINYOBJLOADER_IMPLEMENTATION
@@ -56,7 +49,6 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
 
 VulkanRenderer::VulkanRenderer()
     : m_isInitialized(false)
-    , m_pWindow(VK_NULL_HANDLE)
     , m_vkInstance(VK_NULL_HANDLE)
     , m_vkPhysicalDevice(nullptr)
     , m_swapChainImageFormat()
@@ -109,26 +101,12 @@ bool VulkanRenderer::Init()
 
     LOG_INFO("Vulkan render initialization started.");
 
-    glfwInit();
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-
     if (!glfwVulkanSupported())
     {
         LOG_ERROR("Vulkan not supported!");
-
         return false;
     }
 
-    const auto& settings = system::Settings::Instance();
-
-    m_pWindow = glfwCreateWindow(settings.GetApplicationWidth(),
-        settings.GetApplicationHeight(),
-        settings.GetApplicationName().c_str(),
-        nullptr,
-        nullptr);
-    glfwSetWindowUserPointer(m_pWindow, this);
-    glfwSetWindowSizeCallback(m_pWindow, onWindowResized);
     if (!CreateInstance() || !SetupDebugCallback() || !CreateSurface() || !PickPhysicalDevice() || !CreateLogicalDevice() || !CreateSwapChain() || !CreateImageViews() || !CreateRenderPass() || !CreateDescriptorSetLayout() || !CreateGraphicsPipeline() || !CreateCommandPool() || !CreateDepthResources() || !CreateFramebuffers() || !CreateTextureImage() || !CreateTextureImageView() || !CreateTextureSampler() || !LoadModel() || !CreateVertexBuffer() || !CreateIndexBuffer() || !CreateUniformBuffer() || !CreateDescriptorPool() || !CreateDescriptorSet() || !CreateCommandBuffers() || !CreateSemaphores())
         return false;
     m_timer.Start();
@@ -141,6 +119,8 @@ bool VulkanRenderer::Init()
 
 void VulkanRenderer::Deinit()
 {
+    WaitVulkanDeviceIdle(m_vkLogicalDevice);
+
     if (m_depthImageMemory != VK_NULL_HANDLE)
     {
         vkFreeMemory(m_vkLogicalDevice, m_depthImageMemory, nullptr);
@@ -323,12 +303,6 @@ void VulkanRenderer::Deinit()
         m_vkInstance = VK_NULL_HANDLE;
     }
 
-    if (m_pWindow)
-    {
-        glfwSetWindowShouldClose(m_pWindow, GLFW_TRUE);
-        glfwDestroyWindow(m_pWindow);
-        m_pWindow = nullptr;
-    }
     if (m_isInitialized)
     {
         LOG_INFO("Vulkan render shutdown correctly.");
@@ -499,7 +473,7 @@ void VulkanRenderer::EndSingleTimeCommands(VkCommandBuffer commandBuffer)
     vkFreeCommandBuffers(m_vkLogicalDevice, m_commandPool, 1, &commandBuffer);
 }
 
-void VulkanRenderer::TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout)
+bool VulkanRenderer::TransitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout)
 {
     VkCommandBuffer commandBuffer = BeginSingleTimeCommands();
 
@@ -553,7 +527,7 @@ void VulkanRenderer::TransitionImageLayout(VkImage image, VkFormat format, VkIma
     else
     {
         LOG_ERROR("Unsupported layout transition!");
-        //TODO: return false here?
+        return false;
     }
 
     vkCmdPipelineBarrier(
@@ -569,6 +543,7 @@ void VulkanRenderer::TransitionImageLayout(VkImage image, VkFormat format, VkIma
         &barrier);
 
     EndSingleTimeCommands(commandBuffer);
+    return true;
 }
 
 void VulkanRenderer::CopyImage(VkImage srcImage, VkImage dstImage, uint32_t width, uint32_t height)
@@ -628,11 +603,6 @@ void VulkanRenderer::DestroyDebugReportCallbackEXT() const
     }
 }
 
-void VulkanRenderer::waitAsyncEnd() const
-{
-    vkDeviceWaitIdle(m_vkLogicalDevice);
-}
-
 VkCommandBuffer VulkanRenderer::BeginSingleTimeCommands()
 {
     VkCommandBufferAllocateInfo allocInfo = {};
@@ -655,51 +625,16 @@ VkCommandBuffer VulkanRenderer::BeginSingleTimeCommands()
 
 void VulkanRenderer::Render()
 {
-    if (m_isInitialized && m_pWindow)
+    if (m_isInitialized)
     {
-        double lastTime = glfwGetTime();
-        int nbFrames = 0;
-        while (!glfwWindowShouldClose(m_pWindow))
-        {
-#ifndef NDEBUG
-            double currentTime = glfwGetTime();
-            nbFrames++;
-            if (currentTime - lastTime >= 1.0)
-            {
-                std::string buf(
-                    system::Settings::Instance().GetApplicationName().c_str());
-                buf.append(" MS/FPS ");
-                buf.append(std::to_string(1000.0 / double(nbFrames)).c_str());
-                buf.append(" FPS ");
-                buf.append(std::to_string(double(nbFrames)).c_str());
-                glfwSetWindowTitle(m_pWindow, buf.c_str());
-
-                nbFrames = 0;
-                lastTime += 1.0;
-            }
-#endif
-            glfwPollEvents();
-            UpdateUniformBuffer();
-            if (!Frame())
-                break;
-        }
-        waitAsyncEnd();
+        UpdateUniformBuffer();
+        Frame();
     }
-}
-
-void VulkanRenderer::onWindowResized(GLFWwindow* window, int width, int height)
-{
-    if (width == 0 || height == 0)
-        return;
-    VulkanRenderer* VulkanRenderer =
-        reinterpret_cast<class VulkanRenderer*>(glfwGetWindowUserPointer(window));
-    if (!VulkanRenderer->RecreateSwapChain())
-        LOG_ERROR("Can't recreate swapchain!");
 }
 
 bool VulkanRenderer::RecreateSwapChain()
 {
-    waitAsyncEnd();
+    WaitVulkanDeviceIdle(m_vkLogicalDevice);
 
     CreateSwapChain();
     CreateImageViews();
@@ -720,14 +655,18 @@ bool VulkanRenderer::CreateInstance()
     }
 
     const system::Settings& settings = system::Settings::Instance();
-
+    uint32_t appVersion = VK_MAKE_VERSION(settings.GetApplicationVersion()[0],
+        settings.GetApplicationVersion()[1],
+        settings.GetApplicationVersion()[2]);
+    uint32_t engVersion = VK_MAKE_VERSION(settings.GetEngineVersion()[0],
+        settings.GetEngineVersion()[1],
+        settings.GetEngineVersion()[2]);
     VkApplicationInfo appInfo = {};
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     appInfo.pApplicationName = settings.GetApplicationName().c_str();
-    appInfo.applicationVersion =
-        VK_MAKE_VERSION(1, 0, 0); // TODO: remove hardcode
+    appInfo.applicationVersion = appVersion;
     appInfo.pEngineName = settings.GetVorpalEngineName().c_str();
-    appInfo.engineVersion = VK_MAKE_VERSION(0, 1, 0); // TODO: remove hardcode
+    appInfo.engineVersion = engVersion;
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
     VkInstanceCreateInfo createInfo = {};

@@ -73,5 +73,13 @@ void Graphics::Render()
         m_pRenderer->Render();
     }
 }
+
+void Graphics::WindowSizeChanged()
+{
+    if (m_pRenderer)
+    {
+        m_pRenderer->RecreateSwapChain();
+    }
+}
 }
 }

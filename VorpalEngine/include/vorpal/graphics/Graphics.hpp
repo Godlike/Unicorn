@@ -35,6 +35,7 @@ public:
     bool Init();
     void Deinit();
     void Render();
+    void WindowSizeChanged();
 
 private:
     bool m_isInitialized;

@@ -7,8 +7,8 @@
 #ifndef VORPAL_GRAPHICS_SCENEGRAPH_HPP
 #define VORPAL_GRAPHICS_SCENEGRAPH_HPP
 
-#include <vector>
-#include <vorpal/graphics/Drawable.hpp>
+#include <list>
+#include <vorpal/graphics/Texture.hpp>
 
 namespace vp
 {
@@ -17,7 +17,7 @@ namespace graphics
 class SceneGraph
 {
 public:
-    std::vector<vp::graphics::Drawable> graph;
+    std::list<Texture> sceneGraph;
 };
 }
 }

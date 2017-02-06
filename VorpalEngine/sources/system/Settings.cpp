@@ -17,6 +17,8 @@ Settings::Settings()
     , m_applicationName("SAMPLE NAME")
     , m_vorpalEngineName("Vorpal Engine")
     , m_anisatropicFiltering(16)
+    , m_applicationVersion({{0, 0, 1}})
+    , m_engineVersion({{0, 0, 1}})
 {
 }
 

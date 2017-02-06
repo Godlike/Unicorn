@@ -11,6 +11,7 @@
 
 #include <string>
 #include <cstdint>
+#include <array>
 
 namespace vp
 {
@@ -25,13 +26,17 @@ public:
     VORPAL_EXPORT void SetVorpalEngineName(const std::string&& name) { m_vorpalEngineName = name; }
     VORPAL_EXPORT void SetApplicationWidth(uint32_t width) { m_width = width; }
     VORPAL_EXPORT void SetApplicationHeight(uint32_t height) { m_height = height; }
-    VORPAL_EXPORT void SetAnisatropicFiltering(uint32_t filterPower) { m_anisatropicFiltering = filterPower; }
+    VORPAL_EXPORT void SetAnisatropicFiltering(uint8_t filterPower) { m_anisatropicFiltering = filterPower; }
+    VORPAL_EXPORT void SetApplicationVersion(std::array<uint32_t, 3> appVersion) { m_applicationVersion = appVersion; }
+    VORPAL_EXPORT void SetEngineVersion(std::array<uint32_t, 3> engVersion) { m_engineVersion = engVersion; }
 
     VORPAL_EXPORT uint32_t GetApplicationWidth() const { return m_width; }
     VORPAL_EXPORT uint32_t GetApplicationHeight() const { return m_height; }
     VORPAL_EXPORT const std::string& GetApplicationName() const { return m_applicationName; }
     VORPAL_EXPORT const std::string& GetVorpalEngineName() const { return m_vorpalEngineName; }
     VORPAL_EXPORT uint8_t GetAnisatropicFiltering() const { return m_anisatropicFiltering; }
+    VORPAL_EXPORT std::array<uint32_t, 3> GetApplicationVersion() const { return m_applicationVersion; }
+    VORPAL_EXPORT std::array<uint32_t, 3> GetEngineVersion() const { return m_engineVersion; }
 
 private:
     friend class utility::templates::Singleton<Settings>;
@@ -51,6 +56,8 @@ private:
     std::string m_applicationName;
     std::string m_vorpalEngineName;
     uint8_t m_anisatropicFiltering;
+    std::array<uint32_t, 3> m_applicationVersion;
+    std::array<uint32_t, 3> m_engineVersion;
 };
 }
 }
