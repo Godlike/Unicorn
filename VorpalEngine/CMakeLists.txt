@@ -91,15 +91,15 @@ add_library(${VORPAL_ENGINE_LIB}
     include/vorpal/utility/templates/Singleton.hpp
     include/vorpal/utility/templates/Singleton.imp
     include/vorpal/graphics/Graphics.hpp
-    include/vorpal/graphics/VulkanRenderer.hpp
-    include/vorpal/graphics/VulkanUtils.hpp
-    include/vorpal/graphics/VulkanBuffer.hpp
+    include/vorpal/graphics/Vulkan/VulkanRenderer.hpp
+    include/vorpal/graphics/Vulkan/VulkanUtils.hpp
+    include/vorpal/graphics/Vulkan/VulkanBuffer.hpp
     include/vorpal/graphics/Texture.hpp
     include/vorpal/graphics/Vertex.hpp
     include/vorpal/graphics/SceneGraph.hpp
     include/vorpal/graphics/Camera.hpp
     include/vorpal/graphics/GraphicsProcessingUnit.hpp
-    include/vorpal/graphics/VulkanSwapChain.hpp
+    include/vorpal/graphics/Vulkan/VulkanSwapChain.hpp
     include/vorpal/graphics/Mesh.hpp
     include/vorpal/graphics/Model.hpp
     include/vorpal/graphics/Sprite.hpp
@@ -116,17 +116,17 @@ add_library(${VORPAL_ENGINE_LIB}
     sources/utility/asset/Storage.cpp
     sources/utility/Logger.cpp
     sources/graphics/Graphics.cpp
-    sources/graphics/VulkanRenderer.cpp
+    sources/graphics/Vulkan/VulkanRenderer.cpp
     sources/graphics/Texture.cpp
     sources/graphics/Vertex.cpp
     sources/graphics/SceneGraph.cpp
-    sources/graphics/VulkanUtils.cpp
+    sources/graphics/Vulkan/VulkanUtils.cpp
     sources/graphics/Camera.cpp
     sources/graphics/Mesh.cpp
     sources/graphics/Model.cpp
     sources/graphics/Shader.cpp
     sources/graphics/Sprite.cpp
-    sources/graphics/VulkanSwapChain.cpp
+    sources/graphics/Vulkan/VulkanSwapChain.cpp
     sources/VorpalEngine.cpp
 )
 

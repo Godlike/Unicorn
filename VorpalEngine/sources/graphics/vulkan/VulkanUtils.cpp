@@ -1,4 +1,4 @@
-#include <vorpal/graphics/VulkanUtils.hpp>
+#include <vorpal/graphics/vulkan/VulkanUtils.hpp>
 #include <vorpal/utility/Logger.hpp>
 
 #include <vector>
@@ -41,9 +41,10 @@ bool CheckValidationLayerSupport(const std::vector<const char*>& requiredLayers)
 
     return true;
 }
-}
 
 void WaitVulkanDeviceIdle(const VkDevice& device)
 {
     vkDeviceWaitIdle(device);
+}
+
 }

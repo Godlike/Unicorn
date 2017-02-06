@@ -13,12 +13,13 @@
 namespace vp
 {
 VorpalEngine::VorpalEngine()
-    : m_isInitialized(false)
-    , m_pGraphics(nullptr)
-    , m_pSceneGraph(nullptr)
-    , m_pWindow(nullptr)
-{
-}
+        : m_pSceneGraph(nullptr),
+        m_isInitialized(false), 
+        m_pWindow(nullptr),
+        m_pGraphics(nullptr)
+        //m_pCamera(nullptr)
+    {
+    }
 
 VorpalEngine::~VorpalEngine()
 {
@@ -36,7 +37,7 @@ bool VorpalEngine::Init()
     LOG_INFO("Engine initialization started.");
     m_pWindow = new system::Window;
     m_pGraphics = new graphics::Graphics;
-    m_pCamera = new graphics::Camera;
+    //m_pCamera = new graphics::Camera;
     m_pSceneGraph = new graphics::SceneGraph;
 
     if (!m_pWindow->Init())
@@ -44,7 +45,7 @@ bool VorpalEngine::Init()
         Deinit();
         return false;
     }
-    m_pWindow->SetGraphicsEngine(m_pGraphics);
+
     if (!m_pGraphics->Init())
     {
         Deinit();

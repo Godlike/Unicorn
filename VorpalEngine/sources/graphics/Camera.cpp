@@ -5,6 +5,18 @@ vp::graphics::Camera::Camera()
 {
 }
 
+vp::graphics::Camera::~Camera()
+{
+}
+
+void vp::graphics::Camera::SetPerspective(float fov, float aspect, float znear, float zfar)
+{
+    m_fov = fov;
+    m_znear = znear;
+    m_zfar = zfar;
+    m_perspective = glm::perspective(glm::radians(fov), aspect, znear, zfar);
+}
+
 void vp::graphics::Camera::UpdateAspectRatio(float aspect)
 {
     m_perspective = glm::perspective(glm::radians(m_fov), aspect, m_znear, m_zfar);
@@ -51,12 +63,4 @@ void vp::graphics::Camera::UpdateViewMatrix()
 
     transM = glm::translate(glm::mat4(), m_position);
     m_view = rotM * transM;
-}
-
-void Camera::SetPerspective(float fov, float aspect, float znear, float zfar)
-{
-    m_fov = fov;
-    m_znear = znear;
-    m_zfar = zfar;
-    m_perspective = glm::perspective(glm::radians(fov), aspect, znear, zfar);
 }

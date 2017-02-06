@@ -20,6 +20,7 @@ namespace graphics
 */
 class VulkanBuffer
 {
+private:
     VkBuffer m_buffer;
     VkDevice m_device;
     VkDeviceMemory m_memory;

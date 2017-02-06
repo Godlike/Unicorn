@@ -4,7 +4,7 @@
 */
 
 #include <vorpal/graphics/Graphics.hpp>
-#include <vorpal/graphics/VulkanRenderer.hpp>
+#include <vorpal/graphics/Vulkan/VulkanRenderer.hpp>
 #include <vorpal/utility/Logger.hpp>
 
 namespace vp

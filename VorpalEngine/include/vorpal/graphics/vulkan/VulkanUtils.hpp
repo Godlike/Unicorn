@@ -10,8 +10,10 @@
 #include <vector>
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-
-void WaitVulkanDeviceIdle(const VkDevice& device);
-bool CheckValidationLayerSupport(const std::vector<const char*>& requiredLayers);
+namespace vp
+{
+    void WaitVulkanDeviceIdle(const VkDevice& device);
+    bool CheckValidationLayerSupport(const std::vector<const char*>& requiredLayers);    
+}
 
 #endif // VORPAL_GRAPHICS_VULKANUTILS_HPP

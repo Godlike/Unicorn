@@ -20,8 +20,8 @@
 #include <array>
 
 #include <vorpal/system/Timer.hpp>
-#include <vorpal/graphics/VulkanBuffer.hpp>
-#include <vorpal/graphics/VulkanSwapChain.hpp>
+#include <vorpal/graphics/vulkan/VulkanBuffer.hpp>
+#include <vorpal/graphics/vulkan/VulkanSwapChain.hpp>
 
 struct GLFWwindow;
 
@@ -74,7 +74,6 @@ public:
     bool Init();
     void Deinit();
     void Render();
-    static void onWindowResized(GLFWwindow* window, int width, int height);
     bool RecreateSwapChain();
 
 private:

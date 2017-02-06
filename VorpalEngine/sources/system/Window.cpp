@@ -7,6 +7,11 @@ vp::system::Window::Window()
 {
 }
 
+vp::system::Window::~Window()
+{
+    Deinit();
+}
+
 bool vp::system::Window::Init()
 {
     glfwInit();
@@ -33,11 +38,6 @@ void vp::system::Window::Deinit()
         glfwDestroyWindow(m_pWindow);
         m_pWindow = nullptr;
     }
-}
-
-void vp::system::Window::SetGraphicsEngine(vp::graphics::Graphics* graphicsEngine)
-{
-    m_Graphics = graphicsEngine;
 }
 
 void vp::system::Window::RetrieveEvents() const

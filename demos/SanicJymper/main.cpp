@@ -9,7 +9,6 @@
 #include <vorpal/graphics/Sprite.hpp>
 #include <vorpal/graphics/Texture.hpp>
 #include <vorpal/graphics/Model.hpp>
-#include <vorpal/graphics/Camera.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -24,9 +23,10 @@ int main(int argc, char* argv[])
     vp::graphics::Texture texture;
     texture.LoadFromFile("data/models/cabin/chalet.jpg");
 
-    vp::graphics::Camera camera;
+    /*vp::graphics::Camera camera;
     camera.SetPerspective(45.0f, 45.0f, 0.1f, 1000.0f);
     camera.SetPosition({0.0f, 0.0f, 0.0f});
+    */
 
     if (result)
     {

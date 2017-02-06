@@ -8,8 +8,8 @@
 #include <vorpal/utility/Logger.hpp>
 #include <vorpal/utility/asset/SimpleStorage.hpp>
 #include <vorpal/graphics/Vertex.hpp>
-#include <vorpal/graphics/VulkanUtils.hpp>
-#include <vorpal/graphics/VulkanRenderer.hpp>
+#include <vorpal/graphics/Vulkan/VulkanUtils.hpp>
+#include <vorpal/graphics/Vulkan/VulkanRenderer.hpp>
 #include <algorithm>
 #include <iostream>
 #include <set>
@@ -790,12 +790,13 @@ bool VulkanRenderer::CreateLogicalDevice()
 
 bool VulkanRenderer::CreateSurface()
 {
-    if (glfwCreateWindowSurface(
+    /*if (glfwCreateWindowSurface(
             m_vkInstance, m_pWindow, nullptr, &m_vkWindowSurface) != VK_SUCCESS)
     {
         LOG_ERROR("Failed to create window surface!");
         return false;
     }
+    */
     return true;
 }
 

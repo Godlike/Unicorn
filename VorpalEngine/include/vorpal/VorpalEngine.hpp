@@ -42,7 +42,7 @@ private:
     bool m_isInitialized;
     system::Window* m_pWindow;
     graphics::Graphics* m_pGraphics;
-    graphics::Camera* m_pCamera;
+    //graphics::Camera* m_pCamera;
 };
 }
 

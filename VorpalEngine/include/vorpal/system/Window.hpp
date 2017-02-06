@@ -18,7 +18,7 @@ class Graphics;
 namespace system
 {
 /**
-* @brief Main window of application.
+* @brief Class to handle window creation.
 */
 class Window
 {
@@ -33,12 +33,10 @@ public:
 
     bool Init();
     void Deinit();
-    void SetGraphicsEngine(graphics::Graphics* graphicsEngine);
     void RetrieveEvents() const;
     static void onWindowResized(GLFWwindow* window, int width, int height);
     bool ShouldClose() const;
     void Close();
-
 private:
     GLFWwindow* m_pWindow;
     graphics::Graphics* m_Graphics;

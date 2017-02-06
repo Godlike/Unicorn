@@ -18,7 +18,7 @@ namespace vp
 namespace graphics
 {
 /**
- * @brief The Camera class need for Model View Projection conversations.
+ * @brief The Camera class to look around.
  */
 class VORPAL_EXPORT Camera
 {
