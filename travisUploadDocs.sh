@@ -21,11 +21,11 @@ echo "theme: jekyll-theme-cayman" > _config.yml
 
 if [ -d "$TRAVIS_BUILD_DIR/$BUILD_DIR/VorpalEngine/docs/html" ] && [ -f "$TRAVIS_BUILD_DIR/$BUILD_DIR/VorpalEngine/docs/html/index.html" ]; then
     echo "Copying documentation"
-    cp "$TRAVIS_BUILD_DIR/$BUILD_DIR/VorpalEngine/docs/html" ./
+    cp -a "$TRAVIS_BUILD_DIR/$BUILD_DIR/VorpalEngine/docs/html/." ./
 
     echo "Publishing documentation"
     git add --all
-    git commit -m "Deploy code docs to GitHub Pages Travis build: ${TRAVIS_BUILD_NUMBER}" -m "Commit: ${TRAVIS_COMMIT}"
+    git commit -m "Documentation deployment to GitHub Pages" -m "Travis build: ${TRAVIS_BUILD_NUMBER}" -m "Commit: ${TRAVIS_COMMIT}"
     git push --force "https://${GH_REPO_TOKEN}@${GH_REPO_REF}" > /dev/null 2>&1
 else
     echo '' >&2

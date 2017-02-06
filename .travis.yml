@@ -71,8 +71,8 @@ script:
 
 after_success:
 - cd $TRAVIS_BUILD_DIR
-- chmod +x travisGenerateDocs.sh
-- if [ "$BUILD_DOCUMENTATION" = "true" ] && [ "$TRAVIS_PULL_REQUEST" = "true" ]; then travisGenerateDocs.sh; fi;
+- chmod +x travisUploadDocs.sh
+- if [ "$BUILD_DOCUMENTATION" = "true" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" = "master" ]; then ./travisUploadDocs.sh; fi;
 
 notifications:
   email:
