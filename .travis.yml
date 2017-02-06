@@ -1,51 +1,83 @@
+branches:
+  except:
+    gh-pages
+
+env:
+  global:
+    - secure: GQuc1Rr6XwqESQczpZRCW6Z2bSgH9BjD1cjf9psFVsg/uFPz8fK+1laDt7xvioeDJSu3iw/VSM5Agr3TGXJ3iPfPkpcIWGhRq484nIxAZq9QqnfqHP/+ukJNdX+LuJZOHdtoxAqSrW0Bcp8YOjk2ymPuMVLAfOn3oJfffp4bC22Gv/FwgUFTdnEzW1wbb0orIaUt1/8QXYEb9Y4tFRMf2QdJfAYojRCHECx8pttxpGZZd2ANSjcGyDTwxmj9v9I5gk1Xu0lg2BTkGIBhLgWJE+e5iwhHavEXfejNWJ4O7wxkLqbEvurs3T5zXH1/qlMvzqUAnYTX0O8CH9VJFzTxdOCbfNUMMZwDOHbll+I784C+shko3W4YJwib3SsuoVkNbCcTARRJFsRh5X8GTFqlPusQTJpvMKvk2xGjD1N72jmzCXqVOkOT8DD0OXXXSqLTkpIdDYzZ4TPSWBmCbYI537o7AgSRtca8mVbamyLRGsRf2BD9tNyGrucvVIVDOaE0g3ZMza4i9+MwJAjI7WT5/+hw0Dm3cmdBJbkUMey4M/pR3eYKKPtu6u36N4mRxeDz0BNShLb92LOBbMNcY7LkWMfzq0bd6VOfwbpIe0eb+SwcSur63MplwTeZ9wRWdjxt9thgTkPRTQsT9cB4ltRA5mSfoBZL8KC4CBpIMA6sMf8=
+    - GH_REPO_NAME: Unicorn
+    - GH_REPO_REF: github.com/BraveEyed/Unicorn.git
+    - BUILD_DIR: build
+
 sudo: required
 os: linux
 dist: trusty
 language: cpp
 compiler: gcc
+
 matrix:
   exclude:
-    - compiler: gcc
+  - compiler: gcc
   include:
-    - compiler: gcc
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-6
-      env: COMPILER=g++-6
-    - compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.9
-          packages:
-            - clang-3.9
-      env: COMPILER=clang++-3.9
+  - compiler: gcc
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-6
+    env: COMPILER=g++-6
+  - addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-6
+        - doxygen
+        - doxygen-doc
+        - doxygen-latex
+        - doxygen-gui
+        - graphviz
+    env:
+    - COMPILER=g++-6
+    - BUILD_DOCUMENTATION=true
+  - compiler: clang
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        - llvm-toolchain-precise-3.9
+        packages:
+        - clang-3.9
+    env: COMPILER=clang++-3.9
+
 git:
   submodules: false
+
 before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y libx11-xcb-dev libxrandr-dev libxinerama-dev libxcursor-dev
-  - git submodule update --init --recursive
-  - wget "https://vulkan.lunarg.com/sdk/download/1.0.39.0/linux/vulkansdk-linux-x86_64-1.0.39.0.run"
-  - chmod ugo+x vulkansdk-linux-x86_64-1.0.39.0.run
-  - ./vulkansdk-linux-x86_64-1.0.39.0.run
-  - export VULKAN_SDK="$(pwd)/VulkanSDK/1.0.39.0/x86_64"
-  - export PATH=$PATH:$VULKAN_SDK/x86_64/bin
-  - unset CXX && unset CC
+- sudo apt-get -qq update
+- sudo apt-get install -y libx11-xcb-dev libxrandr-dev libxinerama-dev libxcursor-dev
+- git submodule update --init --recursive
+- wget "https://vulkan.lunarg.com/sdk/download/1.0.39.0/linux/vulkansdk-linux-x86_64-1.0.39.0.run"
+- chmod ugo+x vulkansdk-linux-x86_64-1.0.39.0.run
+- "./vulkansdk-linux-x86_64-1.0.39.0.run"
+- export VULKAN_SDK="$(pwd)/VulkanSDK/1.0.39.0/x86_64"
+- export PATH=$PATH:$VULKAN_SDK/x86_64/bin
+
 script:
-  - mkdir build
-  - cd build
-  - cmake -DCMAKE_CXX_COMPILER=$COMPILER ..
-  - make -j${nproc}
-  - ctest -VV
+- cd $TRAVIS_BUILD_DIR
+- chmod +x travisBuildScript.sh
+- ./travisBuildScript.sh
+
+after_success:
+- cd $TRAVIS_BUILD_DIR
+- chmod +x travisGenerateDocs.sh
+- if [ "$BUILD_DOCUMENTATION" = "true" ] && [ "$TRAVIS_PULL_REQUEST" = "true" ]; then travisGenerateDocs.sh; fi;
+
 notifications:
   email:
     recipients:
-      - nikita.krupitskas@gmail.com
-      - odintsoff@gmail.com
+    - nikita.krupitskas@gmail.com
+    - odintsoff@gmail.com
     on_success: change
     on_failure: always

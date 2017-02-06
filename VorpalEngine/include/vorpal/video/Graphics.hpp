@@ -19,7 +19,15 @@ class Renderer;
 class Graphics
 {
 public:
+    /** @brief Constructs an empty graphics system */
     Graphics();
+
+    /** @brief  Destructs a graphics system
+     *
+     *  Also calls Deinit() to release all resources
+     *
+     *  @sa Deinit()
+     */
     ~Graphics();
 
     Graphics(const Graphics& other) = delete;
@@ -27,12 +35,28 @@ public:
     Graphics& operator=(const Renderer& other) = delete;
     Graphics& operator=(const Graphics&& other) = delete;
 
+    /** @brief  Initializes the graphics system
+     *
+     *  Initializes @ref m_pRenderer
+     *
+     *  @return @c true if initialization was successful, @c false otherwise
+     */
     bool Init();
+
+    /** @brief  Deinitializes the graphics system
+     *
+     *  Deinitializes @ref m_pRenderer
+     */
     void Deinit();
+
+    /** @brief  Graphics renderer loop */
     void Render();
 
 private:
+    //! Flag describing if graphics were initialized
     bool m_isInitialized;
+
+    //! Pointer to renderer
     Renderer* m_pRenderer;
 };
 }

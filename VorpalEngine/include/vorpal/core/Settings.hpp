@@ -16,22 +16,70 @@ namespace vp
 {
 namespace core
 {
+
+/** @brief  Provides an access to application settings */
 class Settings : public utility::templates::Singleton<Settings>
 {
 public:
+    /** @brief  Initializes logging system
+     *
+     *  @param  argc        argument count
+     *  @param  argv        arguments
+     *  @param  logFileName name of the log file
+     */
     VORPAL_EXPORT void Init(int argc, char* argv[], const std::string& logFileName);
 
+    /** @brief  Returns application width
+     *
+     *  @return width
+     */
     VORPAL_EXPORT uint32_t GetApplicationWidth() const { return m_width; }
+
+    /** @brief  Returns application height
+     *
+     *  @return height
+     */
     VORPAL_EXPORT uint32_t GetApplicationHeight() const { return m_height; }
+
+    /** @brief  Sets application width
+     *
+     *  @param  width   new width
+     */
     VORPAL_EXPORT void SetApplicationWidth(uint32_t width) { m_width = width; }
+
+    /** @brief  Sets application height
+     *
+     *  @param  height   new height
+     */
     VORPAL_EXPORT void SetApplicationHeight(uint32_t height) { m_height = height; }
+
+    /** @brief  Returns application name
+     *
+     *  @return application name
+     */
     VORPAL_EXPORT const std::string& GetApplicationName() const { return m_applicationName; }
+
+    /** @brief  Returns engine name
+     *
+     *  @return engine name
+     */
     VORPAL_EXPORT const std::string& GetVorpalEngineName() const { return m_vorpalEngineName; }
+
+    /** @brief  Sets an application name
+     *
+     *  @param  name new name
+     */
     VORPAL_EXPORT void SetApplicationName(const std::string&& name) { m_applicationName = name; }
+
+    /** @brief  Sets an engine name
+     *
+     *  @param  name new name
+     */
     VORPAL_EXPORT void SetVorpalEngineName(const std::string&& name) { m_vorpalEngineName = name; }
 private:
     friend class utility::templates::Singleton<Settings>;
 
+    /** @brief  Constructs an object with default settings */
     VORPAL_EXPORT Settings();
     ~Settings() = default;
 
@@ -41,10 +89,16 @@ private:
     Settings(Settings&& other) = delete;
     Settings& operator=(Settings&& other) = delete;
 
+    //! Application width
     uint32_t m_width;
+
+    //! Application height
     uint32_t m_height;
 
+    //! Application name
     std::string m_applicationName;
+
+    //! Engine name
     std::string m_vorpalEngineName;
 };
 }

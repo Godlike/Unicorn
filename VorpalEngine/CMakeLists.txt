@@ -79,7 +79,7 @@ if (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Werror")
 endif()
 
-add_library(${VORPAL_ENGINE_LIB}
+set(VORPAL_ENGINE_HEADERS
     include/vorpal/core/Settings.hpp
     include/vorpal/core/Timer.hpp
     include/vorpal/utility/asset/Content.hpp
@@ -95,7 +95,9 @@ add_library(${VORPAL_ENGINE_LIB}
     include/vorpal/video/Graphics.hpp
     include/vorpal/video/Renderer.hpp
     include/vorpal/VorpalEngine.hpp
+)
 
+set(VORPAL_ENGINE_SOURCES
     sources/core/Settings.cpp
     sources/core/Timer.cpp
     sources/utility/asset/Content.cpp
@@ -109,4 +111,35 @@ add_library(${VORPAL_ENGINE_LIB}
     sources/VorpalEngine.cpp
 )
 
+add_library(${VORPAL_ENGINE_LIB}
+    ${VORPAL_ENGINE_HEADERS}
+    ${VORPAL_ENGINE_SOURCES}
+)
+
 target_link_libraries(${VORPAL_ENGINE_LIB} ${GLFW_LIB} ${VULKAN_LIBRARY})
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # Workaround for a bug regarding __builtin_cpu_supports("sse2") call on GCC 5+
+    # Call is made by STB but is not directly a bug in STB
+    target_link_libraries(${PROJECT_NAME} -lgcc_s -lgcc)
+endif()
+
+if (VORPAL_BUILD_DOCUMENTATION)
+    find_package(Doxygen)
+
+    if (DOXYGEN_FOUND)
+        set(DOXYGEN_PROJECT_NAME ${PROJECT_NAME})
+        set(DOXYGEN_INPUT ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+
+        file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs)
+        add_custom_target( docs
+            ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs
+            COMMENT "Generating VorpalEngine API documentation"
+        )
+    else()
+        message(FATAL "Doxygen is required to build documentation")
+    endif()
+endif()

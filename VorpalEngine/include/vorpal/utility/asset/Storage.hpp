@@ -36,6 +36,7 @@ namespace asset
 class Storage : public templates::Singleton<Storage>
 {
 public:
+    //! Alias to a key type used by underlying container
     typedef std::string KeyType;
 
     /** @brief  Initializes worker threads
@@ -59,6 +60,8 @@ public:
      *  @param  key asset identifier
      *
      *  @return Handler shared object
+     *
+     *  @sa ProcessHandlerCreation()
      */
     VORPAL_EXPORT Handler Get(const KeyType& key);
 
@@ -74,36 +77,71 @@ public:
      *  @param  priority    asset loading priority
      *
      *  @return shared future object on a Handler
+     *
+     *  @sa ProcessAsyncHandlerCreation
      */
     VORPAL_EXPORT std::shared_future<Handler> GetAsync(const KeyType& key, uint32_t priority = 100);
 
 private:
     friend class utility::templates::Singleton<Storage>;
 
+    //! Alias to underlying container
     typedef concurrent::UnorderedMap<KeyType, std::shared_future<Handler>> ConcurrentHandlerMap;
+
+    //! Alias to a set of requested asset identifiers
     typedef std::set<KeyType> RequestsSet;
+
+    //! Alias to a shared mutex type
     typedef std::shared_timed_mutex SharedMutexType;
+
+    //! Alias to a mutex type
     typedef std::mutex MutexType;
 
     /** @brief  Describes asset loading task */
     struct Task
     {
+        //! Asset identifier
         KeyType key;
+
+        //! Task loading priority
         uint32_t priority;
+
+        //! Promise to create a Handler for the asset
         std::promise<Handler> promise;
 
+        /** @brief  Constructs a default-initialized object */
         Task();
 
         Task(const Task& other) = delete;
         Task& operator=(const Task& other) = delete;
 
+        /** @brief  Moves a Task from @p other
+         *
+         *  @param  other   task object
+         */
         Task(Task&& other);
+
+        /** @brief  Moves a Task from @p other
+         *
+         *  @param  other   task object
+         *
+         *  @return a reference to @c this object
+         */
         Task& operator=(Task&& other);
 
         ~Task() = default;
 
+        /** @brief  Comparator struct for Task ordering */
         struct ComparePriority
         {
+            /** @brief  Compare operator
+             *
+             *  @param  lhs left side of comparison
+             *  @param  rhs right side of comparison
+             *
+             *  @return @c true if priority of @p lhs is higher
+             *          than of @p rhs, @c false otherwise
+             */
             bool operator()(const Task& lhs, const Task& rhs) const
             {
                 return lhs.priority < rhs.priority;
@@ -115,20 +153,79 @@ private:
     class TaskQueue : public std::priority_queue<Task, std::vector<Task>, Task::ComparePriority>
     {
     public:
+        /** @brief  Steals a Task for given @p key
+         *
+         *  Searches for a Task with @p key identifier and removes it
+         *  from queue.
+         *
+         *  @param  key asset identifier
+         *
+         *  @return stolen Task object or default-initialized one if the Task
+         *          was not found in the queue
+         */
         Task Snatch(const KeyType& key);
+
+        /** @brief  Removes top element from the queue and returns it
+         *
+         *  @return popped Task object
+         */
         Task PopTop();
+
+        /** @brief  Updates loading priority for a Task
+         *
+         *  If @p priority is smaller than that of a Task, nothing happens.
+         *
+         *  @param  key         asset loading
+         *  @param  priority    loading priority
+         */
         void UpdatePriority(const KeyType& key, uint32_t priority);
     };
 
+    /** @brief  Indicates worker threads to stop and joins them */
     void StopWorkers();
 
+    /** @brief  Creates and stores a Handler
+     *
+     *  Creates handler via CreateHandler() call and inserts it
+     *  to @ref m_entries
+     *
+     *  @param  key asset identifier
+     *
+     *  @return created Handler
+     *
+     *  @sa CreateHandler()
+     */
     Handler ProcessHandlerCreation(const KeyType& key);
+
+    /** @brief  Creates and stores an async request for Handler
+     *
+     *  Checks if there is an entry for @p key in @ref m_requests :
+     *  - if there is none, creates it and also queues a Task for @p key
+     *  - if there is a request for @p key, calls UpdatePriority() on it
+     *
+     *  @param  key         asset identifier
+     *  @param  priority    loading priority
+     *
+     *  @return a future for a Handler
+     *
+     *  @sa CreateHandler()
+     */
     std::shared_future<Handler> ProcessAsyncHandlerCreation(const KeyType& key, uint32_t priority);
 
+    /** @brief  Creates a Handler for given @p key
+     *
+     *  Prepares asset contents from @p key and creates a Handler object.
+     *
+     *  @param  key asset identifier
+     *
+     *  @return created Handler
+     */
     Handler CreateHandler(const KeyType& key);
 
+    /** @brief  A routine for a worker thread */
     void WorkerThread();
 
+    /** @brief  Constructs a storage object */
     VORPAL_EXPORT Storage();
 
     Storage(const Storage& other) = delete;
@@ -137,18 +234,38 @@ private:
     Storage(Storage&& other) = delete;
     Storage& operator=(Storage&& other) = delete;
 
+    /** @brief  Destructs a storage object
+     *
+     *  Also calls StopWorkers() to ensure that worker threads are
+     *  destroyed.
+     */
     VORPAL_EXPORT ~Storage();
 
+    //! Container of asset handlers
     ConcurrentHandlerMap m_entries;
 
+    //! A set of requests for Handlers
     RequestsSet m_requests;
+
+    //! Protection for @ref m_requests
     SharedMutexType m_requestsMutex;
 
+    //! A vector of worker threads
     std::vector<std::thread> m_workers;
 
+    //! Asset loading task queue
     TaskQueue m_orders;
+
+    //! Protection for @ref m_orders
     MutexType m_ordersMutex;
-    bool m_workersStopFlag; //! is guarded by m_ordersMutex
+
+    /** @brief  Flag indicating if worker threads should stop execution
+     *
+     * Is guarded by @ref m_ordersMutex
+     */
+    bool m_workersStopFlag;
+
+    //! Indicates when @p m_orders queue was changed by Storage
     std::condition_variable m_ordersCV;
 };
 }
