@@ -66,8 +66,8 @@ before_install:
 
 script:
 - cd $TRAVIS_BUILD_DIR
-- chmod +x TravisBuildScript.sh
-- ./TravisBuildScript.sh
+- chmod +x travisBuildScript.sh
+- ./travisBuildScript.sh
 
 after_success:
 - cd $TRAVIS_BUILD_DIR
