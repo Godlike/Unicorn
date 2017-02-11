@@ -10,12 +10,16 @@
 #include <vector>
 
 #include <vorpal/graphics/GraphicsProcessingUnit.hpp>
+#include <vorpal/system/Window.hpp>
 
 namespace vp
 {
 namespace graphics
 {
 class VulkanRenderer;
+class VulkanSubsystem;
+class VulkanContext;
+class VulkanDevice;
 
 /** @brief Abstract graphics renderer
  *
@@ -32,7 +36,7 @@ public:
     Graphics& operator=(const Graphics& other) = delete;
     Graphics& operator=(const Graphics&& other) = delete;
 
-    bool Init();
+    bool Init(const system::Window& renderWindow);
     void Deinit();
     void Render();
     void WindowSizeChanged();
@@ -40,6 +44,9 @@ public:
 private:
     bool m_isInitialized;
     VulkanRenderer* m_pRenderer;
+    VulkanDevice* m_pVkDevice;
+    VulkanContext* m_pVkContext;   
+    VulkanSubsystem& VkSubsystem;
     std::vector<GPU> m_videoCards;
 };
 }

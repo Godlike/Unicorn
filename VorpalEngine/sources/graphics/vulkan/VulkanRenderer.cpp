@@ -92,7 +92,7 @@ VulkanRenderer::~VulkanRenderer()
     Deinit();
 }
 
-bool VulkanRenderer::Init()
+bool VulkanRenderer::Init(const system::Window& renderWindow)
 {
     if (m_isInitialized)
     {

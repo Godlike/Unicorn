@@ -2,6 +2,7 @@
 *.bak
 *.spv
 *~
+*.vs/
 *.autosave
 *.a
 *.core

@@ -5,6 +5,9 @@
 
 #include <vorpal/graphics/Graphics.hpp>
 #include <vorpal/graphics/Vulkan/VulkanRenderer.hpp>
+#include <vorpal/graphics/vulkan/VulkanSubsystem.hpp>
+#include <vorpal/graphics/vulkan/VulkanDevice.hpp>
+#include <vorpal/graphics/vulkan/VulkanContext.hpp>
 #include <vorpal/utility/Logger.hpp>
 
 namespace vp
@@ -14,6 +17,7 @@ namespace graphics
 Graphics::Graphics()
     : m_isInitialized(false)
     , m_pRenderer(nullptr)
+    , VkSubsystem(VulkanSubsystem::Instance())
 {
 }
 
@@ -22,7 +26,7 @@ Graphics::~Graphics()
     Deinit();
 }
 
-bool Graphics::Init()
+bool Graphics::Init(const system::Window& renderWindow)
 {
     if (m_isInitialized)
     {
@@ -31,8 +35,14 @@ bool Graphics::Init()
 
     LOG_INFO("Graphics initialization started.");
 
-    m_pRenderer = new VulkanRenderer();
+    VkSubsystem.Init();
+    m_pVkDevice = new VulkanDevice;
+    m_pVkContext = new VulkanContext;
+    m_pRenderer = new VulkanRenderer;
 
+    m_pVkDevice->Init();
+    m_pVkContext->Init();
+    
     if (!m_pRenderer->Init())
     {
         Deinit();
@@ -57,6 +67,8 @@ void Graphics::Deinit()
 
         m_pRenderer = nullptr;
     }
+
+    VkSubsystem.Deinit();
 
     if (m_isInitialized)
     {

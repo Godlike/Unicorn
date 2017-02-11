@@ -105,6 +105,12 @@ add_library(${VORPAL_ENGINE_LIB}
     include/vorpal/graphics/Sprite.hpp
     include/vorpal/graphics/Shader.hpp
     include/vorpal/VorpalEngine.hpp
+	include/vorpal/graphics/Vulkan/VulkanDevice.hpp
+	include/vorpal/graphics/Vulkan/VulkanContext.hpp
+	include/vorpal/graphics/Vulkan/VulkanSubsystem.hpp
+	include/vorpal/graphics/Vulkan/VulkanCommandBufferPool.hpp
+	include/vorpal/graphics/Vulkan/VulkanDescriptorPool.hpp
+	include/vorpal/graphics/SceneNode.hpp
 
     sources/system/Settings.cpp
     sources/system/Timer.cpp
@@ -127,6 +133,9 @@ add_library(${VORPAL_ENGINE_LIB}
     sources/graphics/Shader.cpp
     sources/graphics/Sprite.cpp
     sources/graphics/Vulkan/VulkanSwapChain.cpp
+	sources/graphics/Vulkan/VulkanDevice.cpp
+	sources/graphics/Vulkan/VulkanContext.cpp
+	sources/graphics/Vulkan/VulkanSubsystem.cpp
     sources/VorpalEngine.cpp
 )
 

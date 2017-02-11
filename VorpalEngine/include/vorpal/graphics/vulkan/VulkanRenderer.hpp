@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2017 by Grapefruit Tech
+* Copyright (C) 2017 by Godlike
 * This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
@@ -31,30 +31,7 @@ namespace graphics
 {
 class Vertex;
 
-struct UniformBufferObject
-{
-    glm::mat4 model;
-    glm::mat4 view;
-    glm::mat4 proj;
-};
 
-struct QueueFamilyIndices
-{
-    int graphicsFamily = -1;
-    int presentFamily = -1;
-
-    bool isComplete() const
-    {
-        return graphicsFamily >= 0 && presentFamily >= 0;
-    }
-};
-
-struct SwapChainSupportDetails
-{
-    VkSurfaceCapabilitiesKHR capabilities;
-    std::vector<VkSurfaceFormatKHR> formats;
-    std::vector<VkPresentModeKHR> presentModes;
-};
 
 /** @brief  Vulkan renderer class
  *
@@ -79,27 +56,18 @@ public:
 private:
     bool m_isInitialized;
 
-    VkInstance m_vkInstance;
-    VkPhysicalDevice m_vkPhysicalDevice;
-    VkDevice m_vkLogicalDevice;
-    VkSwapchainKHR m_vkSwapChain;
-    VkQueue m_graphicsQueue;
-    VkQueue m_presentQueue;
-    VkSurfaceKHR m_vkWindowSurface;
-    VkFormat m_swapChainImageFormat;
-    VkExtent2D m_swapChainExtent;
-    VkPipelineLayout m_pipelineLayout;
-    VkDescriptorSetLayout m_descriptorSetLayout;
-    VkPipeline m_graphicsPipeline;
-    VkRenderPass m_renderPass;
-    VkCommandPool m_commandPool;
+   
+   
+   
+   
+   
+    
     // TODO: make structs to peek this
     VulkanBuffer m_vertBuffer;
     VkBuffer m_vertexBuffer;
     VkDeviceMemory m_vertexBufferMemory;
     VkBuffer m_indexBuffer;
     VkDeviceMemory m_indexBufferMemory;
-    VkDescriptorPool m_descriptorPool;
     VkBuffer m_uniformStagingBuffer;
     VkDeviceMemory m_uniformStagingBufferMemory;
     VkBuffer m_uniformBuffer;
@@ -108,8 +76,6 @@ private:
     VkDeviceMemory m_textureImageMemory;
     VkImageView m_textureImageView;
     VkSampler m_textureSampler;
-    const std::string m_modelPath = "data/models/cabin/chalet.obj";
-    const std::string m_texturePath = "data/models/cabin/chalet.jpg";
 
     VkSemaphore m_imageAvailableSemaphore;
     VkSemaphore m_renderFinishedSemaphore;

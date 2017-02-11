@@ -63,3 +63,9 @@ void vp::system::Window::Close()
 {
     glfwSetWindowShouldClose(m_pWindow, GLFW_TRUE);
 }
+
+
+GLFWwindow* vp::system::Window::GetWindowPointer() const
+{
+    return m_pWindow;
+}

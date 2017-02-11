@@ -7,6 +7,8 @@
 #ifndef VORPAL_GRAPHICS_MESH_HPP
 #define VORPAL_GRAPHICS_MESH_HPP
 
+#include <string>
+
 namespace vp
 {
 namespace graphics
@@ -16,6 +18,8 @@ namespace graphics
  */
 class Mesh
 {
+public:
+    bool LoadFromFile(const std::string& path);
 };
 }
 }

@@ -10,9 +10,20 @@ namespace vp
 {
 namespace graphics
 {
-class VulkanSwapChain
-{
-};
+    struct SwapChainSupportDetails
+    {
+        VkSurfaceCapabilitiesKHR capabilities;
+        std::vector<VkSurfaceFormatKHR> formats;
+        std::vector<VkPresentModeKHR> presentModes;
+    };
+
+    class VulkanSwapChain
+    {
+    private:
+        VkSwapchainKHR m_vkSwapChain;
+        VkFormat m_swapChainImageFormat;
+        VkExtent2D m_swapChainExtent;
+    };
 }
 }
 #endif // VORPAL_GRAPHICS_VULKANSWAPCHAIN_HPP

@@ -22,7 +22,10 @@ int main(int argc, char* argv[])
 
     vp::graphics::Texture texture;
     texture.LoadFromFile("data/models/cabin/chalet.jpg");
+    vp::graphics::Mesh mesh;
+    mesh.LoadFromFile("data/models/cabin/chalet.obj");
 
+    vp::graphics::Model mdl; //Set mesh and textures here for example
     /*vp::graphics::Camera camera;
     camera.SetPerspective(45.0f, 45.0f, 0.1f, 1000.0f);
     camera.SetPosition({0.0f, 0.0f, 0.0f});

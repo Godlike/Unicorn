@@ -37,6 +37,7 @@ public:
     static void onWindowResized(GLFWwindow* window, int width, int height);
     bool ShouldClose() const;
     void Close();
+    GLFWwindow* GetWindowPointer() const;
 private:
     GLFWwindow* m_pWindow;
     graphics::Graphics* m_Graphics;

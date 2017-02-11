@@ -1,0 +1,1 @@
+#include <vorpal/graphics/vulkan/VulkanSwapChain.hpp>

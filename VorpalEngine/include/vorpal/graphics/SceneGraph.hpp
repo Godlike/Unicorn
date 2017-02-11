@@ -8,7 +8,7 @@
 #define VORPAL_GRAPHICS_SCENEGRAPH_HPP
 
 #include <list>
-#include <vorpal/graphics/Texture.hpp>
+#include <vorpal/graphics/SceneNode.hpp>
 
 namespace vp
 {
@@ -17,7 +17,7 @@ namespace graphics
 class SceneGraph
 {
 public:
-    std::list<Texture> sceneGraph;
+    std::list<SceneNode> sceneGraph;
 };
 }
 }
