@@ -16,7 +16,7 @@ namespace vp
 {
 namespace graphics
 {
-class VulkanRenderer;
+//class VulkanRenderer;
 class VulkanSubsystem;
 class VulkanContext;
 class VulkanDevice;
@@ -43,10 +43,8 @@ public:
 
 private:
     bool m_isInitialized;
-    VulkanRenderer* m_pRenderer;
+   // VulkanRenderer* m_pRenderer;
     VulkanDevice* m_pVkDevice;
-    VulkanContext* m_pVkContext;   
-    VulkanSubsystem& VkSubsystem;
     std::vector<GPU> m_videoCards;
 };
 }

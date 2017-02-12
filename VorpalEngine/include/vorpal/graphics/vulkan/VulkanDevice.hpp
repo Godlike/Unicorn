@@ -7,7 +7,7 @@
 #ifndef VORPAL_GRAPHICS_VULKAN_DEVICE_HPP
 #define VORPAL_GRAPHICS_VULKAN_DEVICE_HPP
 
-#define GLFW_INCLUDE_VULKAN
+#include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
 
 namespace vp
@@ -25,14 +25,14 @@ namespace graphics
         void Deinit();
         VulkanDevice();
 
-        ~VulkanDevice() = default;
+        ~VulkanDevice();
 
         VulkanDevice(const VulkanDevice& other) = delete;
         VulkanDevice(const VulkanDevice&& other) = delete;
         VulkanDevice& operator=(const VulkanDevice& other) = delete;
         VulkanDevice& operator=(const VulkanDevice&& other) = delete;
     private:
-        VkInstance m_vkInstance;
+        vk::Instance m_vkInstance;
         VkPhysicalDevice m_vkPhysicalDevice;
         VkDevice m_vkLogicalDevice;
         VkQueue m_graphicsQueue;

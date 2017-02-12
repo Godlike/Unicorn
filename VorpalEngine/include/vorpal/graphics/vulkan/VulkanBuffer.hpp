@@ -7,7 +7,7 @@
 #ifndef VORPAL_GRAPHICS_VULKANBUFFER_HPP
 #define VORPAL_GRAPHICS_VULKANBUFFER_HPP
 
-#define GLFW_INCLUDE_VULKAN
+#include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
 
 namespace vp

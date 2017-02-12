@@ -8,6 +8,7 @@
 #define VORPAL_GRAPHICS_MESH_HPP
 
 #include <string>
+#include <vorpal/utility/SharedMacros.hpp>
 
 namespace vp
 {
@@ -16,7 +17,7 @@ namespace graphics
 /**
  * @brief The Mesh class have indices and vertices of loaded .obj file.
  */
-class Mesh
+class VORPAL_EXPORT Mesh
 {
 public:
     bool LoadFromFile(const std::string& path);

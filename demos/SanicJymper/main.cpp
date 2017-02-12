@@ -14,23 +14,18 @@ int main(int argc, char* argv[])
 {
     vp::system::Settings& settings = vp::system::Settings::Instance();
 
-    settings.Init(argc, argv, "SANIC_JYMPER.log");
-    settings.SetApplicationName("SANIC JYMPER");
+    settings.Init(argc, argv, "sanic_jymper.log");
+    settings.SetApplicationName("Unicorn Engine : Sanic Jymper");
 
     vp::VorpalEngine* vpEngine = new vp::VorpalEngine();
     bool result = vpEngine->Init();
 
     vp::graphics::Texture texture;
-    texture.LoadFromFile("data/models/cabin/chalet.jpg");
+    result = texture.LoadFromFile("data/models/cabin/chalet.jpg");
+    
     vp::graphics::Mesh mesh;
-    mesh.LoadFromFile("data/models/cabin/chalet.obj");
-
-    vp::graphics::Model mdl; //Set mesh and textures here for example
-    /*vp::graphics::Camera camera;
-    camera.SetPerspective(45.0f, 45.0f, 0.1f, 1000.0f);
-    camera.SetPosition({0.0f, 0.0f, 0.0f});
-    */
-
+    result = mesh.LoadFromFile("data/models/cabin/chalet.obj");
+ 
     if (result)
     {
         vpEngine->Run();

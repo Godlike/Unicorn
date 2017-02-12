@@ -7,7 +7,7 @@
 #ifndef VORPAL_VIDEO_RENDERER_HPP
 #define VORPAL_VIDEO_RENDERER_HPP
 
-#define GLFW_INCLUDE_VULKAN
+#include <vulkan/vulkan.hpp>
 #include <GLFW/glfw3.h>
 
 #define GLM_FORCE_RADIANS
@@ -31,8 +31,6 @@ namespace graphics
 {
 class Vertex;
 
-
-
 /** @brief  Vulkan renderer class
  *
  *  Initializes and controls Vulkan API
@@ -55,12 +53,6 @@ public:
 
 private:
     bool m_isInitialized;
-
-   
-   
-   
-   
-   
     
     // TODO: make structs to peek this
     VulkanBuffer m_vertBuffer;

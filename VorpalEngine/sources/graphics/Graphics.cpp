@@ -4,10 +4,8 @@
 */
 
 #include <vorpal/graphics/Graphics.hpp>
-#include <vorpal/graphics/Vulkan/VulkanRenderer.hpp>
-#include <vorpal/graphics/vulkan/VulkanSubsystem.hpp>
+//#include <vorpal/graphics/Vulkan/VulkanRenderer.hpp>
 #include <vorpal/graphics/vulkan/VulkanDevice.hpp>
-#include <vorpal/graphics/vulkan/VulkanContext.hpp>
 #include <vorpal/utility/Logger.hpp>
 
 namespace vp
@@ -16,8 +14,7 @@ namespace graphics
 {
 Graphics::Graphics()
     : m_isInitialized(false)
-    , m_pRenderer(nullptr)
-    , VkSubsystem(VulkanSubsystem::Instance())
+    //, m_pRenderer(nullptr)
 {
 }
 
@@ -35,20 +32,17 @@ bool Graphics::Init(const system::Window& renderWindow)
 
     LOG_INFO("Graphics initialization started.");
 
-    VkSubsystem.Init();
     m_pVkDevice = new VulkanDevice;
-    m_pVkContext = new VulkanContext;
-    m_pRenderer = new VulkanRenderer;
-
-    m_pVkDevice->Init();
-    m_pVkContext->Init();
+    //m_pRenderer = new VulkanRenderer;
+    // Init Subsystem -> OpenGL / Vulkan
+    m_pVkDevice->Init(renderWindow);
     
-    if (!m_pRenderer->Init())
+    /*if (!m_pRenderer->Init())
     {
         Deinit();
 
         return false;
-    }
+    }*/
 
     m_isInitialized = true;
 
@@ -59,7 +53,7 @@ bool Graphics::Init(const system::Window& renderWindow)
 
 void Graphics::Deinit()
 {
-    if (m_pRenderer)
+    /*if (m_pRenderer)
     {
         m_pRenderer->Deinit();
 
@@ -67,8 +61,7 @@ void Graphics::Deinit()
 
         m_pRenderer = nullptr;
     }
-
-    VkSubsystem.Deinit();
+*/
 
     if (m_isInitialized)
     {
@@ -80,18 +73,18 @@ void Graphics::Deinit()
 
 void Graphics::Render()
 {
-    if (m_isInitialized && m_pRenderer)
+    /*if (m_isInitialized && m_pRenderer)
     {
         m_pRenderer->Render();
-    }
+    }*/
 }
 
 void Graphics::WindowSizeChanged()
 {
-    if (m_pRenderer)
+   /* if (m_pRenderer)
     {
         m_pRenderer->RecreateSwapChain();
-    }
+    }*/
 }
 }
 }

@@ -6,6 +6,10 @@
 
 #ifndef VORPAL_GRAPHICS_VULKANSWAPCHAIN_HPP
 #define VORPAL_GRAPHICS_VULKANSWAPCHAIN_HPP
+
+#include <vulkan/vulkan.hpp>
+#include <GLFW/glfw3.h>
+
 namespace vp
 {
 namespace graphics

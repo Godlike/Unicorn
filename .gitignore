@@ -3,6 +3,7 @@
 *.spv
 *~
 *.vs/
+CMakeSettings.json
 *.autosave
 *.a
 *.core

@@ -13,6 +13,7 @@ namespace graphics
 {
 class Sprite
 {
+
 };
 }
 }

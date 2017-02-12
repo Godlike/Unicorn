@@ -17,7 +17,7 @@ namespace graphics
 class SceneGraph
 {
 public:
-    std::list<SceneNode> sceneGraph;
+    SceneNode* sceneGraph;
 };
 }
 }

@@ -23,29 +23,7 @@ namespace vp
 {
 namespace graphics
 {
-static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
-    VkDebugReportObjectTypeEXT /*objType*/,
-    uint64_t /*obj*/,
-    size_t /*location*/,
-    int32_t /*code*/,
-    const char* /*layerPrefix*/,
-    const char* msg,
-    void* /*userData*/)
-{
-    if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
-    {
-        LOG_ERROR("VULKAN LAYER ERROR: %s", msg);
-    }
-    if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
-    {
-        LOG_WARNING("VULKAN LAYER WARNING: %s", msg);
-    }
-    if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
-    {
-        LOG_INFO("VULKAN LAYER PERFORMANCE: %s", msg);
-    }
-    return VK_FALSE;
-}
+
 
 VulkanRenderer::VulkanRenderer()
     : m_isInitialized(false)
@@ -55,36 +33,7 @@ VulkanRenderer::VulkanRenderer()
     , m_validationLayers({"VK_LAYER_LUNARG_standard_validation"})
     , m_deviceExtensions({VK_KHR_SWAPCHAIN_EXTENSION_NAME})
 {
-    m_vkSwapChain = VK_NULL_HANDLE;
-    m_renderPass = VK_NULL_HANDLE;
-    m_pipelineLayout = VK_NULL_HANDLE;
-    m_graphicsPipeline = VK_NULL_HANDLE;
-    m_vkLogicalDevice = VK_NULL_HANDLE;
-    m_vulkanCallback = VK_NULL_HANDLE;
-    m_imageAvailableSemaphore = VK_NULL_HANDLE;
-    m_renderFinishedSemaphore = VK_NULL_HANDLE;
-    m_commandPool = VK_NULL_HANDLE;
-    m_vkWindowSurface = VK_NULL_HANDLE;
-    m_vertexBuffer = VK_NULL_HANDLE;
-    m_vertexBufferMemory = VK_NULL_HANDLE;
-    m_indexBuffer = VK_NULL_HANDLE;
-    m_indexBufferMemory = VK_NULL_HANDLE;
-    m_descriptorSetLayout = VK_NULL_HANDLE;
-    m_uniformStagingBufferMemory = VK_NULL_HANDLE;
-    m_uniformStagingBuffer = VK_NULL_HANDLE;
-    m_uniformBufferMemory = VK_NULL_HANDLE;
-    m_uniformBuffer = VK_NULL_HANDLE;
-    m_descriptorPool = VK_NULL_HANDLE;
-    m_graphicsQueue = VK_NULL_HANDLE;
-    m_presentQueue = VK_NULL_HANDLE;
-    m_descriptorSet = VK_NULL_HANDLE;
-    m_textureImage = VK_NULL_HANDLE;
-    m_textureImageMemory = VK_NULL_HANDLE;
-    m_textureImageView = VK_NULL_HANDLE;
-    m_textureSampler = VK_NULL_HANDLE;
-    m_depthImageMemory = VK_NULL_HANDLE;
-    m_depthImageView = VK_NULL_HANDLE;
-    m_depthImage = VK_NULL_HANDLE;
+    
 }
 
 VulkanRenderer::~VulkanRenderer()
@@ -774,16 +723,13 @@ bool VulkanRenderer::CreateLogicalDevice()
         createInfo.enabledLayerCount = 0;
     }
     if (vkCreateDevice(
-            m_vkPhysicalDevice, &createInfo, nullptr, &m_vkLogicalDevice) !=
-        VK_SUCCESS)
+            m_vkPhysicalDevice, &createInfo, nullptr, &m_vkLogicalDevice) != VK_SUCCESS)
     {
         LOG_ERROR("Can't initialize Vulkan logical device!");
         return false;
     }
-    vkGetDeviceQueue(
-        m_vkLogicalDevice, indices.graphicsFamily, 0, &m_graphicsQueue);
-    vkGetDeviceQueue(
-        m_vkLogicalDevice, indices.presentFamily, 0, &m_presentQueue);
+    vkGetDeviceQueue(m_vkLogicalDevice, indices.graphicsFamily, 0, &m_graphicsQueue);
+    vkGetDeviceQueue(m_vkLogicalDevice, indices.presentFamily, 0, &m_presentQueue);
 
     return true;
 }
@@ -1492,9 +1438,7 @@ bool VulkanRenderer::CreateDescriptorSetLayout()
     layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
     layoutInfo.pBindings = bindings.data();
 
-    if (vkCreateDescriptorSetLayout(
-            m_vkLogicalDevice, &layoutInfo, nullptr, &m_descriptorSetLayout) !=
-        VK_SUCCESS)
+    if (vkCreateDescriptorSetLayout(m_vkLogicalDevice, &layoutInfo, nullptr, &m_descriptorSetLayout) != VK_SUCCESS)
     {
         LOG_ERROR("failed to create descriptor set layout!");
         return false;
@@ -1516,9 +1460,7 @@ bool VulkanRenderer::CreateDescriptorPool()
     poolInfo.pPoolSizes = poolSizes.data();
     poolInfo.maxSets = 1;
 
-    if (vkCreateDescriptorPool(
-            m_vkLogicalDevice, &poolInfo, nullptr, &m_descriptorPool) !=
-        VK_SUCCESS)
+    if (vkCreateDescriptorPool(m_vkLogicalDevice, &poolInfo, nullptr, &m_descriptorPool) != VK_SUCCESS)
     {
         LOG_ERROR("Failed to create descriptor pool!");
         return false;
