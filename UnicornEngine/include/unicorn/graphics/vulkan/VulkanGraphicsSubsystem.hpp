@@ -7,11 +7,16 @@
 #ifndef UNICORN_GRAPHICS_VULKAN_GRAPHICS_SUBSYSTEM_HPP
 #define UNICORN_GRAPHICS_VULKAN_GRAPHICS_SUBSYSTEM_HPP
 
+#include <unicorn/graphics/GraphicsSubsystem.hpp>
+
 namespace uc
 {
     namespace graphics
     {
-        class VulkanGraphicsSubsystem
+        class VulkanRenderer;
+        class VulkanDevice;
+
+        class VulkanGraphicsSubsystem : public GraphicsSubsystem
         {
 
         };

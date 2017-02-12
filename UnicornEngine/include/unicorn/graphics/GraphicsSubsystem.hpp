@@ -14,6 +14,10 @@ namespace uc
     {
         class GraphicsSubsystem
         {
+            virtual bool Init() = 0;
+            virtual bool Deinit() = 0;
+            virtual bool RecreateSwapChain() = 0;
+            virtual bool Render() = 0;
             virtual ~GraphicsSubsystem() = 0;
         };
     }

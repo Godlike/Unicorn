@@ -126,6 +126,7 @@ add_library(${UNICORN_ENGINE_LIB}
 	sources/graphics/Shader.cpp
 	sources/graphics/Sprite.cpp
 	sources/graphics/Vulkan/VulkanDevice.cpp
+	sources/graphics/Vulkan/VulkanGraphicsSubsystem.cpp
 	sources/UnicornEngine.cpp
 )
 

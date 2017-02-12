@@ -21,6 +21,12 @@ class VulkanContext;
 class VulkanDevice;
 class GraphicsSubsystem;
 
+enum class GraphicsSubsystemType 
+{
+    OPENGL,
+    VULKAN
+};
+
 /** @brief Abstract graphics renderer
  *
  *  Initializes graphics system and proxies render calls to the renderer
@@ -36,7 +42,7 @@ public:
     Graphics& operator=(const Graphics& other) = delete;
     Graphics& operator=(const Graphics&& other) = delete;
 
-    bool Init(const system::Window& renderWindow);
+    bool Init(const system::Window& renderWindow, GraphicsSubsystemType renderType);
     void Deinit();
     void Render();
     void WindowSizeChanged();

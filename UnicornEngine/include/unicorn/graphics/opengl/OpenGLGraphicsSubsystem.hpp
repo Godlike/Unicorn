@@ -7,12 +7,29 @@
 #ifndef UNICORN_GRAPHICS_OPENGL_GRAPHICS_SUBSYSTEM_HPP
 #define UNICORN_GRAPHICS_OPENGL_GRAPHICS_SUBSYSTEM_HPP
 
+#include <unicorn/graphics/GraphicsSubsystem.hpp>
+
 namespace uc
 {
     namespace graphics
     {
-        class OpenGLGraphicsSubsystem
-        {
+        class OpenGLGraphicsSubsystem : public GraphicsSubsystem
+        {            
+            virtual bool Init() override
+            {
+            }
+
+            virtual bool Deinit() override
+            {
+            }
+
+            virtual bool RecreateSwapChain() override
+            {
+            }
+            
+            virtual bool Render() override
+            {
+            }
 
         };
     }
