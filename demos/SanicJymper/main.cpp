@@ -1,39 +1,39 @@
 /*
-* Copyright (C) 2017 by Grapefruit Tech
+* Copyright (C) 2017 by Godlike
 * This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
 
-#include <vorpal/VorpalEngine.hpp>
-#include <vorpal/system/Settings.hpp>
-#include <vorpal/graphics/Sprite.hpp>
-#include <vorpal/graphics/Texture.hpp>
-#include <vorpal/graphics/Model.hpp>
+#include <unicorn/UnicornEngine.hpp>
+#include <unicorn/system/Settings.hpp>
+#include <unicorn/graphics/Sprite.hpp>
+#include <unicorn/graphics/Texture.hpp>
+#include <unicorn/graphics/Model.hpp>
 
 int main(int argc, char* argv[])
 {
-    vp::system::Settings& settings = vp::system::Settings::Instance();
+    uc::system::Settings& settings = uc::system::Settings::Instance();
 
     settings.Init(argc, argv, "sanic_jymper.log");
     settings.SetApplicationName("Unicorn Engine : Sanic Jymper");
 
-    vp::VorpalEngine* vpEngine = new vp::VorpalEngine();
-    bool result = vpEngine->Init();
+    uc::UnicornEngine* ucEngine = new uc::UnicornEngine();
+    bool result = ucEngine->Init();
 
-    vp::graphics::Texture texture;
+    uc::graphics::Texture texture;
     result = texture.LoadFromFile("data/models/cabin/chalet.jpg");
     
-    vp::graphics::Mesh mesh;
+    uc::graphics::Mesh mesh;
     result = mesh.LoadFromFile("data/models/cabin/chalet.obj");
  
     if (result)
     {
-        vpEngine->Run();
+        ucEngine->Run();
     }
 
-    vpEngine->Deinit();
-    delete vpEngine;
+    ucEngine->Deinit();
+    delete ucEngine;
 
-    vp::system::Settings::Destroy();
+    uc::system::Settings::Destroy();
     return 0;
 }

@@ -1,9 +1,9 @@
-#include <vorpal/system/Settings.hpp>
+#include <unicorn/system/Settings.hpp>
 
-#include <vorpal/utility/asset/Content.hpp>
-#include <vorpal/utility/asset/SimpleStorage.hpp>
+#include <unicorn/utility/asset/Content.hpp>
+#include <unicorn/utility/asset/SimpleStorage.hpp>
 
-void PrintHandlerContent(const vp::utility::asset::Handler& handler)
+void PrintHandlerContent(const uc::utility::asset::Handler& handler)
 {
     printf("Handler \"%s\" status: %d\n", handler.GetName().c_str(), handler.IsValid());
 
@@ -26,25 +26,25 @@ void PrintHandlerContent(const vp::utility::asset::Handler& handler)
 
 int main(int argc, char* argv[])
 {
-    vp::system::Settings& settings = vp::system::Settings::Instance();
+    uc::system::Settings& settings = uc::system::Settings::Instance();
 
     settings.Init(argc, argv, "");
     settings.SetApplicationName("Asset simple storage test");
 
-    vp::utility::asset::SimpleStorage& storage = vp::utility::asset::SimpleStorage::Instance();
+    uc::utility::asset::SimpleStorage& storage = uc::utility::asset::SimpleStorage::Instance();
 
     // Files should be located in WORKING_DIRECTORY of the test
     const std::string testFile1("derp.txt");
     const std::string testFile2("herp.txt");
 
     printf("Request sync %s\n", testFile1.c_str());
-    vp::utility::asset::Handler derpHandler = storage.Get(testFile1);
+    uc::utility::asset::Handler derpHandler = storage.Get(testFile1);
 
     printf("Request sync %s\n", testFile1.c_str());
-    vp::utility::asset::Handler derp2Handler = storage.Get(testFile1);
+    uc::utility::asset::Handler derp2Handler = storage.Get(testFile1);
 
     printf("Request sync %s\n", testFile2.c_str());
-    vp::utility::asset::Handler herpHandler = storage.Get(testFile2);
+    uc::utility::asset::Handler herpHandler = storage.Get(testFile2);
 
     printf("%s handlers are equal: %d\n", testFile1.c_str(), derpHandler == derp2Handler);
     if (derpHandler != derp2Handler)
@@ -55,9 +55,9 @@ int main(int argc, char* argv[])
     PrintHandlerContent(derpHandler);
     PrintHandlerContent(herpHandler);
 
-    vp::utility::asset::SimpleStorage::Destroy();
+    uc::utility::asset::SimpleStorage::Destroy();
 
-    vp::system::Settings::Destroy();
+    uc::system::Settings::Destroy();
 
     return EXIT_SUCCESS;
 }

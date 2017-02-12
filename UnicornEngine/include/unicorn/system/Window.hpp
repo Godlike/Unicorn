@@ -1,0 +1,48 @@
+/*
+* Copyright (C) 2017 by Godlike
+* This code is licensed under the MIT license (MIT)
+* (http://opensource.org/licenses/MIT)
+*/
+
+#ifndef UNICORN_SYSTEM_WINDOW_HPP
+#define UNICORN_SYSTEM_WINDOW_HPP
+
+#include <GLFW/glfw3.h>
+
+namespace uc
+{
+namespace graphics
+{
+class Graphics;
+}
+namespace system
+{
+/**
+* @brief Class to handle window creation.
+*/
+class Window
+{
+public:
+    Window();
+    ~Window();
+
+    Window(const Window& other) = delete;
+    Window(const Window&& other) = delete;
+    Window& operator=(const Window& other) = delete;
+    Window& operator=(const Window&& other) = delete;
+
+    bool Init();
+    void Deinit();
+    void RetrieveEvents() const;
+    static void onWindowResized(GLFWwindow* window, int width, int height);
+    bool ShouldClose() const;
+    void Close();
+    GLFWwindow* GetWindowPointer() const;
+private:
+    GLFWwindow* m_pWindow;
+    graphics::Graphics* m_Graphics;
+};
+}
+}
+
+#endif // UNICORN_SYSTEM_WINDOW_HPP
