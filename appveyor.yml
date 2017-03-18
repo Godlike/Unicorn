@@ -3,12 +3,12 @@ configuration:
   - Debug
   - Release
 platform: x64
-clone_folder: "c:\\VorpalEngine"
+clone_folder: "c:\\UnicornEngine"
 environment:
-  VULKAN_SDK: "c:\\VulkanSDK\\1.0.39.0\\"
+  VULKAN_SDK: "c:\\VulkanSDK\\1.42.1.0\\"
 
 init:
-  - curl -fsS -o vulkan-installer.exe https://vulkan.lunarg.com/sdk/download/1.0.39.0/windows/VulkanSDK-1.0.39.0-Installer.exe
+  - curl -fsS -o vulkan-installer.exe https://vulkan.lunarg.com/sdk/download/1.42.1.0/windows/VulkanSDK-1.42.1.0-Installer.exe
   - vulkan-installer.exe /S
   - rm -f vulkan-installer.exe
 
@@ -19,7 +19,7 @@ install:
   - cmake -G "Visual Studio 14 2015 Win64" ..
 
 build:
-  project: "build\\GrapefruitTech.sln"
+  project: "build\\Godlike.sln"
   parallel: true
   verbosity: minimal
 

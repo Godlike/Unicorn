@@ -19,9 +19,9 @@ rm -rf ./*
 echo "" > .nojekyll
 echo "theme: jekyll-theme-cayman" > _config.yml
 
-if [ -d "$TRAVIS_BUILD_DIR/$BUILD_DIR/VorpalEngine/docs/html" ] && [ -f "$TRAVIS_BUILD_DIR/$BUILD_DIR/VorpalEngine/docs/html/index.html" ]; then
+if [ -d "$TRAVIS_BUILD_DIR/$BUILD_DIR/UnicornEngine/docs/html" ] && [ -f "$TRAVIS_BUILD_DIR/$BUILD_DIR/UnicornEngine/docs/html/index.html" ]; then
     echo "Copying documentation"
-    cp -a "$TRAVIS_BUILD_DIR/$BUILD_DIR/VorpalEngine/docs/html/." ./
+    cp -a "$TRAVIS_BUILD_DIR/$BUILD_DIR/UnicornEngine/docs/html/." ./
 
     echo "Publishing documentation"
     git add --all

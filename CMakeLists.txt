@@ -1,33 +1,34 @@
-# Copyright (C) 2017 by Grapefruit Tech
-# This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+# Copyright (C) 2017 by Godlike
+# This code is licensed under the MIT license (MIT) 
+# (http://opensource.org/licenses/MIT)
 
 cmake_minimum_required(VERSION 3.0)
 
-project(GrapefruitTech)
+project(Godlike)
 
-option(VORPAL_BUILD_DOCUMENTATION "Build VorpalEngine documentation" ON)
-option(VORPAL_BUILD_DEMOS "Build VorpalEngine demo projects" ON)
-option(VORPAL_BUILD_TESTS "Build VorpalEngine tests" ON)
+option(UNICORN_BUILD_DOCUMENTATION "Build UnicornEngine documentation" ON)
+option(UNICORN_BUILD_DEMOS "Build UnicornEngine demo projects" ON)
+option(UNICORN_BUILD_TESTS "Build UnicornEngine tests" ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 set(BUILD_SHARED_LIBS ON CACHE BOOL "Flag indicating if we want to build shared libraries")
 
-set(VORPAL_ENGINE_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/VorpalEngine" CACHE STRING "Path to VorpalEngine root directory")
+set(UNICORN_ENGINE_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/UnicornEngine" CACHE STRING "Path to UnicornEngine root directory")
 
-include(VorpalEngineConfig)
+include(UnicornEngineConfig)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output)
 
-add_subdirectory(${VORPAL_ENGINE_ROOT})
+add_subdirectory(${UNICORN_ENGINE_ROOT})
 
-if (${VORPAL_BUILD_DEMOS})
+if (${UNICORN_BUILD_DEMOS})
     add_subdirectory(demos)
 endif()
 
-if (${VORPAL_BUILD_TESTS})
+if (${UNICORN_BUILD_TESTS})
     enable_testing()
     include(CTest)
 

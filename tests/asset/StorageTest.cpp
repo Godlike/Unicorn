@@ -1,9 +1,9 @@
-#include <vorpal/core/Settings.hpp>
+#include <unicorn/core/Settings.hpp>
 
-#include <vorpal/utility/asset/Content.hpp>
-#include <vorpal/utility/asset/Storage.hpp>
+#include <unicorn/utility/asset/Content.hpp>
+#include <unicorn/utility/asset/Storage.hpp>
 
-void PrintHandlerContent(const vp::utility::asset::Handler& handler)
+void PrintHandlerContent(const unicorn::utility::asset::Handler& handler)
 {
     printf("Handler \"%s\" status: %d\n", handler.GetName().c_str(), handler.IsValid());
 
@@ -26,12 +26,12 @@ void PrintHandlerContent(const vp::utility::asset::Handler& handler)
 
 int main(int argc, char* argv[])
 {
-    vp::core::Settings& settings = vp::core::Settings::Instance();
+    unicorn::core::Settings& settings = unicorn::core::Settings::Instance();
 
     settings.Init(argc, argv, "");
     settings.SetApplicationName("Asset storage test");
 
-    vp::utility::asset::Storage& storage = vp::utility::asset::Storage::Instance();
+    unicorn::utility::asset::Storage& storage = unicorn::utility::asset::Storage::Instance();
 
     storage.InitializeWorkers(10);
     storage.InitializeWorkers(1);
@@ -42,16 +42,16 @@ int main(int argc, char* argv[])
     const std::string testFile3("herp.txt");
 
     printf("Request async %s\n", testFile1.c_str());
-    std::shared_future<vp::utility::asset::Handler> derp2Handler = storage.GetAsync(testFile1);
+    std::shared_future<unicorn::utility::asset::Handler> derp2Handler = storage.GetAsync(testFile1);
 
     printf("Request async %s with priority 200\n", testFile2.c_str());
     storage.GetAsync(testFile2, 200);
 
     printf("Request sync %s\n", testFile1.c_str());
-    vp::utility::asset::Handler derpHandler = storage.Get(testFile1);
+    unicorn::utility::asset::Handler derpHandler = storage.Get(testFile1);
 
     printf("Request sync %s\n", testFile3.c_str());
-    vp::utility::asset::Handler herpHandler = storage.Get(testFile3.c_str());
+    unicorn::utility::asset::Handler herpHandler = storage.Get(testFile3.c_str());
 
     printf("%s handlers are equal: %d\n", testFile1.c_str(), derpHandler == derp2Handler.get());
     if (derpHandler != derp2Handler.get())
@@ -62,9 +62,9 @@ int main(int argc, char* argv[])
     PrintHandlerContent(derpHandler);
     PrintHandlerContent(herpHandler);
 
-    vp::utility::asset::Storage::Destroy();
+    unicorn::utility::asset::Storage::Destroy();
 
-    vp::core::Settings::Destroy();
+    unicorn::core::Settings::Destroy();
 
     return EXIT_SUCCESS;
 }

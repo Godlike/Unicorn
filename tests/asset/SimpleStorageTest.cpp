@@ -1,9 +1,9 @@
-#include <vorpal/core/Settings.hpp>
+#include <unicorn/core/Settings.hpp>
 
-#include <vorpal/utility/asset/Content.hpp>
-#include <vorpal/utility/asset/SimpleStorage.hpp>
+#include <unicorn/utility/asset/Content.hpp>
+#include <unicorn/utility/asset/SimpleStorage.hpp>
 
-void PrintHandlerContent(const vp::utility::asset::Handler& handler)
+void PrintHandlerContent(const unicorn::utility::asset::Handler& handler)
 {
     printf("Handler \"%s\" status: %d\n", handler.GetName().c_str(), handler.IsValid());
 
@@ -26,25 +26,25 @@ void PrintHandlerContent(const vp::utility::asset::Handler& handler)
 
 int main(int argc, char* argv[])
 {
-    vp::core::Settings& settings = vp::core::Settings::Instance();
+    unicorn::core::Settings& settings = unicorn::core::Settings::Instance();
 
     settings.Init(argc, argv, "");
     settings.SetApplicationName("Asset simple storage test");
 
-    vp::utility::asset::SimpleStorage& storage = vp::utility::asset::SimpleStorage::Instance();
+    unicorn::utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
 
     // Files should be located in WORKING_DIRECTORY of the test
     const std::string testFile1("derp.txt");
     const std::string testFile2("herp.txt");
 
     printf("Request sync %s\n", testFile1.c_str());
-    vp::utility::asset::Handler derpHandler = storage.Get(testFile1);
+    unicorn::utility::asset::Handler derpHandler = storage.Get(testFile1);
 
     printf("Request sync %s\n", testFile1.c_str());
-    vp::utility::asset::Handler derp2Handler = storage.Get(testFile1);
+    unicorn::utility::asset::Handler derp2Handler = storage.Get(testFile1);
 
     printf("Request sync %s\n", testFile2.c_str());
-    vp::utility::asset::Handler herpHandler = storage.Get(testFile2);
+    unicorn::utility::asset::Handler herpHandler = storage.Get(testFile2);
 
     printf("%s handlers are equal: %d\n", testFile1.c_str(), derpHandler == derp2Handler);
     if (derpHandler != derp2Handler)
@@ -55,9 +55,9 @@ int main(int argc, char* argv[])
     PrintHandlerContent(derpHandler);
     PrintHandlerContent(herpHandler);
 
-    vp::utility::asset::SimpleStorage::Destroy();
+    unicorn::utility::asset::SimpleStorage::Destroy();
 
-    vp::core::Settings::Destroy();
+    unicorn::core::Settings::Destroy();
 
     return EXIT_SUCCESS;
 }
