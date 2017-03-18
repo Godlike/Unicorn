@@ -125,22 +125,22 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     target_link_libraries(${PROJECT_NAME} -lgcc_s -lgcc)
 endif()
 
-#if (UNICORN_BUILD_DOCUMENTATION)
-#    find_package(Doxygen)
+if (UNICORN_BUILD_DOCUMENTATION)
+    find_package(Doxygen)
 
- #   if (DOXYGEN_FOUND)
-#        set(DOXYGEN_PROJECT_NAME ${PROJECT_NAME})
- #       set(DOXYGEN_INPUT ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    if (DOXYGEN_FOUND)
+        set(DOXYGEN_PROJECT_NAME ${PROJECT_NAME})
+        set(DOXYGEN_INPUT ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-#        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
-##        file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs)
- #       add_custom_target( docs
-  #          ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-  #          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs
-  #          COMMENT "Generating UnicornEngine API documentation"
- #       )
- #   else()
- #       message(FATAL "Doxygen is required to build documentation")
- #   endif()
-#endif()
+        file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs)
+        add_custom_target( docs
+            ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs
+            COMMENT "Generating UnicornEngine API documentation"
+        )
+    else()
+        message(FATAL "Doxygen is required to build documentation")
+    endif()
+endif()
