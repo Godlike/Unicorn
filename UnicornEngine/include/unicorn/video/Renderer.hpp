@@ -16,7 +16,7 @@
 
 struct GLFWwindow;
 
-namespace vp
+namespace unicorn
 {
 namespace video
 {

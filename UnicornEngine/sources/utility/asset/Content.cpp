@@ -6,7 +6,7 @@
 
 #include <unicorn/utility/asset/Content.hpp>
 
-namespace vp
+namespace unicorn
 {
 namespace utility
 {

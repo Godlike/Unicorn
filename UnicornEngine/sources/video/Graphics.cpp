@@ -8,7 +8,7 @@
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/utility/Logger.hpp>
 
-namespace vp
+namespace unicorn
 {
 namespace video
 {

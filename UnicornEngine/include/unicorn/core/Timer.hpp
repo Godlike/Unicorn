@@ -9,7 +9,7 @@
 
 #include <chrono>
 
-namespace vp
+namespace unicorn
 {
 namespace core
 {

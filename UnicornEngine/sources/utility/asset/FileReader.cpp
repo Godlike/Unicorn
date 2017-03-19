@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <fstream>
 
-namespace vp
+namespace unicorn
 {
 namespace utility
 {

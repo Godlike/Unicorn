@@ -15,7 +15,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace vp
+namespace unicorn
 {
 namespace utility
 {

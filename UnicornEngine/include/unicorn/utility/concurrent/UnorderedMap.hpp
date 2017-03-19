@@ -11,7 +11,7 @@
 #include <shared_mutex>
 #include <unordered_map>
 
-namespace vp
+namespace unicorn
 {
 namespace utility
 {

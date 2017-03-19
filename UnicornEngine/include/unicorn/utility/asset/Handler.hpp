@@ -15,7 +15,7 @@
 #include <cstdint>
 #include <string>
 
-namespace vp
+namespace unicorn
 {
 namespace utility
 {

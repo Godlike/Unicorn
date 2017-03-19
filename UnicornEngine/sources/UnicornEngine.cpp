@@ -9,7 +9,7 @@
 #include <unicorn/video/Graphics.hpp>
 #include <unicorn/utility/asset/SimpleStorage.hpp>
 
-namespace vp
+namespace unicorn
 {
 UnicornEngine::UnicornEngine()
     : m_isInitialized(false)

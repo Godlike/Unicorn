@@ -22,7 +22,7 @@
 #include <thread>
 #include <vector>
 
-namespace vp
+namespace unicorn
 {
 namespace utility
 {

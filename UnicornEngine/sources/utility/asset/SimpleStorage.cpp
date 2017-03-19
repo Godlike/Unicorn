@@ -11,7 +11,7 @@
 
 #include <unicorn/utility/Logger.hpp>
 
-namespace vp
+namespace unicorn
 {
 namespace utility
 {

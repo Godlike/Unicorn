@@ -7,7 +7,7 @@
 #ifndef UNICORN_UTILITY_TEMPLATES_SINGLETON_HPP
 #define UNICORN_UTILITY_TEMPLATES_SINGLETON_HPP
 
-namespace vp
+namespace unicorn
 {
 namespace utility
 {

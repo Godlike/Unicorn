@@ -7,7 +7,7 @@
 #ifndef UNICORN_VIDEO_GRAPHICS_HPP
 #define UNICORN_VIDEO_GRAPHICS_HPP
 
-namespace vp
+namespace unicorn
 {
 namespace video
 {

@@ -10,7 +10,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace vp
+namespace unicorn
 {
 namespace utility
 {

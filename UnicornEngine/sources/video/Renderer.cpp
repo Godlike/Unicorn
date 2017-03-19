@@ -14,7 +14,7 @@
 #include <set>
 #include <algorithm>
 
-namespace vp
+namespace unicorn
 {
 namespace video
 {

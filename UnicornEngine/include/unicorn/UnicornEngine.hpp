@@ -9,7 +9,7 @@
 
 #include <unicorn/utility/SharedMacros.hpp>
 
-namespace vp
+namespace unicorn
 {
 namespace video
 {
