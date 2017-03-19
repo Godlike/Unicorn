@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(Godlike)
 
-option(UNICORN_BUILD_DOCUMENTATION "Build UnicornEngine documentation" ON)
+option(UNICORN_BUILD_DOCUMENTATION "Build UnicornEngine documentation" OFF)
 option(UNICORN_BUILD_DEMOS "Build UnicornEngine demo projects" ON)
 option(UNICORN_BUILD_TESTS "Build UnicornEngine tests" ON)
 
