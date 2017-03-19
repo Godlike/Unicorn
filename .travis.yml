@@ -6,7 +6,7 @@ env:
   global:
     - secure: GQuc1Rr6XwqESQczpZRCW6Z2bSgH9BjD1cjf9psFVsg/uFPz8fK+1laDt7xvioeDJSu3iw/VSM5Agr3TGXJ3iPfPkpcIWGhRq484nIxAZq9QqnfqHP/+ukJNdX+LuJZOHdtoxAqSrW0Bcp8YOjk2ymPuMVLAfOn3oJfffp4bC22Gv/FwgUFTdnEzW1wbb0orIaUt1/8QXYEb9Y4tFRMf2QdJfAYojRCHECx8pttxpGZZd2ANSjcGyDTwxmj9v9I5gk1Xu0lg2BTkGIBhLgWJE+e5iwhHavEXfejNWJ4O7wxkLqbEvurs3T5zXH1/qlMvzqUAnYTX0O8CH9VJFzTxdOCbfNUMMZwDOHbll+I784C+shko3W4YJwib3SsuoVkNbCcTARRJFsRh5X8GTFqlPusQTJpvMKvk2xGjD1N72jmzCXqVOkOT8DD0OXXXSqLTkpIdDYzZ4TPSWBmCbYI537o7AgSRtca8mVbamyLRGsRf2BD9tNyGrucvVIVDOaE0g3ZMza4i9+MwJAjI7WT5/+hw0Dm3cmdBJbkUMey4M/pR3eYKKPtu6u36N4mRxeDz0BNShLb92LOBbMNcY7LkWMfzq0bd6VOfwbpIe0eb+SwcSur63MplwTeZ9wRWdjxt9thgTkPRTQsT9cB4ltRA5mSfoBZL8KC4CBpIMA6sMf8=
     - GH_REPO_NAME: Unicorn
-    - GH_REPO_REF: github.com/BraveEyed/Unicorn.git
+    - GH_REPO_REF: github.com/Godlike/Unicorn.git
     - BUILD_DIR: build
 
 sudo: required

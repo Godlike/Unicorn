@@ -1,6 +1,7 @@
 /*
 * Copyright (C) 2017 by Godlike
-* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+* This code is licensed under the MIT license (MIT) 
+* (http://opensource.org/licenses/MIT)
 */
 
 #include <unicorn/UnicornEngine.hpp>
@@ -13,15 +14,15 @@ int main(int argc, char* argv[])
     settings.Init(argc, argv, "SANIC_JYMPER.log");
     settings.SetApplicationName("SANIC JYMPER");
 
-    unicorn::UnicornEngine* vpEngine = new unicorn::UnicornEngine();
+    unicorn::UnicornEngine* unicornEngine = new unicorn::UnicornEngine();
 
-    if (vpEngine->Init())
+    if (unicornEngine->Init())
     {
-        vpEngine->Run();
+        unicornEngine->Run();
     }
 
-    vpEngine->Deinit();
-    delete vpEngine;
+    unicornEngine->Deinit();
+    delete unicornEngine;
 
     unicorn::core::Settings::Destroy();
     return 0;
