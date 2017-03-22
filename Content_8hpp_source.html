@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>VorpalEngine: /home/travis/build/BraveEyed/Unicorn/VorpalEngine/include/vorpal/utility/asset/Content.hpp Source File</title>
+<title>UnicornEngine: /home/travis/build/Godlike/Unicorn/UnicornEngine/include/unicorn/utility/asset/Content.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -22,7 +22,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">VorpalEngine
+   <div id="projectname">UnicornEngine
    </div>
   </td>
  </tr>
@@ -79,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_8ec00ab8814c10b16e7e0c4c9bad4965.html">VorpalEngine</a></li><li class="navelem"><a class="el" href="dir_0c24c6a2a0a7525ead94f7d3e6b77faf.html">include</a></li><li class="navelem"><a class="el" href="dir_93a23df1777e8629f4a7407f98b7bc77.html">vorpal</a></li><li class="navelem"><a class="el" href="dir_d68ba218c3f906902eec9a4cce353956.html">utility</a></li><li class="navelem"><a class="el" href="dir_05659958a19a8172c069b76b9b3142c3.html">asset</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_a70324e029cd0b4ad2a7598822e82589.html">UnicornEngine</a></li><li class="navelem"><a class="el" href="dir_051a4180e2041d0e9552b1e9458a61d9.html">include</a></li><li class="navelem"><a class="el" href="dir_050b380242b27d165972ff883288b4f6.html">unicorn</a></li><li class="navelem"><a class="el" href="dir_f72015c53d918c47e577f97f3c496746.html">utility</a></li><li class="navelem"><a class="el" href="dir_0e59ebdabef31b54a5d1f591a3b82ad0.html">asset</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -88,52 +88,53 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">* Copyright (C) 2017 by Grapefruit Tech</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#ifndef VORPAL_UTILITY_ASSET_CONTENT_HPP</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define VORPAL_UTILITY_ASSET_CONTENT_HPP</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;cstdint&gt;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>vp</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">namespace </span>utility</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">namespace </span>asset</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classvp_1_1utility_1_1asset_1_1Content.html">   22</a></span>&#160;<span class="keyword">class </span><a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html">Content</a></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;{</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html#a61ddb5c4f95bbeec8533942cb16cfc6b">Content</a>(std::vector&lt;uint8_t&gt;&amp;&amp; buffer);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html#a61ddb5c4f95bbeec8533942cb16cfc6b">Content</a>(<span class="keyword">const</span> <a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html">Content</a>&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html">Content</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html">Content</a>&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html#a61ddb5c4f95bbeec8533942cb16cfc6b">Content</a>(<a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html">Content</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html">Content</a>&amp; operator=(<a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html">Content</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    ~<a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html">Content</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classvp_1_1utility_1_1asset_1_1Content.html#abfbed22cfd951d32e7e9b20c74a9f32b">   40</a></span>&#160;    <span class="keyword">const</span> std::vector&lt;uint8_t&gt;&amp; <a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html#abfbed22cfd951d32e7e9b20c74a9f32b">GetBuffer</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html#ad3a9ffc4072f0add792bb6635e6c91f3">m_buffer</a>; }</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classvp_1_1utility_1_1asset_1_1Content.html#a8e31224d3f81540a162838796364de55">   43</a></span>&#160;    uintmax_t <a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html#a8e31224d3f81540a162838796364de55">GetSize</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html#ad3a9ffc4072f0add792bb6635e6c91f3">m_buffer</a>.size(); }</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classvp_1_1utility_1_1asset_1_1Content.html#ad3a9ffc4072f0add792bb6635e6c91f3">   47</a></span>&#160;    std::vector&lt;uint8_t&gt; <a class="code" href="classvp_1_1utility_1_1asset_1_1Content.html#ad3a9ffc4072f0add792bb6635e6c91f3">m_buffer</a>;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;};</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;}</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">* Copyright (C) 2017 by Godlike</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">* This code is licensed under the MIT license (MIT) </span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">* (http://opensource.org/licenses/MIT)</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">*/</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#ifndef UNICORN_UTILITY_ASSET_CONTENT_HPP</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define UNICORN_UTILITY_ASSET_CONTENT_HPP</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;cstdint&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span>unicorn</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;{</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span>utility</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;{</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">namespace </span>asset</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;{</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classunicorn_1_1utility_1_1asset_1_1Content.html">   23</a></span>&#160;<span class="keyword">class </span><a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html">Content</a></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;{</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html#ad5dc450caaefb1c229be83f270ed5b42">Content</a>(std::vector&lt;uint8_t&gt;&amp;&amp; buffer);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html#ad5dc450caaefb1c229be83f270ed5b42">Content</a>(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html">Content</a>&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html">Content</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html">Content</a>&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html#ad5dc450caaefb1c229be83f270ed5b42">Content</a>(<a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html">Content</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html">Content</a>&amp; operator=(<a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html">Content</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    ~<a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html">Content</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classunicorn_1_1utility_1_1asset_1_1Content.html#a3af8c5f6a78a07932b8b080c956ae03d">   41</a></span>&#160;    <span class="keyword">const</span> std::vector&lt;uint8_t&gt;&amp; <a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html#a3af8c5f6a78a07932b8b080c956ae03d">GetBuffer</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html#a8955e772d76c62388e56432d570cec7a">m_buffer</a>; }</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classunicorn_1_1utility_1_1asset_1_1Content.html#a594c01b3186f7cbcf8604d2d8831d69e">   44</a></span>&#160;    uintmax_t <a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html#a594c01b3186f7cbcf8604d2d8831d69e">GetSize</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html#a8955e772d76c62388e56432d570cec7a">m_buffer</a>.size(); }</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classunicorn_1_1utility_1_1asset_1_1Content.html#a8955e772d76c62388e56432d570cec7a">   48</a></span>&#160;    std::vector&lt;uint8_t&gt; <a class="code" href="classunicorn_1_1utility_1_1asset_1_1Content.html#a8955e772d76c62388e56432d570cec7a">m_buffer</a>;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;};</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#endif // VORPAL_UTILITY_ASSET_CONTENT_HPP</span></div>
-<div class="ttc" id="classvp_1_1utility_1_1asset_1_1Content_html_a8e31224d3f81540a162838796364de55"><div class="ttname"><a href="classvp_1_1utility_1_1asset_1_1Content.html#a8e31224d3f81540a162838796364de55">vp::utility::asset::Content::GetSize</a></div><div class="ttdeci">uintmax_t GetSize() const </div><div class="ttdoc">Returns the size of stored buffer. </div><div class="ttdef"><b>Definition:</b> Content.hpp:43</div></div>
-<div class="ttc" id="classvp_1_1utility_1_1asset_1_1Content_html_ad3a9ffc4072f0add792bb6635e6c91f3"><div class="ttname"><a href="classvp_1_1utility_1_1asset_1_1Content.html#ad3a9ffc4072f0add792bb6635e6c91f3">vp::utility::asset::Content::m_buffer</a></div><div class="ttdeci">std::vector&lt; uint8_t &gt; m_buffer</div><div class="ttdoc">Buffer with asset contents. </div><div class="ttdef"><b>Definition:</b> Content.hpp:47</div></div>
-<div class="ttc" id="classvp_1_1utility_1_1asset_1_1Content_html"><div class="ttname"><a href="classvp_1_1utility_1_1asset_1_1Content.html">vp::utility::asset::Content</a></div><div class="ttdoc">Represents asset content access. </div><div class="ttdef"><b>Definition:</b> Content.hpp:22</div></div>
-<div class="ttc" id="classvp_1_1utility_1_1asset_1_1Content_html_a61ddb5c4f95bbeec8533942cb16cfc6b"><div class="ttname"><a href="classvp_1_1utility_1_1asset_1_1Content.html#a61ddb5c4f95bbeec8533942cb16cfc6b">vp::utility::asset::Content::Content</a></div><div class="ttdeci">Content(std::vector&lt; uint8_t &gt; &amp;&amp;buffer)</div><div class="ttdoc">Constructs an object. </div></div>
-<div class="ttc" id="classvp_1_1utility_1_1asset_1_1Content_html_abfbed22cfd951d32e7e9b20c74a9f32b"><div class="ttname"><a href="classvp_1_1utility_1_1asset_1_1Content.html#abfbed22cfd951d32e7e9b20c74a9f32b">vp::utility::asset::Content::GetBuffer</a></div><div class="ttdeci">const std::vector&lt; uint8_t &gt; &amp; GetBuffer() const </div><div class="ttdoc">Returns stored buffer. </div><div class="ttdef"><b>Definition:</b> Content.hpp:40</div></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#endif // UNICORN_UTILITY_ASSET_CONTENT_HPP</span></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1asset_1_1Content_html_a594c01b3186f7cbcf8604d2d8831d69e"><div class="ttname"><a href="classunicorn_1_1utility_1_1asset_1_1Content.html#a594c01b3186f7cbcf8604d2d8831d69e">unicorn::utility::asset::Content::GetSize</a></div><div class="ttdeci">uintmax_t GetSize() const </div><div class="ttdoc">Returns the size of stored buffer. </div><div class="ttdef"><b>Definition:</b> Content.hpp:44</div></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1asset_1_1Content_html_a3af8c5f6a78a07932b8b080c956ae03d"><div class="ttname"><a href="classunicorn_1_1utility_1_1asset_1_1Content.html#a3af8c5f6a78a07932b8b080c956ae03d">unicorn::utility::asset::Content::GetBuffer</a></div><div class="ttdeci">const std::vector&lt; uint8_t &gt; &amp; GetBuffer() const </div><div class="ttdoc">Returns stored buffer. </div><div class="ttdef"><b>Definition:</b> Content.hpp:41</div></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1asset_1_1Content_html_a8955e772d76c62388e56432d570cec7a"><div class="ttname"><a href="classunicorn_1_1utility_1_1asset_1_1Content.html#a8955e772d76c62388e56432d570cec7a">unicorn::utility::asset::Content::m_buffer</a></div><div class="ttdeci">std::vector&lt; uint8_t &gt; m_buffer</div><div class="ttdoc">Buffer with asset contents. </div><div class="ttdef"><b>Definition:</b> Content.hpp:48</div></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1asset_1_1Content_html"><div class="ttname"><a href="classunicorn_1_1utility_1_1asset_1_1Content.html">unicorn::utility::asset::Content</a></div><div class="ttdoc">Represents asset content access. </div><div class="ttdef"><b>Definition:</b> Content.hpp:23</div></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1asset_1_1Content_html_ad5dc450caaefb1c229be83f270ed5b42"><div class="ttname"><a href="classunicorn_1_1utility_1_1asset_1_1Content.html#ad5dc450caaefb1c229be83f270ed5b42">unicorn::utility::asset::Content::Content</a></div><div class="ttdeci">Content(std::vector&lt; uint8_t &gt; &amp;&amp;buffer)</div><div class="ttdoc">Constructs an object. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

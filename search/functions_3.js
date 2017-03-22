@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['deinit',['Deinit',['../classvp_1_1video_1_1Graphics.html#a341aa06f2296eadb3c87dde727c23532',1,'vp::video::Graphics::Deinit()'],['../classvp_1_1VorpalEngine.html#a781f34c8452c4eb78e6932fda2e2fb33',1,'vp::VorpalEngine::Deinit()']]],
-  ['destroy',['Destroy',['../classvp_1_1utility_1_1templates_1_1Singleton.html#a04fc9865373ee3efc9084d87929e941d',1,'vp::utility::templates::Singleton']]]
+  ['deinit',['Deinit',['../classunicorn_1_1UnicornEngine.html#a4e8e43c4a3b71a64446d9e64b5350ae5',1,'unicorn::UnicornEngine::Deinit()'],['../classunicorn_1_1video_1_1Graphics.html#a802d24d3539739b8345eac9e8daf41c7',1,'unicorn::video::Graphics::Deinit()']]],
+  ['destroy',['Destroy',['../classunicorn_1_1utility_1_1templates_1_1Singleton.html#aeabfb50ab46cff73d92e22e1cbb026ff',1,'unicorn::utility::templates::Singleton']]]
 ];

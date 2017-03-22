@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>VorpalEngine: /home/travis/build/BraveEyed/Unicorn/VorpalEngine/include/vorpal/video/Graphics.hpp Source File</title>
+<title>UnicornEngine: /home/travis/build/Godlike/Unicorn/UnicornEngine/include/unicorn/video/Graphics.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -22,7 +22,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">VorpalEngine
+   <div id="projectname">UnicornEngine
    </div>
   </td>
  </tr>
@@ -79,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_8ec00ab8814c10b16e7e0c4c9bad4965.html">VorpalEngine</a></li><li class="navelem"><a class="el" href="dir_0c24c6a2a0a7525ead94f7d3e6b77faf.html">include</a></li><li class="navelem"><a class="el" href="dir_93a23df1777e8629f4a7407f98b7bc77.html">vorpal</a></li><li class="navelem"><a class="el" href="dir_7faf3024567220aff30759a5b25c0839.html">video</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_a70324e029cd0b4ad2a7598822e82589.html">UnicornEngine</a></li><li class="navelem"><a class="el" href="dir_051a4180e2041d0e9552b1e9458a61d9.html">include</a></li><li class="navelem"><a class="el" href="dir_050b380242b27d165972ff883288b4f6.html">unicorn</a></li><li class="navelem"><a class="el" href="dir_f54006bed69c67ef0df7ec692981c37e.html">video</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -88,55 +88,56 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">* Copyright (C) 2017 by Grapefruit Tech</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#ifndef VORPAL_VIDEO_GRAPHICS_HPP</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define VORPAL_VIDEO_GRAPHICS_HPP</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span>vp</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;{</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span>video</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;{</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">class </span>Renderer;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
-<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classvp_1_1video_1_1Graphics.html">   19</a></span>&#160;<span class="keyword">class </span><a class="code" href="classvp_1_1video_1_1Graphics.html">Graphics</a></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <a class="code" href="classvp_1_1video_1_1Graphics.html#a06262028f6a9e610bc5efe4fd392c201">Graphics</a>();</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="classvp_1_1video_1_1Graphics.html#ac64d6ba67f3eb9d8049cd6a08931b4c4">~Graphics</a>();</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="classvp_1_1video_1_1Graphics.html#a06262028f6a9e610bc5efe4fd392c201">Graphics</a>(<span class="keyword">const</span> <a class="code" href="classvp_1_1video_1_1Graphics.html">Graphics</a>&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="classvp_1_1video_1_1Graphics.html#a06262028f6a9e610bc5efe4fd392c201">Graphics</a>(<span class="keyword">const</span> <a class="code" href="classvp_1_1video_1_1Graphics.html">Graphics</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <a class="code" href="classvp_1_1video_1_1Graphics.html">Graphics</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classvp_1_1video_1_1Renderer.html">Renderer</a>&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="classvp_1_1video_1_1Graphics.html">Graphics</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classvp_1_1video_1_1Graphics.html">Graphics</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classvp_1_1video_1_1Graphics.html#acfd279e704e352a09f25f23f7a1f8c6b">Init</a>();</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classvp_1_1video_1_1Graphics.html#a341aa06f2296eadb3c87dde727c23532">Deinit</a>();</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classvp_1_1video_1_1Graphics.html#a230178dcbf18f77f98c919c6221bc8d1">Render</a>();</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classvp_1_1video_1_1Graphics.html#aef9636a1ea07cf2eb8d88e4ba7934aef">   57</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classvp_1_1video_1_1Graphics.html#aef9636a1ea07cf2eb8d88e4ba7934aef">m_isInitialized</a>;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classvp_1_1video_1_1Graphics.html#afcba0628a506c9d114bd8bc504a70b9c">   60</a></span>&#160;    <a class="code" href="classvp_1_1video_1_1Renderer.html">Renderer</a>* <a class="code" href="classvp_1_1video_1_1Graphics.html#afcba0628a506c9d114bd8bc504a70b9c">m_pRenderer</a>;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;};</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">* Copyright (C) 2017 by Godlike</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">* This code is licensed under the MIT license (MIT) </span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">* (http://opensource.org/licenses/MIT)</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">*/</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#ifndef UNICORN_VIDEO_GRAPHICS_HPP</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define UNICORN_VIDEO_GRAPHICS_HPP</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">namespace </span>unicorn</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;{</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>video</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">class </span>Renderer;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classunicorn_1_1video_1_1Graphics.html">   20</a></span>&#160;<span class="keyword">class </span><a class="code" href="classunicorn_1_1video_1_1Graphics.html">Graphics</a></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Graphics.html#a6ce5af60854424c90b0fd1325efdd302">Graphics</a>();</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Graphics.html#ae2ede53fa1f76d7271c3bcaa4317af5c">~Graphics</a>();</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Graphics.html#a6ce5af60854424c90b0fd1325efdd302">Graphics</a>(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1video_1_1Graphics.html">Graphics</a>&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Graphics.html#a6ce5af60854424c90b0fd1325efdd302">Graphics</a>(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1video_1_1Graphics.html">Graphics</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Graphics.html">Graphics</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Graphics.html">Graphics</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1video_1_1Graphics.html">Graphics</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classunicorn_1_1video_1_1Graphics.html#a5cc01a7b2a9611a30f596a69ca9cf7ea">Init</a>();</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classunicorn_1_1video_1_1Graphics.html#a802d24d3539739b8345eac9e8daf41c7">Deinit</a>();</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classunicorn_1_1video_1_1Graphics.html#acac1c21aff411a3466d2d1e7215ea408">Render</a>();</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="classunicorn_1_1video_1_1Graphics.html#abd08b9a571d5098ebc347e44628f0d1f">   58</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classunicorn_1_1video_1_1Graphics.html#abd08b9a571d5098ebc347e44628f0d1f">m_isInitialized</a>;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classunicorn_1_1video_1_1Graphics.html#a1670f3f282a1415e5410414ca6f99278">   61</a></span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>* <a class="code" href="classunicorn_1_1video_1_1Graphics.html#a1670f3f282a1415e5410414ca6f99278">m_pRenderer</a>;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;};</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;}</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#endif // VORPAL_VIDEO_GRAPHICS_HPP</span></div>
-<div class="ttc" id="classvp_1_1video_1_1Renderer_html"><div class="ttname"><a href="classvp_1_1video_1_1Renderer.html">vp::video::Renderer</a></div><div class="ttdoc">Vulkan renderer class. </div><div class="ttdef"><b>Definition:</b> Renderer.hpp:44</div></div>
-<div class="ttc" id="classvp_1_1video_1_1Graphics_html_ac64d6ba67f3eb9d8049cd6a08931b4c4"><div class="ttname"><a href="classvp_1_1video_1_1Graphics.html#ac64d6ba67f3eb9d8049cd6a08931b4c4">vp::video::Graphics::~Graphics</a></div><div class="ttdeci">~Graphics()</div><div class="ttdoc">Destructs a graphics system. </div></div>
-<div class="ttc" id="classvp_1_1video_1_1Graphics_html_a341aa06f2296eadb3c87dde727c23532"><div class="ttname"><a href="classvp_1_1video_1_1Graphics.html#a341aa06f2296eadb3c87dde727c23532">vp::video::Graphics::Deinit</a></div><div class="ttdeci">void Deinit()</div><div class="ttdoc">Deinitializes the graphics system. </div></div>
-<div class="ttc" id="classvp_1_1video_1_1Graphics_html_aef9636a1ea07cf2eb8d88e4ba7934aef"><div class="ttname"><a href="classvp_1_1video_1_1Graphics.html#aef9636a1ea07cf2eb8d88e4ba7934aef">vp::video::Graphics::m_isInitialized</a></div><div class="ttdeci">bool m_isInitialized</div><div class="ttdoc">Flag describing if graphics were initialized. </div><div class="ttdef"><b>Definition:</b> Graphics.hpp:57</div></div>
-<div class="ttc" id="classvp_1_1video_1_1Graphics_html_a06262028f6a9e610bc5efe4fd392c201"><div class="ttname"><a href="classvp_1_1video_1_1Graphics.html#a06262028f6a9e610bc5efe4fd392c201">vp::video::Graphics::Graphics</a></div><div class="ttdeci">Graphics()</div><div class="ttdoc">Constructs an empty graphics system. </div></div>
-<div class="ttc" id="classvp_1_1video_1_1Graphics_html_afcba0628a506c9d114bd8bc504a70b9c"><div class="ttname"><a href="classvp_1_1video_1_1Graphics.html#afcba0628a506c9d114bd8bc504a70b9c">vp::video::Graphics::m_pRenderer</a></div><div class="ttdeci">Renderer * m_pRenderer</div><div class="ttdoc">Pointer to renderer. </div><div class="ttdef"><b>Definition:</b> Graphics.hpp:60</div></div>
-<div class="ttc" id="classvp_1_1video_1_1Graphics_html"><div class="ttname"><a href="classvp_1_1video_1_1Graphics.html">vp::video::Graphics</a></div><div class="ttdoc">Abstract graphics renderer. </div><div class="ttdef"><b>Definition:</b> Graphics.hpp:19</div></div>
-<div class="ttc" id="classvp_1_1video_1_1Graphics_html_a230178dcbf18f77f98c919c6221bc8d1"><div class="ttname"><a href="classvp_1_1video_1_1Graphics.html#a230178dcbf18f77f98c919c6221bc8d1">vp::video::Graphics::Render</a></div><div class="ttdeci">void Render()</div><div class="ttdoc">Graphics renderer loop. </div></div>
-<div class="ttc" id="classvp_1_1video_1_1Graphics_html_acfd279e704e352a09f25f23f7a1f8c6b"><div class="ttname"><a href="classvp_1_1video_1_1Graphics.html#acfd279e704e352a09f25f23f7a1f8c6b">vp::video::Graphics::Init</a></div><div class="ttdeci">bool Init()</div><div class="ttdoc">Initializes the graphics system. </div></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#endif // UNICORN_VIDEO_GRAPHICS_HPP</span></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Graphics_html_a1670f3f282a1415e5410414ca6f99278"><div class="ttname"><a href="classunicorn_1_1video_1_1Graphics.html#a1670f3f282a1415e5410414ca6f99278">unicorn::video::Graphics::m_pRenderer</a></div><div class="ttdeci">Renderer * m_pRenderer</div><div class="ttdoc">Pointer to renderer. </div><div class="ttdef"><b>Definition:</b> Graphics.hpp:61</div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Graphics_html_abd08b9a571d5098ebc347e44628f0d1f"><div class="ttname"><a href="classunicorn_1_1video_1_1Graphics.html#abd08b9a571d5098ebc347e44628f0d1f">unicorn::video::Graphics::m_isInitialized</a></div><div class="ttdeci">bool m_isInitialized</div><div class="ttdoc">Flag describing if graphics were initialized. </div><div class="ttdef"><b>Definition:</b> Graphics.hpp:58</div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Graphics_html_ae2ede53fa1f76d7271c3bcaa4317af5c"><div class="ttname"><a href="classunicorn_1_1video_1_1Graphics.html#ae2ede53fa1f76d7271c3bcaa4317af5c">unicorn::video::Graphics::~Graphics</a></div><div class="ttdeci">~Graphics()</div><div class="ttdoc">Destructs a graphics system. </div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Graphics_html_a5cc01a7b2a9611a30f596a69ca9cf7ea"><div class="ttname"><a href="classunicorn_1_1video_1_1Graphics.html#a5cc01a7b2a9611a30f596a69ca9cf7ea">unicorn::video::Graphics::Init</a></div><div class="ttdeci">bool Init()</div><div class="ttdoc">Initializes the graphics system. </div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Graphics_html_a6ce5af60854424c90b0fd1325efdd302"><div class="ttname"><a href="classunicorn_1_1video_1_1Graphics.html#a6ce5af60854424c90b0fd1325efdd302">unicorn::video::Graphics::Graphics</a></div><div class="ttdeci">Graphics()</div><div class="ttdoc">Constructs an empty graphics system. </div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Graphics_html_acac1c21aff411a3466d2d1e7215ea408"><div class="ttname"><a href="classunicorn_1_1video_1_1Graphics.html#acac1c21aff411a3466d2d1e7215ea408">unicorn::video::Graphics::Render</a></div><div class="ttdeci">void Render()</div><div class="ttdoc">Graphics renderer loop. </div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Graphics_html"><div class="ttname"><a href="classunicorn_1_1video_1_1Graphics.html">unicorn::video::Graphics</a></div><div class="ttdoc">Abstract graphics renderer. </div><div class="ttdef"><b>Definition:</b> Graphics.hpp:20</div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Renderer_html"><div class="ttname"><a href="classunicorn_1_1video_1_1Renderer.html">unicorn::video::Renderer</a></div><div class="ttdoc">Vulkan renderer class. </div><div class="ttdef"><b>Definition:</b> Renderer.hpp:45</div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Graphics_html_a802d24d3539739b8345eac9e8daf41c7"><div class="ttname"><a href="classunicorn_1_1video_1_1Graphics.html#a802d24d3539739b8345eac9e8daf41c7">unicorn::video::Graphics::Deinit</a></div><div class="ttdeci">void Deinit()</div><div class="ttdoc">Deinitializes the graphics system. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

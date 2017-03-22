@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>VorpalEngine: /home/travis/build/BraveEyed/Unicorn/VorpalEngine/include/vorpal/utility/templates/Singleton.hpp Source File</title>
+<title>UnicornEngine: /home/travis/build/Godlike/Unicorn/UnicornEngine/include/unicorn/utility/templates/Singleton.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -22,7 +22,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">VorpalEngine
+   <div id="projectname">UnicornEngine
    </div>
   </td>
  </tr>
@@ -79,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_8ec00ab8814c10b16e7e0c4c9bad4965.html">VorpalEngine</a></li><li class="navelem"><a class="el" href="dir_0c24c6a2a0a7525ead94f7d3e6b77faf.html">include</a></li><li class="navelem"><a class="el" href="dir_93a23df1777e8629f4a7407f98b7bc77.html">vorpal</a></li><li class="navelem"><a class="el" href="dir_d68ba218c3f906902eec9a4cce353956.html">utility</a></li><li class="navelem"><a class="el" href="dir_91bc124fe126a3e5d2e2f4c2ab4e1bd0.html">templates</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_a70324e029cd0b4ad2a7598822e82589.html">UnicornEngine</a></li><li class="navelem"><a class="el" href="dir_051a4180e2041d0e9552b1e9458a61d9.html">include</a></li><li class="navelem"><a class="el" href="dir_050b380242b27d165972ff883288b4f6.html">unicorn</a></li><li class="navelem"><a class="el" href="dir_f72015c53d918c47e577f97f3c496746.html">utility</a></li><li class="navelem"><a class="el" href="dir_484b20548f1673e1ff34690ddce6b46d.html">templates</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -88,51 +88,52 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">* Copyright (C) 2017 by Grapefruit Tech</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#ifndef VORPAL_UTILITY_TEMPLATES_SINGLETON_HPP</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define VORPAL_UTILITY_TEMPLATES_SINGLETON_HPP</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span>vp</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;{</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span>utility</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;{</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span>templates</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;{</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> C&gt;</div>
-<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classvp_1_1utility_1_1templates_1_1Singleton.html">   25</a></span>&#160;<span class="keyword">class </span><a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html">Singleton</a></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;{</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">static</span> C&amp; <a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html#af681e2d6309c1bb3819329ca3f4c879e">Instance</a>();</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html#a04fc9865373ee3efc9084d87929e941d">Destroy</a>();</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    ~<a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classvp_1_1utility_1_1templates_1_1Singleton.html#a05215132c99bad25496e2814fb21e750">   45</a></span>&#160;    <span class="keyword">static</span> C* <a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html#a05215132c99bad25496e2814fb21e750">s_instance</a>;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>(<span class="keyword">const</span> <a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>(<a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>&amp; operator=(<a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;};</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;}</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">* Copyright (C) 2017 by Godlike</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">* This code is licensed under the MIT license (MIT) </span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">* (http://opensource.org/licenses/MIT)</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">*/</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#ifndef UNICORN_UTILITY_TEMPLATES_SINGLETON_HPP</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define UNICORN_UTILITY_TEMPLATES_SINGLETON_HPP</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">namespace </span>unicorn</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;{</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>utility</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">namespace </span>templates</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">class</span> C&gt;</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">   26</a></span>&#160;<span class="keyword">class </span><a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">Singleton</a></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;{</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keyword">static</span> C&amp; <a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html#a878bd59a82594bbba36107ddf3e17753">Instance</a>();</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html#aeabfb50ab46cff73d92e22e1cbb026ff">Destroy</a>();</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    ~<a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html#a991f864e5dbdff8b1cec4529b9744ec9">   46</a></span>&#160;    <span class="keyword">static</span> C* <a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html#a991f864e5dbdff8b1cec4529b9744ec9">s_instance</a>;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>(<a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>&amp; operator=(<a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">Singleton</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;};</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;}</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#include &lt;vorpal/utility/templates/Singleton.imp&gt;</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#endif // VORPAL_UTILITY_TEMPLATES_SINGLETON_HPP</span></div>
-<div class="ttc" id="classvp_1_1utility_1_1templates_1_1Singleton_html_af681e2d6309c1bb3819329ca3f4c879e"><div class="ttname"><a href="classvp_1_1utility_1_1templates_1_1Singleton.html#af681e2d6309c1bb3819329ca3f4c879e">vp::utility::templates::Singleton::Instance</a></div><div class="ttdeci">static C &amp; Instance()</div><div class="ttdoc">Returns the singleton instance. </div></div>
-<div class="ttc" id="classvp_1_1utility_1_1templates_1_1Singleton_html"><div class="ttname"><a href="classvp_1_1utility_1_1templates_1_1Singleton.html">vp::utility::templates::Singleton</a></div><div class="ttdoc">Template class describing singleton implementation. </div><div class="ttdef"><b>Definition:</b> Singleton.hpp:25</div></div>
-<div class="ttc" id="classvp_1_1utility_1_1templates_1_1Singleton_html_a05215132c99bad25496e2814fb21e750"><div class="ttname"><a href="classvp_1_1utility_1_1templates_1_1Singleton.html#a05215132c99bad25496e2814fb21e750">vp::utility::templates::Singleton::s_instance</a></div><div class="ttdeci">static C * s_instance</div><div class="ttdoc">Pointer to singleton instance. </div><div class="ttdef"><b>Definition:</b> Singleton.hpp:45</div></div>
-<div class="ttc" id="classvp_1_1utility_1_1templates_1_1Singleton_html_a04fc9865373ee3efc9084d87929e941d"><div class="ttname"><a href="classvp_1_1utility_1_1templates_1_1Singleton.html#a04fc9865373ee3efc9084d87929e941d">vp::utility::templates::Singleton::Destroy</a></div><div class="ttdeci">static void Destroy()</div><div class="ttdoc">Destroys stored instance. </div></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#include &lt;unicorn/utility/templates/Singleton.imp&gt;</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#endif // UNICORN_UTILITY_TEMPLATES_SINGLETON_HPP</span></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1templates_1_1Singleton_html_aeabfb50ab46cff73d92e22e1cbb026ff"><div class="ttname"><a href="classunicorn_1_1utility_1_1templates_1_1Singleton.html#aeabfb50ab46cff73d92e22e1cbb026ff">unicorn::utility::templates::Singleton::Destroy</a></div><div class="ttdeci">static void Destroy()</div><div class="ttdoc">Destroys stored instance. </div></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1templates_1_1Singleton_html"><div class="ttname"><a href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">unicorn::utility::templates::Singleton</a></div><div class="ttdoc">Template class describing singleton implementation. </div><div class="ttdef"><b>Definition:</b> Singleton.hpp:26</div></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1templates_1_1Singleton_html_a878bd59a82594bbba36107ddf3e17753"><div class="ttname"><a href="classunicorn_1_1utility_1_1templates_1_1Singleton.html#a878bd59a82594bbba36107ddf3e17753">unicorn::utility::templates::Singleton::Instance</a></div><div class="ttdeci">static C &amp; Instance()</div><div class="ttdoc">Returns the singleton instance. </div></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1templates_1_1Singleton_html_a991f864e5dbdff8b1cec4529b9744ec9"><div class="ttname"><a href="classunicorn_1_1utility_1_1templates_1_1Singleton.html#a991f864e5dbdff8b1cec4529b9744ec9">unicorn::utility::templates::Singleton::s_instance</a></div><div class="ttdeci">static C * s_instance</div><div class="ttdoc">Pointer to singleton instance. </div><div class="ttdef"><b>Definition:</b> Singleton.hpp:46</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

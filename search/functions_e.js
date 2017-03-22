@@ -1,14 +1,14 @@
 var searchData=
 [
-  ['setapplicationheight',['SetApplicationHeight',['../classvp_1_1core_1_1Settings.html#a685a00b6828abf8651c39f53a3922979',1,'vp::core::Settings']]],
-  ['setapplicationname',['SetApplicationName',['../classvp_1_1core_1_1Settings.html#a99d98f0002354e3828ddbbf9b9c95646',1,'vp::core::Settings']]],
-  ['setapplicationwidth',['SetApplicationWidth',['../classvp_1_1core_1_1Settings.html#ac1ddd70d94570322df67968b0999dc7d',1,'vp::core::Settings']]],
-  ['settings',['Settings',['../classvp_1_1core_1_1Settings.html#a8e6e2863183782b4454ff9ee80e33615',1,'vp::core::Settings']]],
-  ['setvorpalenginename',['SetVorpalEngineName',['../classvp_1_1core_1_1Settings.html#ae4bd36ba45476bddfc6e0368fbab704d',1,'vp::core::Settings']]],
-  ['size',['size',['../classvp_1_1utility_1_1concurrent_1_1UnorderedMap.html#ae5f9613e223bfe0390a133257e731b28',1,'vp::utility::concurrent::UnorderedMap']]],
-  ['snatch',['Snatch',['../classvp_1_1utility_1_1asset_1_1Storage_1_1TaskQueue.html#ae6e7be942b52928430ddbbbc93085d87',1,'vp::utility::asset::Storage::TaskQueue']]],
-  ['stopworkers',['StopWorkers',['../classvp_1_1utility_1_1asset_1_1Storage.html#afa2312e8761b4ea5d5ffe0891e58cb0f',1,'vp::utility::asset::Storage']]],
-  ['storage',['Storage',['../classvp_1_1utility_1_1asset_1_1Storage.html#af25c9a75aa407508edd01183deae1abe',1,'vp::utility::asset::Storage']]],
-  ['subscribe',['Subscribe',['../classvp_1_1utility_1_1asset_1_1Handler.html#ae28f3ec4667c42dd5d9f8c6e2eee917a',1,'vp::utility::asset::Handler']]],
-  ['swap',['swap',['../classvp_1_1utility_1_1concurrent_1_1UnorderedMap.html#a4d9d7d25b0f39d81370c473a45dfb9c4',1,'vp::utility::concurrent::UnorderedMap']]]
+  ['setapplicationheight',['SetApplicationHeight',['../classunicorn_1_1core_1_1Settings.html#aca4894d2c6c95c11473b27205638c477',1,'unicorn::core::Settings']]],
+  ['setapplicationname',['SetApplicationName',['../classunicorn_1_1core_1_1Settings.html#a69cc80e816c204d85aa240a64328399c',1,'unicorn::core::Settings']]],
+  ['setapplicationwidth',['SetApplicationWidth',['../classunicorn_1_1core_1_1Settings.html#a6c33464edb50e23b6284672ea02d0cc4',1,'unicorn::core::Settings']]],
+  ['settings',['Settings',['../classunicorn_1_1core_1_1Settings.html#a275e4649e161dcc1dca26b47509f3747',1,'unicorn::core::Settings']]],
+  ['setunicornenginename',['SetUnicornEngineName',['../classunicorn_1_1core_1_1Settings.html#a63753cc647d8f383a83fe06aa84b2aef',1,'unicorn::core::Settings']]],
+  ['size',['size',['../classunicorn_1_1utility_1_1concurrent_1_1UnorderedMap.html#ae2a12193184071fd7de7d5e0a4951f6a',1,'unicorn::utility::concurrent::UnorderedMap']]],
+  ['snatch',['Snatch',['../classunicorn_1_1utility_1_1asset_1_1Storage_1_1TaskQueue.html#a58539a026e336f303155e22ca23d9121',1,'unicorn::utility::asset::Storage::TaskQueue']]],
+  ['stopworkers',['StopWorkers',['../classunicorn_1_1utility_1_1asset_1_1Storage.html#af1818693011a43057ba69a8d8b47caea',1,'unicorn::utility::asset::Storage']]],
+  ['storage',['Storage',['../classunicorn_1_1utility_1_1asset_1_1Storage.html#ae8b29623324eddfa36c3f95d913e8adc',1,'unicorn::utility::asset::Storage']]],
+  ['subscribe',['Subscribe',['../classunicorn_1_1utility_1_1asset_1_1Handler.html#aa6c91329433eac570a1db2274292ba07',1,'unicorn::utility::asset::Handler']]],
+  ['swap',['swap',['../classunicorn_1_1utility_1_1concurrent_1_1UnorderedMap.html#a7c4ff1476f5aab0b64ebd699e70efd15',1,'unicorn::utility::concurrent::UnorderedMap']]]
 ];

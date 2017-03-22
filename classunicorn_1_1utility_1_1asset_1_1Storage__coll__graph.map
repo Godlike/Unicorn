@@ -1,0 +1,5 @@
+<map id="unicorn::utility::asset::Storage" name="unicorn::utility::asset::Storage">
+<area shape="rect" id="node2" href="$classunicorn_1_1utility_1_1templates_1_1Singleton.html" title="Template class describing singleton implementation. " alt="" coords="372,5,540,46"/>
+<area shape="rect" id="node4" href="$classunicorn_1_1utility_1_1asset_1_1Storage_1_1TaskQueue.html" title="Describes worker queue. " alt="" coords="381,70,531,111"/>
+<area shape="rect" id="node6" href="$classunicorn_1_1utility_1_1concurrent_1_1UnorderedMap.html" title="unicorn::utility::concurrent\l::UnorderedMap\&lt; KeyType,\l std::shared_future\&lt; Handler \&gt; \&gt;" alt="" coords="350,135,562,191"/>
+</map>

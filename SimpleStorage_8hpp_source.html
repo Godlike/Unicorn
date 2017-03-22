@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>VorpalEngine: /home/travis/build/BraveEyed/Unicorn/VorpalEngine/include/vorpal/utility/asset/SimpleStorage.hpp Source File</title>
+<title>UnicornEngine: /home/travis/build/Godlike/Unicorn/UnicornEngine/include/unicorn/utility/asset/SimpleStorage.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -22,7 +22,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">VorpalEngine
+   <div id="projectname">UnicornEngine
    </div>
   </td>
  </tr>
@@ -79,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_8ec00ab8814c10b16e7e0c4c9bad4965.html">VorpalEngine</a></li><li class="navelem"><a class="el" href="dir_0c24c6a2a0a7525ead94f7d3e6b77faf.html">include</a></li><li class="navelem"><a class="el" href="dir_93a23df1777e8629f4a7407f98b7bc77.html">vorpal</a></li><li class="navelem"><a class="el" href="dir_d68ba218c3f906902eec9a4cce353956.html">utility</a></li><li class="navelem"><a class="el" href="dir_05659958a19a8172c069b76b9b3142c3.html">asset</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_a70324e029cd0b4ad2a7598822e82589.html">UnicornEngine</a></li><li class="navelem"><a class="el" href="dir_051a4180e2041d0e9552b1e9458a61d9.html">include</a></li><li class="navelem"><a class="el" href="dir_050b380242b27d165972ff883288b4f6.html">unicorn</a></li><li class="navelem"><a class="el" href="dir_f72015c53d918c47e577f97f3c496746.html">utility</a></li><li class="navelem"><a class="el" href="dir_0e59ebdabef31b54a5d1f591a3b82ad0.html">asset</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -88,69 +88,70 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">* Copyright (C) 2017 by Grapefruit Tech</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#ifndef VORPAL_UTILITY_ASSET_SIMPLE_STORAGE_HPP</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define VORPAL_UTILITY_ASSET_SIMPLE_STORAGE_HPP</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;vorpal/utility/asset/Handler.hpp&gt;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;vorpal/utility/SharedMacros.hpp&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;vorpal/utility/templates/Singleton.hpp&gt;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;cstdint&gt;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;unordered_map&gt;</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">namespace </span>vp</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;{</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">namespace </span>utility</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">namespace </span>asset</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;{</div>
-<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html">   29</a></span>&#160;<span class="keyword">class </span><a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a> : <span class="keyword">public</span> <a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html">templates::Singleton</a>&lt;SimpleStorage&gt;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;{</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#a0e988a9660a32c5a4cceb8dcf829c044">   33</a></span>&#160;    <span class="keyword">typedef</span> std::string <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#a0e988a9660a32c5a4cceb8dcf829c044">KeyType</a>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    VORPAL_EXPORT <a class="code" href="classvp_1_1utility_1_1asset_1_1Handler.html">Handler</a> <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#a3e0e4299db9df820c59ce7332221a674">Get</a>(<span class="keyword">const</span> <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#a0e988a9660a32c5a4cceb8dcf829c044">KeyType</a>&amp; key);</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classvp_1_1utility_1_1templates_1_1Singleton.html">utility::templates::Singleton</a>&lt;<a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>&gt;;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#ac4d627415118b621169b7e42f651fa28">   51</a></span>&#160;    <span class="keyword">typedef</span> std::unordered_map&lt;KeyType, Handler&gt; <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#ac4d627415118b621169b7e42f651fa28">HandlerMap</a>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <a class="code" href="classvp_1_1utility_1_1asset_1_1Handler.html">Handler</a> <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#a598e4d54da346ff70becbef8f8b4641e">ProcessHandlerCreation</a>(<span class="keyword">const</span> <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#a0e988a9660a32c5a4cceb8dcf829c044">KeyType</a>&amp; key);</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <a class="code" href="classvp_1_1utility_1_1asset_1_1Handler.html">Handler</a> <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#aed5d103619ddc12a19548001c36c8d7e">CreateHandler</a>(<span class="keyword">const</span> <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#a0e988a9660a32c5a4cceb8dcf829c044">KeyType</a>&amp; key);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>(<span class="keyword">const</span> <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>(<a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>&amp; operator=(<a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    ~<a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;</div>
-<div class="line"><a name="l00087"></a><span class="lineno"><a class="line" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#a69f393d23cf8a71b081b41a6d29f1faf">   87</a></span>&#160;    <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#ac4d627415118b621169b7e42f651fa28">HandlerMap</a> <a class="code" href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#a69f393d23cf8a71b081b41a6d29f1faf">m_entries</a>;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;};</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;}</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">* Copyright (C) 2017 by Godlike</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">* This code is licensed under the MIT license (MIT) </span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">* (http://opensource.org/licenses/MIT)</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">*/</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#ifndef UNICORN_UTILITY_ASSET_SIMPLE_STORAGE_HPP</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define UNICORN_UTILITY_ASSET_SIMPLE_STORAGE_HPP</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;unicorn/utility/asset/Handler.hpp&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;unicorn/utility/SharedMacros.hpp&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;unicorn/utility/templates/Singleton.hpp&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;cstdint&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;unordered_map&gt;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">namespace </span>unicorn</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;{</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">namespace </span>utility</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">namespace </span>asset</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;{</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html">   30</a></span>&#160;<span class="keyword">class </span><a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a> : <span class="keyword">public</span> <a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">templates::Singleton</a>&lt;SimpleStorage&gt;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;{</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#a9931d46ff1df36b181d557c10f345877">   34</a></span>&#160;    <span class="keyword">typedef</span> std::string <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#a9931d46ff1df36b181d557c10f345877">KeyType</a>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    UNICORN_EXPORT <a class="code" href="classunicorn_1_1utility_1_1asset_1_1Handler.html">Handler</a> <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#a29093357cad0765cbe0fef73ddd438e5">Get</a>(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#a9931d46ff1df36b181d557c10f345877">KeyType</a>&amp; key);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">utility::templates::Singleton</a>&lt;<a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>&gt;;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#ae2a9f650365a42b0bcec3dc4f67dc8f3">   52</a></span>&#160;    <span class="keyword">typedef</span> std::unordered_map&lt;KeyType, Handler&gt; <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#ae2a9f650365a42b0bcec3dc4f67dc8f3">HandlerMap</a>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1asset_1_1Handler.html">Handler</a> <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#a581134bd6f1fe8a8b6b59576c08b7c15">ProcessHandlerCreation</a>(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#a9931d46ff1df36b181d557c10f345877">KeyType</a>&amp; key);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1asset_1_1Handler.html">Handler</a> <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#a9534fcd68b3b5bba500384941ac7ef7a">CreateHandler</a>(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#a9931d46ff1df36b181d557c10f345877">KeyType</a>&amp; key);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>(<a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>&amp; operator=(<a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    ~<a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html">SimpleStorage</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
+<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#a75186e3ffb0da140abbc26a80ceb90dc">   88</a></span>&#160;    <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#ae2a9f650365a42b0bcec3dc4f67dc8f3">HandlerMap</a> <a class="code" href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#a75186e3ffb0da140abbc26a80ceb90dc">m_entries</a>;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;};</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;}</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;}</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="preprocessor">#endif // VORPAL_UTILITY_ASSET_SIMPLE_STORAGE_HPP</span></div>
-<div class="ttc" id="classvp_1_1utility_1_1asset_1_1SimpleStorage_html_ac4d627415118b621169b7e42f651fa28"><div class="ttname"><a href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#ac4d627415118b621169b7e42f651fa28">vp::utility::asset::SimpleStorage::HandlerMap</a></div><div class="ttdeci">std::unordered_map&lt; KeyType, Handler &gt; HandlerMap</div><div class="ttdoc">Alias to underlying container. </div><div class="ttdef"><b>Definition:</b> SimpleStorage.hpp:51</div></div>
-<div class="ttc" id="classvp_1_1utility_1_1asset_1_1SimpleStorage_html_a69f393d23cf8a71b081b41a6d29f1faf"><div class="ttname"><a href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#a69f393d23cf8a71b081b41a6d29f1faf">vp::utility::asset::SimpleStorage::m_entries</a></div><div class="ttdeci">HandlerMap m_entries</div><div class="ttdoc">Container of asset handlers. </div><div class="ttdef"><b>Definition:</b> SimpleStorage.hpp:87</div></div>
-<div class="ttc" id="classvp_1_1utility_1_1asset_1_1SimpleStorage_html_a598e4d54da346ff70becbef8f8b4641e"><div class="ttname"><a href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#a598e4d54da346ff70becbef8f8b4641e">vp::utility::asset::SimpleStorage::ProcessHandlerCreation</a></div><div class="ttdeci">Handler ProcessHandlerCreation(const KeyType &amp;key)</div><div class="ttdoc">Creates and stores a Handler. </div></div>
-<div class="ttc" id="classvp_1_1utility_1_1asset_1_1SimpleStorage_html_aed5d103619ddc12a19548001c36c8d7e"><div class="ttname"><a href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#aed5d103619ddc12a19548001c36c8d7e">vp::utility::asset::SimpleStorage::CreateHandler</a></div><div class="ttdeci">Handler CreateHandler(const KeyType &amp;key)</div><div class="ttdoc">Creates a Handler for given key. </div></div>
-<div class="ttc" id="classvp_1_1utility_1_1asset_1_1SimpleStorage_html_a0e988a9660a32c5a4cceb8dcf829c044"><div class="ttname"><a href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#a0e988a9660a32c5a4cceb8dcf829c044">vp::utility::asset::SimpleStorage::KeyType</a></div><div class="ttdeci">std::string KeyType</div><div class="ttdoc">Alias to a key type used by underlying container. </div><div class="ttdef"><b>Definition:</b> SimpleStorage.hpp:33</div></div>
-<div class="ttc" id="classvp_1_1utility_1_1templates_1_1Singleton_html"><div class="ttname"><a href="classvp_1_1utility_1_1templates_1_1Singleton.html">vp::utility::templates::Singleton</a></div><div class="ttdoc">Template class describing singleton implementation. </div><div class="ttdef"><b>Definition:</b> Singleton.hpp:25</div></div>
-<div class="ttc" id="classvp_1_1utility_1_1asset_1_1SimpleStorage_html"><div class="ttname"><a href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html">vp::utility::asset::SimpleStorage</a></div><div class="ttdoc">Controls non-thread safe asset access. </div><div class="ttdef"><b>Definition:</b> SimpleStorage.hpp:29</div></div>
-<div class="ttc" id="classvp_1_1utility_1_1asset_1_1SimpleStorage_html_a3e0e4299db9df820c59ce7332221a674"><div class="ttname"><a href="classvp_1_1utility_1_1asset_1_1SimpleStorage.html#a3e0e4299db9df820c59ce7332221a674">vp::utility::asset::SimpleStorage::Get</a></div><div class="ttdeci">VORPAL_EXPORT Handler Get(const KeyType &amp;key)</div><div class="ttdoc">Gets an asset identified by key. </div></div>
-<div class="ttc" id="classvp_1_1utility_1_1asset_1_1Handler_html"><div class="ttname"><a href="classvp_1_1utility_1_1asset_1_1Handler.html">vp::utility::asset::Handler</a></div><div class="ttdoc">Provides access to shared asset content. </div><div class="ttdef"><b>Definition:</b> Handler.hpp:27</div></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;}</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="preprocessor">#endif // UNICORN_UTILITY_ASSET_SIMPLE_STORAGE_HPP</span></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1asset_1_1SimpleStorage_html_a75186e3ffb0da140abbc26a80ceb90dc"><div class="ttname"><a href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#a75186e3ffb0da140abbc26a80ceb90dc">unicorn::utility::asset::SimpleStorage::m_entries</a></div><div class="ttdeci">HandlerMap m_entries</div><div class="ttdoc">Container of asset handlers. </div><div class="ttdef"><b>Definition:</b> SimpleStorage.hpp:88</div></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1asset_1_1SimpleStorage_html_a9534fcd68b3b5bba500384941ac7ef7a"><div class="ttname"><a href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#a9534fcd68b3b5bba500384941ac7ef7a">unicorn::utility::asset::SimpleStorage::CreateHandler</a></div><div class="ttdeci">Handler CreateHandler(const KeyType &amp;key)</div><div class="ttdoc">Creates a Handler for given key. </div></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1asset_1_1SimpleStorage_html_a29093357cad0765cbe0fef73ddd438e5"><div class="ttname"><a href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#a29093357cad0765cbe0fef73ddd438e5">unicorn::utility::asset::SimpleStorage::Get</a></div><div class="ttdeci">UNICORN_EXPORT Handler Get(const KeyType &amp;key)</div><div class="ttdoc">Gets an asset identified by key. </div></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1templates_1_1Singleton_html"><div class="ttname"><a href="classunicorn_1_1utility_1_1templates_1_1Singleton.html">unicorn::utility::templates::Singleton</a></div><div class="ttdoc">Template class describing singleton implementation. </div><div class="ttdef"><b>Definition:</b> Singleton.hpp:26</div></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1asset_1_1SimpleStorage_html_a9931d46ff1df36b181d557c10f345877"><div class="ttname"><a href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#a9931d46ff1df36b181d557c10f345877">unicorn::utility::asset::SimpleStorage::KeyType</a></div><div class="ttdeci">std::string KeyType</div><div class="ttdoc">Alias to a key type used by underlying container. </div><div class="ttdef"><b>Definition:</b> SimpleStorage.hpp:34</div></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1asset_1_1SimpleStorage_html"><div class="ttname"><a href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html">unicorn::utility::asset::SimpleStorage</a></div><div class="ttdoc">Controls non-thread safe asset access. </div><div class="ttdef"><b>Definition:</b> SimpleStorage.hpp:30</div></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1asset_1_1SimpleStorage_html_ae2a9f650365a42b0bcec3dc4f67dc8f3"><div class="ttname"><a href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#ae2a9f650365a42b0bcec3dc4f67dc8f3">unicorn::utility::asset::SimpleStorage::HandlerMap</a></div><div class="ttdeci">std::unordered_map&lt; KeyType, Handler &gt; HandlerMap</div><div class="ttdoc">Alias to underlying container. </div><div class="ttdef"><b>Definition:</b> SimpleStorage.hpp:52</div></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1asset_1_1SimpleStorage_html_a581134bd6f1fe8a8b6b59576c08b7c15"><div class="ttname"><a href="classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html#a581134bd6f1fe8a8b6b59576c08b7c15">unicorn::utility::asset::SimpleStorage::ProcessHandlerCreation</a></div><div class="ttdeci">Handler ProcessHandlerCreation(const KeyType &amp;key)</div><div class="ttdoc">Creates and stores a Handler. </div></div>
+<div class="ttc" id="classunicorn_1_1utility_1_1asset_1_1Handler_html"><div class="ttname"><a href="classunicorn_1_1utility_1_1asset_1_1Handler.html">unicorn::utility::asset::Handler</a></div><div class="ttdoc">Provides access to shared asset content. </div><div class="ttdef"><b>Definition:</b> Handler.hpp:28</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

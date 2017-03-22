@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['_7egraphics',['~Graphics',['../classvp_1_1video_1_1Graphics.html#ac64d6ba67f3eb9d8049cd6a08931b4c4',1,'vp::video::Graphics']]],
-  ['_7ehandler',['~Handler',['../classvp_1_1utility_1_1asset_1_1Handler.html#a94dd0fb688b7dfb9a7eeb4eca3794bf6',1,'vp::utility::asset::Handler']]],
-  ['_7estorage',['~Storage',['../classvp_1_1utility_1_1asset_1_1Storage.html#aaff9f7bb74e073ca8e3f18fc77c2e84a',1,'vp::utility::asset::Storage']]],
-  ['_7eunorderedmap',['~UnorderedMap',['../classvp_1_1utility_1_1concurrent_1_1UnorderedMap.html#a7ae142c40637e4c1a07ef031d092c9b4',1,'vp::utility::concurrent::UnorderedMap']]],
-  ['_7evorpalengine',['~VorpalEngine',['../classvp_1_1VorpalEngine.html#a010ae927e35384906ebcfb4aded1e7c3',1,'vp::VorpalEngine']]]
+  ['_7egraphics',['~Graphics',['../classunicorn_1_1video_1_1Graphics.html#ae2ede53fa1f76d7271c3bcaa4317af5c',1,'unicorn::video::Graphics']]],
+  ['_7ehandler',['~Handler',['../classunicorn_1_1utility_1_1asset_1_1Handler.html#a335db32d54830bf8b397dd6c4a77bfdd',1,'unicorn::utility::asset::Handler']]],
+  ['_7estorage',['~Storage',['../classunicorn_1_1utility_1_1asset_1_1Storage.html#ac8b491c12c49ecd6ae7eec4820ae6f80',1,'unicorn::utility::asset::Storage']]],
+  ['_7eunicornengine',['~UnicornEngine',['../classunicorn_1_1UnicornEngine.html#a4b18fe646f6e4d918dc75f82395adfdb',1,'unicorn::UnicornEngine']]],
+  ['_7eunorderedmap',['~UnorderedMap',['../classunicorn_1_1utility_1_1concurrent_1_1UnorderedMap.html#ae6c6401c2f3be3cec19b69db9237646e',1,'unicorn::utility::concurrent::UnorderedMap']]]
 ];
