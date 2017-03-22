@@ -1,15 +1,15 @@
-[submodule "VorpalEngine/external/loguru"]
-	path = VorpalEngine/external/loguru
+[submodule "UnicornEngine/external/loguru"]
+	path = UnicornEngine/external/loguru
 	url = https://github.com/emilk/loguru.git
-[submodule "VorpalEngine/external/glfw"]
-	path = VorpalEngine/external/glfw
+[submodule "UnicornEngine/external/glfw"]
+	path = UnicornEngine/external/glfw
 	url = https://github.com/glfw/glfw.git
-[submodule "VorpalEngine/external/glm"]
-	path = VorpalEngine/external/glm
+[submodule "UnicornEngine/external/glm"]
+	path = UnicornEngine/external/glm
 	url = https://github.com/g-truc/glm.git
-[submodule "VorpalEngine/external/stb"]
-	path = VorpalEngine/external/stb
+[submodule "UnicornEngine/external/stb"]
+	path = UnicornEngine/external/stb
 	url = https://github.com/nothings/stb.git
-[submodule "VorpalEngine/external/tinyobjloader"]
-	path = VorpalEngine/external/tinyobjloader
+[submodule "UnicornEngine/external/tinyobjloader"]
+	path = UnicornEngine/external/tinyobjloader
 	url = https://github.com/syoyo/tinyobjloader.git

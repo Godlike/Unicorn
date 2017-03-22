@@ -1,28 +1,29 @@
 /*
-* Copyright (C) 2017 by Grapefruit Tech
-* This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
+* Copyright (C) 2017 by Godlike
+* This code is licensed under the MIT license (MIT) 
+* (http://opensource.org/licenses/MIT)
 */
 
-#include <vorpal/VorpalEngine.hpp>
-#include <vorpal/core/Settings.hpp>
+#include <unicorn/UnicornEngine.hpp>
+#include <unicorn/core/Settings.hpp>
 
 int main(int argc, char* argv[])
 {
-    vp::core::Settings& settings = vp::core::Settings::Instance();
+    unicorn::core::Settings& settings = unicorn::core::Settings::Instance();
 
     settings.Init(argc, argv, "SANIC_JYMPER.log");
     settings.SetApplicationName("SANIC JYMPER");
 
-    vp::VorpalEngine* vpEngine = new vp::VorpalEngine();
+    unicorn::UnicornEngine* unicornEngine = new unicorn::UnicornEngine();
 
-    if (vpEngine->Init())
+    if (unicornEngine->Init())
     {
-        vpEngine->Run();
+        unicornEngine->Run();
     }
 
-    vpEngine->Deinit();
-    delete vpEngine;
+    unicornEngine->Deinit();
+    delete unicornEngine;
 
-    vp::core::Settings::Destroy();
+    unicorn::core::Settings::Destroy();
     return 0;
 }

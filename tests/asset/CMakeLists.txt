@@ -3,9 +3,9 @@ cmake_policy(VERSION 3.0)
 
 project(AssetTest)
 
-include(VorpalEngineConfig)
+include(UnicornEngineConfig)
 
-include_directories(${VORPAL_ENGINE_INCLUDE_DIR})
+include_directories(${UNICORN_ENGINE_INCLUDE_DIR})
 
 find_package(Threads)
 
@@ -14,7 +14,7 @@ if (UNIX)
 endif()
 
 add_executable(SimpleStorageTest SimpleStorageTest.cpp)
-target_link_libraries(SimpleStorageTest ${VORPAL_ENGINE_LIB})
+target_link_libraries(SimpleStorageTest ${UNICORN_ENGINE_LIB})
 add_test(
     NAME SimpleStorageTest
     WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/TestInput"
@@ -22,7 +22,7 @@ add_test(
 )
 
 add_executable(StorageTest StorageTest.cpp)
-target_link_libraries(StorageTest ${VORPAL_ENGINE_LIB} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(StorageTest ${UNICORN_ENGINE_LIB} ${CMAKE_THREAD_LIBS_INIT})
 add_test(
     NAME StorageTest
     WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/TestInput"
