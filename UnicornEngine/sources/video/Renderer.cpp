@@ -718,8 +718,8 @@ bool Renderer::CreateGraphicsPipeline()
     }
 
     unicorn::utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
-    unicorn::utility::asset::Handler simpleVertShaderHandler = storage.Get("data/shaders/vert.spv");
-    unicorn::utility::asset::Handler simpleFragShaderHandler = storage.Get("data/shaders/frag.spv");
+    unicorn::utility::asset::Handler simpleVertShaderHandler = storage.Get("data/shaders/shader.vert.spv");
+    unicorn::utility::asset::Handler simpleFragShaderHandler = storage.Get("data/shaders/shader.frag.spv");
 
     if (!simpleVertShaderHandler.IsValid() || !simpleFragShaderHandler.IsValid())
     {
