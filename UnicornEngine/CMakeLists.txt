@@ -25,6 +25,7 @@ if (UNIX)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 elseif(WIN32)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
 ## Should be uncommented when TinyObjLoader library is used
@@ -65,11 +66,11 @@ endif ()
 include_directories(
 	${UNICORN_ENGINE_INCLUDE_DIR}
 	${TINYOBJLOADER_INCLUDE_DIR}
+	${VULKAN_INCLUDE_DIR}
 	${GLFW_INCLUDE_DIR}
 	${GLM_INCLUDE_DIR}
 	${LOGURU_INCLUDE_DIR}
 	${STB_INCLUDE_DIR}
-	${VULKAN_INCLUDE_DIR}
 )
 
 if (BUILD_SHARED_LIBS)
@@ -143,7 +144,7 @@ if (UNICORN_BUILD_DOCUMENTATION)
 	endif()
 endif()
 
-target_link_libraries(${UNICORN_ENGINE_LIB} ${GLFW_LIB} ${VULKAN_LIBRARY})
+target_link_libraries(${UNICORN_ENGINE_LIB} ${VULKAN_LIBRARY} ${GLFW_LIB})
 
 
 if (${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "AMD64")
