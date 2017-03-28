@@ -146,7 +146,9 @@ endif()
 
 target_link_libraries(${UNICORN_ENGINE_LIB} ${VULKAN_LIBRARY} ${GLFW_LIB})
 
-
+if(UNIX)
+# TODO Add shader compilation at Linux.
+elseif(WIN32)
 if (${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "AMD64")
   set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/Bin/glslangValidator.exe")
 else()
@@ -182,3 +184,4 @@ add_custom_command(TARGET ${UNICORN_ENGINE_LIB} POST_BUILD
 		"${PROJECT_BINARY_DIR}/data/shaders"
 		"$<TARGET_FILE_DIR:${UNICORN_ENGINE_LIB}>/data/shaders"
 		)
+endif()

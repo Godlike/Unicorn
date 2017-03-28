@@ -18,7 +18,7 @@ namespace unicorn
 {
 namespace video
 {
-static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
+static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
     VkDebugReportObjectTypeEXT objType,
     uint64_t obj,
     size_t location,
@@ -27,7 +27,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
     const char* msg,
     void* userData)
 {
-    // Error that may result in undefined behaviour
+    // Error that may result in undefined behavior
     if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
     {
         LOG_ERROR("VULKAN LAYER ERROR: %s", msg);
