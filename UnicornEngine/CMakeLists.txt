@@ -27,6 +27,7 @@ elseif(WIN32)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
+add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS)
 
 ## Should be uncommented when TinyObjLoader library is used
 # include(TinyObjLoaderConfig)
