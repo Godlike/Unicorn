@@ -1,3 +1,4 @@
+*.TMP
 .vs/
 CMakeSettings.json
 *.kdev4
