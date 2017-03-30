@@ -62,7 +62,6 @@ public:
 private:
     bool m_isInitialized;
     GLFWwindow* m_pWindow;
-
     vk::Instance m_vkInstance;
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;

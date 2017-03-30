@@ -56,7 +56,7 @@ Renderer::Renderer()
     : m_isInitialized(false)
     , m_pWindow(nullptr)
     , m_validationLayers({"VK_LAYER_LUNARG_standard_validation"})
-    , m_deviceExtensions({ VK_KHR_SWAPCHAIN_EXTENSION_NAME })
+    , m_deviceExtensions({VK_KHR_SWAPCHAIN_EXTENSION_NAME})
 {
 }
 
@@ -248,8 +248,8 @@ SwapChainSupportDetails Renderer::QuerySwapChainSupport(const vk::PhysicalDevice
 {
     vk::Result result;
     SwapChainSupportDetails details;
-    result  = device.getSurfaceCapabilitiesKHR(m_vkWindowSurface, &details.capabilities);
-    std::tie(result, details.formats) = device.getSurfaceFormatsKHR(m_vkWindowSurface);    
+    result = device.getSurfaceCapabilitiesKHR(m_vkWindowSurface, &details.capabilities);
+    std::tie(result, details.formats) = device.getSurfaceFormatsKHR(m_vkWindowSurface);
     std::tie(result, details.presentModes) = device.getSurfacePresentModesKHR(m_vkWindowSurface);
     return details;
 }
@@ -258,7 +258,7 @@ vk::SurfaceFormatKHR Renderer::ChooseSwapSurfaceFormat(const std::vector<vk::Sur
 {
     if (availableFormats.size() == 1 && availableFormats[0].format == vk::Format::eUndefined)
     {
-        return { vk::Format::eB8G8R8A8Unorm, vk::ColorSpaceKHR::eSrgbNonlinear};
+        return {vk::Format::eB8G8R8A8Unorm, vk::ColorSpaceKHR::eSrgbNonlinear};
     }
 
     for (const auto& availableFormat : availableFormats)
@@ -358,12 +358,11 @@ bool Renderer::CreateInstance()
 
     const core::Settings& settings = core::Settings::Instance();
 
-    vk::ApplicationInfo appInfo(settings.GetApplicationName().c_str(), 
+    vk::ApplicationInfo appInfo(settings.GetApplicationName().c_str(),
         VK_MAKE_VERSION(1, 0, 0),
         settings.GetUnicornEngineName().c_str(),
         VK_MAKE_VERSION(0, 1, 0),
-        VK_API_VERSION_1_0
-    ); 
+        VK_API_VERSION_1_0);
     vk::InstanceCreateInfo createInfo = {};
     createInfo.pApplicationInfo = &appInfo;
     auto extensions = GetRequiredExtensions();
@@ -466,7 +465,7 @@ bool Renderer::CreateLogicalDevice()
 
 bool Renderer::CreateSurface()
 {
-    if (glfwCreateWindowSurface(m_vkInstance, m_pWindow, nullptr, &(VkSurfaceKHR&)m_vkWindowSurface) != VK_SUCCESS)
+    if (glfwCreateWindowSurface(m_vkInstance, m_pWindow, nullptr, &(VkSurfaceKHR&) m_vkWindowSurface) != VK_SUCCESS)
     {
         LOG_ERROR("Failed to create window surface!");
         return false;
@@ -561,7 +560,7 @@ bool Renderer::CreateImageViews()
     m_swapChainImageViews.resize(m_swapChainImages.size());
 
     for (uint32_t i = 0; i < m_swapChainImages.size(); i++)
-    {        
+    {
         vk::ImageViewCreateInfo createInfo;
         createInfo.image = m_swapChainImages[i];
         createInfo.viewType = vk::ImageViewType::e2D;
@@ -621,7 +620,7 @@ bool Renderer::CreateRenderPass()
     renderPassInfo.pSubpasses = &subpass;
 
     result = m_vkLogicalDevice.createRenderPass(&renderPassInfo, {}, &m_renderPass);
-    if(result != vk::Result::eSuccess)
+    if (result != vk::Result::eSuccess)
     {
         LOG_ERROR("Failed to create render pass!");
         return false;
@@ -669,7 +668,7 @@ bool Renderer::CreateGraphicsPipeline()
     fragShaderStageInfo.module = fragShaderModule;
     fragShaderStageInfo.pName = "main";
 
-    vk::PipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+    vk::PipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragShaderStageInfo};
 
     vk::PipelineVertexInputStateCreateInfo vertexInputInfo;
 
@@ -682,7 +681,7 @@ bool Renderer::CreateGraphicsPipeline()
     viewport.maxDepth = 1.0f;
 
     vk::Rect2D scissor;
-    scissor.offset = { 0, 0 };
+    scissor.offset = {0, 0};
     scissor.extent = m_swapChainExtent;
 
     vk::PipelineViewportStateCreateInfo viewportState;
@@ -757,8 +756,9 @@ bool Renderer::CreateGraphicsPipeline()
 
     std::tie(result, m_graphicsPipeline) = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo);
 
-    m_vkLogicalDevice.destroyShaderModule(vertShaderModule);  
+    m_vkLogicalDevice.destroyShaderModule(vertShaderModule);
     m_vkLogicalDevice.destroyShaderModule(fragShaderModule);
+
     return true;
 }
 
@@ -849,8 +849,8 @@ bool Renderer::CreateCommandBuffers()
         renderPassInfo.renderArea.offset = {0, 0};
         renderPassInfo.renderArea.extent = m_swapChainExtent;
 
-
-        vk::ClearColorValue clearColor(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f});;
+        vk::ClearColorValue clearColor(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f});
+        ;
         vk::ClearValue clearValue(clearColor);
 
         renderPassInfo.clearValueCount = 1;
@@ -870,7 +870,7 @@ bool Renderer::CreateCommandBuffers()
 bool Renderer::CreateSemaphores()
 {
     vk::Result result1, result2;
-    vk:: SemaphoreCreateInfo semaphoreInfo;
+    vk::SemaphoreCreateInfo semaphoreInfo;
     result1 = m_vkLogicalDevice.createSemaphore(&semaphoreInfo, {}, &m_imageAvailableSemaphore);
     result2 = m_vkLogicalDevice.createSemaphore(&semaphoreInfo, {}, &m_renderFinishedSemaphore);
     if (result1 != vk::Result::eSuccess || result2 != vk::Result::eSuccess)
@@ -904,7 +904,7 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
 {
     vk::PhysicalDeviceProperties deviceProperties = device.getProperties();
     vk::PhysicalDeviceFeatures deviceFeatures = device.getFeatures();
-    
+
     LOG_INFO("Found GPU : %s", deviceProperties.deviceName);
     QueueFamilyIndices indices = FindQueueFamilies(device);
     bool extensionsSupported = CheckDeviceExtensionSupport(device);
@@ -968,7 +968,7 @@ bool Renderer::Frame()
     vk::SubmitInfo submitInfo;
 
     vk::Semaphore waitSemaphores[] = {m_imageAvailableSemaphore};
-    vk::PipelineStageFlags waitStages[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
+    vk::PipelineStageFlags waitStages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
     submitInfo.waitSemaphoreCount = 1;
     submitInfo.pWaitSemaphores = waitSemaphores;
     submitInfo.pWaitDstStageMask = waitStages;
