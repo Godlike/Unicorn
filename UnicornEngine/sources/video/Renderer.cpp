@@ -31,23 +31,23 @@ static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flag
 {
     if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
     {
-        LOG_ERROR("VULKAN LAYER ERROR: %s", msg);
+        LOG_ERROR("VULKAN LAYER ERROR: %s", msg)
     };
     if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
     {
-        LOG_WARNING("VULKAN LAYER WARNING: %s", msg);
+        LOG_WARNING("VULKAN LAYER WARNING: %s", msg)
     };
     if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
     {
-        LOG_INFO("VULKAN LAYER PERFORMANCE: %s", msg);
+        LOG_INFO("VULKAN LAYER PERFORMANCE: %s", msg)
     };
     if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
     {
-        LOG_INFO("VULKAN LAYER INFO: %s", msg);
+        LOG_INFO("VULKAN LAYER INFO: %s", msg)
     }
     if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
     {
-        LOG_INFO("VULKAN LAYER DEBUG: %s", msg);
+        LOG_INFO("VULKAN LAYER DEBUG: %s", msg)
     }
     return VK_FALSE;
 }
@@ -215,8 +215,7 @@ QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
 {
     vk::Result result;
     QueueFamilyIndices indices;
-    std::vector<vk::QueueFamilyProperties> queueFamilies;
-    queueFamilies = device.getQueueFamilyProperties();
+    std::vector<vk::QueueFamilyProperties> queueFamilies = device.getQueueFamilyProperties();
 
     int index = 0;
     vk::Bool32 presentSupport;
@@ -231,14 +230,13 @@ QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
 
         if (queueFamily.queueCount > 0 && presentSupport)
         {
-            indices.presentFamily = index;
+            indices.presentFamily = index++;
         }
 
         if (indices.IsComplete())
         {
             break;
         }
-        ++index;
     }
 
     return indices;
@@ -847,7 +845,7 @@ bool Renderer::CreateCommandBuffers()
         vk::RenderPassBeginInfo renderPassInfo;
         renderPassInfo.renderPass = m_renderPass;
         renderPassInfo.framebuffer = m_swapChainFramebuffers[i];
-        renderPassInfo.renderArea.offset = {0, 0};
+        renderPassInfo.renderArea.setOffset({ 0, 0 });
         renderPassInfo.renderArea.extent = m_swapChainExtent;
 
         vk::ClearColorValue clearColor(std::array<float, 4>({0.0f, 0.0f, 0.0f, 1.0f}));

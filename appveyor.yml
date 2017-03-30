@@ -1,6 +1,6 @@
 version: 1.0.{build}
 
-image: Visual Studio 2017
+image: Visual Studio 2015
 
 configuration:
   - Debug
@@ -8,9 +8,9 @@ configuration:
 platform: x64
 clone_folder: "c:\\UnicornEngine"
 environment:
-  VULKAN_SDK: "c:\\VulkanSDK\\1.0.39.0\\"
+  VULKAN_SDK: "c:\\VulkanSDK\\1.0.42.2\\"
 init:
-  - appveyor DownloadFile https://vulkan.lunarg.com/sdk/download/1.0.39.0/windows/VulkanSDK-1.0.39.0-Installer.exe -FileName vulkan-installer.exe
+  - appveyor DownloadFile https://vulkan.lunarg.com/sdk/home#sdk/downloadConfirm/1.0.42.2/windows/VulkanSDK-1.0.42.2-Installer.exe -FileName vulkan-installer.exe
   - vulkan-installer.exe /S
   - rm -f vulkan-installer.exe
 
@@ -18,7 +18,7 @@ install:
   - git submodule update --init --recursive
   - mkdir build
   - cd build
-  - cmake -G "Visual Studio 15 2017 Win64" ..
+  - cmake -G "Visual Studio 15 2015 Win64" ..
 
 build:
   project: "build\\Godlike.sln"
