@@ -25,7 +25,7 @@ struct QueueFamilyIndices
     int graphicsFamily = -1;
     int presentFamily = -1;
 
-    bool isComplete() const
+    bool IsComplete() const
     {
         return graphicsFamily >= 0 && presentFamily >= 0;
     }
@@ -56,7 +56,7 @@ public:
     bool Init();
     void Deinit();
     void Render();
-    static void onWindowResized(GLFWwindow* window, int width, int height);
+    static void OnWindowResized(GLFWwindow* window, int width, int height);
     bool RecreateSwapChain();
 
 private:

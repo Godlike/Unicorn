@@ -55,14 +55,8 @@ static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flag
 Renderer::Renderer()
     : m_isInitialized(false)
     , m_pWindow(nullptr)
-    , m_vkInstance(nullptr)
-    , m_vkPhysicalDevice(nullptr)
     , m_validationLayers({"VK_LAYER_LUNARG_standard_validation"})
-    , m_deviceExtensions({VK_KHR_SWAPCHAIN_EXTENSION_NAME})
-    , m_vkSwapChain(nullptr)
-    , m_renderPass(nullptr)
-    , m_pipelineLayout(nullptr)
-    , m_graphicsPipeline(nullptr)
+    , m_deviceExtensions({ VK_KHR_SWAPCHAIN_EXTENSION_NAME })
 {
 }
 
@@ -99,7 +93,7 @@ bool Renderer::Init()
         nullptr,
         nullptr);
     glfwSetWindowUserPointer(m_pWindow, this);
-    glfwSetWindowSizeCallback(m_pWindow, onWindowResized);
+    glfwSetWindowSizeCallback(m_pWindow, OnWindowResized);
     if (!CreateInstance() ||
         !SetupDebugCallback() ||
         !CreateSurface() ||
@@ -240,7 +234,7 @@ QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
             indices.presentFamily = index;
         }
 
-        if (indices.isComplete())
+        if (indices.IsComplete())
         {
             break;
         }
@@ -325,7 +319,7 @@ void Renderer::Render()
     }
 }
 
-void Renderer::onWindowResized(GLFWwindow* window, int width, int height)
+void Renderer::OnWindowResized(GLFWwindow* window, int width, int height)
 {
     if (width == 0 || height == 0)
     {
@@ -761,7 +755,7 @@ bool Renderer::CreateGraphicsPipeline()
     pipelineInfo.basePipelineHandle = nullptr;
     pipelineInfo.basePipelineIndex = -1; // Optional
 
-    m_graphicsPipeline = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo).value;
+    std::tie(result, m_graphicsPipeline) = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo);
 
     m_vkLogicalDevice.destroyShaderModule(vertShaderModule);  
     m_vkLogicalDevice.destroyShaderModule(fragShaderModule);
@@ -922,7 +916,7 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
         swapChainAcceptable = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
     }
 
-    if (deviceProperties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu && indices.isComplete() && extensionsSupported && swapChainAcceptable)
+    if (deviceProperties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu && indices.IsComplete() && extensionsSupported && swapChainAcceptable)
     {
         LOG_INFO("Picked as main GPU : %s", deviceProperties.deviceName);
         m_gpuName = deviceProperties.deviceName;
