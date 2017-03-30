@@ -31,23 +31,23 @@ static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flag
 {
     if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
     {
-        LOG_ERROR("VULKAN LAYER ERROR: %s", msg)
-    };
+        LOG_ERROR("VULKAN LAYER ERROR: %s", msg);
+    }
     if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
     {
-        LOG_WARNING("VULKAN LAYER WARNING: %s", msg)
-    };
+        LOG_WARNING("VULKAN LAYER WARNING: %s", msg);
+    }
     if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
     {
-        LOG_INFO("VULKAN LAYER PERFORMANCE: %s", msg)
-    };
+        LOG_INFO("VULKAN LAYER PERFORMANCE: %s", msg);
+    }
     if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
     {
-        LOG_INFO("VULKAN LAYER INFO: %s", msg)
+        LOG_INFO("VULKAN LAYER INFO: %s", msg);
     }
     if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
     {
-        LOG_INFO("VULKAN LAYER DEBUG: %s", msg)
+        LOG_INFO("VULKAN LAYER DEBUG: %s", msg);
     }
     return VK_FALSE;
 }
