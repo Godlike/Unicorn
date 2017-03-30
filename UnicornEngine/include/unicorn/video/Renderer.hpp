@@ -80,7 +80,7 @@ private:
     vk::Semaphore m_renderFinishedSemaphore;
     std::vector<const char*> m_validationLayers;
     std::vector<const char*> m_deviceExtensions;
-    vk::DebugReportCallbackEXT m_vulkanCallback;
+    VkDebugReportCallbackEXT m_vulkanCallback;
     std::string m_gpuName;
     std::vector<vk::Image> m_swapChainImages;
     std::vector<vk::ImageView> m_swapChainImageViews;
@@ -106,8 +106,8 @@ private:
     bool CreateCommandBuffers();
     bool CreateSemaphores();
     bool CreateShaderModule(const std::vector<uint8_t>& code, vk::ShaderModule& shaderModule);
-    bool IsDeviceSuitable(vk::PhysicalDevice device);
-    bool CheckDeviceExtensionSupport(vk::PhysicalDevice device);
+    bool IsDeviceSuitable(const vk::PhysicalDevice& device);
+    bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device);
     bool Frame();
     std::vector<const char*> GetRequiredExtensions();
     QueueFamilyIndices FindQueueFamilies(const vk::PhysicalDevice& device);
@@ -116,6 +116,8 @@ private:
     vk::PresentModeKHR ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes);
     vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities);
     bool SetupDebugCallback();
+    VkResult CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo);
+    void DestroyDebugReportCallbackEXT();
 };
 }
 }

@@ -14,13 +14,14 @@
 #include <set>
 #include <algorithm>
 #include <array>
+#include <tuple>
 
 namespace unicorn
 {
 namespace video
 {
-static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(vk::DebugReportFlagsEXT flags,
-    vk::DebugReportObjectTypeEXT objType,
+static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
+    VkDebugReportObjectTypeEXT objType,
     uint64_t obj,
     size_t location,
     int32_t code,
@@ -28,23 +29,23 @@ static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(vk::DebugReportFlagsEXT fl
     const char* msg,
     void* userData)
 {
-    if (flags & vk::DebugReportFlagBitsEXT::eError)
+    if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
     {
         LOG_ERROR("VULKAN LAYER ERROR: %s", msg);
     };
-    if (flags & vk::DebugReportFlagBitsEXT::eWarning)
+    if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
     {
         LOG_WARNING("VULKAN LAYER WARNING: %s", msg);
     };
-    if (flags & vk::DebugReportFlagBitsEXT::ePerformanceWarning)
+    if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
     {
         LOG_INFO("VULKAN LAYER PERFORMANCE: %s", msg);
     };
-    if (flags & vk::DebugReportFlagBitsEXT::eInformation)
+    if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
     {
         LOG_INFO("VULKAN LAYER INFO: %s", msg);
     }
-    if (flags & vk::DebugReportFlagBitsEXT::eDebug)
+    if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
     {
         LOG_INFO("VULKAN LAYER DEBUG: %s", msg);
     }
@@ -123,9 +124,9 @@ bool Renderer::Init()
 
 void Renderer::Deinit()
 {
-    if (m_vulkanCallback)
+    if (m_vulkanCallback != VK_NULL_HANDLE)
     {
-        m_vkInstance.destroyDebugReportCallbackEXT(m_vulkanCallback);
+        DestroyDebugReportCallbackEXT();
     }
 
     for (vk::ImageView& view : m_swapChainImageViews)
@@ -220,9 +221,8 @@ QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
 {
     vk::Result result;
     QueueFamilyIndices indices;
-    uint32_t queueFamilyCount = 0;
-    std::vector<vk::QueueFamilyProperties> queueFamilies(queueFamilyCount);
-    device.getQueueFamilyProperties(&queueFamilyCount, queueFamilies.data());  
+    std::vector<vk::QueueFamilyProperties> queueFamilies;
+    queueFamilies = device.getQueueFamilyProperties();
 
     int index = 0;
     vk::Bool32 presentSupport;
@@ -233,7 +233,7 @@ QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
             indices.graphicsFamily = index;
         }
 
-        result = device.getSurfaceSupportKHR(index, m_vkWindowSurface, &presentSupport);
+        std::tie(result, presentSupport) = device.getSurfaceSupportKHR(index, m_vkWindowSurface);
 
         if (queueFamily.queueCount > 0 && presentSupport)
         {
@@ -254,12 +254,9 @@ SwapChainSupportDetails Renderer::QuerySwapChainSupport(const vk::PhysicalDevice
 {
     vk::Result result;
     SwapChainSupportDetails details;
-    uint32_t formatCount;
-    uint32_t presentModeCount;
-
     result  = device.getSurfaceCapabilitiesKHR(m_vkWindowSurface, &details.capabilities);
-    result = device.getSurfaceFormatsKHR(m_vkWindowSurface, &formatCount, details.formats.data());    
-    result = device.getSurfacePresentModesKHR(m_vkWindowSurface, &presentModeCount, details.presentModes.data());
+    std::tie(result, details.formats) = device.getSurfaceFormatsKHR(m_vkWindowSurface);    
+    std::tie(result, details.presentModes) = device.getSurfacePresentModesKHR(m_vkWindowSurface);
     return details;
 }
 
@@ -404,9 +401,9 @@ bool Renderer::CreateInstance()
 
 bool Renderer::PickPhysicalDevice()
 {
-    uint32_t deviceCount = 0;
-    std::vector<vk::PhysicalDevice> devices(deviceCount);
-    m_vkInstance.enumeratePhysicalDevices(&deviceCount, devices.data());    
+    vk::Result result;
+    std::vector<vk::PhysicalDevice> devices;
+    std::tie(result, devices) = m_vkInstance.enumeratePhysicalDevices();
 
     for (const auto& device : devices)
     {
@@ -417,7 +414,7 @@ bool Renderer::PickPhysicalDevice()
         }
     }
 
-    if (m_vkPhysicalDevice)
+    if (!m_vkPhysicalDevice)
     {
         LOG_ERROR("Failed to find a suitable GPU!");
         return false;
@@ -467,8 +464,8 @@ bool Renderer::CreateLogicalDevice()
         LOG_ERROR("Can't initialize Vulkan logical device!");
         return false;
     }
-    m_vkLogicalDevice.getQueue(indices.graphicsFamily, 0, &m_graphicsQueue);
-    m_vkLogicalDevice.getQueue(indices.presentFamily, 0, &m_presentQueue);
+    m_graphicsQueue = m_vkLogicalDevice.getQueue(indices.graphicsFamily, 0);
+    m_presentQueue = m_vkLogicalDevice.getQueue(indices.presentFamily, 0);
 
     return true;
 }
@@ -548,7 +545,11 @@ bool Renderer::CreateSwapChain()
         m_vkLogicalDevice.destroySwapchainKHR(oldSwapChain);
         oldSwapChain = nullptr;
     }
-    m_vkLogicalDevice.getSwapchainImagesKHR(m_vkSwapChain, &imageCount, m_swapChainImages.data());
+    std::tie(result, m_swapChainImages) = m_vkLogicalDevice.getSwapchainImagesKHR(m_vkSwapChain);
+    if (imageCount != m_swapChainImages.size())
+    {
+        LOG_ERROR("SwapChain images not equal!");
+    }
     m_swapChainImageFormat = surfaceFormat.format;
     m_swapChainExtent = extent;
 
@@ -855,7 +856,7 @@ bool Renderer::CreateCommandBuffers()
         renderPassInfo.renderArea.extent = m_swapChainExtent;
 
 
-        vk::ClearColorValue clearColor(std::array<float, 4>{1.0f, 0.0f, 0.0f, 1.0f});;
+        vk::ClearColorValue clearColor(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f});;
         vk::ClearValue clearValue(clearColor);
 
         renderPassInfo.clearValueCount = 1;
@@ -877,7 +878,7 @@ bool Renderer::CreateSemaphores()
     vk::Result result1, result2;
     vk:: SemaphoreCreateInfo semaphoreInfo;
     result1 = m_vkLogicalDevice.createSemaphore(&semaphoreInfo, {}, &m_imageAvailableSemaphore);
-    result2 = m_vkLogicalDevice.createSemaphore(&semaphoreInfo, {}, &m_imageAvailableSemaphore);
+    result2 = m_vkLogicalDevice.createSemaphore(&semaphoreInfo, {}, &m_renderFinishedSemaphore);
     if (result1 != vk::Result::eSuccess || result2 != vk::Result::eSuccess)
     {
         LOG_ERROR("Failed to create semaphores!");
@@ -905,7 +906,7 @@ bool Renderer::CreateShaderModule(const std::vector<uint8_t>& code, vk::ShaderMo
     return true;
 }
 
-bool Renderer::IsDeviceSuitable(vk::PhysicalDevice device)
+bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
 {
     vk::PhysicalDeviceProperties deviceProperties = device.getProperties();
     vk::PhysicalDeviceFeatures deviceFeatures = device.getFeatures();
@@ -933,11 +934,11 @@ bool Renderer::IsDeviceSuitable(vk::PhysicalDevice device)
     }
 }
 
-bool Renderer::CheckDeviceExtensionSupport(vk::PhysicalDevice device)
+bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device)
 {
-    uint32_t extensionCount;
+    vk::Result result;
     std::vector<vk::ExtensionProperties> availableExtensions;
-    device.enumerateDeviceExtensionProperties(nullptr, &extensionCount, availableExtensions.data());
+    std::tie(result, availableExtensions) = device.enumerateDeviceExtensionProperties();
 
     std::set<std::string> requiredExtensions(m_deviceExtensions.begin(), m_deviceExtensions.end());
 
@@ -1020,11 +1021,9 @@ bool Renderer::Frame()
 
 bool Renderer::CheckValidationLayerSupport() const
 {
-    uint32_t layerCount;
-    vk::enumerateInstanceLayerProperties(&layerCount, nullptr);
-
-    std::vector<vk::LayerProperties> availableLayers(layerCount);
-    vk::enumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+    vk::Result result;
+    std::vector<vk::LayerProperties> availableLayers;
+    std::tie(result, availableLayers) = vk::enumerateInstanceLayerProperties();
 
     for (const char* layerName : m_validationLayers)
     {
@@ -1074,19 +1073,10 @@ std::vector<const char*> Renderer::GetRequiredExtensions()
     return m_extensions;
 }
 
-bool Renderer::SetupDebugCallback()
+VkResult Renderer::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo)
 {
-    if (!s_enableValidationLayers)
-    {
-        return true;
-    }
-    return false;
-
-    vk::DebugReportCallbackCreateInfoEXT createInfo;
-    createInfo.setFlags(vk::DebugReportFlagBitsEXT::eDebug | vk::DebugReportFlagBitsEXT::eInformation | vk::DebugReportFlagBitsEXT::eWarning | vk::DebugReportFlagBitsEXT::ePerformanceWarning);
-    createInfo.setPfnCallback(func);
-
-    auto func = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(m_vkInstance.getProcAddr("vkCreateDebugReportCallbackEXT"));
+    auto func = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(
+        vkGetInstanceProcAddr(m_vkInstance, "vkCreateDebugReportCallbackEXT"));
 
     if (func != nullptr)
     {
@@ -1097,8 +1087,32 @@ bool Renderer::SetupDebugCallback()
         LOG_ERROR("Can't setup debug callback'");
         return VK_ERROR_EXTENSION_NOT_PRESENT;
     }
+}
 
-    m_vkInstance.createDebugReportCallbackEXT(&createInfo, {}, &m_vulkanCallback);*
+void Renderer::DestroyDebugReportCallbackEXT()
+{
+    auto func = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(
+        vkGetInstanceProcAddr(m_vkInstance, "vkDestroyDebugReportCallbackEXT"));
+
+    if (func != nullptr)
+    {
+        func(m_vkInstance, m_vulkanCallback, nullptr);
+    }
+}
+
+bool Renderer::SetupDebugCallback()
+{
+    if (!s_enableValidationLayers)
+    {
+        return true;
+    }
+
+    VkDebugReportCallbackCreateInfoEXT createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
+    createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_INFORMATION_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
+    createInfo.pfnCallback = DebugCallback;
+
+    return CreateDebugReportCallbackEXT(&createInfo) == VK_SUCCESS;
 }
 }
 }
