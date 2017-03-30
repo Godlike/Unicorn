@@ -681,7 +681,8 @@ bool Renderer::CreateGraphicsPipeline()
     viewport.maxDepth = 1.0f;
 
     vk::Rect2D scissor;
-    scissor.offset = {0, 0};
+    scissor.offset.setX(0);
+    scissor.offset.setY(0);
     scissor.extent = m_swapChainExtent;
 
     vk::PipelineViewportStateCreateInfo viewportState;
@@ -849,7 +850,7 @@ bool Renderer::CreateCommandBuffers()
         renderPassInfo.renderArea.offset = {0, 0};
         renderPassInfo.renderArea.extent = m_swapChainExtent;
 
-        vk::ClearColorValue clearColor(std::array<float, 4>{0.0f, 0.0f, 0.0f, 1.0f});
+        vk::ClearColorValue clearColor(std::array<float, 4>({0.0f, 0.0f, 0.0f, 1.0f}));
         ;
         vk::ClearValue clearValue(clearColor);
 
@@ -903,7 +904,6 @@ bool Renderer::CreateShaderModule(const std::vector<uint8_t>& code, vk::ShaderMo
 bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
 {
     vk::PhysicalDeviceProperties deviceProperties = device.getProperties();
-    vk::PhysicalDeviceFeatures deviceFeatures = device.getFeatures();
 
     LOG_INFO("Found GPU : %s", deviceProperties.deviceName);
     QueueFamilyIndices indices = FindQueueFamilies(device);

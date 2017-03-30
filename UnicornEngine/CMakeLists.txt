@@ -22,11 +22,14 @@ if (NOT CMAKE_BUILD_TYPE)
 endif (NOT CMAKE_BUILD_TYPE)
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Werror -pedantic")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s -O3")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb3 -O0")
 elseif(WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /MP /W3") # TODO set WX (warning as error)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
+
 add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS -DVULKAN_HPP_TYPESAFE_CONVERSION)
 
 ## Should be uncommented when TinyObjLoader library is used
@@ -76,10 +79,6 @@ include_directories(
 
 if (BUILD_SHARED_LIBS)
     add_definitions(-DUNICORN_SHARED)
-endif()
-
-if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Werror")
 endif()
 
 set(UNICORN_ENGINE_HEADERS
@@ -148,7 +147,7 @@ endif()
 target_link_libraries(${UNICORN_ENGINE_LIB} ${VULKAN_LIBRARY} ${GLFW_LIB})
 
 if(UNIX)
-# TODO Add shader compilation at Linux.
+  set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/bin/glslangValidator")
 elseif(WIN32)
 if (${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "AMD64")
   set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/Bin/glslangValidator.exe")
