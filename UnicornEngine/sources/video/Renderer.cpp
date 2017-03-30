@@ -13,6 +13,7 @@
 #include <iostream>
 #include <set>
 #include <algorithm>
+#include <array>
 
 namespace unicorn
 {
@@ -217,19 +218,22 @@ void Renderer::Deinit()
 
 QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
 {
+    vk::Result result;
     QueueFamilyIndices indices;
     uint32_t queueFamilyCount = 0;
     std::vector<vk::QueueFamilyProperties> queueFamilies(queueFamilyCount);
     device.getQueueFamilyProperties(&queueFamilyCount, queueFamilies.data());  
 
     int index = 0;
+    vk::Bool32 presentSupport;
     for (const auto& queueFamily : queueFamilies)
     {
         if (queueFamily.queueCount > 0 && queueFamily.queueFlags & vk::QueueFlagBits::eGraphics)
         {
             indices.graphicsFamily = index;
         }
-        vk::Bool32 presentSupport = device.getSurfaceSupportKHR(index, m_vkWindowSurface);      
+
+        result = device.getSurfaceSupportKHR(index, m_vkWindowSurface, &presentSupport);
 
         if (queueFamily.queueCount > 0 && presentSupport)
         {
@@ -253,7 +257,7 @@ SwapChainSupportDetails Renderer::QuerySwapChainSupport(const vk::PhysicalDevice
     uint32_t formatCount;
     uint32_t presentModeCount;
 
-    details.capabilities = device.getSurfaceCapabilitiesKHR(m_vkWindowSurface);
+    result  = device.getSurfaceCapabilitiesKHR(m_vkWindowSurface, &details.capabilities);
     result = device.getSurfaceFormatsKHR(m_vkWindowSurface, &formatCount, details.formats.data());    
     result = device.getSurfacePresentModesKHR(m_vkWindowSurface, &presentModeCount, details.presentModes.data());
     return details;
@@ -525,7 +529,7 @@ bool Renderer::CreateSwapChain()
     createInfo.clipped = VK_TRUE;
 
     vk::SwapchainKHR oldSwapChain = m_vkSwapChain;
-    if (oldSwapChain != VK_NULL_HANDLE)
+    if (oldSwapChain)
     {
         createInfo.oldSwapchain = oldSwapChain;
     }
@@ -670,7 +674,7 @@ bool Renderer::CreateGraphicsPipeline()
     fragShaderStageInfo.module = fragShaderModule;
     fragShaderStageInfo.pName = "main";
 
-    vk::PipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragShaderStageInfo};
+    vk::PipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
 
     vk::PipelineVertexInputStateCreateInfo vertexInputInfo;
 
@@ -683,7 +687,7 @@ bool Renderer::CreateGraphicsPipeline()
     viewport.maxDepth = 1.0f;
 
     vk::Rect2D scissor;
-    scissor.offset = {0, 0};
+    scissor.offset = { 0, 0 };
     scissor.extent = m_swapChainExtent;
 
     vk::PipelineViewportStateCreateInfo viewportState;
@@ -756,7 +760,7 @@ bool Renderer::CreateGraphicsPipeline()
     pipelineInfo.basePipelineHandle = nullptr;
     pipelineInfo.basePipelineIndex = -1; // Optional
 
-    m_graphicsPipeline = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo);
+    m_graphicsPipeline = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo).value;
 
     m_vkLogicalDevice.destroyShaderModule(vertShaderModule);  
     m_vkLogicalDevice.destroyShaderModule(fragShaderModule);
@@ -819,7 +823,7 @@ bool Renderer::CreateCommandBuffers()
     vk::Result result;
     if (m_commandBuffers.size() > 0)
     {
-        m_vkLogicalDevice.freeCommandBuffers(m_commandPool, m_commandBuffers.size(), m_commandBuffers.data());
+        m_vkLogicalDevice.freeCommandBuffers(m_commandPool, static_cast<std::uint32_t>(m_commandBuffers.size()), m_commandBuffers.data());
     }
 
     m_commandBuffers.resize(m_swapChainFramebuffers.size());
@@ -850,10 +854,12 @@ bool Renderer::CreateCommandBuffers()
         renderPassInfo.renderArea.offset = {0, 0};
         renderPassInfo.renderArea.extent = m_swapChainExtent;
 
-        std::array<float, 4> clearColorValues({ 0.0f, 0.0f, 0.0f, 1.0f });
-        vk::ClearValue clearColor(clearColorValues);
+
+        vk::ClearColorValue clearColor(std::array<float, 4>{1.0f, 0.0f, 0.0f, 1.0f});;
+        vk::ClearValue clearValue(clearColor);
+
         renderPassInfo.clearValueCount = 1;
-        renderPassInfo.pClearValues = &clearColor;
+        renderPassInfo.pClearValues = &clearValue;
 
         m_commandBuffers[i].beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
         m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
@@ -1074,11 +1080,25 @@ bool Renderer::SetupDebugCallback()
     {
         return true;
     }
+    return false;
 
     vk::DebugReportCallbackCreateInfoEXT createInfo;
     createInfo.setFlags(vk::DebugReportFlagBitsEXT::eDebug | vk::DebugReportFlagBitsEXT::eInformation | vk::DebugReportFlagBitsEXT::eWarning | vk::DebugReportFlagBitsEXT::ePerformanceWarning);
-    createInfo.setPfnCallback(DebugCallback);
-    m_vkInstance.createDebugReportCallbackEXT(&createInfo, {}, &m_vulkanCallback);
+    createInfo.setPfnCallback(func);
+
+    auto func = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(m_vkInstance.getProcAddr("vkCreateDebugReportCallbackEXT"));
+
+    if (func != nullptr)
+    {
+        return func(m_vkInstance, pCreateInfo, nullptr, &m_vulkanCallback);
+    }
+    else
+    {
+        LOG_ERROR("Can't setup debug callback'");
+        return VK_ERROR_EXTENSION_NOT_PRESENT;
+    }
+
+    m_vkInstance.createDebugReportCallbackEXT(&createInfo, {}, &m_vulkanCallback);*
 }
 }
 }
