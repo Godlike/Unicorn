@@ -14,6 +14,8 @@ init:
   - curl -fsS -o vulkan-installer.exe https://vulkan.lunarg.com/sdk/home#sdk/downloadConfirm/1.0.42.2/windows/VulkanSDK-1.0.42.2-Installer.exe
   - vulkan-installer.exe /S
   
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 install:
   - git submodule update --init --recursive
   - mkdir build
