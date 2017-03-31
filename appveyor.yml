@@ -11,11 +11,9 @@ environment:
   VULKAN_SDK: "c:\\VulkanSDK\\1.0.42.2\\"
 init:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-  - curl -fsS -o vulkan-installer.exe https://vulkan.lunarg.com/sdk/home#sdk/downloadConfirm/1.0.42.2/windows/VulkanSDK-1.0.42.2-Installer.exe
+  - curl -fsS -o vulkan-installer.exe https://vulkan.lunarg.com/sdk/download/1.0.42.2/windows/VulkanSDK-1.0.42.2-Installer.exe?Human=true
   - vulkan-installer.exe /S
   
-on_finish:
-  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 install:
   - git submodule update --init --recursive
   - mkdir build
