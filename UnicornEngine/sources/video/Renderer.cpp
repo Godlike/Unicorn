@@ -848,7 +848,7 @@ bool Renderer::CreateCommandBuffers()
         renderPassInfo.renderArea.setOffset({ 0, 0 });
         renderPassInfo.renderArea.extent = m_swapChainExtent;
 
-        vk::ClearColorValue clearColor(std::array<float, 4>({0.0f, 0.0f, 0.0f, 1.0f}));
+        vk::ClearColorValue clearColor(std::array<float, 4>({ {0.0f, 0.0f, 0.0f, 1.0f} }));
         ;
         vk::ClearValue clearValue(clearColor);
 
