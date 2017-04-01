@@ -617,10 +617,7 @@ bool Renderer::CreateSwapChain()
 bool Renderer::CreateImageViews()
 {
     vk::Result result;
-    for (vk::ImageView& view : m_swapChainImageViews)
-    {
-        m_vkLogicalDevice.destroyImageView(view);
-    }
+    FreeImageViews();
 
     m_swapChainImageViews.resize(m_swapChainImages.size());
 
@@ -653,11 +650,7 @@ bool Renderer::CreateImageViews()
 bool Renderer::CreateRenderPass()
 {
     vk::Result result;
-    if (m_renderPass)
-    {
-        m_vkLogicalDevice.destroyRenderPass(m_renderPass);
-        m_renderPass = nullptr;
-    }
+    FreeRenderPass();
 
     vk::AttachmentDescription colorAttachment;
     colorAttachment.format = m_swapChainImageFormat;
@@ -697,18 +690,8 @@ bool Renderer::CreateRenderPass()
 bool Renderer::CreateGraphicsPipeline()
 {
     vk::Result result;
-
-    if (m_pipelineLayout)
-    {
-        m_vkLogicalDevice.destroyPipelineLayout(m_pipelineLayout);
-        m_pipelineLayout = nullptr;
-    }
-
-    if (m_graphicsPipeline)
-    {
-        m_vkLogicalDevice.destroyPipeline(m_graphicsPipeline);
-        m_graphicsPipeline = nullptr;
-    }
+    FreePipelineLayout();
+    FreeGraphicsPipeline();
 
     unicorn::utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
     unicorn::utility::asset::Handler simpleVertShaderHandler = storage.Get("data/shaders/shader.vert.spv");
@@ -834,10 +817,7 @@ bool Renderer::CreateGraphicsPipeline()
 bool Renderer::CreateFramebuffers()
 {
     vk::Result result;
-    for (vk::Framebuffer& framebuffer : m_swapChainFramebuffers)
-    {
-        m_vkLogicalDevice.destroyFramebuffer(framebuffer);
-    }
+    FreeFramebuffers();
 
     m_swapChainFramebuffers.resize(m_swapChainImageViews.size());
 
@@ -885,10 +865,7 @@ bool Renderer::CreateCommandPool()
 bool Renderer::CreateCommandBuffers()
 {
     vk::Result result;
-    if (!m_commandBuffers.empty())
-    {
-        m_vkLogicalDevice.freeCommandBuffers(m_commandPool, static_cast<std::uint32_t>(m_commandBuffers.size()), m_commandBuffers.data());
-    }
+    FreeCommandBuffers();
 
     m_commandBuffers.resize(m_swapChainFramebuffers.size());
 
