@@ -107,7 +107,9 @@ bool Renderer::Init()
         !CreateCommandPool() ||
         !CreateCommandBuffers() ||
         !CreateSemaphores())
+    {
         return false;
+    }
 
     m_isInitialized = true;
 
@@ -129,8 +131,8 @@ void Renderer::Deinit()
     FreeLogicalDevice();
     FreeSurface();
     FreeDebugCallback();
-    FreeInstance();    
-    
+    FreeInstance();
+
     if (m_pWindow)
     {
         glfwSetWindowShouldClose(m_pWindow, GLFW_TRUE);
@@ -138,7 +140,7 @@ void Renderer::Deinit()
         m_pWindow = nullptr;
     }
 
-    if (!m_isInitialized)
+    if (m_isInitialized)
     {
         LOG_INFO("Vulkan render shutdown correctly.");
     }
@@ -182,12 +184,14 @@ bool Renderer::QuerySwapChainSupport(SwapChainSupportDetails& details, const vk:
     vk::Result result;
     result = device.getSurfaceCapabilitiesKHR(m_vkWindowSurface, &details.capabilities);
     std::tie(result, details.formats) = device.getSurfaceFormatsKHR(m_vkWindowSurface);
-    if (result != vk::Result::eSuccess) {
+    if (result != vk::Result::eSuccess)
+    {
         LOG_ERROR("Can't get surface formats khr.");
         return false;
     }
     std::tie(result, details.presentModes) = device.getSurfacePresentModesKHR(m_vkWindowSurface);
-    if (result != vk::Result::eSuccess) {
+    if (result != vk::Result::eSuccess)
+    {
         LOG_ERROR("Can't get surface present modes khr.");
         return false;
     }
@@ -253,7 +257,9 @@ void Renderer::Render()
         {
             glfwPollEvents();
             if (!Frame())
+            {
                 break;
+            }
         }
         m_vkLogicalDevice.waitIdle();
     }
@@ -284,7 +290,9 @@ bool Renderer::RecreateSwapChain()
         CreateGraphicsPipeline() &&
         CreateFramebuffers() &&
         CreateCommandBuffers())
+    {
         return true;
+    }
     return false;
 }
 
@@ -334,7 +342,8 @@ void Renderer::FreeSwapChain()
 
 void Renderer::FreeImageViews()
 {
-    if (m_vkLogicalDevice) {
+    if (m_vkLogicalDevice)
+    {
         for (vk::ImageView& view : m_swapChainImageViews)
         {
             m_vkLogicalDevice.destroyImageView(view);
@@ -369,7 +378,8 @@ void Renderer::FreeGraphicsPipeline()
 
 void Renderer::FreeFrameBuffers()
 {
-    if (m_vkLogicalDevice) {
+    if (m_vkLogicalDevice)
+    {
         for (vk::Framebuffer& framebuffer : m_swapChainFramebuffers)
         {
             m_vkLogicalDevice.destroyFramebuffer(framebuffer);
@@ -445,9 +455,6 @@ bool Renderer::CreateInstance()
     if (vk::createInstance(&createInfo, nullptr, &m_vkInstance) != vk::Result::eSuccess)
     {
         LOG_ERROR("Failed to create instance!");
-
-        m_vkInstance = nullptr;
-
         return false;
     }
 
@@ -459,7 +466,8 @@ bool Renderer::PickPhysicalDevice()
     vk::Result result;
     std::vector<vk::PhysicalDevice> devices;
     std::tie(result, devices) = m_vkInstance.enumeratePhysicalDevices();
-    if (result != vk::Result::eSuccess) {
+    if (result != vk::Result::eSuccess)
+    {
         LOG_ERROR("Failed to enumerate physical devices.");
         return false;
     }
@@ -544,7 +552,9 @@ bool Renderer::CreateSwapChain()
     vk::Result result;
     SwapChainSupportDetails swapChainSupport;
     if (!QuerySwapChainSupport(swapChainSupport, m_vkPhysicalDevice))
+    {
         return false;
+    }
     vk::SurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
     vk::PresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
     vk::Extent2D extent = ChooseSwapExtent(swapChainSupport.capabilities);
@@ -805,7 +815,8 @@ bool Renderer::CreateGraphicsPipeline()
     pipelineInfo.basePipelineIndex = -1; // Optional
 
     std::tie(result, m_graphicsPipeline) = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo);
-    if (result != vk::Result::eSuccess) {
+    if (result != vk::Result::eSuccess)
+    {
         LOG_ERROR("Can't create graphics pipeline.");
         return false;
     }
@@ -893,10 +904,10 @@ bool Renderer::CreateCommandBuffers()
         vk::RenderPassBeginInfo renderPassInfo;
         renderPassInfo.renderPass = m_renderPass;
         renderPassInfo.framebuffer = m_swapChainFramebuffers[i];
-        renderPassInfo.renderArea.setOffset({ 0, 0 });
+        renderPassInfo.renderArea.setOffset({0, 0});
         renderPassInfo.renderArea.extent = m_swapChainExtent;
 
-        vk::ClearColorValue clearColor(std::array<float, 4>({ {0.0f, 0.0f, 0.0f, 1.0f} }));
+        vk::ClearColorValue clearColor(std::array<float, 4>({{0.0f, 0.0f, 0.0f, 1.0f}}));
         vk::ClearValue clearValue(clearColor);
 
         renderPassInfo.clearValueCount = 1;
@@ -918,8 +929,10 @@ bool Renderer::CreateSemaphores()
     vk::SemaphoreCreateInfo semaphoreInfo;
     if (m_vkLogicalDevice.createSemaphore(&semaphoreInfo, {}, &m_imageAvailableSemaphore) == vk::Result::eSuccess &&
         m_vkLogicalDevice.createSemaphore(&semaphoreInfo, {}, &m_renderFinishedSemaphore) == vk::Result::eSuccess)
+    {
         return true;
-    
+    }
+
     LOG_ERROR("Failed to create semaphores!");
     return false;
 }
@@ -928,7 +941,8 @@ bool Renderer::CreateShaderModule(const std::vector<uint8_t>& code, vk::ShaderMo
 {
     vk::Result result;
     vk::ShaderModuleCreateInfo createInfo;
-    if (code.size() % sizeof(uint32_t) != 0) {
+    if (code.size() % sizeof(uint32_t) != 0)
+    {
         LOG_ERROR("Shader code size is not multiple of sizeof(uint32_t), look at VkShaderModuleCreateInfo(3) Manual Page.");
         return false;
     }
@@ -959,7 +973,9 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
     {
         SwapChainSupportDetails swapChainSupport;
         if (!QuerySwapChainSupport(swapChainSupport, device))
+        {
             return false;
+        }
         swapChainAcceptable = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
     }
 
@@ -980,7 +996,8 @@ bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device)
     vk::Result result;
     std::vector<vk::ExtensionProperties> availableExtensions;
     std::tie(result, availableExtensions) = device.enumerateDeviceExtensionProperties();
-    if (result != vk::Result::eSuccess) {
+    if (result != vk::Result::eSuccess)
+    {
         LOG_ERROR("Can't enumerate device extension properties.");
         return false;
     }
@@ -1006,7 +1023,8 @@ bool Renderer::Frame()
 
     if (result == vk::Result::eErrorOutOfDateKHR)
     {
-        if (!RecreateSwapChain()) {
+        if (!RecreateSwapChain())
+        {
             LOG_ERROR("Can't recreate swapchain!");
             return false;
         }
@@ -1071,7 +1089,8 @@ bool Renderer::CheckValidationLayerSupport() const
     vk::Result result;
     std::vector<vk::LayerProperties> availableLayers;
     std::tie(result, availableLayers) = vk::enumerateInstanceLayerProperties();
-    if (result != vk::Result::eSuccess) {
+    if (result != vk::Result::eSuccess)
+    {
         LOG_ERROR("Can't enumerate instance layer properties!");
         return false;
     }
