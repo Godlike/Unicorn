@@ -58,10 +58,10 @@ before_install:
 - sudo apt-get -qq update
 - sudo apt-get install -y libx11-xcb-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
 - git submodule update --init --recursive
-- wget "https://vulkan.lunarg.com/sdk/download/1.0.39.0/linux/vulkansdk-linux-x86_64-1.0.39.0.run"
-- chmod ugo+x vulkansdk-linux-x86_64-1.0.39.0.run
-- "./vulkansdk-linux-x86_64-1.0.39.0.run"
-- export VULKAN_SDK="$(pwd)/VulkanSDK/1.0.39.0/x86_64"
+- wget -O vulkan.run "https://vulkan.lunarg.com/sdk/download/1.0.42.2/windows/VulkanSDK-1.0.42.2-Installer.exe?Human=true"
+- chmod ugo+x vulkan.run
+- "./vulkan.run"
+- export VULKAN_SDK="$(pwd)/VulkanSDK/1.0.42.2/x86_64"
 - export PATH=$PATH:$VULKAN_SDK/x86_64/bin
 
 script:
