@@ -99,8 +99,7 @@ private:
     void FreeImageViews();
     void FreeRenderPass();
     void FreeGraphicsPipeline();
-    void FreePipelineLayout();
-    void FreeFramebuffers();
+    void FreeFrameBuffers();
     void FreeCommandPool();
     void FreeCommandBuffers();
     void FreeSemaphores();

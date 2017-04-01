@@ -119,16 +119,15 @@ bool Renderer::Init()
 void Renderer::Deinit()
 {
     FreeSemaphores();
-    FreeCommandPool();
     FreeCommandBuffers();
-    FreeFramebuffers();
-    FreePipelineLayout();
+    FreeCommandPool();
+    FreeFrameBuffers();
     FreeGraphicsPipeline();
     FreeRenderPass();
     FreeImageViews();
     FreeSwapChain();
-    FreeSurface();
     FreeLogicalDevice();
+    FreeSurface();
     FreeDebugCallback();
     FreeInstance();    
     
@@ -300,7 +299,7 @@ void Renderer::FreeInstance()
 
 void Renderer::FreeDebugCallback()
 {
-    if (m_vulkanCallback != VK_NULL_HANDLE)
+    if (m_vulkanCallback != VK_NULL_HANDLE && m_vkLogicalDevice)
     {
         DestroyDebugReportCallbackEXT();
     }
@@ -308,7 +307,7 @@ void Renderer::FreeDebugCallback()
 
 void Renderer::FreeSurface()
 {
-    if (m_vkWindowSurface)
+    if (m_vkWindowSurface && m_vkLogicalDevice)
     {
         m_vkInstance.destroySurfaceKHR(m_vkWindowSurface);
         m_vkWindowSurface = nullptr;
@@ -326,7 +325,7 @@ void Renderer::FreeLogicalDevice()
 
 void Renderer::FreeSwapChain()
 {
-    if (m_vkSwapChain)
+    if (m_vkSwapChain && m_vkLogicalDevice)
     {
         m_vkLogicalDevice.destroySwapchainKHR(m_vkSwapChain);
         m_vkSwapChain = nullptr;
@@ -335,16 +334,18 @@ void Renderer::FreeSwapChain()
 
 void Renderer::FreeImageViews()
 {
-    for (vk::ImageView& view : m_swapChainImageViews)
-    {
-        m_vkLogicalDevice.destroyImageView(view);
+    if (m_vkLogicalDevice) {
+        for (vk::ImageView& view : m_swapChainImageViews)
+        {
+            m_vkLogicalDevice.destroyImageView(view);
+        }
+        m_swapChainImageViews.clear();
     }
-    m_swapChainImageViews.clear();
 }
 
 void Renderer::FreeRenderPass()
 {
-    if (m_renderPass)
+    if (m_renderPass && m_vkLogicalDevice)
     {
         m_vkLogicalDevice.destroyRenderPass(m_renderPass);
         m_renderPass = nullptr;
@@ -353,35 +354,33 @@ void Renderer::FreeRenderPass()
 
 void Renderer::FreeGraphicsPipeline()
 {
-    if (m_graphicsPipeline)
+    if (m_pipelineLayout && m_vkLogicalDevice)
+    {
+        m_vkLogicalDevice.destroyPipelineLayout(m_pipelineLayout);
+        m_pipelineLayout = nullptr;
+    }
+
+    if (m_graphicsPipeline && m_vkLogicalDevice)
     {
         m_vkLogicalDevice.destroyPipeline(m_graphicsPipeline);
         m_graphicsPipeline = nullptr;
     }
 }
 
-void Renderer::FreePipelineLayout()
+void Renderer::FreeFrameBuffers()
 {
-    if (m_pipelineLayout)
-    {
-        m_vkLogicalDevice.destroyPipelineLayout(m_pipelineLayout);
-        m_pipelineLayout = nullptr;
+    if (m_vkLogicalDevice) {
+        for (vk::Framebuffer& framebuffer : m_swapChainFramebuffers)
+        {
+            m_vkLogicalDevice.destroyFramebuffer(framebuffer);
+        }
+        m_swapChainFramebuffers.clear();
     }
-}
-
-void Renderer::FreeFramebuffers()
-{
-    for (vk::Framebuffer& framebuffer : m_swapChainFramebuffers)
-    {
-        m_vkLogicalDevice.destroyFramebuffer(framebuffer);
-    }
-    m_swapChainFramebuffers.clear();
 }
 
 void Renderer::FreeCommandPool()
 {
-
-    if (m_commandPool)
+    if (m_commandPool && m_vkLogicalDevice)
     {
         m_vkLogicalDevice.destroyCommandPool(m_commandPool);
         m_commandPool = nullptr;
@@ -390,18 +389,21 @@ void Renderer::FreeCommandPool()
 
 void Renderer::FreeCommandBuffers()
 {
-
+    if (!m_commandBuffers.empty() && m_vkLogicalDevice)
+    {
+        m_vkLogicalDevice.freeCommandBuffers(m_commandPool, m_commandBuffers.size(), m_commandBuffers.data());
+    }
 }
 
 void Renderer::FreeSemaphores()
 {
-    if (m_imageAvailableSemaphore)
+    if (m_imageAvailableSemaphore && m_vkLogicalDevice)
     {
         m_vkLogicalDevice.destroySemaphore(m_imageAvailableSemaphore);
         m_imageAvailableSemaphore = nullptr;
     }
 
-    if (m_renderFinishedSemaphore)
+    if (m_renderFinishedSemaphore && m_vkLogicalDevice)
     {
         m_vkLogicalDevice.destroySemaphore(m_renderFinishedSemaphore);
         m_renderFinishedSemaphore = nullptr;
@@ -690,7 +692,6 @@ bool Renderer::CreateRenderPass()
 bool Renderer::CreateGraphicsPipeline()
 {
     vk::Result result;
-    FreePipelineLayout();
     FreeGraphicsPipeline();
 
     unicorn::utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
@@ -817,7 +818,7 @@ bool Renderer::CreateGraphicsPipeline()
 bool Renderer::CreateFramebuffers()
 {
     vk::Result result;
-    FreeFramebuffers();
+    FreeFrameBuffers();
 
     m_swapChainFramebuffers.resize(m_swapChainImageViews.size());
 
