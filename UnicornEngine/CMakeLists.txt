@@ -22,10 +22,15 @@ if (NOT CMAKE_BUILD_TYPE)
 endif (NOT CMAKE_BUILD_TYPE)
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Werror -pedantic")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s -O3")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb3 -O0")
 elseif(WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /MP /W3") # TODO set WX (warning as error)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
+
+add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS -DVULKAN_HPP_TYPESAFE_CONVERSION)
 
 ## Should be uncommented when TinyObjLoader library is used
 # include(TinyObjLoaderConfig)
@@ -65,19 +70,15 @@ endif ()
 include_directories(
     ${UNICORN_ENGINE_INCLUDE_DIR}
     ${TINYOBJLOADER_INCLUDE_DIR}
+    ${VULKAN_INCLUDE_DIR}
     ${GLFW_INCLUDE_DIR}
     ${GLM_INCLUDE_DIR}
     ${LOGURU_INCLUDE_DIR}
     ${STB_INCLUDE_DIR}
-    ${VULKAN_INCLUDE_DIR}
 )
 
 if (BUILD_SHARED_LIBS)
     add_definitions(-DUNICORN_SHARED)
-endif()
-
-if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Werror")
 endif()
 
 set(UNICORN_ENGINE_HEADERS
@@ -117,8 +118,6 @@ add_library(${UNICORN_ENGINE_LIB}
     ${UNICORN_ENGINE_SOURCES}
 )
 
-target_link_libraries(${UNICORN_ENGINE_LIB} ${GLFW_LIB} ${VULKAN_LIBRARY})
-
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # Workaround for a bug regarding __builtin_cpu_supports("sse2") call on GCC 5+
     # Call is made by STB but is not directly a bug in STB
@@ -143,4 +142,46 @@ if (UNICORN_BUILD_DOCUMENTATION)
     else()
         message(FATAL "Doxygen is required to build documentation")
     endif()
+endif()
+
+target_link_libraries(${UNICORN_ENGINE_LIB} ${VULKAN_LIBRARY} ${GLFW_LIB})
+
+if(UNIX)
+    set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/bin/glslangValidator")
+elseif(WIN32)
+if (${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "AMD64")
+    set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/Bin/glslangValidator.exe")
+else()
+    set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/Bin32/glslangValidator.exe")
+endif()
+
+file(GLOB_RECURSE GLSL_SOURCE_FILES
+    "${CMAKE_SOURCE_DIR}/UnicornEngine/data/shaders/*.frag"
+    "${CMAKE_SOURCE_DIR}/UnicornEngine/data/shaders/*.vert"
+    )
+    
+foreach(GLSL ${GLSL_SOURCE_FILES})
+    get_filename_component(FILE_NAME ${GLSL} NAME)
+    set(SPIRV "${PROJECT_BINARY_DIR}/data/shaders/${FILE_NAME}.spv")
+    add_custom_command(
+        OUTPUT ${SPIRV}
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/data/shaders/"
+        COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
+        DEPENDS ${GLSL})
+    list(APPEND SPIRV_BINARY_FILES ${SPIRV})
+endforeach(GLSL)
+
+add_custom_target(
+    Shaders 
+    DEPENDS ${SPIRV_BINARY_FILES}
+    )
+
+add_dependencies(${UNICORN_ENGINE_LIB} Shaders)
+
+add_custom_command(TARGET ${UNICORN_ENGINE_LIB} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${UNICORN_ENGINE_LIB}>/data/shaders/"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${PROJECT_BINARY_DIR}/data/shaders"
+        "$<TARGET_FILE_DIR:${UNICORN_ENGINE_LIB}>/data/shaders"
+        )
 endif()
