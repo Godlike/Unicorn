@@ -1,5 +1,5 @@
 # Copyright (C) 2017 by Godlike
-# This code is licensed under the MIT license (MIT) 
+# This code is licensed under the MIT license (MIT)
 # (http://opensource.org/licenses/MIT)
 
 cmake_minimum_required(VERSION 3.0)
@@ -140,7 +140,7 @@ if (UNICORN_BUILD_DOCUMENTATION)
             COMMENT "Generating UnicornEngine API documentation"
         )
     else()
-        message(FATAL "Doxygen is required to build documentation")
+        message(FATAL_ERROR "Doxygen is required to build documentation")
     endif()
 endif()
 
@@ -149,17 +149,18 @@ target_link_libraries(${UNICORN_ENGINE_LIB} ${VULKAN_LIBRARY} ${GLFW_LIB})
 if(UNIX)
     set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/bin/glslangValidator")
 elseif(WIN32)
-if (${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "AMD64")
-    set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/Bin/glslangValidator.exe")
-else()
-    set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/Bin32/glslangValidator.exe")
+    if (${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL "AMD64")
+        set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/Bin/glslangValidator.exe")
+    else()
+        set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/Bin32/glslangValidator.exe")
+    endif()
 endif()
 
 file(GLOB_RECURSE GLSL_SOURCE_FILES
     "${CMAKE_SOURCE_DIR}/UnicornEngine/data/shaders/*.frag"
     "${CMAKE_SOURCE_DIR}/UnicornEngine/data/shaders/*.vert"
     )
-    
+
 foreach(GLSL ${GLSL_SOURCE_FILES})
     get_filename_component(FILE_NAME ${GLSL} NAME)
     set(SPIRV "${PROJECT_BINARY_DIR}/data/shaders/${FILE_NAME}.spv")
@@ -172,7 +173,7 @@ foreach(GLSL ${GLSL_SOURCE_FILES})
 endforeach(GLSL)
 
 add_custom_target(
-    Shaders 
+    Shaders
     DEPENDS ${SPIRV_BINARY_FILES}
     )
 
@@ -184,4 +185,3 @@ add_custom_command(TARGET ${UNICORN_ENGINE_LIB} POST_BUILD
         "${PROJECT_BINARY_DIR}/data/shaders"
         "$<TARGET_FILE_DIR:${UNICORN_ENGINE_LIB}>/data/shaders"
         )
-endif()
