@@ -91,6 +91,20 @@ private:
     static const bool s_enableValidationLayers = true;
 #endif
 
+    void FreeInstance();
+    void FreeDebugCallback();
+    void FreeSurface();
+    void FreeLogicalDevice();
+    void FreeSwapChain();
+    void FreeImageViews();
+    void FreeRenderPass();
+    void FreeGraphicsPipeline();
+    void FreePipelineLayout();
+    void FreeFramebuffers();
+    void FreeCommandPool();
+    void FreeCommandBuffers();
+    void FreeSemaphores();
+
     bool CreateInstance();
     bool CheckValidationLayerSupport() const;
     bool PickPhysicalDevice();
@@ -110,7 +124,7 @@ private:
     bool Frame();
     std::vector<const char*> GetRequiredExtensions();
     QueueFamilyIndices FindQueueFamilies(const vk::PhysicalDevice& device);
-    SwapChainSupportDetails QuerySwapChainSupport(const vk::PhysicalDevice& device);
+    bool QuerySwapChainSupport(SwapChainSupportDetails& details, const vk::PhysicalDevice& device);
     vk::SurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats);
     vk::PresentModeKHR ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes);
     vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities);

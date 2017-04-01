@@ -118,84 +118,20 @@ bool Renderer::Init()
 
 void Renderer::Deinit()
 {
-    if (m_vulkanCallback != VK_NULL_HANDLE)
-    {
-        DestroyDebugReportCallbackEXT();
-    }
-
-    for (vk::ImageView& view : m_swapChainImageViews)
-    {
-        m_vkLogicalDevice.destroyImageView(view);
-    }
-    m_swapChainImageViews.clear();
-
-    for (vk::Framebuffer& framebuffer : m_swapChainFramebuffers)
-    {
-        m_vkLogicalDevice.destroyFramebuffer(framebuffer);
-    }
-    m_swapChainFramebuffers.clear();
-
-    if (m_imageAvailableSemaphore)
-    {
-        m_vkLogicalDevice.destroySemaphore(m_imageAvailableSemaphore);
-        m_imageAvailableSemaphore = nullptr;
-    }
-
-    if (m_renderFinishedSemaphore)
-    {
-        m_vkLogicalDevice.destroySemaphore(m_renderFinishedSemaphore);
-        m_renderFinishedSemaphore = nullptr;
-    }
-
-    if (m_pipelineLayout)
-    {
-        m_vkLogicalDevice.destroyPipelineLayout(m_pipelineLayout);
-        m_pipelineLayout = nullptr;
-    }
-
-    if (m_commandPool)
-    {
-        m_vkLogicalDevice.destroyCommandPool(m_commandPool);
-        m_commandPool = nullptr;
-    }
-
-    if (m_renderPass)
-    {
-        m_vkLogicalDevice.destroyRenderPass(m_renderPass);
-        m_renderPass = nullptr;
-    }
-
-    if (m_graphicsPipeline)
-    {
-        m_vkLogicalDevice.destroyPipeline(m_graphicsPipeline);
-        m_graphicsPipeline = nullptr;
-    }
-
-    if (m_vkSwapChain)
-    {
-        m_vkLogicalDevice.destroySwapchainKHR(m_vkSwapChain);
-        m_vkSwapChain = nullptr;
-    }
-
-    if (m_vkLogicalDevice)
-    {
-        m_vkLogicalDevice.destroy();
-        m_vkLogicalDevice = nullptr;
-    }
-
-    if (m_vkWindowSurface)
-    {
-        m_vkInstance.destroySurfaceKHR(m_vkWindowSurface);
-        m_vkWindowSurface = nullptr;
-    }
-
-    // Instance must be freed last but before glfw window.
-    if (m_vkInstance)
-    {
-        m_vkInstance.destroy();
-        m_vkInstance = nullptr;
-    }
-
+    FreeSemaphores();
+    FreeCommandPool();
+    FreeCommandBuffers();
+    FreeFramebuffers();
+    FreePipelineLayout();
+    FreeGraphicsPipeline();
+    FreeRenderPass();
+    FreeImageViews();
+    FreeSwapChain();
+    FreeSurface();
+    FreeLogicalDevice();
+    FreeDebugCallback();
+    FreeInstance();    
+    
     if (m_pWindow)
     {
         glfwSetWindowShouldClose(m_pWindow, GLFW_TRUE);
@@ -213,12 +149,12 @@ void Renderer::Deinit()
 
 QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
 {
-    vk::Result result;
     QueueFamilyIndices indices;
     std::vector<vk::QueueFamilyProperties> queueFamilies = device.getQueueFamilyProperties();
 
     int index = 0;
     vk::Bool32 presentSupport;
+    vk::Result result;
     for (const auto& queueFamily : queueFamilies)
     {
         if (queueFamily.queueCount > 0 && queueFamily.queueFlags & vk::QueueFlagBits::eGraphics)
@@ -242,14 +178,21 @@ QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
     return indices;
 }
 
-SwapChainSupportDetails Renderer::QuerySwapChainSupport(const vk::PhysicalDevice& device)
+bool Renderer::QuerySwapChainSupport(SwapChainSupportDetails& details, const vk::PhysicalDevice& device)
 {
     vk::Result result;
-    SwapChainSupportDetails details;
     result = device.getSurfaceCapabilitiesKHR(m_vkWindowSurface, &details.capabilities);
     std::tie(result, details.formats) = device.getSurfaceFormatsKHR(m_vkWindowSurface);
+    if (result != vk::Result::eSuccess) {
+        LOG_ERROR("Can't get surface formats khr.");
+        return false;
+    }
     std::tie(result, details.presentModes) = device.getSurfacePresentModesKHR(m_vkWindowSurface);
-    return details;
+    if (result != vk::Result::eSuccess) {
+        LOG_ERROR("Can't get surface present modes khr.");
+        return false;
+    }
+    return true;
 }
 
 vk::SurfaceFormatKHR Renderer::ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats)
@@ -336,14 +279,133 @@ bool Renderer::RecreateSwapChain()
 {
     m_vkLogicalDevice.waitIdle();
 
-    CreateSwapChain();
-    CreateImageViews();
-    CreateRenderPass();
-    CreateGraphicsPipeline();
-    CreateFramebuffers();
-    CreateCommandBuffers();
+    if (CreateSwapChain() &&
+        CreateImageViews() &&
+        CreateRenderPass() &&
+        CreateGraphicsPipeline() &&
+        CreateFramebuffers() &&
+        CreateCommandBuffers())
+        return true;
+    return false;
+}
 
-    return true;
+void Renderer::FreeInstance()
+{
+    if (m_vkInstance)
+    {
+        m_vkInstance.destroy();
+        m_vkInstance = nullptr;
+    }
+}
+
+void Renderer::FreeDebugCallback()
+{
+    if (m_vulkanCallback != VK_NULL_HANDLE)
+    {
+        DestroyDebugReportCallbackEXT();
+    }
+}
+
+void Renderer::FreeSurface()
+{
+    if (m_vkWindowSurface)
+    {
+        m_vkInstance.destroySurfaceKHR(m_vkWindowSurface);
+        m_vkWindowSurface = nullptr;
+    }
+}
+
+void Renderer::FreeLogicalDevice()
+{
+    if (m_vkLogicalDevice)
+    {
+        m_vkLogicalDevice.destroy();
+        m_vkLogicalDevice = nullptr;
+    }
+}
+
+void Renderer::FreeSwapChain()
+{
+    if (m_vkSwapChain)
+    {
+        m_vkLogicalDevice.destroySwapchainKHR(m_vkSwapChain);
+        m_vkSwapChain = nullptr;
+    }
+}
+
+void Renderer::FreeImageViews()
+{
+    for (vk::ImageView& view : m_swapChainImageViews)
+    {
+        m_vkLogicalDevice.destroyImageView(view);
+    }
+    m_swapChainImageViews.clear();
+}
+
+void Renderer::FreeRenderPass()
+{
+    if (m_renderPass)
+    {
+        m_vkLogicalDevice.destroyRenderPass(m_renderPass);
+        m_renderPass = nullptr;
+    }
+}
+
+void Renderer::FreeGraphicsPipeline()
+{
+    if (m_graphicsPipeline)
+    {
+        m_vkLogicalDevice.destroyPipeline(m_graphicsPipeline);
+        m_graphicsPipeline = nullptr;
+    }
+}
+
+void Renderer::FreePipelineLayout()
+{
+    if (m_pipelineLayout)
+    {
+        m_vkLogicalDevice.destroyPipelineLayout(m_pipelineLayout);
+        m_pipelineLayout = nullptr;
+    }
+}
+
+void Renderer::FreeFramebuffers()
+{
+    for (vk::Framebuffer& framebuffer : m_swapChainFramebuffers)
+    {
+        m_vkLogicalDevice.destroyFramebuffer(framebuffer);
+    }
+    m_swapChainFramebuffers.clear();
+}
+
+void Renderer::FreeCommandPool()
+{
+
+    if (m_commandPool)
+    {
+        m_vkLogicalDevice.destroyCommandPool(m_commandPool);
+        m_commandPool = nullptr;
+    }
+}
+
+void Renderer::FreeCommandBuffers()
+{
+
+}
+
+void Renderer::FreeSemaphores()
+{
+    if (m_imageAvailableSemaphore)
+    {
+        m_vkLogicalDevice.destroySemaphore(m_imageAvailableSemaphore);
+        m_imageAvailableSemaphore = nullptr;
+    }
+
+    if (m_renderFinishedSemaphore)
+    {
+        m_vkLogicalDevice.destroySemaphore(m_renderFinishedSemaphore);
+        m_renderFinishedSemaphore = nullptr;
+    }
 }
 
 bool Renderer::CreateInstance()
@@ -395,7 +457,10 @@ bool Renderer::PickPhysicalDevice()
     vk::Result result;
     std::vector<vk::PhysicalDevice> devices;
     std::tie(result, devices) = m_vkInstance.enumeratePhysicalDevices();
-
+    if (result != vk::Result::eSuccess) {
+        LOG_ERROR("Failed to enumerate physical devices.");
+        return false;
+    }
     for (const auto& device : devices)
     {
         if (IsDeviceSuitable(device))
@@ -463,7 +528,7 @@ bool Renderer::CreateLogicalDevice()
 
 bool Renderer::CreateSurface()
 {
-    if (glfwCreateWindowSurface(m_vkInstance, m_pWindow, nullptr, &(VkSurfaceKHR&) m_vkWindowSurface) != VK_SUCCESS)
+    if (glfwCreateWindowSurface(m_vkInstance, m_pWindow, nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
     {
         LOG_ERROR("Failed to create window surface!");
         return false;
@@ -475,7 +540,9 @@ bool Renderer::CreateSurface()
 bool Renderer::CreateSwapChain()
 {
     vk::Result result;
-    SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(m_vkPhysicalDevice);
+    SwapChainSupportDetails swapChainSupport;
+    if (!QuerySwapChainSupport(swapChainSupport, m_vkPhysicalDevice))
+        return false;
     vk::SurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
     vk::PresentModeKHR presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
     vk::Extent2D extent = ChooseSwapExtent(swapChainSupport.capabilities);
@@ -537,7 +604,7 @@ bool Renderer::CreateSwapChain()
         oldSwapChain = nullptr;
     }
     std::tie(result, m_swapChainImages) = m_vkLogicalDevice.getSwapchainImagesKHR(m_vkSwapChain);
-    if (imageCount != m_swapChainImages.size())
+    if (imageCount != m_swapChainImages.size() || result != vk::Result::eSuccess)
     {
         LOG_ERROR("SwapChain images not equal!");
     }
@@ -557,7 +624,7 @@ bool Renderer::CreateImageViews()
 
     m_swapChainImageViews.resize(m_swapChainImages.size());
 
-    for (uint32_t i = 0; i < m_swapChainImages.size(); i++)
+    for (uint32_t i = 0; i < m_swapChainImages.size(); ++i)
     {
         vk::ImageViewCreateInfo createInfo;
         createInfo.image = m_swapChainImages[i];
@@ -754,7 +821,10 @@ bool Renderer::CreateGraphicsPipeline()
     pipelineInfo.basePipelineIndex = -1; // Optional
 
     std::tie(result, m_graphicsPipeline) = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo);
-
+    if (result != vk::Result::eSuccess) {
+        LOG_ERROR("Can't create graphics pipeline.");
+        return false;
+    }
     m_vkLogicalDevice.destroyShaderModule(vertShaderModule);
     m_vkLogicalDevice.destroyShaderModule(fragShaderModule);
 
@@ -771,7 +841,7 @@ bool Renderer::CreateFramebuffers()
 
     m_swapChainFramebuffers.resize(m_swapChainImageViews.size());
 
-    for (size_t i = 0; i < m_swapChainImageViews.size(); i++)
+    for (size_t i = 0; i < m_swapChainImageViews.size(); ++i)
     {
         vk::ImageView attachments[] = {m_swapChainImageViews[i]};
 
@@ -815,7 +885,7 @@ bool Renderer::CreateCommandPool()
 bool Renderer::CreateCommandBuffers()
 {
     vk::Result result;
-    if (m_commandBuffers.size() > 0)
+    if (!m_commandBuffers.empty())
     {
         m_vkLogicalDevice.freeCommandBuffers(m_commandPool, static_cast<std::uint32_t>(m_commandBuffers.size()), m_commandBuffers.data());
     }
@@ -835,7 +905,7 @@ bool Renderer::CreateCommandBuffers()
         return false;
     }
 
-    for (size_t i = 0; i < m_commandBuffers.size(); i++)
+    for (size_t i = 0; i < m_commandBuffers.size(); ++i)
     {
         vk::CommandBufferBeginInfo beginInfo;
         beginInfo.flags = vk::CommandBufferUsageFlagBits::eSimultaneousUse;
@@ -849,7 +919,6 @@ bool Renderer::CreateCommandBuffers()
         renderPassInfo.renderArea.extent = m_swapChainExtent;
 
         vk::ClearColorValue clearColor(std::array<float, 4>({ {0.0f, 0.0f, 0.0f, 1.0f} }));
-        ;
         vk::ClearValue clearValue(clearColor);
 
         renderPassInfo.clearValueCount = 1;
@@ -868,25 +937,25 @@ bool Renderer::CreateCommandBuffers()
 
 bool Renderer::CreateSemaphores()
 {
-    vk::Result result1, result2;
     vk::SemaphoreCreateInfo semaphoreInfo;
-    result1 = m_vkLogicalDevice.createSemaphore(&semaphoreInfo, {}, &m_imageAvailableSemaphore);
-    result2 = m_vkLogicalDevice.createSemaphore(&semaphoreInfo, {}, &m_renderFinishedSemaphore);
-    if (result1 != vk::Result::eSuccess || result2 != vk::Result::eSuccess)
-    {
-        LOG_ERROR("Failed to create semaphores!");
-        return false;
-    }
-
-    return true;
+    if (m_vkLogicalDevice.createSemaphore(&semaphoreInfo, {}, &m_imageAvailableSemaphore) == vk::Result::eSuccess &&
+        m_vkLogicalDevice.createSemaphore(&semaphoreInfo, {}, &m_renderFinishedSemaphore) == vk::Result::eSuccess)
+        return true;
+    
+    LOG_ERROR("Failed to create semaphores!");
+    return false;
 }
 
 bool Renderer::CreateShaderModule(const std::vector<uint8_t>& code, vk::ShaderModule& shaderModule)
 {
     vk::Result result;
-    vk::ShaderModuleCreateInfo createInfo = {};
+    vk::ShaderModuleCreateInfo createInfo;
+    if (code.size() % sizeof(uint32_t) != 0) {
+        LOG_ERROR("Shader code size is not multiple of sizeof(uint32_t), look at VkShaderModuleCreateInfo(3) Manual Page.");
+        return false;
+    }
     createInfo.codeSize = code.size();
-    createInfo.pCode = (uint32_t*) code.data();
+    createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
 
     result = m_vkLogicalDevice.createShaderModule(&createInfo, {}, &shaderModule);
 
@@ -910,7 +979,9 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
 
     if (extensionsSupported)
     {
-        SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(device);
+        SwapChainSupportDetails swapChainSupport;
+        if (!QuerySwapChainSupport(swapChainSupport, device))
+            return false;
         swapChainAcceptable = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
     }
 
@@ -931,7 +1002,10 @@ bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device)
     vk::Result result;
     std::vector<vk::ExtensionProperties> availableExtensions;
     std::tie(result, availableExtensions) = device.enumerateDeviceExtensionProperties();
-
+    if (result != vk::Result::eSuccess) {
+        LOG_ERROR("Can't enumerate device extension properties.");
+        return false;
+    }
     std::set<std::string> requiredExtensions(m_deviceExtensions.begin(), m_deviceExtensions.end());
 
     for (const auto& extension : availableExtensions)
@@ -954,7 +1028,10 @@ bool Renderer::Frame()
 
     if (result == vk::Result::eErrorOutOfDateKHR)
     {
-        RecreateSwapChain();
+        if (!RecreateSwapChain()) {
+            LOG_ERROR("Can't recreate swapchain!");
+            return false;
+        }
         return true;
     }
     else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
@@ -1016,7 +1093,10 @@ bool Renderer::CheckValidationLayerSupport() const
     vk::Result result;
     std::vector<vk::LayerProperties> availableLayers;
     std::tie(result, availableLayers) = vk::enumerateInstanceLayerProperties();
-
+    if (result != vk::Result::eSuccess) {
+        LOG_ERROR("Can't enumerate instance layer properties!");
+        return false;
+    }
     for (const char* layerName : m_validationLayers)
     {
         bool layerFound = false;
@@ -1043,6 +1123,13 @@ bool Renderer::CheckValidationLayerSupport() const
         }
     }
 
+    LOG_INFO("Picked next Vulkan layers :");
+
+    for (auto& layer : m_validationLayers)
+    {
+        LOG_INFO("%s", layer);
+    }
+
     return true;
 }
 
@@ -1052,7 +1139,7 @@ std::vector<const char*> Renderer::GetRequiredExtensions()
     unsigned int glfwExtensionCount = 0;
     const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-    for (unsigned int i = 0; i < glfwExtensionCount; i++)
+    for (unsigned int i = 0; i < glfwExtensionCount; ++i)
     {
         m_extensions.push_back(glfwExtensions[i]);
     }
