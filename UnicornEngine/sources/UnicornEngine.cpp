@@ -59,7 +59,7 @@ void UnicornEngine::Deinit()
         m_pGraphics = nullptr;
     }
 
-    if (!m_isInitialized)
+    if (m_isInitialized)
     {
         LOG_INFO("Engine shutdown correctly.");
     }

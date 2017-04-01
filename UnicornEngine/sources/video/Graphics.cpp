@@ -59,7 +59,7 @@ void Graphics::Deinit()
         m_pRenderer = nullptr;
     }
 
-    if (!m_isInitialized)
+    if (m_isInitialized)
     {
         LOG_INFO("Graphics shutdown correctly.");
     }
