@@ -20,6 +20,7 @@ class Graphics;
 namespace WindowManager
 {
 class Hub;
+class WindowProfiler;
 }
 
 /** @brief  Engine main class */
@@ -60,12 +61,17 @@ public:
      */
     void Deinit();
 
+    video::Graphics* GetGraphics() const { return m_pGraphics; }
+
 private:
     //! Flag describing if engine was initialized
     bool m_isInitialized;
 
     //! Pointer to window and monitor managing hub
     WindowManager::Hub* m_pWindowManagerHub;
+
+    //! Pointer to window profiler
+    WindowManager::WindowProfiler* m_pWindowProfiler;
 
     //! Pointer to graphics system
     video::Graphics* m_pGraphics;

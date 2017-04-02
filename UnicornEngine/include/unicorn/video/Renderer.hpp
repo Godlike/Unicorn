@@ -52,7 +52,9 @@ struct SwapChainSupportDetails
 class Renderer
 {
 public:
-    Renderer(WindowManager::Hub& windowManagerHub);
+    Renderer(WindowManager::Hub& windowManagerHub,
+        WindowManager::Window* pWindow);
+
     ~Renderer();
 
     Renderer(const Renderer& other) = delete;
@@ -62,16 +64,16 @@ public:
 
     bool Init();
     void Deinit();
-    void Render();
-    static void OnWindowResized(GLFWwindow* window, int width, int height);
+    bool Render();
     bool RecreateSwapChain();
 
 private:
     bool m_isInitialized;
 
-    //! Reference to window and monitor managing hub
+    //! Reference to window manager hub
     WindowManager::Hub& m_windowManagerHub;
 
+    //! Pointer to associated window
     WindowManager::Window* m_pWindow;
 
     vk::Instance m_vkInstance;
@@ -142,6 +144,10 @@ private:
     bool SetupDebugCallback();
     VkResult CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo);
     void DestroyDebugReportCallbackEXT();
+
+    // Callbacks for window events
+    void OnWindowDestroyed(WindowManager::Window* pWindow);
+    void OnWindowSizeChanged(WindowManager::Window* pWindow, std::pair<int32_t, int32_t> size);
 };
 }
 }

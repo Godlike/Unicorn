@@ -7,12 +7,19 @@
 #ifndef UNICORN_VIDEO_GRAPHICS_HPP
 #define UNICORN_VIDEO_GRAPHICS_HPP
 
+#include <cstdint>
+#include <string>
+#include <utility>
+#include <unordered_set>
+
 namespace unicorn
 {
 
 namespace WindowManager
 {
 class Hub;
+class Monitor;
+class Window;
 }
 
 namespace video
@@ -57,17 +64,55 @@ public:
     void Deinit();
 
     /** @brief  Graphics renderer loop */
-    void Render();
+    bool Render();
+
+    /** @brief  Spawns new window
+     *
+     *  Also creates renderer context for created window
+     *
+     *  @param  width           desired width
+     *  @param  height          desired height
+     *  @param  name            desired name
+     *  @param  pMonitor        pointer to a monitor where window
+     *                          should be created
+     *  @param  pSharedWindow   pointer to another window that should
+     *                          share all resources with created window
+     *
+     *  @return a pointer to newly created window object
+     */
+    WindowManager::Window* SpawnWindow(int32_t width,
+        int32_t height,
+        const std::string& name,
+        WindowManager::Monitor* pMonitor = nullptr,
+        WindowManager::Window* pSharedWindow = nullptr);
 
 private:
+    typedef std::pair<Renderer*, WindowManager::Window*> RendererWindowPair;
+
+    struct RendererWindowPairHash
+    {
+        std::size_t operator()(const RendererWindowPair& pair) const
+        {
+            return std::hash<Renderer*>()(pair.first) ^
+                std::hash<WindowManager::Window*>()(pair.second);
+        }
+    };
+
+    typedef std::unordered_set<RendererWindowPair, RendererWindowPairHash> RendererWindowPairSet;
+
+    void ProcessExpiredRenderers();
+
     //! Flag describing if graphics were initialized
     bool m_isInitialized;
 
     //! Reference to window and monitor managing hub
     WindowManager::Hub& m_windowManagerHub;
 
-    //! Pointer to renderer
-    Renderer* m_pRenderer;
+    //! Set of renderer-window pairs
+    RendererWindowPairSet m_renderers;
+
+    //! Set of expired renderer-window pairs that need to be deinitialized
+    RendererWindowPairSet m_expiredRenderers;
 };
 }
 }

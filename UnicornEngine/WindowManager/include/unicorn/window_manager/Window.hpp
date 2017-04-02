@@ -9,10 +9,13 @@
 
 #include <unicorn/window_manager/Monitor.hpp>
 
+#include <wink/signal.hpp>
+
 #include <vulkan/vulkan.hpp>
 
 #include <cstdint>
 #include <string>
+#include <utility>
 
 namespace unicorn
 {
@@ -38,12 +41,12 @@ public:
      *                          should share all resources with
      *                          created window
      */
-    Window(uint32_t m_id
-        , uint32_t width
-        , uint32_t height
-        , const std::string& name
-        , Monitor* pMonitor = nullptr
-        , Window* pSharedWindow = nullptr);
+    Window(uint32_t m_id,
+        int32_t width,
+        int32_t height,
+        const std::string& name,
+        Monitor* pMonitor = nullptr,
+        Window* pSharedWindow = nullptr);
 
     Window(const Window& other) = delete;
     Window& operator=(const Window& other) = delete;
@@ -69,21 +72,58 @@ public:
     /** @brief  Checks if window should be closed */
     bool ShouldClose() const;
 
+    /** @brief  Sets flag if window should be closed
+     *
+     *  Can be used to override user input when close event was emitted
+     *  or just to set the flag if window should be closed
+     */
+    void SetShouldClose(bool flag) const;
+
     /** @brief  Returns the id of the window */
     uint32_t GetId() { return m_id; }
+
+    /** @brief  Returns the name of the window */
+    const std::string& GetName() const { return m_name; }
+
+    /** @brief  Returns the size of the window */
+    const std::pair<int32_t, int32_t>& GetSize() const { return m_size; }
+
+    /** @brief  Returns the position of the window */
+    const std::pair<int32_t, int32_t>& GetPosition() const { return m_position; }
 
     /** @brief  Returns a handle provided by window manager adapter */
     void* GetHandle() { return m_handle; }
 
+    //! Signal that is emitted from destructor before the actual window is destroyed
+    wink::signal< wink::slot<void(Window*)> > Destroyed;
+
+    wink::signal< wink::slot<void(Window*, std::pair<int32_t, int32_t>)> > PositionChanged;
+    wink::signal< wink::slot<void(Window*, std::pair<int32_t, int32_t>)> > SizeChanged;
+    wink::signal< wink::slot<void(Window*)> > Close;
+    wink::signal< wink::slot<void(Window*)> > ContentRefresh;
+    wink::signal< wink::slot<void(Window*, bool)> > Focused;
+    wink::signal< wink::slot<void(Window*, bool)> > Minimized;
+    wink::signal< wink::slot<void(Window*, bool)> > Maximized;
+    wink::signal< wink::slot<void(Window*, std::pair<int32_t, int32_t>)> > FramebufferResized;
+
 private:
+    void OnWindowPositionChanged(void* handle, std::pair<int32_t, int32_t> position);
+    void OnWindowSizeChanged(void* handle, std::pair<int32_t, int32_t> size);
+    void OnWindowClose(void* handle);
+    void OnWindowContentRefresh(void* handle);
+    void OnWindowFocused(void* handle, bool flag);
+    void OnWindowMinimized(void* handle, bool flag);
+    void OnWindowMaximized(void* handle, bool flag);
+    void OnWindowFramebufferResized(void* handle, std::pair<int32_t, int32_t> size);
+
     //! Window id within application
     uint32_t m_id;
 
-    //! Width in pixels
-    uint32_t m_width;
+    //! Window size in pixels as (width, height)
+    std::pair<int32_t, int32_t> m_size;
 
-    //! Height in pixels
-    uint32_t m_height;
+    //! Window position in pixels as (width, height)
+    std::pair<int32_t, int32_t> m_position;
 
     //! Window title name
     std::string m_name;

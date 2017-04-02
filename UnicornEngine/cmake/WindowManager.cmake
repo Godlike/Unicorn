@@ -2,8 +2,6 @@
 # This code is licensed under the MIT license (MIT)
 # (http://opensource.org/licenses/MIT)
 
-# This file initializes selected window manager
-
 set(SUPPORTED_WINDOW_MANAGERS
     "glfw")
 

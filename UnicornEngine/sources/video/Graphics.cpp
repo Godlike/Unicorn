@@ -8,6 +8,9 @@
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/utility/Logger.hpp>
 
+#include <unicorn/window_manager/Hub.hpp>
+#include <unicorn/window_manager/Window.hpp>
+
 namespace unicorn
 {
 namespace video
@@ -15,7 +18,6 @@ namespace video
 Graphics::Graphics(WindowManager::Hub& windowManagerHub)
     : m_isInitialized(false)
     , m_windowManagerHub(windowManagerHub)
-    , m_pRenderer(nullptr)
 {
 }
 
@@ -33,11 +35,9 @@ bool Graphics::Init()
 
     LOG_INFO("Graphics initialization started.");
 
-    m_pRenderer = new Renderer(m_windowManagerHub);
-
-    if (!m_pRenderer->Init())
+    if (!m_windowManagerHub.IsVulkanSupported())
     {
-        Deinit();
+        LOG_ERROR("Vulkan not supported!");
 
         return false;
     }
@@ -51,14 +51,11 @@ bool Graphics::Init()
 
 void Graphics::Deinit()
 {
-    if (m_pRenderer)
-    {
-        m_pRenderer->Deinit();
+    m_expiredRenderers.insert(m_renderers.begin(), m_renderers.end());
 
-        delete m_pRenderer;
+    m_renderers.clear();
 
-        m_pRenderer = nullptr;
-    }
+    ProcessExpiredRenderers();
 
     if (m_isInitialized)
     {
@@ -68,12 +65,83 @@ void Graphics::Deinit()
     m_isInitialized = false;
 }
 
-void Graphics::Render()
+bool Graphics::Render()
 {
-    if (m_isInitialized && m_pRenderer)
+    if (m_isInitialized)
     {
-        m_pRenderer->Render();
+        for (RendererWindowPairSet::const_iterator cit = m_renderers.cbegin(); cit != m_renderers.cend();)
+        {
+            if (!cit->second->ShouldClose() && cit->first->Render())
+            {
+                m_windowManagerHub.PollEvents();
+                ++cit;
+            }
+            else
+            {
+                m_expiredRenderers.insert(*cit);
+                cit = m_renderers.erase(cit);
+            }
+        }
+
+        ProcessExpiredRenderers();
+
+        return !m_renderers.empty();
+    }
+
+    return false;
+}
+
+WindowManager::Window* Graphics::SpawnWindow(int32_t width,
+    int32_t height,
+    const std::string& name,
+    WindowManager::Monitor* pMonitor,
+    WindowManager::Window* pSharedWindow)
+{
+    WindowManager::Window* pWindow = m_windowManagerHub.CreateWindow(width, height, name, pMonitor, pSharedWindow);
+    Renderer* pRenderer = new Renderer(m_windowManagerHub, pWindow);
+
+    if (pRenderer->Init())
+    {
+        LOG_DEBUG("Created renderer for window %s", name.c_str());
+
+        m_renderers.insert(RendererWindowPair(pRenderer, pWindow));
+    }
+    else
+    {
+        LOG_WARNING("Failed to initialize new renderer for window %s", name.c_str());
+
+        if (!m_windowManagerHub.DestroyWindow(pWindow))
+        {
+            LOG_WARNING("Failed to destroy window %s", name.c_str());
+
+            delete pWindow;
+        }
+    }
+
+    LOG_INFO("Graphics initialization started.");
+
+    return nullptr;
+}
+
+void Graphics::ProcessExpiredRenderers()
+{
+    if (!m_expiredRenderers.empty())
+    {
+        for (RendererWindowPairSet::const_iterator cit = m_expiredRenderers.cbegin(); cit != m_expiredRenderers.cend(); ++cit)
+        {
+            delete cit->first;
+
+            if (!m_windowManagerHub.DestroyWindow(cit->second))
+            {
+                LOG_WARNING("Failed to destroy window %s", cit->second->GetName().c_str());
+
+                delete cit->second;
+            }
+        }
+
+        m_expiredRenderers.clear();
     }
 }
+
 }
 }

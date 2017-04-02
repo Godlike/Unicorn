@@ -55,17 +55,25 @@ static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flag
     return VK_FALSE;
 }
 
-Renderer::Renderer(WindowManager::Hub& windowManagerHub)
+Renderer::Renderer(WindowManager::Hub& windowManagerHub, WindowManager::Window* pWindow)
     : m_isInitialized(false)
     , m_windowManagerHub(windowManagerHub)
-    , m_pWindow(nullptr)
+    , m_pWindow(pWindow)
     , m_validationLayers({"VK_LAYER_LUNARG_standard_validation"})
     , m_deviceExtensions({VK_KHR_SWAPCHAIN_EXTENSION_NAME})
 {
+    m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
+    m_pWindow->SizeChanged.connect(this, &Renderer::OnWindowSizeChanged);
 }
 
 Renderer::~Renderer()
 {
+    if (m_pWindow)
+    {
+        m_pWindow->Destroyed.disconnect(this, &Renderer::OnWindowDestroyed);
+        m_pWindow->SizeChanged.disconnect(this, &Renderer::OnWindowSizeChanged);
+    }
+
     Deinit();
 }
 
@@ -76,25 +84,8 @@ bool Renderer::Init()
         return false;
     }
 
-    LOG_INFO("Vulkan render initialization started.");
+    LOG_INFO("Renderer initialization started.");
 
-    if (!m_windowManagerHub.IsVulkanSupported())
-    {
-        LOG_ERROR("Vulkan not supported!");
-
-        return false;
-    }
-
-    const core::Settings& settings = core::Settings::Instance();
-
-    m_pWindow = m_windowManagerHub.CreateWindow(settings.GetApplicationWidth(),
-        settings.GetApplicationHeight(),
-        settings.GetApplicationName(),
-        nullptr,
-        nullptr);
-
-    // glfwSetWindowUserPointer(m_pWindow, this);
-    // glfwSetWindowSizeCallback(m_pWindow, OnWindowResized);
     if (!CreateInstance() ||
         !SetupDebugCallback() ||
         !CreateSurface() ||
@@ -114,7 +105,7 @@ bool Renderer::Init()
 
     m_isInitialized = true;
 
-    LOG_INFO("Vulkan render initialized correctly.");
+    LOG_INFO("Renderer initialized correctly.");
 
     return true;
 }
@@ -134,21 +125,9 @@ void Renderer::Deinit()
     FreeDebugCallback();
     FreeInstance();
 
-    if (m_pWindow)
-    {
-        if (!m_windowManagerHub.DestroyWindow(m_pWindow))
-        {
-            LOG_WARNING("Window manager failed to destroy window.");
-
-            delete m_pWindow;
-        }
-
-        m_pWindow = nullptr;
-    }
-
     if (m_isInitialized)
     {
-        LOG_INFO("Vulkan render shutdown correctly.");
+        LOG_INFO("Render shutdown correctly.");
     }
 
     m_isInitialized = false;
@@ -255,38 +234,41 @@ vk::Extent2D Renderer::ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabi
     }
 }
 
-void Renderer::Render()
+bool Renderer::Render()
 {
     if (m_isInitialized && m_pWindow)
     {
-        while (!m_pWindow->ShouldClose())
-        {
-            m_windowManagerHub.PollEvents();
-
-            if (!Frame())
-            {
-                break;
-            }
-        }
+        Frame();
 
         m_vkLogicalDevice.waitIdle();
+
+        return true;
     }
+
+    return false;
 }
 
-// void Renderer::OnWindowResized(GLFWwindow* window, int width, int height)
-// {
-//     if (width == 0 || height == 0)
-//     {
-//         return;
-//     }
+void Renderer::OnWindowDestroyed(WindowManager::Window* pWindow)
+{
+    LOG_INFO("Window destroyed, deinitializing renderer");
 
-//     Renderer* renderer = reinterpret_cast<Renderer*>(glfwGetWindowUserPointer(window));
+    m_pWindow = nullptr;
 
-//     if (!renderer->RecreateSwapChain())
-//     {
-//         LOG_ERROR("Can't recreate swapchain!");
-//     }
-// }
+    Deinit();
+}
+
+void Renderer::OnWindowSizeChanged(WindowManager::Window* pWindow, std::pair<int32_t, int32_t> size)
+{
+    if (size.first == 0 || size.second == 0)
+    {
+        return;
+    }
+
+    if (!RecreateSwapChain())
+    {
+        LOG_ERROR("Can't recreate swapchain!");
+    }
+}
 
 bool Renderer::RecreateSwapChain()
 {
@@ -615,6 +597,7 @@ bool Renderer::CreateSwapChain()
     if (result != vk::Result::eSuccess)
     {
         LOG_ERROR("Failed to create Vulkan swap chain!");
+        return false;
     }
 
     m_vkSwapChain = newSwapChain;

@@ -10,12 +10,14 @@
 #include <unicorn/utility/asset/SimpleStorage.hpp>
 
 #include <unicorn/window_manager/Hub.hpp>
+#include <unicorn/window_manager/profilers/WindowProfiler.hpp>
 
 namespace unicorn
 {
 UnicornEngine::UnicornEngine()
     : m_isInitialized(false)
     , m_pWindowManagerHub(nullptr)
+    , m_pWindowProfiler(nullptr)
     , m_pGraphics(nullptr)
 {
 }
@@ -36,6 +38,8 @@ bool UnicornEngine::Init()
     LOG_INFO("Engine initialization started.");
 
     m_pWindowManagerHub = new WindowManager::Hub();
+    m_pWindowProfiler = new WindowManager::WindowProfiler(*m_pWindowManagerHub);
+
     m_pWindowManagerHub->Init();
 
     m_pGraphics = new video::Graphics(*m_pWindowManagerHub);
@@ -69,6 +73,13 @@ void UnicornEngine::Deinit()
     {
         m_pWindowManagerHub->Deinit();
 
+        if (m_pWindowProfiler)
+        {
+            delete m_pWindowProfiler;
+
+            m_pWindowProfiler = nullptr;
+        }
+
         delete m_pWindowManagerHub;
 
         m_pWindowManagerHub = nullptr;
@@ -86,7 +97,10 @@ void UnicornEngine::Run()
 {
     if (m_pGraphics)
     {
-        m_pGraphics->Render();
+        while (m_pGraphics->Render())
+        {
+
+        }
     }
 }
 }

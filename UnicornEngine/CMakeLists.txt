@@ -49,18 +49,25 @@ include(stb)
 ## WindowManager
 include(WindowManager)
 
+## Wink Signals
+include(WinkSignals)
+
 if (UNIX)
     find_library(Vulkan REQUIRED)
-    include_directories(
-        ${VULKAN_INCLUDE_DIR}
-    )
 endif ()
 
 include_directories(
-    ${UNICORN_ENGINE_INCLUDE_DIR}
-    ${TINYOBJLOADER_INCLUDE_DIR}
     ${VULKAN_INCLUDE_DIR}
+)
+
+include_directories(
+    ${UNICORN_ENGINE_INCLUDE_DIR}
     ${WINDOW_MANAGER_INCLUDE_DIR}
+)
+
+include_directories( SYSTEM
+    ${WINK_SIGNALS_INCLUDE_DIR}
+    ${TINYOBJLOADER_INCLUDE_DIR}
     ${GLM_INCLUDE_DIR}
     ${LOGURU_INCLUDE_DIR}
     ${STB_INCLUDE_DIR}

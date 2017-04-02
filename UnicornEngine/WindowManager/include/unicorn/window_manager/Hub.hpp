@@ -4,11 +4,13 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#ifndef UNICORN_WINDOW_MANAGER_MANAGER_HPP
-#define UNICORN_WINDOW_MANAGER_MANAGER_HPP
+#ifndef UNICORN_WINDOW_MANAGER_HUB_HPP
+#define UNICORN_WINDOW_MANAGER_HUB_HPP
 
 #include <unicorn/window_manager/Monitor.hpp>
 #include <unicorn/window_manager/Window.hpp>
+
+#include <wink/signal.hpp>
 
 #include <map>
 #include <vector>
@@ -28,6 +30,20 @@ public:
     /** @brief  Constructs a hub object */
     Hub();
 
+    Hub(const Hub& other) = delete;
+    Hub& operator=(const Hub& other) = delete;
+
+    Hub(Hub&& other) = delete;
+    Hub& operator=(Hub&& other) = delete;
+
+    /** @brief  Deconstructs a hub object
+     *
+     *  Also calls Deinit()
+     *
+     *  @sa Deinit()
+     */
+    ~Hub();
+
     /** @brief  Creates a window object
      *
      *  @param  width           desired width
@@ -35,16 +51,15 @@ public:
      *  @param  name            desired name
      *  @param  pMonitor        pointer to a monitor where window
      *                          should be created
-     *  @param  pSharedWindow   pointer to another window that
-     *                          should share all resources with
-     *                          created window
+     *  @param  pSharedWindow   pointer to another window that should
+     *                          share all resources with created window
      *
      *  @return a pointer to newly created window object
      *
      *  @sa DestroyWindow()
      */
-    Window* CreateWindow(uint32_t width,
-        uint32_t height,
+    Window* CreateWindow(int32_t width,
+        int32_t height,
         const std::string& name,
         Monitor* pMonitor = nullptr,
         Window* pSharedWindow = nullptr);
@@ -84,10 +99,18 @@ public:
      */
     bool DestroyWindow(Window* pWindow);
 
-    /** @brief  Initializes window managing subsystem */
+    /** @brief  Initializes window managing subsystem
+     *
+     *  Requests monitor information from window manager adapter
+     *  and subscribes to his events
+     */
     void Init();
 
-    /** @brief  Deinitializes window managing subsystem */
+    /** @brief  Deinitializes window managing subsystem
+     *
+     *  Unsubscribes from window manager adapret events and destroys
+     *  all created windows and monitors
+     */
     void Deinit();
 
     /** @brief  Polls for window and monitor events */
@@ -108,7 +131,22 @@ public:
      */
     std::vector<const char*> GetRequiredVulkanExtensions() const;
 
+    /** @brief  Returns a monitor identified by id
+     *
+     *  @param  id  monitor id
+     *
+     *  @return a pointer to monitor object or @c nullptr if the monitor
+     *          was not found
+     */
+    Monitor* GetMonitor(uint32_t id) const;
+
+    //! Signal that is emitted every time new window is created
+    wink::signal< wink::slot<void(Window*)> > WindowCreated;
+
 private:
+    //! Returns a monitor identified by handle
+    Monitor* GetMonitor(void* handle) const;
+
     //! A map of @ref Window objects identified by their id
     std::map<uint32_t, Window*> m_windows;
 
@@ -120,4 +158,4 @@ private:
 }
 }
 
-#endif // UNICORN_WINDOW_MANAGER_MANAGER_HPP
+#endif // UNICORN_WINDOW_MANAGER_HUB_HPP
