@@ -1,6 +1,6 @@
 /*
 * Copyright (C) 2017 by Godlike
-* This code is licensed under the MIT license (MIT) 
+* This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
 
@@ -11,9 +11,15 @@
 
 namespace unicorn
 {
+
 namespace video
 {
 class Graphics;
+}
+
+namespace WindowManager
+{
+class Hub;
 }
 
 /** @brief  Engine main class */
@@ -57,6 +63,9 @@ public:
 private:
     //! Flag describing if engine was initialized
     bool m_isInitialized;
+
+    //! Pointer to window and monitor managing hub
+    WindowManager::Hub* m_pWindowManagerHub;
 
     //! Pointer to graphics system
     video::Graphics* m_pGraphics;

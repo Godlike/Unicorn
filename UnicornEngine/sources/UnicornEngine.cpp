@@ -9,10 +9,13 @@
 #include <unicorn/video/Graphics.hpp>
 #include <unicorn/utility/asset/SimpleStorage.hpp>
 
+#include <unicorn/window_manager/Hub.hpp>
+
 namespace unicorn
 {
 UnicornEngine::UnicornEngine()
     : m_isInitialized(false)
+    , m_pWindowManagerHub(nullptr)
     , m_pGraphics(nullptr)
 {
 }
@@ -32,7 +35,10 @@ bool UnicornEngine::Init()
     unicorn::utility::asset::SimpleStorage::Instance();
     LOG_INFO("Engine initialization started.");
 
-    m_pGraphics = new video::Graphics();
+    m_pWindowManagerHub = new WindowManager::Hub();
+    m_pWindowManagerHub->Init();
+
+    m_pGraphics = new video::Graphics(*m_pWindowManagerHub);
 
     if (!m_pGraphics->Init())
     {
@@ -57,6 +63,15 @@ void UnicornEngine::Deinit()
         delete m_pGraphics;
 
         m_pGraphics = nullptr;
+    }
+
+    if (m_pWindowManagerHub)
+    {
+        m_pWindowManagerHub->Deinit();
+
+        delete m_pWindowManagerHub;
+
+        m_pWindowManagerHub = nullptr;
     }
 
     if (m_isInitialized)

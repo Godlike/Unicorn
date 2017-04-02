@@ -1,5 +1,5 @@
 # Copyright (C) 2017 by Godlike
-# This code is licensed under the MIT license (MIT) 
+# This code is licensed under the MIT license (MIT)
 # (http://opensource.org/licenses/MIT)
 
 set(UNICORN_ENGINE_NAME "UnicornEngine" CACHE STRING "Project name for UnicornEngine library")

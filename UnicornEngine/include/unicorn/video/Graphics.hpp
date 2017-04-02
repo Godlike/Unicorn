@@ -1,6 +1,6 @@
 /*
 * Copyright (C) 2017 by Godlike
-* This code is licensed under the MIT license (MIT) 
+* This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
 
@@ -9,6 +9,12 @@
 
 namespace unicorn
 {
+
+namespace WindowManager
+{
+class Hub;
+}
+
 namespace video
 {
 class Renderer;
@@ -21,7 +27,7 @@ class Graphics
 {
 public:
     /** @brief Constructs an empty graphics system */
-    Graphics();
+    Graphics(WindowManager::Hub& windowManagerHub);
 
     /** @brief  Destructs a graphics system
      *
@@ -56,6 +62,9 @@ public:
 private:
     //! Flag describing if graphics were initialized
     bool m_isInitialized;
+
+    //! Reference to window and monitor managing hub
+    WindowManager::Hub& m_windowManagerHub;
 
     //! Pointer to renderer
     Renderer* m_pRenderer;

@@ -12,8 +12,9 @@ namespace unicorn
 {
 namespace video
 {
-Graphics::Graphics()
+Graphics::Graphics(WindowManager::Hub& windowManagerHub)
     : m_isInitialized(false)
+    , m_windowManagerHub(windowManagerHub)
     , m_pRenderer(nullptr)
 {
 }
@@ -32,7 +33,7 @@ bool Graphics::Init()
 
     LOG_INFO("Graphics initialization started.");
 
-    m_pRenderer = new Renderer();
+    m_pRenderer = new Renderer(m_windowManagerHub);
 
     if (!m_pRenderer->Init())
     {

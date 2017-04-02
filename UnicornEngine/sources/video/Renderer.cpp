@@ -9,6 +9,9 @@
 #include <unicorn/utility/Logger.hpp>
 #include <unicorn/utility/asset/SimpleStorage.hpp>
 
+#include <unicorn/window_manager/Hub.hpp>
+#include <unicorn/window_manager/Window.hpp>
+
 #include <cstring>
 #include <iostream>
 #include <set>
@@ -52,8 +55,9 @@ static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flag
     return VK_FALSE;
 }
 
-Renderer::Renderer()
+Renderer::Renderer(WindowManager::Hub& windowManagerHub)
     : m_isInitialized(false)
+    , m_windowManagerHub(windowManagerHub)
     , m_pWindow(nullptr)
     , m_validationLayers({"VK_LAYER_LUNARG_standard_validation"})
     , m_deviceExtensions({VK_KHR_SWAPCHAIN_EXTENSION_NAME})
@@ -74,11 +78,7 @@ bool Renderer::Init()
 
     LOG_INFO("Vulkan render initialization started.");
 
-    glfwInit();
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-
-    if (!glfwVulkanSupported())
+    if (!m_windowManagerHub.IsVulkanSupported())
     {
         LOG_ERROR("Vulkan not supported!");
 
@@ -87,13 +87,14 @@ bool Renderer::Init()
 
     const core::Settings& settings = core::Settings::Instance();
 
-    m_pWindow = glfwCreateWindow(settings.GetApplicationWidth(),
+    m_pWindow = m_windowManagerHub.CreateWindow(settings.GetApplicationWidth(),
         settings.GetApplicationHeight(),
-        settings.GetApplicationName().c_str(),
+        settings.GetApplicationName(),
         nullptr,
         nullptr);
-    glfwSetWindowUserPointer(m_pWindow, this);
-    glfwSetWindowSizeCallback(m_pWindow, OnWindowResized);
+
+    // glfwSetWindowUserPointer(m_pWindow, this);
+    // glfwSetWindowSizeCallback(m_pWindow, OnWindowResized);
     if (!CreateInstance() ||
         !SetupDebugCallback() ||
         !CreateSurface() ||
@@ -135,8 +136,13 @@ void Renderer::Deinit()
 
     if (m_pWindow)
     {
-        glfwSetWindowShouldClose(m_pWindow, GLFW_TRUE);
-        glfwDestroyWindow(m_pWindow);
+        if (!m_windowManagerHub.DestroyWindow(m_pWindow))
+        {
+            LOG_WARNING("Window manager failed to destroy window.");
+
+            delete m_pWindow;
+        }
+
         m_pWindow = nullptr;
     }
 
@@ -253,32 +259,34 @@ void Renderer::Render()
 {
     if (m_isInitialized && m_pWindow)
     {
-        while (!glfwWindowShouldClose(m_pWindow))
+        while (!m_pWindow->ShouldClose())
         {
-            glfwPollEvents();
+            m_windowManagerHub.PollEvents();
+
             if (!Frame())
             {
                 break;
             }
         }
+
         m_vkLogicalDevice.waitIdle();
     }
 }
 
-void Renderer::OnWindowResized(GLFWwindow* window, int width, int height)
-{
-    if (width == 0 || height == 0)
-    {
-        return;
-    }
+// void Renderer::OnWindowResized(GLFWwindow* window, int width, int height)
+// {
+//     if (width == 0 || height == 0)
+//     {
+//         return;
+//     }
 
-    Renderer* renderer = reinterpret_cast<Renderer*>(glfwGetWindowUserPointer(window));
+//     Renderer* renderer = reinterpret_cast<Renderer*>(glfwGetWindowUserPointer(window));
 
-    if (!renderer->RecreateSwapChain())
-    {
-        LOG_ERROR("Can't recreate swapchain!");
-    }
-}
+//     if (!renderer->RecreateSwapChain())
+//     {
+//         LOG_ERROR("Can't recreate swapchain!");
+//     }
+// }
 
 bool Renderer::RecreateSwapChain()
 {
@@ -538,9 +546,10 @@ bool Renderer::CreateLogicalDevice()
 
 bool Renderer::CreateSurface()
 {
-    if (glfwCreateWindowSurface(m_vkInstance, m_pWindow, nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
+    if (!m_pWindow || m_pWindow->CreateVulkanSurface(m_vkInstance, nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
     {
         LOG_ERROR("Failed to create window surface!");
+
         return false;
     }
 
@@ -1132,21 +1141,14 @@ bool Renderer::CheckValidationLayerSupport() const
 
 std::vector<const char*> Renderer::GetRequiredExtensions()
 {
-    std::vector<const char*> m_extensions;
-    unsigned int glfwExtensionCount = 0;
-    const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-    for (unsigned int i = 0; i < glfwExtensionCount; ++i)
-    {
-        m_extensions.push_back(glfwExtensions[i]);
-    }
+    std::vector<const char*> extensions( m_windowManagerHub.GetRequiredVulkanExtensions() );
 
     if (s_enableValidationLayers)
     {
-        m_extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+        extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
     }
 
-    return m_extensions;
+    return extensions;
 }
 
 VkResult Renderer::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo)

@@ -1,5 +1,5 @@
 # Copyright (C) 2017 by Godlike
-# This code is licensed under the MIT license (MIT) 
+# This code is licensed under the MIT license (MIT)
 # (http://opensource.org/licenses/MIT)
 
 cmake_minimum_required(VERSION 3.0)

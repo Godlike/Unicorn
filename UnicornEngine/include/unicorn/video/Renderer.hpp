@@ -1,6 +1,6 @@
 /*
 * Copyright (C) 2017 by Godlike
-* This code is licensed under the MIT license (MIT) 
+* This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
 
@@ -18,6 +18,13 @@ struct GLFWwindow;
 
 namespace unicorn
 {
+
+namespace WindowManager
+{
+class Hub;
+class Window;
+}
+
 namespace video
 {
 struct QueueFamilyIndices
@@ -45,7 +52,7 @@ struct SwapChainSupportDetails
 class Renderer
 {
 public:
-    Renderer();
+    Renderer(WindowManager::Hub& windowManagerHub);
     ~Renderer();
 
     Renderer(const Renderer& other) = delete;
@@ -61,7 +68,12 @@ public:
 
 private:
     bool m_isInitialized;
-    GLFWwindow* m_pWindow;
+
+    //! Reference to window and monitor managing hub
+    WindowManager::Hub& m_windowManagerHub;
+
+    WindowManager::Window* m_pWindow;
+
     vk::Instance m_vkInstance;
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;

@@ -1,5 +1,5 @@
 # Copyright (C) 2017 by Godlike
-# This code is licensed under the MIT license (MIT) 
+# This code is licensed under the MIT license (MIT)
 # (http://opensource.org/licenses/MIT)
 
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Flag to override default GLFW_BUILD_EXAMPLES value")
