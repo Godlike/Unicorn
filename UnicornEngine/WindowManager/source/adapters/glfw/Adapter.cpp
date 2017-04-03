@@ -266,7 +266,7 @@ std::vector<MonitorMemento> Adapter::GetMonitors()
 
         for (int m = 0; m < modeCount; ++m)
         {
-            VideoMode mode({});
+            VideoMode mode = {};
 
             mode.width = modes[m].width;
             mode.height = modes[m].height;

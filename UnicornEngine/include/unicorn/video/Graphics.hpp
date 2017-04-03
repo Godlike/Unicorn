@@ -7,6 +7,8 @@
 #ifndef UNICORN_VIDEO_GRAPHICS_HPP
 #define UNICORN_VIDEO_GRAPHICS_HPP
 
+#include <unicorn/utility/SharedMacros.hpp>
+
 #include <cstdint>
 #include <string>
 #include <utility>
@@ -80,7 +82,7 @@ public:
      *
      *  @return a pointer to newly created window object
      */
-    WindowManager::Window* SpawnWindow(int32_t width,
+    UNICORN_EXPORT WindowManager::Window* SpawnWindow(int32_t width,
         int32_t height,
         const std::string& name,
         WindowManager::Monitor* pMonitor = nullptr,
