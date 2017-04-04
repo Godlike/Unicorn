@@ -11,8 +11,9 @@
 
 #include <cstdint>
 #include <string>
-#include <utility>
 #include <unordered_set>
+#include <utility>
+#include <vector>
 
 namespace unicorn
 {
@@ -87,6 +88,9 @@ public:
         const std::string& name,
         WindowManager::Monitor* pMonitor = nullptr,
         WindowManager::Window* pSharedWindow = nullptr);
+
+    /** @brief  Returns the list of known monitors */
+    UNICORN_EXPORT const std::vector<WindowManager::Monitor*>& GetMonitors() const;
 
 private:
     typedef std::pair<Renderer*, WindowManager::Window*> RendererWindowPair;

@@ -6,8 +6,11 @@
 
 #include <unicorn/window_manager/Hub.hpp>
 
-#include <unicorn/window_manager/MonitorMemento.hpp>
 #include <unicorn/window_manager/adapters/Helper.hpp>
+
+#include <unicorn/window_manager/CustomValue.hpp>
+#include <unicorn/window_manager/MonitorMemento.hpp>
+#include <unicorn/window_manager/WindowHint.hpp>
 
 #include <unicorn/utility/Logger.hpp>
 
@@ -69,14 +72,27 @@ void Hub::Init()
 {
     WINDOW_MANAGER_ADAPTER::Init();
 
+    WINDOW_MANAGER_ADAPTER::SetWindowHint(WindowHint::ClientAPI, CustomValue::No_API);
+    WINDOW_MANAGER_ADAPTER::SetWindowHint(WindowHint::Resizable, CustomValue::True);
+
+    WINDOW_MANAGER_ADAPTER::MonitorStateChanged.connect(this, &Hub::OnMonitorStateChanged);
+
     const std::vector<MonitorMemento>& monitors = WINDOW_MANAGER_ADAPTER::GetMonitors();
 
     m_monitors.reserve(monitors.size());
 
+    Monitor* pMonitor = nullptr;
+
     for (std::vector<MonitorMemento>::const_iterator cit = monitors.cbegin(); cit != monitors.cend(); ++cit)
     {
-        m_monitors.push_back(new Monitor(*cit));
+        pMonitor = new Monitor(*cit);
+
+        m_monitors.push_back(pMonitor);
+
+        MonitorCreated.push(pMonitor);
     }
+
+    MonitorCreated.emit();
 }
 
 void Hub::Deinit()
@@ -122,6 +138,23 @@ Monitor* Hub::GetMonitor(uint32_t id) const
     }
 
     return result;
+}
+
+void Hub::OnMonitorStateChanged(void* handle, MonitorMemento::State state)
+{
+    Monitor* pMonitor = GetMonitor(handle);
+
+    if (nullptr == pMonitor)
+    {
+        pMonitor = new Monitor(WINDOW_MANAGER_ADAPTER::GetMonitor(handle));
+        pMonitor->SetState(state);
+
+        m_monitors.push_back(pMonitor);
+
+        MonitorCreated.push(pMonitor);
+    }
+
+    MonitorCreated.emit();
 }
 
 Monitor* Hub::GetMonitor(void* handle) const

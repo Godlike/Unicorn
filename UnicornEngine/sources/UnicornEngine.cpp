@@ -11,6 +11,7 @@
 
 #include <unicorn/window_manager/Hub.hpp>
 #include <unicorn/window_manager/profilers/WindowProfiler.hpp>
+#include <unicorn/window_manager/profilers/MonitorProfiler.hpp>
 
 namespace unicorn
 {
@@ -18,6 +19,7 @@ UnicornEngine::UnicornEngine()
     : m_isInitialized(false)
     , m_pWindowManagerHub(nullptr)
     , m_pWindowProfiler(nullptr)
+    , m_pMonitorProfiler(nullptr)
     , m_pGraphics(nullptr)
 {
 }
@@ -39,6 +41,7 @@ bool UnicornEngine::Init()
 
     m_pWindowManagerHub = new WindowManager::Hub();
     m_pWindowProfiler = new WindowManager::WindowProfiler(*m_pWindowManagerHub);
+    m_pMonitorProfiler = new WindowManager::MonitorProfiler(*m_pWindowManagerHub);
 
     m_pWindowManagerHub->Init();
 
@@ -72,6 +75,13 @@ void UnicornEngine::Deinit()
     if (m_pWindowManagerHub)
     {
         m_pWindowManagerHub->Deinit();
+
+        if (m_pMonitorProfiler)
+        {
+            delete m_pMonitorProfiler;
+
+            m_pMonitorProfiler = nullptr;
+        }
 
         if (m_pWindowProfiler)
         {

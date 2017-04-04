@@ -28,7 +28,7 @@ Monitor::Monitor(const MonitorMemento& memento)
     , m_state( memento.state )
     , m_handle( memento.handle )
 {
-
+    WINDOW_MANAGER_ADAPTER::MonitorStateChanged.connect(this, &Monitor::OnMonitorStateChanged);
 }
 
 Monitor::~Monitor()
@@ -90,6 +90,16 @@ bool Monitor::SetGamma(float gamma)
     SetGammaRamp(std::move(ramp));
 
     return true;
+}
+
+void Monitor::OnMonitorStateChanged(void* handle, MonitorMemento::State state)
+{
+    if (handle == m_handle)
+    {
+        m_state = state;
+
+        StateChanged.emit(this, state);
+    }
 }
 
 }

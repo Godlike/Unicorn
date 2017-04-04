@@ -11,6 +11,7 @@
 #include <unicorn/window_manager/Window.hpp>
 
 #include <wink/signal.hpp>
+#include <wink/event_queue.hpp>
 
 #include <map>
 #include <vector>
@@ -140,10 +141,18 @@ public:
      */
     Monitor* GetMonitor(uint32_t id) const;
 
+    /** @brief  Returns a vector of all known monitors */
+    const std::vector<Monitor*>& GetMonitors() const { return m_monitors; }
+
     //! Signal that is emitted every time new window is created
     wink::signal< wink::slot<void(Window*)> > WindowCreated;
 
+    //! Signal that is emitted every time new monitor is created
+    wink::event_queue<Monitor*> MonitorCreated;
+
 private:
+    void OnMonitorStateChanged(void* handle, MonitorMemento::State state);
+
     //! Returns a monitor identified by handle
     Monitor* GetMonitor(void* handle) const;
 

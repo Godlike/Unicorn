@@ -76,6 +76,8 @@ public:
      *
      *  Can be used to override user input when close event was emitted
      *  or just to set the flag if window should be closed
+     *
+     *  @param  flag    new value
      */
     void SetShouldClose(bool flag) const;
 
@@ -88,8 +90,51 @@ public:
     /** @brief  Returns the size of the window */
     const std::pair<int32_t, int32_t>& GetSize() const { return m_size; }
 
+    /** @brief  Sets window size
+     *
+     *  @param  size    pair of new values as (width, height)
+     */
+    void SetSize(std::pair<int32_t, int32_t> size);
+
+    /** @brief  Sets window size limits
+     *
+     *  @param  minSize     pair of lower boundaries as (width, height)
+     *  @param  maxSize     pair of higher boundaries as (width, height)
+     */
+    void SetSizeLimits(std::pair<int32_t, int32_t> minSize, std::pair<int32_t, int32_t> maxSize);
+
+    /** @brief  Sets aspect ratio for window
+     *
+     *  @param  ratio   pair of values as (width, height)
+     */
+    void SetAspectRatio(std::pair<int32_t, int32_t> ratio);
+
     /** @brief  Returns the position of the window */
     const std::pair<int32_t, int32_t>& GetPosition() const { return m_position; }
+
+    /** @brief  Sets window position
+     *
+     *  @param  position    pair of new values as (x, y)
+     */
+    void SetPosition(std::pair<int32_t, int32_t> position);
+
+    /** @brief  Minimizes window */
+    void Minimize();
+
+    /** @brief  Restores window from minimize/maximize */
+    void Restore();
+
+    /** @brief  Maximizes window */
+    void Maximize();
+
+    /** @brief  Makes window invisible */
+    void Hide();
+
+    /** @brief  Makes window visible */
+    void Show();
+
+    /** @brief  Brings window to front and sets input focus */
+    void Focus();
 
     /** @brief  Returns a handle provided by window manager adapter */
     void* GetHandle() { return m_handle; }
@@ -122,7 +167,7 @@ private:
     //! Window size in pixels as (width, height)
     std::pair<int32_t, int32_t> m_size;
 
-    //! Window position in pixels as (width, height)
+    //! Window position in pixels as (x, y)
     std::pair<int32_t, int32_t> m_position;
 
     //! Window title name

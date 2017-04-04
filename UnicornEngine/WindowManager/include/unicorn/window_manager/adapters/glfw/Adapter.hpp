@@ -8,6 +8,8 @@
 #define UNICORN_WINDOW_MANAGER_ADAPTERS_GLFW_ADAPTER_HPP
 
 #include <unicorn/window_manager/MonitorMemento.hpp>
+#include <unicorn/window_manager/WindowAttribute.hpp>
+#include <unicorn/window_manager/WindowHint.hpp>
 
 #include <wink/signal.hpp>
 
@@ -34,6 +36,9 @@ public:
     static void Init();
     static void Deinit();
 
+    static void SetWindowHint(WindowManager::WindowHint hint, int32_t value);
+    static void ResetWindowHints();
+
     static void* CreateWindow(int32_t width,
         int32_t height,
         const char* name,
@@ -41,6 +46,9 @@ public:
         void* pSharedWindowHandle);
 
     static void DestroyWindow(void* pHandle);
+
+    static void HideWindow(void* pHandle);
+    static void ShowWindow(void* pHandle);
 
     static bool IsVulkanSupported();
 
@@ -79,6 +87,9 @@ public:
     static wink::signal< wink::slot<void(void*, MonitorMemento::State)> > MonitorStateChanged;
 
 private:
+    static int ConvertToGlfwHint(WindowManager::WindowHint hint);
+    static int ConvertToGlfwValue(int32_t value);
+
     static bool s_isInitialized;
 };
 

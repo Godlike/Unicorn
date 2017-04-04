@@ -21,6 +21,7 @@ namespace WindowManager
 {
 class Hub;
 class WindowProfiler;
+class MonitorProfiler;
 }
 
 /** @brief  Engine main class */
@@ -72,6 +73,9 @@ private:
 
     //! Pointer to window profiler
     WindowManager::WindowProfiler* m_pWindowProfiler;
+
+    //! Pointer to monitor profiler
+    WindowManager::MonitorProfiler* m_pMonitorProfiler;
 
     //! Pointer to graphics system
     video::Graphics* m_pGraphics;

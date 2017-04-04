@@ -13,19 +13,24 @@ set(WINDOW_MANAGER_HEADERS
     include/unicorn/window_manager/adapters/${UNICORN_WINDOW_MANAGER}/config.hpp
     include/unicorn/window_manager/adapters/${UNICORN_WINDOW_MANAGER}/Adapter.hpp
 
+    include/unicorn/window_manager/profilers/MonitorProfiler.hpp
     include/unicorn/window_manager/profilers/WindowProfiler.hpp
 
+    include/unicorn/window_manager/CustomValue.hpp
     include/unicorn/window_manager/GammaRamp.hpp
     include/unicorn/window_manager/Hub.hpp
     include/unicorn/window_manager/Monitor.hpp
     include/unicorn/window_manager/MonitorMemento.hpp
     include/unicorn/window_manager/VideoMode.hpp
     include/unicorn/window_manager/Window.hpp
+    include/unicorn/window_manager/WindowAttribute.hpp
+    include/unicorn/window_manager/WindowHint.hpp
 )
 
 set(WINDOW_MANAGER_SOURCES
     source/adapters/${UNICORN_WINDOW_MANAGER}/Adapter.cpp
 
+    source/profilers/MonitorProfiler.cpp
     source/profilers/WindowProfiler.cpp
 
     source/GammaRamp.cpp

@@ -99,9 +99,11 @@ public:
     /** @grief  Returns a handle provided by window manager adapter */
     void* GetHandle() { return m_handle; }
 
-    wink::signal< wink::slot<void(State)> > StateChanged;
+    wink::signal< wink::slot<void(Monitor*, State)> > StateChanged;
 
 private:
+    void OnMonitorStateChanged(void* handle, MonitorMemento::State state);
+
     //! Monitor id within application
     uint32_t m_id;
 

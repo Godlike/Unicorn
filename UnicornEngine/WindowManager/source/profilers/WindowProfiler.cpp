@@ -19,7 +19,7 @@ namespace WindowManager
 WindowProfiler::WindowProfiler(Hub& hub)
     : m_hub( hub )
 {
-    LOG_INFO("WindowProfiler created");
+    LOG_DEBUG("WindowProfiler created");
     m_hub.WindowCreated.connect(this, &WindowProfiler::OnWindowCreated);
 }
 
@@ -27,12 +27,12 @@ WindowProfiler::~WindowProfiler()
 {
     m_hub.WindowCreated.disconnect(this, &WindowProfiler::OnWindowCreated);
 
-    LOG_INFO("WindowProfiler destroyed");
+    LOG_DEBUG("WindowProfiler destroyed");
 }
 
 void WindowProfiler::OnWindowCreated(Window* pWindow)
 {
-    LOG_INFO("Window[%d]: created", pWindow->GetId());
+    LOG_DEBUG("Window[%d]: created", pWindow->GetId());
 
     pWindow->Destroyed.connect(this, &WindowProfiler::OnWindowDestroyed);
 
@@ -48,49 +48,48 @@ void WindowProfiler::OnWindowCreated(Window* pWindow)
 
 void WindowProfiler::OnWindowDestroyed(Window* pWindow)
 {
-    LOG_INFO("Window[%d]: destroyed", pWindow->GetId());
+    LOG_DEBUG("Window[%d]: destroyed", pWindow->GetId());
 }
 
 void WindowProfiler::OnWindowPositionChanged(Window* pWindow, std::pair<int32_t, int32_t> position)
 {
-    LOG_INFO("Window[%d]: position changed to %d:%d", pWindow->GetId(), position.first, position.second);
+    LOG_DEBUG("Window[%d]: position changed to %d:%d", pWindow->GetId(), position.first, position.second);
 }
 
 void WindowProfiler::OnWindowSizeChanged(Window* pWindow, std::pair<int32_t, int32_t> size)
 {
-    LOG_INFO("Window[%d]: size changed to %d:%d", pWindow->GetId(), size.first, size.second);
+    LOG_DEBUG("Window[%d]: size changed to %d:%d", pWindow->GetId(), size.first, size.second);
 }
 
 void WindowProfiler::OnWindowClose(Window* pWindow)
 {
-    LOG_INFO("Window[%d]: closed", pWindow->GetId());
+    LOG_DEBUG("Window[%d]: closed", pWindow->GetId());
 }
 
 void WindowProfiler::OnWindowContentRefresh(Window* pWindow)
 {
-    LOG_INFO("Window[%d]: content refresh requested", pWindow->GetId());
+    LOG_DEBUG("Window[%d]: content refresh requested", pWindow->GetId());
 }
 
 void WindowProfiler::OnWindowFocused(Window* pWindow, bool flag)
 {
-    LOG_INFO("Window[%d]: focus %s", pWindow->GetId(), flag ? "gained" : "lost");
+    LOG_DEBUG("Window[%d]: focus %s", pWindow->GetId(), flag ? "gained" : "lost");
 }
 
 void WindowProfiler::OnWindowMinimized(Window* pWindow, bool flag)
 {
-    LOG_INFO("Window[%d]: minimize event: %s", pWindow->GetId(), flag ? "iconify" : "restore");
+    LOG_DEBUG("Window[%d]: minimize event: %s", pWindow->GetId(), flag ? "iconify" : "restore");
 }
 
 void WindowProfiler::OnWindowMaximized(Window* pWindow, bool flag)
 {
-    LOG_INFO("Window[%d]: maximize event: %s", pWindow->GetId(), flag ? "maximize" : "restore");
+    LOG_DEBUG("Window[%d]: maximize event: %s", pWindow->GetId(), flag ? "maximize" : "restore");
 }
 
 void WindowProfiler::OnWindowFramebufferResized(Window* pWindow, std::pair<int32_t, int32_t> size)
 {
-    LOG_INFO("Window[%d]: framebuffer size changed to %d:%d", pWindow->GetId(), size.first, size.second);
+    LOG_DEBUG("Window[%d]: framebuffer size changed to %d:%d", pWindow->GetId(), size.first, size.second);
 }
-
 
 }
 }

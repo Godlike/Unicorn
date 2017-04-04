@@ -123,6 +123,11 @@ WindowManager::Window* Graphics::SpawnWindow(int32_t width,
     return nullptr;
 }
 
+const std::vector<WindowManager::Monitor*>& Graphics::GetMonitors() const
+{
+    return m_windowManagerHub.GetMonitors();
+}
+
 void Graphics::ProcessExpiredRenderers()
 {
     if (!m_expiredRenderers.empty())
