@@ -11,6 +11,8 @@
 #include <unicorn/window_manager/MonitorMemento.hpp>
 #include <unicorn/window_manager/VideoMode.hpp>
 
+#include <unicorn/utility/SharedMacros.hpp>
+
 #include <wink/signal.hpp>
 
 #include <cstdint>
@@ -27,7 +29,7 @@ namespace WindowManager
  *
  *  Proxies calls to window manager adapter
  */
-class Monitor
+class UNICORN_EXPORT Monitor
 {
 public:
     typedef MonitorMemento::State State;

@@ -37,11 +37,23 @@ Window* Hub::CreateWindow(int32_t width,
 {
     Window* result = new Window(m_windows.size(), width, height, name, pMonitor, pSharedWindow);
 
+    std::pair<int32_t, int32_t> position;
+    WINDOW_MANAGER_ADAPTER::GetWindowPosition(result->GetHandle(), &position.first, &position.second);
+    result->SetPosition(position);
+
     m_windows.insert(std::make_pair(result->GetId(), result));
 
     WindowCreated.emit(result);
 
     return result;
+}
+
+VkResult Hub::CreateVulkanSurfaceForWindow(const Window& window,
+    VkInstance instance,
+    const VkAllocationCallbacks* allocator,
+    VkSurfaceKHR* surface)
+{
+    return WINDOW_MANAGER_ADAPTER::CreateVulkanSurface(instance, window.GetHandle(), allocator, surface);
 }
 
 Window* Hub::GetWindow(uint32_t id) const
@@ -171,6 +183,25 @@ Monitor* Hub::GetMonitor(void* handle) const
     }
 
     return result;
+}
+
+Monitor* Hub::GetWindowMonitor(const Window& window) const
+{
+    return GetMonitor(WINDOW_MANAGER_ADAPTER::GetWindowMonitor(window.GetHandle()));
+}
+
+void Hub::SetWindowMonitor(const Window& window,
+    Monitor* pMonitor,
+    std::pair<int32_t, int32_t> position,
+    std::pair<int32_t, int32_t> size,
+    int32_t refreshRate) const
+{
+    WINDOW_MANAGER_ADAPTER::SetWindowMonitor(window.GetHandle(),
+        pMonitor != nullptr ? pMonitor->GetHandle() : nullptr,
+        position,
+        size,
+        refreshRate
+    );
 }
 
 }

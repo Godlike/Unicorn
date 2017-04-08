@@ -32,7 +32,20 @@ WindowProfiler::~WindowProfiler()
 
 void WindowProfiler::OnWindowCreated(Window* pWindow)
 {
-    LOG_DEBUG("Window[%d]: created", pWindow->GetId());
+    const std::pair<int32_t, int32_t>& size = pWindow->GetSize();
+    const std::pair<int32_t, int32_t>& position = pWindow->GetPosition();
+    Monitor* pMonitor = m_hub.GetWindowMonitor(*pWindow);
+
+    LOG_DEBUG("Window[%d]: created:"
+        "\r\n\t%8s\t%s"
+        "\r\n\t%8s\t%dx%d"
+        "\r\n\t%8s\t%d:%d"
+        "\r\n\t%8s\t%u"
+        , pWindow->GetId()
+        , "name", pWindow->GetName().c_str()
+        , "size", size.first, size.second
+        , "position", position.first, position.second
+        , "monitor", pMonitor != nullptr ? pMonitor->GetId() : 0);
 
     pWindow->Destroyed.connect(this, &WindowProfiler::OnWindowDestroyed);
 

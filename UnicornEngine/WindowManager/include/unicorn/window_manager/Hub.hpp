@@ -13,6 +13,8 @@
 #include <wink/signal.hpp>
 #include <wink/event_queue.hpp>
 
+#include <vulkan/vulkan.hpp>
+
 #include <map>
 #include <vector>
 
@@ -64,6 +66,20 @@ public:
         const std::string& name,
         Monitor* pMonitor = nullptr,
         Window* pSharedWindow = nullptr);
+
+    /** @brief  Creates a vulkan surface that can be used with this window
+     *
+     *  @param[in]  window      window which should be associated with surface
+     *  @param[in]  instance    Vulkan instance
+     *  @param[in]  allocator   Vulkan allocator
+     *  @param[out] surface     variable that will hold created surface handle
+     *
+     *  @return Vulkan result flag
+     */
+    VkResult CreateVulkanSurfaceForWindow(const Window& window,
+        VkInstance instance,
+        const VkAllocationCallbacks* allocator,
+        VkSurfaceKHR* surface);
 
     /** @brief  Returns a window identified by @p id
      *
@@ -143,6 +159,30 @@ public:
 
     /** @brief  Returns a vector of all known monitors */
     const std::vector<Monitor*>& GetMonitors() const { return m_monitors; }
+
+    /** @brief  Returns monitor associated with given @p window
+     *
+     *  @param  window  window object
+     *
+     *  @return a pointer to monitor object associated with given @p window
+     *          or @c nullptr if something went wrong or the window is not in
+     *          fullscreen mode
+     */
+    Monitor* GetWindowMonitor(const Window& window) const;
+
+    /** @brief  Sets monitor to be used by @p window for fullscreen mode
+     *
+     *  @param  window      window object
+     *  @param  pMonitor    monitor object or @c nullptr for windowed mode
+     *  @param  position    desired position as (x, y)
+     *  @param  size        desired size as (width, height)
+     *  @param  refreshRate desired refresh rate
+     */
+    void SetWindowMonitor(const Window& window,
+        Monitor* pMonitor,
+        std::pair<int32_t, int32_t> position,
+        std::pair<int32_t, int32_t> size,
+        int32_t refreshRate) const;
 
     //! Signal that is emitted every time new window is created
     wink::signal< wink::slot<void(Window*)> > WindowCreated;

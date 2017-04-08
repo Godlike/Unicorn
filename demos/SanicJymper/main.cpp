@@ -7,6 +7,9 @@
 #include <unicorn/UnicornEngine.hpp>
 
 #include <unicorn/video/Graphics.hpp>
+
+#include <unicorn/window_manager/Window.hpp>
+
 #include <unicorn/core/Settings.hpp>
 
 int main(int argc, char* argv[])
@@ -22,26 +25,38 @@ int main(int argc, char* argv[])
     {
         unicorn::video::Graphics* pGraphics = unicornEngine->GetGraphics();
 
-        unicorn::WindowManager::Window* pWindow1 = pGraphics->SpawnWindow(
+        unicorn::WindowManager::Window* pWindow0 = pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
             settings.GetApplicationName(),
             nullptr,
             nullptr );
 
-        unicorn::WindowManager::Window* pWindow2 = pGraphics->SpawnWindow(
+        unicorn::WindowManager::Window* pWindow1 = pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
             std::string("Hmm ") + settings.GetApplicationName(),
             nullptr,
             nullptr );
 
-        unicorn::WindowManager::Window* pWindow3 = pGraphics->SpawnWindow(
+        unicorn::WindowManager::Window* pWindow2 = pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
             std::string("wat ") + settings.GetApplicationName(),
             nullptr,
             nullptr );
+
+        pWindow0->Minimize();
+
+        std::pair<int32_t, int32_t> win2pos = pWindow1->GetPosition();
+        win2pos.first += 640;
+        win2pos.second += 480;
+        pWindow1->SetPosition(win2pos);
+        pWindow1->Focus();
+        pWindow1->SetName("Ayy lmao");
+
+        pWindow2->Maximize();
+        pWindow2->Restore();
 
         unicornEngine->Run();
     }

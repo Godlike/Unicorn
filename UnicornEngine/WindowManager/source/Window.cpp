@@ -59,13 +59,6 @@ Window::~Window()
     WINDOW_MANAGER_ADAPTER::DestroyWindow(m_handle);
 }
 
-VkResult Window::CreateVulkanSurface(VkInstance instance,
-    const VkAllocationCallbacks* allocator,
-    VkSurfaceKHR* surface)
-{
-    return WINDOW_MANAGER_ADAPTER::CreateVulkanSurface(instance, m_handle, allocator, surface);
-}
-
 bool Window::ShouldClose() const
 {
     return WINDOW_MANAGER_ADAPTER::WindowShouldClose(m_handle);
@@ -74,6 +67,61 @@ bool Window::ShouldClose() const
 void Window::SetShouldClose(bool flag) const
 {
     WINDOW_MANAGER_ADAPTER::SetWindowShouldClose(m_handle, flag);
+}
+
+void Window::SetName(const std::string& name)
+{
+    WINDOW_MANAGER_ADAPTER::SetWindowName(m_handle, name.c_str());
+}
+
+void Window::SetSize(std::pair<int32_t, int32_t> size)
+{
+    WINDOW_MANAGER_ADAPTER::SetWindowSize(m_handle, size.first, size.second);
+}
+
+void Window::SetSizeLimits(std::pair<int32_t, int32_t> minSize, std::pair<int32_t, int32_t> maxSize)
+{
+    WINDOW_MANAGER_ADAPTER::SetWindowSizeLimits(m_handle, minSize, maxSize);
+}
+
+void Window::SetAspectRatio(std::pair<int32_t, int32_t> ratio)
+{
+    WINDOW_MANAGER_ADAPTER::SetWindowAspectRatio(m_handle, ratio);
+}
+
+void Window::SetPosition(std::pair<int32_t, int32_t> position)
+{
+    WINDOW_MANAGER_ADAPTER::SetWindowPosition(m_handle, position.first, position.second);
+}
+
+void Window::Minimize()
+{
+    WINDOW_MANAGER_ADAPTER::MinimizeWindow(m_handle);
+}
+
+void Window::Restore()
+{
+    WINDOW_MANAGER_ADAPTER::RestoreWindow(m_handle);
+}
+
+void Window::Maximize()
+{
+    WINDOW_MANAGER_ADAPTER::MaximizeWindow(m_handle);
+}
+
+void Window::Focus()
+{
+    WINDOW_MANAGER_ADAPTER::FocusWindow(m_handle);
+}
+
+void Window::Hide()
+{
+    WINDOW_MANAGER_ADAPTER::HideWindow(m_handle);
+}
+
+void Window::Show()
+{
+    WINDOW_MANAGER_ADAPTER::ShowWindow(m_handle);
 }
 
 void Window::OnWindowPositionChanged(void* handle, std::pair<int32_t, int32_t> position)

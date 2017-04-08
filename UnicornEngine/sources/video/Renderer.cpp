@@ -528,7 +528,7 @@ bool Renderer::CreateLogicalDevice()
 
 bool Renderer::CreateSurface()
 {
-    if (!m_pWindow || m_pWindow->CreateVulkanSurface(m_vkInstance, nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
+    if (!m_pWindow || m_windowManagerHub.CreateVulkanSurfaceForWindow(*m_pWindow, m_vkInstance, nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
     {
         LOG_ERROR("Failed to create window surface!");
 

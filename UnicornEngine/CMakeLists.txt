@@ -54,15 +54,14 @@ include(WinkSignals)
 
 if (UNIX)
     find_library(Vulkan REQUIRED)
-endif ()
+endif()
 
 include_directories(
     ${VULKAN_INCLUDE_DIR}
 )
 
 include_directories(
-    ${UNICORN_ENGINE_INCLUDE_DIR}
-    ${WINDOW_MANAGER_INCLUDE_DIR}
+    ${UNICORN_ENGINE_INCLUDE_DIRS}
 )
 
 include_directories( SYSTEM
@@ -128,7 +127,7 @@ if (UNICORN_BUILD_DOCUMENTATION)
     if (DOXYGEN_FOUND)
         set(DOXYGEN_PROJECT_NAME ${PROJECT_NAME})
         set(DOXYGEN_INPUT
-            "${CMAKE_CURRENT_SOURCE_DIR}/include ${WINDOW_MANAGER_INCLUDE_DIR}"
+            "${UNICORN_ENGINE_INCLUDE_DIR} ${WINDOW_MANAGER_INCLUDE_DIR}"
             )
 
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)

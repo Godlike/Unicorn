@@ -120,7 +120,7 @@ WindowManager::Window* Graphics::SpawnWindow(int32_t width,
 
     LOG_INFO("Graphics initialization started.");
 
-    return nullptr;
+    return pWindow;
 }
 
 const std::vector<WindowManager::Monitor*>& Graphics::GetMonitors() const

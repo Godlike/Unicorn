@@ -42,7 +42,7 @@ void MonitorProfiler::OnMonitorCreated(Monitor* const& pMonitor)
     LOG_DEBUG("Monitor[%d]: created:"
         "\r\n\t%16s\t%s"
         "\r\n\t%16s\t%dx%d"
-        "\r\n\t%16s\t%dx%d"
+        "\r\n\t%16s\t%d:%d"
         "\r\n\t%16s\t%s"
         "\r\n\t%16s\t%s"
         , id
@@ -72,9 +72,11 @@ void MonitorProfiler::OnMonitorCreated(Monitor* const& pMonitor)
 void MonitorProfiler::OnMonitorStateChanged(Monitor* pMonitor, Monitor::State state)
 {
     LOG_DEBUG("Monitor[%d]: connected state changed to %s",
+        pMonitor->GetId(),
         pMonitor->GetState() != MonitorMemento::State::Unknown ?
             (pMonitor->GetState() == MonitorMemento::State::Connected ?
-                "true" : "false") : "unknown");
+                "true" : "false") : "unknown"
+    );
 }
 
 }

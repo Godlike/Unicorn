@@ -9,9 +9,9 @@
 
 #include <unicorn/window_manager/Monitor.hpp>
 
-#include <wink/signal.hpp>
+#include <unicorn/utility/SharedMacros.hpp>
 
-#include <vulkan/vulkan.hpp>
+#include <wink/signal.hpp>
 
 #include <cstdint>
 #include <string>
@@ -26,7 +26,7 @@ namespace WindowManager
  *
  *  Proxies calls to window manager adapter
  */
-class Window
+class UNICORN_EXPORT Window
 {
 public:
     /** @brief  Constructs a window object
@@ -57,18 +57,6 @@ public:
     /** @brief  Destructs a window object */
     ~Window();
 
-    /** @brief  Creates a vulkan surface that can be used with this window
-     *
-     *  @param[in]  instance    Vulkan instance
-     *  @param[in]  allocator   Vulkan allocator
-     *  @param[out] surface     variable that will hold created surface handle
-     *
-     *  @return Vulkan result flag
-     */
-    VkResult CreateVulkanSurface(VkInstance instance,
-        const VkAllocationCallbacks* allocator,
-        VkSurfaceKHR* surface);
-
     /** @brief  Checks if window should be closed */
     bool ShouldClose() const;
 
@@ -86,6 +74,12 @@ public:
 
     /** @brief  Returns the name of the window */
     const std::string& GetName() const { return m_name; }
+
+    /** @brief  Sets the name of the window
+     *
+     *  @param  name    new name of the window
+     */
+    void SetName(const std::string& name);
 
     /** @brief  Returns the size of the window */
     const std::pair<int32_t, int32_t>& GetSize() const { return m_size; }
@@ -127,17 +121,17 @@ public:
     /** @brief  Maximizes window */
     void Maximize();
 
+    /** @brief  Brings window to front and sets input focus */
+    void Focus();
+
     /** @brief  Makes window invisible */
     void Hide();
 
     /** @brief  Makes window visible */
     void Show();
 
-    /** @brief  Brings window to front and sets input focus */
-    void Focus();
-
     /** @brief  Returns a handle provided by window manager adapter */
-    void* GetHandle() { return m_handle; }
+    void* GetHandle() const { return m_handle; }
 
     //! Signal that is emitted from destructor before the actual window is destroyed
     wink::signal< wink::slot<void(Window*)> > Destroyed;

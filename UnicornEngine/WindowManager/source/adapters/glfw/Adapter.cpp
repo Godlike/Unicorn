@@ -46,72 +46,72 @@ bool Adapter::s_isInitialized = false;
 namespace
 {
 
-void unicornWindowPositionChanged(GLFWwindow* pHandle, int x, int y)
+void unicornWindowPositionChanged(GLFWwindow* handle, int x, int y)
 {
     Adapter::WindowPositionChanged.emit(
-        static_cast<void*>(pHandle),
+        static_cast<void*>(handle),
         std::pair<int32_t, int32_t>(x, y)
     );
 }
 
-void unicornWindowSizeChanged(GLFWwindow* pHandle, int width, int height)
+void unicornWindowSizeChanged(GLFWwindow* handle, int width, int height)
 {
     Adapter::WindowSizeChanged.emit(
-        static_cast<void*>(pHandle),
+        static_cast<void*>(handle),
         std::pair<int32_t, int32_t>(width, height)
     );
 }
 
-void unicornWindowClose(GLFWwindow* pHandle)
+void unicornWindowClose(GLFWwindow* handle)
 {
     Adapter::WindowClose.emit(
-        static_cast<void*>(pHandle)
+        static_cast<void*>(handle)
     );
 }
 
-void unicornWindowContentRefresh(GLFWwindow* pHandle)
+void unicornWindowContentRefresh(GLFWwindow* handle)
 {
     Adapter::WindowContentRefresh.emit(
-        static_cast<void*>(pHandle)
+        static_cast<void*>(handle)
     );
 }
 
-void unicornWindowFocused(GLFWwindow* pHandle, int focused)
+void unicornWindowFocused(GLFWwindow* handle, int focused)
 {
     Adapter::WindowFocused.emit(
-        static_cast<void*>(pHandle),
+        static_cast<void*>(handle),
         GLFW_TRUE == focused ? true : false
     );
 }
 
-void unicornWindowMinimized(GLFWwindow* pHandle, int minimized)
+void unicornWindowMinimized(GLFWwindow* handle, int minimized)
 {
     Adapter::WindowMinimized.emit(
-        static_cast<void*>(pHandle),
+        static_cast<void*>(handle),
         GLFW_TRUE == minimized ? true : false
     );
 }
 
-void unicornWindowMaximized(GLFWwindow* pHandle, int maximized)
+void unicornWindowMaximized(GLFWwindow* handle, int maximized)
 {
     Adapter::WindowMaximized.emit(
-        static_cast<void*>(pHandle),
+        static_cast<void*>(handle),
         GLFW_TRUE == maximized ? true : false
     );
 }
 
-void unicornWindowFramebufferResized(GLFWwindow* pHandle, int width, int height)
+void unicornWindowFramebufferResized(GLFWwindow* handle, int width, int height)
 {
     Adapter::WindowFramebufferResized.emit(
-        static_cast<void*>(pHandle),
+        static_cast<void*>(handle),
         std::pair<int32_t, int32_t>(width, height)
     );
 }
 
-void unicornMonitorStateChanged(GLFWmonitor* pHandle, int event)
+void unicornMonitorStateChanged(GLFWmonitor* handle, int event)
 {
     Adapter::MonitorStateChanged.emit(
-        static_cast<void*>(pHandle),
+        static_cast<void*>(handle),
         GLFW_CONNECTED == event ? MonitorMemento::State::Connected : MonitorMemento::State::Disconnected
     );
 }
@@ -166,31 +166,31 @@ void Adapter::ResetWindowHints()
 void* Adapter::CreateWindow(int32_t width,
     int32_t height,
     const char* name,
-    void* pMonitorHandle,
-    void* pSharedWindowHandle)
+    void* monitorHandle,
+    void* sharedWindowHandle)
 {
-    GLFWwindow* pHandle = glfwCreateWindow(width,
+    GLFWwindow* handle = glfwCreateWindow(width,
         height,
         name,
-        static_cast<GLFWmonitor*>(pMonitorHandle),
-        static_cast<GLFWwindow*>(pSharedWindowHandle) );
+        static_cast<GLFWmonitor*>(monitorHandle),
+        static_cast<GLFWwindow*>(sharedWindowHandle) );
 
-    glfwSetWindowPosCallback(pHandle, unicornWindowPositionChanged);
-    glfwSetWindowSizeCallback(pHandle, unicornWindowSizeChanged);
-    glfwSetWindowCloseCallback(pHandle, unicornWindowClose);
-    glfwSetWindowRefreshCallback(pHandle, unicornWindowContentRefresh);
-    glfwSetWindowFocusCallback(pHandle, unicornWindowFocused);
-    glfwSetWindowIconifyCallback(pHandle, unicornWindowMinimized);
-    glfwSetWindowMaximizeCallback(pHandle, unicornWindowMaximized);
-    glfwSetFramebufferSizeCallback(pHandle, unicornWindowFramebufferResized);
+    glfwSetWindowPosCallback(handle, unicornWindowPositionChanged);
+    glfwSetWindowSizeCallback(handle, unicornWindowSizeChanged);
+    glfwSetWindowCloseCallback(handle, unicornWindowClose);
+    glfwSetWindowRefreshCallback(handle, unicornWindowContentRefresh);
+    glfwSetWindowFocusCallback(handle, unicornWindowFocused);
+    glfwSetWindowIconifyCallback(handle, unicornWindowMinimized);
+    glfwSetWindowMaximizeCallback(handle, unicornWindowMaximized);
+    glfwSetFramebufferSizeCallback(handle, unicornWindowFramebufferResized);
 
-    return static_cast<void*>(pHandle);
+    return static_cast<void*>(handle);
 }
 
-void Adapter::DestroyWindow(void* pHandle)
+void Adapter::DestroyWindow(void* handle)
 {
-    glfwSetWindowShouldClose(static_cast<GLFWwindow*>(pHandle), GLFW_TRUE);
-    glfwDestroyWindow(static_cast<GLFWwindow*>(pHandle));
+    glfwSetWindowShouldClose(static_cast<GLFWwindow*>(handle), GLFW_TRUE);
+    glfwDestroyWindow(static_cast<GLFWwindow*>(handle));
 }
 
 bool Adapter::IsVulkanSupported()
@@ -199,40 +199,132 @@ bool Adapter::IsVulkanSupported()
 }
 
 VkResult Adapter::CreateVulkanSurface(VkInstance instance,
-    void* pHandle,
+    void* handle,
     const VkAllocationCallbacks* allocator,
     VkSurfaceKHR* surface)
 {
     return glfwCreateWindowSurface(instance
-        , static_cast<GLFWwindow*>(pHandle)
+        , static_cast<GLFWwindow*>(handle)
         , allocator
         , surface
     );
 }
 
-bool Adapter::WindowShouldClose(void* pHandle)
+bool Adapter::WindowShouldClose(void* handle)
 {
-    return glfwWindowShouldClose(static_cast<GLFWwindow*>(pHandle));
+    return glfwWindowShouldClose(static_cast<GLFWwindow*>(handle));
 }
 
-void Adapter::SetWindowShouldClose(void* pHandle, bool flag)
+void Adapter::SetWindowShouldClose(void* handle, bool flag)
 {
-    glfwSetWindowShouldClose(static_cast<GLFWwindow*>(pHandle), flag ? GLFW_TRUE : GLFW_FALSE);
+    glfwSetWindowShouldClose(static_cast<GLFWwindow*>(handle), flag ? GLFW_TRUE : GLFW_FALSE);
 }
 
-void Adapter::GetWindowPosition(void* pHandle, int* x, int* y)
+void Adapter::GetWindowPosition(void* handle, int* x, int* y)
 {
-    glfwGetWindowPos(static_cast<GLFWwindow*>(pHandle), x, y);
+    glfwGetWindowPos(static_cast<GLFWwindow*>(handle), x, y);
 }
 
-void Adapter::SetWindowPosition(void* pHandle, int x, int y)
+void Adapter::SetWindowPosition(void* handle, int x, int y)
 {
-    glfwSetWindowPos(static_cast<GLFWwindow*>(pHandle), x, y);
+    glfwSetWindowPos(static_cast<GLFWwindow*>(handle), x, y);
+}
+
+void Adapter::GetWindowSize(void* handle, int* x, int* y)
+{
+    glfwGetWindowSize(static_cast<GLFWwindow*>(handle), x, y);
+}
+
+void Adapter::SetWindowSize(void* handle, int x, int y)
+{
+    glfwSetWindowSize(static_cast<GLFWwindow*>(handle), x, y);
+}
+
+void Adapter::SetWindowSizeLimits(void* handle, std::pair<int32_t, int32_t> minSize, std::pair<int32_t, int32_t> maxSize)
+{
+    glfwSetWindowSizeLimits(static_cast<GLFWwindow*>(handle), minSize.first, minSize.second, maxSize.first, maxSize.second);
+}
+
+void Adapter::SetWindowAspectRatio(void* handle, std::pair<int32_t, int32_t> ratio)
+{
+    glfwSetWindowAspectRatio(static_cast<GLFWwindow*>(handle), ratio.first, ratio.second);
+}
+
+void Adapter::MinimizeWindow(void* handle)
+{
+    glfwIconifyWindow(static_cast<GLFWwindow*>(handle));
+}
+
+void Adapter::RestoreWindow(void* handle)
+{
+    glfwRestoreWindow(static_cast<GLFWwindow*>(handle));
+}
+
+void Adapter::MaximizeWindow(void* handle)
+{
+    glfwMaximizeWindow(static_cast<GLFWwindow*>(handle));
+}
+
+void Adapter::FocusWindow(void* handle)
+{
+    glfwFocusWindow(static_cast<GLFWwindow*>(handle));
+}
+
+void Adapter::HideWindow(void* handle)
+{
+    glfwHideWindow(static_cast<GLFWwindow*>(handle));
+}
+
+void Adapter::ShowWindow(void* handle)
+{
+    glfwShowWindow(static_cast<GLFWwindow*>(handle));
+}
+
+void Adapter::SetWindowName(void* handle, const char* name)
+{
+    glfwSetWindowTitle(static_cast<GLFWwindow*>(handle), name);
+}
+
+void* Adapter::GetWindowMonitor(void* handle)
+{
+    return glfwGetWindowMonitor(static_cast<GLFWwindow*>(handle));
+}
+
+void Adapter::SetWindowMonitor(void* windowHandle,
+    void* monitorHandle,
+    std::pair<int32_t, int32_t> position,
+    std::pair<int32_t, int32_t> size,
+    int32_t refreshRate)
+{
+    glfwSetWindowMonitor(static_cast<GLFWwindow*>(windowHandle),
+        static_cast<GLFWmonitor*>(monitorHandle),
+        position.first,
+        position.second,
+        size.first,
+        size.second,
+        refreshRate);
+}
+
+int32_t Adapter::GetWindowAttribute(void* handle, WindowManager::WindowAttribute attribute)
+{
+    return glfwGetWindowAttrib(static_cast<GLFWwindow*>(handle), ConvertToGlfwAttribute(attribute));
 }
 
 void Adapter::PollEvents()
 {
     glfwPollEvents();
+}
+
+void Adapter::WaitEvents(double timeoutSeconds)
+{
+    if (std::isnan(timeoutSeconds))
+    {
+        glfwWaitEvents();
+    }
+    else
+    {
+        glfwWaitEventsTimeout(timeoutSeconds);
+    }
 }
 
 std::vector<const char*> Adapter::GetRequiredVulkanExtensions()
@@ -273,17 +365,17 @@ MonitorMemento Adapter::GetMonitor(void* handle)
     MonitorMemento result = {};
 
     const GLFWmonitor* primary = glfwGetPrimaryMonitor();
-    GLFWmonitor* pMonitor = static_cast<GLFWmonitor*>(handle);
+    GLFWmonitor* monitorHandle = static_cast<GLFWmonitor*>(handle);
 
-    result.name = glfwGetMonitorName(pMonitor);
+    result.name = glfwGetMonitorName(monitorHandle);
 
-    glfwGetMonitorPhysicalSize(pMonitor, &result.physicalSize.first, &result.physicalSize.second);
-    glfwGetMonitorPos(pMonitor, &result.virtualPosition.first, &result.virtualPosition.second);
+    glfwGetMonitorPhysicalSize(monitorHandle, &result.physicalSize.first, &result.physicalSize.second);
+    glfwGetMonitorPos(monitorHandle, &result.virtualPosition.first, &result.virtualPosition.second);
 
     {
         int modeCount = 0;
-        const GLFWvidmode* currentMode = glfwGetVideoMode(pMonitor);
-        const GLFWvidmode* modes = glfwGetVideoModes(pMonitor, &modeCount);
+        const GLFWvidmode* currentMode = glfwGetVideoMode(monitorHandle);
+        const GLFWvidmode* modes = glfwGetVideoModes(monitorHandle, &modeCount);
 
         result.modes.reserve(modeCount);
 
@@ -302,7 +394,7 @@ MonitorMemento Adapter::GetMonitor(void* handle)
     }
 
     {
-        const GLFWgammaramp* ramp = glfwGetGammaRamp(pMonitor);
+        const GLFWgammaramp* ramp = glfwGetGammaRamp(monitorHandle);
         if (ramp)
         {
             result.gammaRamp.size = ramp->size;
@@ -323,7 +415,7 @@ MonitorMemento Adapter::GetMonitor(void* handle)
         }
     }
 
-    result.isPrimary = ( pMonitor == primary );
+    result.isPrimary = ( monitorHandle == primary );
     result.id = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(handle));
     result.state = MonitorMemento::State::Connected;
     result.handle = handle;
@@ -458,6 +550,65 @@ int Adapter::ConvertToGlfwValue(int32_t value)
         default:
         {
             return value;
+        }
+    }
+}
+
+int Adapter::ConvertToGlfwAttribute(WindowManager::WindowAttribute attribute)
+{
+    switch (attribute)
+    {
+        case WindowManager::WindowAttribute::Decorated:
+        {
+            return GLFW_DECORATED;
+        }
+        case WindowManager::WindowAttribute::Floating:
+        {
+            return GLFW_FLOATING;
+        }
+        case WindowManager::WindowAttribute::Focused:
+        {
+            return GLFW_FOCUSED;
+        }
+        case WindowManager::WindowAttribute::Maximized:
+        {
+            return GLFW_MAXIMIZED;
+        }
+        case WindowManager::WindowAttribute::Minimized:
+        {
+            return GLFW_ICONIFIED;
+        }
+        case WindowManager::WindowAttribute::Resizable:
+        {
+            return GLFW_RESIZABLE;
+        }
+        case WindowManager::WindowAttribute::Visible:
+        {
+            return GLFW_VISIBLE;
+        }
+        case WindowManager::WindowAttribute::Samples:
+        {
+            return GLFW_SAMPLES;
+        }
+        case WindowManager::WindowAttribute::ClientAPI:
+        {
+            return GLFW_CLIENT_API;
+        }
+        case WindowManager::WindowAttribute::ContextCreationAPI:
+        {
+            return GLFW_CONTEXT_CREATION_API;
+        }
+        case WindowManager::WindowAttribute::ContextVersionMajor:
+        {
+            return GLFW_CONTEXT_VERSION_MAJOR;
+        }
+        case WindowManager::WindowAttribute::ContextVersionMinor:
+        {
+            return GLFW_CONTEXT_VERSION_MINOR;
+        }
+        default:
+        {
+            return GLFW_INVALID_ENUM;
         }
     }
 }
