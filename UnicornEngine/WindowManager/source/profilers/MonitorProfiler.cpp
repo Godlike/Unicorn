@@ -56,7 +56,7 @@ void MonitorProfiler::OnMonitorCreated(Monitor* const& pMonitor)
     );
 
     const std::vector<VideoMode>& videoModes = pMonitor->GetVideoModes();
-    const uint32_t counterChars = log10(videoModes.size()) + 1;
+    const uint32_t counterChars = static_cast<uint32_t>(log10(videoModes.size())) + 1;
     for (uint32_t i = 0; i < videoModes.size(); ++i)
     {
         const VideoMode& mode = videoModes[i];

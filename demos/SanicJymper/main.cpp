@@ -12,6 +12,13 @@
 
 #include <unicorn/core/Settings.hpp>
 
+#include <iostream>
+
+void onWindowSizeChange(unicorn::WindowManager::Window* pWindow, std::pair<int32_t, int32_t> size)
+{
+    std::cout << "Window[" << pWindow->GetId() << "]: size changed to " << size.first << "x" << size.second << std::endl;
+}
+
 int main(int argc, char* argv[])
 {
     unicorn::core::Settings& settings = unicorn::core::Settings::Instance();
@@ -45,6 +52,8 @@ int main(int argc, char* argv[])
             std::string("wat ") + settings.GetApplicationName(),
             nullptr,
             nullptr );
+
+        pWindow2->SizeChanged.connect(&onWindowSizeChange);
 
         pWindow0->Minimize();
 

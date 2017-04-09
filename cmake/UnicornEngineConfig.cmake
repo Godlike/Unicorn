@@ -24,3 +24,7 @@ set(UNICORN_ENGINE_EXTERNAL_INCLUDE_DEPENDENCIES
     CACHE LIST "List of UnicornEngine external include dependencies")
 
 set(UNICORN_ENGINE_LIB ${UNICORN_ENGINE_NAME} CACHE STRING "Name of UnicornEngine library")
+
+if (BUILD_SHARED_LIBS)
+    add_definitions(-DUNICORN_SHARED)
+endif()

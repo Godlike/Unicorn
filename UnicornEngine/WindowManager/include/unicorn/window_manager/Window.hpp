@@ -26,7 +26,7 @@ namespace WindowManager
  *
  *  Proxies calls to window manager adapter
  */
-class UNICORN_EXPORT Window
+class Window
 {
 public:
     /** @brief  Constructs a window object
@@ -58,7 +58,7 @@ public:
     ~Window();
 
     /** @brief  Checks if window should be closed */
-    bool ShouldClose() const;
+    UNICORN_EXPORT bool ShouldClose() const;
 
     /** @brief  Sets flag if window should be closed
      *
@@ -67,71 +67,71 @@ public:
      *
      *  @param  flag    new value
      */
-    void SetShouldClose(bool flag) const;
+    UNICORN_EXPORT void SetShouldClose(bool flag) const;
 
     /** @brief  Returns the id of the window */
-    uint32_t GetId() { return m_id; }
+    UNICORN_EXPORT uint32_t GetId() const { return m_id; }
 
     /** @brief  Returns the name of the window */
-    const std::string& GetName() const { return m_name; }
+    UNICORN_EXPORT const std::string& GetName() const { return m_name; }
 
     /** @brief  Sets the name of the window
      *
      *  @param  name    new name of the window
      */
-    void SetName(const std::string& name);
+    UNICORN_EXPORT void SetName(const std::string& name);
 
     /** @brief  Returns the size of the window */
-    const std::pair<int32_t, int32_t>& GetSize() const { return m_size; }
+    UNICORN_EXPORT const std::pair<int32_t, int32_t>& GetSize() const { return m_size; }
 
     /** @brief  Sets window size
      *
      *  @param  size    pair of new values as (width, height)
      */
-    void SetSize(std::pair<int32_t, int32_t> size);
+    UNICORN_EXPORT void SetSize(std::pair<int32_t, int32_t> size);
 
     /** @brief  Sets window size limits
      *
      *  @param  minSize     pair of lower boundaries as (width, height)
      *  @param  maxSize     pair of higher boundaries as (width, height)
      */
-    void SetSizeLimits(std::pair<int32_t, int32_t> minSize, std::pair<int32_t, int32_t> maxSize);
+    UNICORN_EXPORT void SetSizeLimits(std::pair<int32_t, int32_t> minSize, std::pair<int32_t, int32_t> maxSize);
 
     /** @brief  Sets aspect ratio for window
      *
      *  @param  ratio   pair of values as (width, height)
      */
-    void SetAspectRatio(std::pair<int32_t, int32_t> ratio);
+    UNICORN_EXPORT void SetAspectRatio(std::pair<int32_t, int32_t> ratio);
 
     /** @brief  Returns the position of the window */
-    const std::pair<int32_t, int32_t>& GetPosition() const { return m_position; }
+    UNICORN_EXPORT const std::pair<int32_t, int32_t>& GetPosition() const { return m_position; }
 
     /** @brief  Sets window position
      *
      *  @param  position    pair of new values as (x, y)
      */
-    void SetPosition(std::pair<int32_t, int32_t> position);
+    UNICORN_EXPORT void SetPosition(std::pair<int32_t, int32_t> position);
 
     /** @brief  Minimizes window */
-    void Minimize();
+    UNICORN_EXPORT void Minimize();
 
     /** @brief  Restores window from minimize/maximize */
-    void Restore();
+    UNICORN_EXPORT void Restore();
 
     /** @brief  Maximizes window */
-    void Maximize();
+    UNICORN_EXPORT void Maximize();
 
     /** @brief  Brings window to front and sets input focus */
-    void Focus();
+    UNICORN_EXPORT void Focus();
 
     /** @brief  Makes window invisible */
-    void Hide();
+    UNICORN_EXPORT void Hide();
 
     /** @brief  Makes window visible */
-    void Show();
+    UNICORN_EXPORT void Show();
 
     /** @brief  Returns a handle provided by window manager adapter */
-    void* GetHandle() const { return m_handle; }
+    UNICORN_EXPORT void* GetHandle() const { return m_handle; }
 
     //! Signal that is emitted from destructor before the actual window is destroyed
     wink::signal< wink::slot<void(Window*)> > Destroyed;

@@ -73,7 +73,7 @@ include_directories( SYSTEM
 )
 
 if (BUILD_SHARED_LIBS)
-    add_definitions(-DUNICORN_SHARED)
+    add_definitions(-D${UNICORN_ENGINE_LIB}_EXPORTS)
 endif()
 
 add_subdirectory(WindowManager)
