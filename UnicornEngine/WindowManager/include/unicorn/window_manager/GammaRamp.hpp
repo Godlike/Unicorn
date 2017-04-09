@@ -23,19 +23,33 @@ struct GammaRamp
     /** @brief  Constructs a copy of @p other
      *
      *  Allocates own storage for @p red, @p green and @p blue channels
+     *
+     *  @param  other   GammaRamp object to copy data from
      */
     GammaRamp(const GammaRamp& other);
 
     /** @brief  Copies all data from @p other
      *
      *  Reallocates own storage for @p red, @p green and @p blue channels
+     *
+     *  @param  other   GammaRamp object to copy data from
+     *
+     *  @return reference to this
      */
     GammaRamp& operator=(const GammaRamp& other);
 
-    /** @brief  Constructs a new object from @p other moving all data */
+    /** @brief  Constructs a new object from @p other moving all data
+     *
+     *  @param  other   GammaRamp object to move data from
+     */
     GammaRamp(GammaRamp&& other);
 
-    /** @brief  Moves all data from @p other */
+    /** @brief  Moves all data from @p other
+     *
+     *  @param  other   GammaRamp object to move data from
+     *
+     *  @return reference to this
+     */
     GammaRamp& operator=(GammaRamp&& other);
 
     /** @brief  Destructs gamma ramp object and deallocates all allocated space */

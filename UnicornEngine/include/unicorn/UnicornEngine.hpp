@@ -62,22 +62,23 @@ public:
      */
     void Deinit();
 
+    /** @brief  Returns pointer to the graphics system */
     video::Graphics* GetGraphics() const { return m_pGraphics; }
 
 private:
     //! Flag describing if engine was initialized
     bool m_isInitialized;
 
-    //! Pointer to window and monitor managing hub
+    //! Pointer to the window and monitor managing hub
     WindowManager::Hub* m_pWindowManagerHub;
 
-    //! Pointer to window profiler
+    //! Pointer to the window profiler
     WindowManager::WindowProfiler* m_pWindowProfiler;
 
-    //! Pointer to monitor profiler
+    //! Pointer to the monitor profiler
     WindowManager::MonitorProfiler* m_pMonitorProfiler;
 
-    //! Pointer to graphics system
+    //! Pointer to the graphics system
     video::Graphics* m_pGraphics;
 };
 }

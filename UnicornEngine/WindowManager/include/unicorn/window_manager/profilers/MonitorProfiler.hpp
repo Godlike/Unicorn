@@ -16,16 +16,24 @@ namespace WindowManager
 
 class Hub;
 
+/** @brief  Class that reports all monitor events */
 class MonitorProfiler
 {
 public:
+    /** @brief  Constructs a monitor profiler */
     MonitorProfiler(Hub& hub);
+
+    /** @brief  Deconstructs a monitor profiler */
     ~MonitorProfiler();
 
 private:
+    //! WindowManager::Hub reference
     Hub& m_hub;
 
+    /** @brief  Slot invoked when monitor object is created */
     void OnMonitorCreated(Monitor* const& pMonitor);
+
+    /** @brief  Slot invoked when monitor state is changed (connected/disconnected) */
     void OnMonitorStateChanged(Monitor* pMonitor, Monitor::State state);
 };
 

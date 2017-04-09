@@ -9,6 +9,8 @@
 #include <unicorn/video/Graphics.hpp>
 
 #include <unicorn/window_manager/Window.hpp>
+#include <unicorn/window_manager/WindowHint.hpp>
+#include <unicorn/window_manager/CustomValue.hpp>
 
 #include <unicorn/core/Settings.hpp>
 
@@ -32,6 +34,18 @@ int main(int argc, char* argv[])
     {
         unicorn::video::Graphics* pGraphics = unicornEngine->GetGraphics();
 
+        // Borderless undecorated
+        pGraphics->SetWindowCreationHint(unicorn::WindowManager::WindowHint::Decorated,
+            unicorn::WindowManager::CustomValue::False);
+
+        // Resizable
+        pGraphics->SetWindowCreationHint(unicorn::WindowManager::WindowHint::Resizable,
+            unicorn::WindowManager::CustomValue::True);
+
+        const std::vector<unicorn::WindowManager::Monitor*>& monitors = pGraphics->GetMonitors();
+        unicorn::WindowManager::Monitor* lastMonitor = monitors.back();
+        unicorn::WindowManager::VideoMode activeMode = lastMonitor->GetActiveVideoMode();
+
         unicorn::WindowManager::Window* pWindow0 = pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
@@ -45,6 +59,10 @@ int main(int argc, char* argv[])
             std::string("Hmm ") + settings.GetApplicationName(),
             nullptr,
             nullptr );
+
+        // Decorated, with borders
+        pGraphics->SetWindowCreationHint(unicorn::WindowManager::WindowHint::Decorated,
+            unicorn::WindowManager::CustomValue::True);
 
         unicorn::WindowManager::Window* pWindow2 = pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
@@ -61,11 +79,9 @@ int main(int argc, char* argv[])
         win2pos.first += 640;
         win2pos.second += 480;
         pWindow1->SetPosition(win2pos);
-        pWindow1->Focus();
         pWindow1->SetName("Ayy lmao");
 
-        pWindow2->Maximize();
-        pWindow2->Restore();
+        pWindow2->Focus();
 
         unicornEngine->Run();
     }

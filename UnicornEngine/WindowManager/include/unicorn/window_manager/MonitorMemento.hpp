@@ -23,6 +23,7 @@ namespace WindowManager
 /** @brief  Class describing monitor specifics */
 struct MonitorMemento
 {
+    /** @brief  Monitor states */
     enum class State : uint8_t
     {
         Connected       = 0x00,

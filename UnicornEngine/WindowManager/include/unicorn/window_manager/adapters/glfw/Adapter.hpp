@@ -45,7 +45,7 @@ public:
      *  @param  hint    window creation hint
      *  @param  value   new value
      */
-    static void SetWindowHint(WindowManager::WindowHint hint, int32_t value);
+    static void SetWindowCreationHint(WindowManager::WindowHint hint, int32_t value);
 
     /** @brief  Resets window creation hints */
     static void ResetWindowHints();
@@ -156,22 +156,40 @@ public:
      */
     static void SetWindowAspectRatio(void* handle, std::pair<int32_t, int32_t> ratio);
 
-    /** @brief  Minimizes window */
+    /** @brief  Minimizes window
+     *
+     *  @param  handle  window handle
+     */
     static void MinimizeWindow(void* handle);
 
-    /** @brief  Restores window from minimize/maximize */
+    /** @brief  Restores window from minimize/maximize
+     *
+     *  @param  handle  window handle
+     */
     static void RestoreWindow(void* handle);
 
-    /** @brief  Maximizes window */
+    /** @brief  Maximizes window
+     *
+     *  @param  handle  window handle
+     */
     static void MaximizeWindow(void* handle);
 
-    /** @brief  Brings window to front and sets input focus */
+    /** @brief  Brings window to front and sets input focus
+     *
+     *  @param  handle  window handle
+     */
     static void FocusWindow(void* handle);
 
-    /** @brief  Makes window invisible */
+    /** @brief  Makes window invisible
+     *
+     *  @param  handle  window handle
+     */
     static void HideWindow(void* handle);
 
-    /** @brief  Makes window visible */
+    /** @brief  Makes window visible
+     *
+     *  @param  handle  window handle
+     */
     static void ShowWindow(void* handle);
 
     /** @brief  Sets the name of the window
@@ -221,7 +239,7 @@ public:
      *  Puts thread into sleep until at least one event is available in the
      *  event queue or the specified timeout @p timeoutSeconds is reached.
      *
-     *  @param  timeoutSeconds  limit for sleep
+     *  @param  timeoutSeconds  sleep limit
      */
     static void WaitEvents(double timeoutSeconds = NAN);
 
@@ -246,36 +264,85 @@ public:
      */
     static void SetGammaRamp(void* handle, const GammaRamp& gammaRamp);
 
-    // Window events
+    /** @name Window events */
+    //! @{
 
-    //! Event triggered when window position is changed
+    /** @brief  Event triggered when window position is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# pair of values as (x, y)
+     */
     static wink::signal< wink::slot<void(void*, std::pair<int32_t, int32_t>)> > WindowPositionChanged;
 
-    //! Event triggered when window size is changed
+    /** @brief  Event triggered when window size is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# pair of values as (width, height)
+     */
     static wink::signal< wink::slot<void(void*, std::pair<int32_t, int32_t>)> > WindowSizeChanged;
 
-    //! Event triggered when window is going to be closed
+    /** @brief  Event triggered when window is going to be closed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     */
     static wink::signal< wink::slot<void(void*)> > WindowClose;
 
-    //! Event triggered when window content should be refreshed
+    /** @brief  Event triggered when window content should be refreshed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     */
     static wink::signal< wink::slot<void(void*)> > WindowContentRefresh;
 
-    //! Event triggered when window focus is changed
+    /** @brief  Event triggered when window focus is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# boolean flag
+     */
     static wink::signal< wink::slot<void(void*, bool)> > WindowFocused;
 
-    //! Event triggered when window minimized state is changed
+    /** @brief  Event triggered when window minimized state is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# boolean flag
+     */
     static wink::signal< wink::slot<void(void*, bool)> > WindowMinimized;
 
-    //! Event triggered when window maximized state is changed
+    /** @brief  Event triggered when window maximized state is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# boolean flag
+     */
     static wink::signal< wink::slot<void(void*, bool)> > WindowMaximized;
 
-    //! Event triggered when window framebuffer size is changed
+    /** @brief  Event triggered when window framebuffer size is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# pair of values as (width, height)
+     */
     static wink::signal< wink::slot<void(void*, std::pair<int32_t, int32_t>)> > WindowFramebufferResized;
 
-    // Monitor events
+    //! @}
 
-    //! Event triggered when monitor state changed (connected/disconnected)
+    /** @name Monitor events */
+    //! @{
+
+    /** @brief  Event triggered when monitor state is changed (connected/disconnected)
+     *
+     *  Event is emitted with the following signature:
+     *  -# monitor handle
+     *  -# monitor state
+     */
     static wink::signal< wink::slot<void(void*, MonitorMemento::State)> > MonitorStateChanged;
+
+    //! @}
 
 private:
     /** @brief  Converts WindowManager hint to glfw hint */

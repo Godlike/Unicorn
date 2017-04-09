@@ -17,24 +17,32 @@ namespace WindowManager
 /** @brief  Custom values that can be understood by window manager subsystem */
 struct CustomValue
 {
-    // Mask
+    //! Mask to check for custom value
     static const int32_t Mask = 0x7FFFFF00;
 
-    // Bool
+    //! @{
+    //! Bool values
     static const int32_t False = Mask | 0x00;
     static const int32_t True = Mask | 0x01;
+    //! @}
 
-    // ClientAPI
+    //! @{
+    //! ClientAPI
     static const int32_t OpenGL_API = Mask | 0x10;
     static const int32_t OpenGL_ES_API = Mask | 0x11;
     static const int32_t No_API = Mask | 0x12;
+    //! @}
 
-    // ContextCreationAPI
+    //! @{
+    //! ContextCreationAPI
     static const int32_t NativeContextAPI = Mask | 0x20;
     static const int32_t EGLContextAPI = Mask | 0x21;
+    //! @}
 
-    // Global
+    //! @{
+    //! Global values
     static const int32_t DontCare = Mask | 0xFF;
+    //! @}
 };
 
 }

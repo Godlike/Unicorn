@@ -153,7 +153,7 @@ void Adapter::Deinit()
     }
 }
 
-void Adapter::SetWindowHint(WindowManager::WindowHint hint, int32_t value)
+void Adapter::SetWindowCreationHint(WindowManager::WindowHint hint, int32_t value)
 {
     glfwWindowHint(ConvertToGlfwHint(hint), ConvertToGlfwValue(value));
 }

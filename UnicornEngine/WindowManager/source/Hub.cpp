@@ -84,8 +84,8 @@ void Hub::Init()
 {
     WINDOW_MANAGER_ADAPTER::Init();
 
-    WINDOW_MANAGER_ADAPTER::SetWindowHint(WindowHint::ClientAPI, CustomValue::No_API);
-    WINDOW_MANAGER_ADAPTER::SetWindowHint(WindowHint::Resizable, CustomValue::True);
+    //! @todo   Make this a part of Vulkan initialization
+    SetWindowCreationHint(WindowHint::ClientAPI, CustomValue::No_API);
 
     WINDOW_MANAGER_ADAPTER::MonitorStateChanged.connect(this, &Hub::OnMonitorStateChanged);
 
@@ -202,6 +202,11 @@ void Hub::SetWindowMonitor(const Window& window,
         size,
         refreshRate
     );
+}
+
+void Hub::SetWindowCreationHint(WindowHint hint, int32_t value) const
+{
+    WINDOW_MANAGER_ADAPTER::SetWindowCreationHint(hint, value);
 }
 
 }

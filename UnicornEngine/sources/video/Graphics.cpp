@@ -128,6 +128,29 @@ const std::vector<WindowManager::Monitor*>& Graphics::GetMonitors() const
     return m_windowManagerHub.GetMonitors();
 }
 
+WindowManager::Monitor* Graphics::GetWindowMonitor(const WindowManager::Window& window) const
+{
+    return m_windowManagerHub.GetWindowMonitor(window);
+}
+
+void Graphics::SetWindowMonitor(const WindowManager::Window& window,
+    WindowManager::Monitor* pMonitor,
+    std::pair<int32_t, int32_t> position,
+    std::pair<int32_t, int32_t> size,
+    int32_t refreshRate) const
+{
+    m_windowManagerHub.SetWindowMonitor(window,
+        pMonitor,
+        position,
+        size,
+        refreshRate);
+}
+
+void Graphics::SetWindowCreationHint(WindowManager::WindowHint hint, int32_t value) const
+{
+    m_windowManagerHub.SetWindowCreationHint(hint, value);
+}
+
 void Graphics::ProcessExpiredRenderers()
 {
     if (!m_expiredRenderers.empty())

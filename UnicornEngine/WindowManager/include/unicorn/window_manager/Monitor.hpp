@@ -32,6 +32,7 @@ namespace WindowManager
 class Monitor
 {
 public:
+    //! Alias to MonitorMemento::State
     typedef MonitorMemento::State State;
 
     /** @brief  Constructs a monitor object
@@ -62,6 +63,9 @@ public:
 
     /** @brief  Returns the vector of video modes supoported by this monitor */
     UNICORN_EXPORT const std::vector<VideoMode>& GetVideoModes() const { return m_modes; }
+
+    /** @brief  Returns video mode currently being used by this monitor */
+    UNICORN_EXPORT VideoMode GetActiveVideoMode() const;
 
     /** @brief  Returns the gamma ramp of the monitor */
     UNICORN_EXPORT const GammaRamp& GetGammaRamp() const { return m_gammaRamp; }
@@ -98,12 +102,25 @@ public:
      */
     UNICORN_EXPORT void SetState(State state) { m_state = state; }
 
-    /** @grief  Returns a handle provided by window manager adapter */
+    /** @brief  Returns a handle provided by window manager adapter */
     UNICORN_EXPORT void* GetHandle() { return m_handle; }
 
+    /** @brief  Event triggered when monitor state is changed (connected/disconnected)
+     *
+     *  Event is emitted with the following signature:
+     *  -# monitor pointer
+     *  -# monitor state
+     */
     wink::signal< wink::slot<void(Monitor*, State)> > StateChanged;
 
 private:
+    /** @brief  Slot invoked when monitor state is changed (connected/disconnected)
+     *
+     *  Bound to Adapter::MonitorStateChanged
+     *
+     *  @param  handle  monitor handle
+     *  @param  state   monitor state
+     */
     void OnMonitorStateChanged(void* handle, MonitorMemento::State state);
 
     //! Monitor id within application

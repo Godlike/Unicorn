@@ -9,6 +9,7 @@
 
 #include <unicorn/window_manager/Monitor.hpp>
 #include <unicorn/window_manager/Window.hpp>
+#include <unicorn/window_manager/WindowHint.hpp>
 
 #include <wink/signal.hpp>
 #include <wink/event_queue.hpp>
@@ -184,13 +185,29 @@ public:
         std::pair<int32_t, int32_t> size,
         int32_t refreshRate) const;
 
-    //! Signal that is emitted every time new window is created
+    /** @brief  Sets window creation hints
+     *
+     *  @param  hint    window creation hint
+     *  @param  value   new value
+     */
+    void SetWindowCreationHint(WindowHint hint, int32_t value) const;
+
+    /** @brief  Event triggered every time new window is created
+     *
+     *  Event is emitted with the following signature:
+     *  -# newly created window pointer
+     */
     wink::signal< wink::slot<void(Window*)> > WindowCreated;
 
-    //! Signal that is emitted every time new monitor is created
+    /** @brief  Event queue triggered every time new batch of monitors is created
+     *
+     *  Event is emitted with the following signature:
+     *  -# newly created monitor pointer
+     */
     wink::event_queue<Monitor*> MonitorCreated;
 
 private:
+    /** @brief  Slot invoked when monitor state is changed (connected/disconnected) */
     void OnMonitorStateChanged(void* handle, MonitorMemento::State state);
 
     //! Returns a monitor identified by handle

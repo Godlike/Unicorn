@@ -41,7 +41,7 @@ public:
      *                          should share all resources with
      *                          created window
      */
-    Window(uint32_t m_id,
+    Window(uint32_t id,
         int32_t width,
         int32_t height,
         const std::string& name,
@@ -133,26 +133,144 @@ public:
     /** @brief  Returns a handle provided by window manager adapter */
     UNICORN_EXPORT void* GetHandle() const { return m_handle; }
 
-    //! Signal that is emitted from destructor before the actual window is destroyed
+    /** @brief  Event triggered from destructor before the window is destroyed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     */
     wink::signal< wink::slot<void(Window*)> > Destroyed;
 
+    /** @brief  Event triggered when window position is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# pair of values as (x, y)
+     */
     wink::signal< wink::slot<void(Window*, std::pair<int32_t, int32_t>)> > PositionChanged;
+
+    /** @brief  Event triggered when window size is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# pair of values as (width, height)
+     */
     wink::signal< wink::slot<void(Window*, std::pair<int32_t, int32_t>)> > SizeChanged;
+
+    /** @brief  Event triggered when window is going to be closed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     */
     wink::signal< wink::slot<void(Window*)> > Close;
+
+    /** @brief  Event triggered when window content should be refreshed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     */
     wink::signal< wink::slot<void(Window*)> > ContentRefresh;
+
+    /** @brief  Event triggered when window focus is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# boolean flag
+     */
     wink::signal< wink::slot<void(Window*, bool)> > Focused;
+
+    /** @brief  Event triggered when window minimized state is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# boolean flag
+     */
     wink::signal< wink::slot<void(Window*, bool)> > Minimized;
+
+    /** @brief  Event triggered when window maximized state is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# boolean flag
+     */
     wink::signal< wink::slot<void(Window*, bool)> > Maximized;
+
+    /** @brief  Event triggered when window framebuffer size is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# pair of values as (width, height)
+     */
     wink::signal< wink::slot<void(Window*, std::pair<int32_t, int32_t>)> > FramebufferResized;
 
 private:
+    /** @brief  Slot invoked when window position is changed
+     *
+     *  Bound to Adapter::WindowPositionChanged
+     *
+     *  @param  handle      window handle to be checked against @ref m_handle
+     *  @param  position    pair of values as (x, y)
+     */
     void OnWindowPositionChanged(void* handle, std::pair<int32_t, int32_t> position);
+
+    /** @brief  Slot invoked when window size is changed
+     *
+     *  Bound to Adapter::WindowSizeChanged
+     *
+     *  @param  handle  window handle to be checked against @ref m_handle
+     *  @param  size    pair of values as (width, height)
+     */
     void OnWindowSizeChanged(void* handle, std::pair<int32_t, int32_t> size);
+
+    /** @brief  Slot invoked when window is about to be closed
+     *
+     *  Bound to Adapter::WindowClose
+     *
+     *  @param  handle  window handle to be checked against @ref m_handle
+     */
     void OnWindowClose(void* handle);
+
+    /** @brief  Slot invoked when window content should be refreshed
+     *
+     *  Bound to Adapter::WindowContentRefresh
+     *
+     *  @param  handle  window handle to be checked against @ref m_handle
+     */
     void OnWindowContentRefresh(void* handle);
+
+    /** @brief  Slot invoked when window focus is changed
+     *
+     *  Bound to Adapter::WindowFocused
+     *
+     *  @param  handle  window handle to be checked against @ref m_handle
+     *  @param  flag    boolean flag
+     */
     void OnWindowFocused(void* handle, bool flag);
+
+    /** @brief  Slot invoked when window minimized stae is changed
+     *
+     *  Bound to Adapter::WindowMinimized
+     *
+     *  @param  handle  window handle to be checked against @ref m_handle
+     *  @param  flag    boolean flag
+     */
     void OnWindowMinimized(void* handle, bool flag);
+
+    /** @brief  Slot invoked when window maximized state is changed
+     *
+     *  Bound to Adapter::WindowMaximized
+     *
+     *  @param  handle  window handle to be checked against @ref m_handle
+     *  @param  flag    boolean flag
+     */
     void OnWindowMaximized(void* handle, bool flag);
+
+    /** @brief  Slot invoked when window framebuffer size is changed
+     *
+     *  Bound to Adapter::WindowFramebufferResized
+     *
+     *  @param  handle  window handle to be checked against @ref m_handle
+     *  @param  size    pair of values as (width, height)
+     */
     void OnWindowFramebufferResized(void* handle, std::pair<int32_t, int32_t> size);
 
     //! Window id within application

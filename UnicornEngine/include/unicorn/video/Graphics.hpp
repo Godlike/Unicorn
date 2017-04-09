@@ -9,6 +9,8 @@
 
 #include <unicorn/utility/SharedMacros.hpp>
 
+#include <unicorn/window_manager/WindowHint.hpp>
+
 #include <cstdint>
 #include <string>
 #include <unordered_set>
@@ -54,7 +56,7 @@ public:
 
     /** @brief  Initializes the graphics system
      *
-     *  Initializes @ref m_pRenderer
+     *  Ensures that window management system supports Vulkan
      *
      *  @return @c true if initialization was successful, @c false otherwise
      */
@@ -62,7 +64,7 @@ public:
 
     /** @brief  Deinitializes the graphics system
      *
-     *  Deinitializes @ref m_pRenderer
+     *  Deinitializes all Renderer-Window pairs
      */
     void Deinit();
 
@@ -92,11 +94,45 @@ public:
     /** @brief  Returns the list of known monitors */
     UNICORN_EXPORT const std::vector<WindowManager::Monitor*>& GetMonitors() const;
 
+    /** @brief  Returns monitor associated with given @p window
+     *
+     *  @param  window  window object
+     *
+     *  @return a pointer to monitor object associated with given @p window
+     *          or @c nullptr if something went wrong or the window is not in
+     *          fullscreen mode
+     */
+    UNICORN_EXPORT WindowManager::Monitor* GetWindowMonitor(const WindowManager::Window& window) const;
+
+    /** @brief  Sets monitor to be used by @p window for fullscreen mode
+     *
+     *  @param  window      window object
+     *  @param  pMonitor    monitor object or @c nullptr for windowed mode
+     *  @param  position    desired position as (x, y)
+     *  @param  size        desired size as (width, height)
+     *  @param  refreshRate desired refresh rate
+     */
+    UNICORN_EXPORT void SetWindowMonitor(const WindowManager::Window& window,
+        WindowManager::Monitor* pMonitor,
+        std::pair<int32_t, int32_t> position,
+        std::pair<int32_t, int32_t> size,
+        int32_t refreshRate) const;
+
+    /** @brief  Sets window creation hints
+     *
+     *  @param  hint    window creation hint
+     *  @param  value   new value
+     */
+    UNICORN_EXPORT void SetWindowCreationHint(WindowManager::WindowHint hint, int32_t value) const;
+
 private:
+    //! Renderer-Window pair type
     typedef std::pair<Renderer*, WindowManager::Window*> RendererWindowPair;
 
+    /** @brief  Helper class generating hash for Renderer-Window pair */
     struct RendererWindowPairHash
     {
+        /** @brief  Calculates hash */
         std::size_t operator()(const RendererWindowPair& pair) const
         {
             return std::hash<Renderer*>()(pair.first) ^
@@ -104,8 +140,10 @@ private:
         }
     };
 
+    //! Set of Renderer-Window pairs
     typedef std::unordered_set<RendererWindowPair, RendererWindowPairHash> RendererWindowPairSet;
 
+    /** @brief  Checks if there are expired renderers and destroys them */
     void ProcessExpiredRenderers();
 
     //! Flag describing if graphics were initialized
@@ -114,10 +152,10 @@ private:
     //! Reference to window and monitor managing hub
     WindowManager::Hub& m_windowManagerHub;
 
-    //! Set of renderer-window pairs
+    //! Set of Renderer-Window pairs
     RendererWindowPairSet m_renderers;
 
-    //! Set of expired renderer-window pairs that need to be deinitialized
+    //! Set of expired Renderer-Window pairs that need to be deinitialized
     RendererWindowPairSet m_expiredRenderers;
 };
 }

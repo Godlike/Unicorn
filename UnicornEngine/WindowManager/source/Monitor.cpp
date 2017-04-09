@@ -36,6 +36,19 @@ Monitor::~Monitor()
     StateChanged.clear();
 }
 
+VideoMode Monitor::GetActiveVideoMode() const
+{
+    for (std::vector<VideoMode>::const_iterator cit = m_modes.cbegin(); cit != m_modes.cend(); ++cit)
+    {
+        if (cit->isCurrent)
+        {
+            return *cit;
+        }
+    }
+
+    return VideoMode();
+}
+
 void Monitor::SetGammaRamp(const GammaRamp& gammaRamp)
 {
     m_gammaRamp = gammaRamp;
