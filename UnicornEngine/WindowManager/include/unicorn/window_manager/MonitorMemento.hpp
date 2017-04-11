@@ -41,14 +41,8 @@ struct MonitorMemento
     //! Physical size as (width, height)
     std::pair<int32_t, int32_t> physicalSize;
 
-    //! Virtual position as (x, y)
-    std::pair<int32_t, int32_t> virtualPosition;
-
     //! Supported video modes
     std::vector<VideoMode> modes;
-
-    //! Gamma ramp
-    GammaRamp gammaRamp;
 
     //! Flag describing if this monitor is primary
     bool isPrimary;

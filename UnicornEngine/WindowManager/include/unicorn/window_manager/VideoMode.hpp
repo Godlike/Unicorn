@@ -18,6 +18,15 @@ namespace WindowManager
 /** @brief  Represents monitor's video modes */
 struct VideoMode
 {
+    /** @brief  Equal comparison operator */
+    bool operator==(const VideoMode& other) const
+    {
+        return width == other.width &&
+            height == other.height &&
+            rgbBitDepth == other.rgbBitDepth &&
+            refreshRate == other.refreshRate;
+    }
+
     //! Width in screen coordinates
     int32_t width;
 
@@ -29,9 +38,6 @@ struct VideoMode
 
     //! Refresh rate in Hz
     int32_t refreshRate;
-
-    //! Flag describing if this video mode is currently used
-    bool isCurrent;
 };
 
 }

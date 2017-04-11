@@ -21,10 +21,7 @@ Monitor::Monitor(const MonitorMemento& memento)
     : m_id( memento.id )
     , m_name( memento.name )
     , m_physicalSize( memento.physicalSize )
-    , m_virtualPosition( memento.virtualPosition )
     , m_modes( memento.modes )
-    , m_gammaRamp( memento.gammaRamp )
-    , m_isPrimary( memento.isPrimary )
     , m_state( memento.state )
     , m_handle( memento.handle )
 {
@@ -38,28 +35,26 @@ Monitor::~Monitor()
 
 VideoMode Monitor::GetActiveVideoMode() const
 {
-    for (std::vector<VideoMode>::const_iterator cit = m_modes.cbegin(); cit != m_modes.cend(); ++cit)
-    {
-        if (cit->isCurrent)
-        {
-            return *cit;
-        }
-    }
+    return WINDOW_MANAGER_ADAPTER::GetActiveVideoMode(m_handle);
+}
 
-    return VideoMode();
+std::pair<int32_t, int32_t> Monitor::GetVirtualPosition() const
+{
+    return WINDOW_MANAGER_ADAPTER::GetVirtualPosition(m_handle);
+}
+
+GammaRamp Monitor::GetGammaRamp() const
+{
+    return WINDOW_MANAGER_ADAPTER::GetGammaRamp(m_handle);
 }
 
 void Monitor::SetGammaRamp(const GammaRamp& gammaRamp)
 {
-    m_gammaRamp = gammaRamp;
-
     WINDOW_MANAGER_ADAPTER::SetGammaRamp(m_handle, gammaRamp);
 }
 
 void Monitor::SetGammaRamp(GammaRamp&& gammaRamp)
 {
-    m_gammaRamp = gammaRamp;
-
     WINDOW_MANAGER_ADAPTER::SetGammaRamp(m_handle, gammaRamp);
 }
 
@@ -103,6 +98,11 @@ bool Monitor::SetGamma(float gamma)
     SetGammaRamp(std::move(ramp));
 
     return true;
+}
+
+bool Monitor::IsPrimary() const
+{
+    return WINDOW_MANAGER_ADAPTER::GetPrimaryMonitor() == m_handle;
 }
 
 void Monitor::OnMonitorStateChanged(void* handle, MonitorMemento::State state)

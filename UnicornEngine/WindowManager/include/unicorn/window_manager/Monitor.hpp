@@ -59,7 +59,7 @@ public:
     UNICORN_EXPORT const std::pair<int32_t, int32_t>& GetPhysicalSize() const { return m_physicalSize; }
 
     /** @brief  Returns the virtual position of the monitor */
-    UNICORN_EXPORT const std::pair<int32_t, int32_t>& GetVirtualPosition() const { return m_virtualPosition; }
+    UNICORN_EXPORT std::pair<int32_t, int32_t> GetVirtualPosition() const;
 
     /** @brief  Returns the vector of video modes supoported by this monitor */
     UNICORN_EXPORT const std::vector<VideoMode>& GetVideoModes() const { return m_modes; }
@@ -68,7 +68,7 @@ public:
     UNICORN_EXPORT VideoMode GetActiveVideoMode() const;
 
     /** @brief  Returns the gamma ramp of the monitor */
-    UNICORN_EXPORT const GammaRamp& GetGammaRamp() const { return m_gammaRamp; }
+    UNICORN_EXPORT GammaRamp GetGammaRamp() const;
 
     /** @brief  Sets gamma ramp for the monitor
      *
@@ -91,7 +91,7 @@ public:
     UNICORN_EXPORT bool SetGamma(float gamma);
 
     /** @brief  Returns @c true if the monitor is primary, @c false otherwise */
-    UNICORN_EXPORT bool IsPrimary() const { return m_isPrimary; }
+    UNICORN_EXPORT bool IsPrimary() const;
 
     /** @brief  Returns current state of monitor */
     UNICORN_EXPORT State GetState() const { return m_state; }
@@ -132,17 +132,8 @@ private:
     //! Physical size as (width, height)
     std::pair<int32_t, int32_t> m_physicalSize;
 
-    //! Virtual position as (x, y)
-    std::pair<int32_t, int32_t> m_virtualPosition;
-
     //! Vector of supported @ref VideoMode objects
     std::vector<VideoMode> m_modes;
-
-    //! Gamma ramp
-    GammaRamp m_gammaRamp;
-
-    //! Flag describing if monitor is primary
-    bool m_isPrimary;
 
     //! Current state of monitor
     State m_state;

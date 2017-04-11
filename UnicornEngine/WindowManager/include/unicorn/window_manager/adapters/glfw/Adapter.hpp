@@ -10,6 +10,7 @@
 #include <unicorn/window_manager/MonitorMemento.hpp>
 #include <unicorn/window_manager/WindowAttribute.hpp>
 #include <unicorn/window_manager/WindowHint.hpp>
+#include <unicorn/window_manager/VideoMode.hpp>
 
 #include <wink/signal.hpp>
 
@@ -257,6 +258,36 @@ public:
      */
     static MonitorMemento GetMonitor(void* handle);
 
+    /** @brief  Returns a primary monitor handle
+     *
+     *  @return monitor handle
+     */
+    static void* GetPrimaryMonitor();
+
+    /** @brief  Get currently active video mode for monitor
+     *
+     *  @param  handle  monitor handle
+     *
+     *  @return video mode
+     */
+    static VideoMode GetActiveVideoMode(void* handle);
+
+    /** @brief  Get virtual position of monitor
+     *
+     *  @param  handle  monitor handle
+     *
+     *  @return pair of values as (x, y)
+     */
+    static std::pair<int32_t, int32_t> GetVirtualPosition(void* handle);
+
+    /** @brief  Gets gamma ram for monitor
+     *
+     *  @param  handle  monitor handle
+     *
+     *  @return gamma ramp
+     */
+    static GammaRamp GetGammaRamp(void* handle);
+
     /** @brief  Sets gamma ramp for monitor
      *
      *  @param  handle      monitor handle
@@ -345,6 +376,9 @@ public:
     //! @}
 
 private:
+    /** @brief  Fills in video mode structure */
+    static VideoMode PrepareVideoMode(const void* pMode);
+
     /** @brief  Converts WindowManager hint to glfw hint */
     static int ConvertToGlfwHint(WindowManager::WindowHint hint);
 

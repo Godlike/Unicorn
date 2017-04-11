@@ -370,48 +370,16 @@ MonitorMemento Adapter::GetMonitor(void* handle)
     result.name = glfwGetMonitorName(monitorHandle);
 
     glfwGetMonitorPhysicalSize(monitorHandle, &result.physicalSize.first, &result.physicalSize.second);
-    glfwGetMonitorPos(monitorHandle, &result.virtualPosition.first, &result.virtualPosition.second);
 
     {
         int modeCount = 0;
-        const GLFWvidmode* currentMode = glfwGetVideoMode(monitorHandle);
         const GLFWvidmode* modes = glfwGetVideoModes(monitorHandle, &modeCount);
 
         result.modes.reserve(modeCount);
 
         for (int m = 0; m < modeCount; ++m)
         {
-            VideoMode mode = {};
-
-            mode.width = modes[m].width;
-            mode.height = modes[m].height;
-            mode.rgbBitDepth = {{ modes[m].redBits, modes[m].greenBits, modes[m].blueBits }};
-            mode.refreshRate = modes[m].refreshRate;
-            mode.isCurrent = ( modes[m] == *currentMode );
-
-            result.modes.push_back(mode);
-        }
-    }
-
-    {
-        const GLFWgammaramp* ramp = glfwGetGammaRamp(monitorHandle);
-        if (ramp)
-        {
-            result.gammaRamp.size = ramp->size;
-            result.gammaRamp.red = new uint16_t[result.gammaRamp.size];
-            result.gammaRamp.green = new uint16_t[result.gammaRamp.size];
-            result.gammaRamp.blue = new uint16_t[result.gammaRamp.size];
-
-            for (uint32_t g = 0; g < result.gammaRamp.size; ++g)
-            {
-                result.gammaRamp.red[g] = ramp->red[g];
-                result.gammaRamp.green[g] = ramp->green[g];
-                result.gammaRamp.blue[g] = ramp->blue[g];
-            }
-        }
-        else
-        {
-            result.gammaRamp = GammaRamp();
+            result.modes.push_back(PrepareVideoMode(&modes[m]));
         }
     }
 
@@ -419,6 +387,53 @@ MonitorMemento Adapter::GetMonitor(void* handle)
     result.id = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(handle));
     result.state = MonitorMemento::State::Connected;
     result.handle = handle;
+
+    return result;
+}
+
+void* Adapter::GetPrimaryMonitor()
+{
+    return glfwGetPrimaryMonitor();
+}
+
+VideoMode Adapter::GetActiveVideoMode(void* handle)
+{
+    return PrepareVideoMode(glfwGetVideoMode(static_cast<GLFWmonitor*>(handle)));
+}
+
+std::pair<int32_t, int32_t> Adapter::GetVirtualPosition(void* handle)
+{
+    std::pair<int32_t, int32_t> result;
+
+    glfwGetMonitorPos(static_cast<GLFWmonitor*>(handle), &result.first, &result.second);
+
+    return result;
+}
+
+GammaRamp Adapter::GetGammaRamp(void* handle)
+{
+    const GLFWgammaramp* ramp = glfwGetGammaRamp(static_cast<GLFWmonitor*>(handle));
+
+    GammaRamp result = {};
+
+    if (ramp)
+    {
+        result.size = ramp->size;
+        result.red = new uint16_t[result.size];
+        result.green = new uint16_t[result.size];
+        result.blue = new uint16_t[result.size];
+
+        for (uint32_t g = 0; g < result.size; ++g)
+        {
+            result.red[g] = ramp->red[g];
+            result.green[g] = ramp->green[g];
+            result.blue[g] = ramp->blue[g];
+        }
+    }
+    else
+    {
+        result = GammaRamp();
+    }
 
     return result;
 }
@@ -433,6 +448,22 @@ void Adapter::SetGammaRamp(void* handle, const GammaRamp& gammaRamp)
     ramp.blue = gammaRamp.blue;
 
     glfwSetGammaRamp(static_cast<GLFWmonitor*>(handle), &ramp);
+}
+
+VideoMode Adapter::PrepareVideoMode(const void* pMode)
+{
+    VideoMode result = {};
+
+    if (pMode)
+    {
+        const GLFWvidmode& mode = *static_cast<const GLFWvidmode*>(pMode);
+        result.width = mode.width;
+        result.height = mode.height;
+        result.rgbBitDepth = {{ mode.redBits, mode.greenBits, mode.blueBits }};
+        result.refreshRate = mode.refreshRate;
+    }
+
+    return result;
 }
 
 int Adapter::ConvertToGlfwHint(WindowManager::WindowHint hint)
