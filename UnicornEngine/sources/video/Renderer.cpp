@@ -9,8 +9,8 @@
 #include <unicorn/utility/Logger.hpp>
 #include <unicorn/utility/asset/SimpleStorage.hpp>
 
-#include <unicorn/window_manager/Hub.hpp>
-#include <unicorn/window_manager/Window.hpp>
+#include <unicorn/system/Manager.hpp>
+#include <unicorn/system/Window.hpp>
 
 #include <cstring>
 #include <iostream>
@@ -55,9 +55,9 @@ static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flag
     return VK_FALSE;
 }
 
-Renderer::Renderer(WindowManager::Hub& windowManagerHub, WindowManager::Window* pWindow)
+Renderer::Renderer(system::Manager& manager, system::Window* pWindow)
     : m_isInitialized(false)
-    , m_windowManagerHub(windowManagerHub)
+    , m_systemManager(manager)
     , m_pWindow(pWindow)
     , m_validationLayers({"VK_LAYER_LUNARG_standard_validation"})
     , m_deviceExtensions({VK_KHR_SWAPCHAIN_EXTENSION_NAME})
@@ -248,7 +248,7 @@ bool Renderer::Render()
     return false;
 }
 
-void Renderer::OnWindowDestroyed(WindowManager::Window* pWindow)
+void Renderer::OnWindowDestroyed(system::Window* pWindow)
 {
     LOG_INFO("Window destroyed, deinitializing renderer");
 
@@ -257,7 +257,7 @@ void Renderer::OnWindowDestroyed(WindowManager::Window* pWindow)
     Deinit();
 }
 
-void Renderer::OnWindowSizeChanged(WindowManager::Window* pWindow, std::pair<int32_t, int32_t> size)
+void Renderer::OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, int32_t> size)
 {
     if (size.first == 0 || size.second == 0)
     {
@@ -528,7 +528,7 @@ bool Renderer::CreateLogicalDevice()
 
 bool Renderer::CreateSurface()
 {
-    if (!m_pWindow || m_windowManagerHub.CreateVulkanSurfaceForWindow(*m_pWindow, m_vkInstance, nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
+    if (!m_pWindow || m_systemManager.CreateVulkanSurfaceForWindow(*m_pWindow, m_vkInstance, nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
     {
         LOG_ERROR("Failed to create window surface!");
 
@@ -1124,7 +1124,7 @@ bool Renderer::CheckValidationLayerSupport() const
 
 std::vector<const char*> Renderer::GetRequiredExtensions()
 {
-    std::vector<const char*> extensions( m_windowManagerHub.GetRequiredVulkanExtensions() );
+    std::vector<const char*> extensions( m_systemManager.GetRequiredVulkanExtensions() );
 
     if (s_enableValidationLayers)
     {

@@ -8,7 +8,6 @@
 #define UNICORN_VIDEO_RENDERER_HPP
 
 #include <vulkan/vulkan.hpp>
-#include <GLFW/glfw3.h>
 
 #include <cstdint>
 #include <vector>
@@ -19,9 +18,9 @@ struct GLFWwindow;
 namespace unicorn
 {
 
-namespace WindowManager
+namespace system
 {
-class Hub;
+class Manager;
 class Window;
 }
 
@@ -52,8 +51,8 @@ struct SwapChainSupportDetails
 class Renderer
 {
 public:
-    Renderer(WindowManager::Hub& windowManagerHub,
-        WindowManager::Window* pWindow);
+    Renderer(system::Manager& manager,
+        system::Window* pWindow);
 
     ~Renderer();
 
@@ -70,11 +69,11 @@ public:
 private:
     bool m_isInitialized;
 
-    //! Reference to window manager hub
-    WindowManager::Hub& m_windowManagerHub;
+    //! Reference to window manager manager
+    system::Manager& m_systemManager;
 
     //! Pointer to associated window
-    WindowManager::Window* m_pWindow;
+    system::Window* m_pWindow;
 
     vk::Instance m_vkInstance;
     vk::PhysicalDevice m_vkPhysicalDevice;
@@ -146,8 +145,8 @@ private:
     void DestroyDebugReportCallbackEXT();
 
     // Callbacks for window events
-    void OnWindowDestroyed(WindowManager::Window* pWindow);
-    void OnWindowSizeChanged(WindowManager::Window* pWindow, std::pair<int32_t, int32_t> size);
+    void OnWindowDestroyed(system::Window* pWindow);
+    void OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, int32_t> size);
 };
 }
 }

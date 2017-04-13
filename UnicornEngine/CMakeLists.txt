@@ -46,8 +46,8 @@ include(loguru)
 ## STB
 include(stb)
 
-## WindowManager
-include(WindowManager)
+## system
+include(system)
 
 ## Wink Signals
 include(WinkSignals)
@@ -76,7 +76,7 @@ if (BUILD_SHARED_LIBS)
     add_definitions(-D${UNICORN_ENGINE_LIB}_EXPORTS)
 endif()
 
-add_subdirectory(WindowManager)
+add_subdirectory(system)
 
 set(UNICORN_ENGINE_HEADERS
     include/unicorn/core/Settings.hpp
@@ -125,10 +125,12 @@ if (UNICORN_BUILD_DOCUMENTATION)
     find_package(Doxygen)
 
     if (DOXYGEN_FOUND)
+        set(DOXYGEN_INPUT_DIRS
+            ${UNICORN_ENGINE_INCLUDE_DIR}
+            ${UNICORN_ENGINE_SYSTEM_INCLUDE_DIRS}
+        )
         set(DOXYGEN_PROJECT_NAME ${PROJECT_NAME})
-        set(DOXYGEN_INPUT
-            "${UNICORN_ENGINE_INCLUDE_DIR} ${WINDOW_MANAGER_INCLUDE_DIR}"
-            )
+        string(REPLACE ";" " " DOXYGEN_INPUT "${DOXYGEN_INPUT_DIRS}")
 
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
@@ -143,7 +145,7 @@ if (UNICORN_BUILD_DOCUMENTATION)
     endif()
 endif()
 
-target_link_libraries(${UNICORN_ENGINE_LIB} ${VULKAN_LIBRARY} ${WINDOW_MANAGER_LIB})
+target_link_libraries(${UNICORN_ENGINE_LIB} ${VULKAN_LIBRARY} ${UNICORN_ENGINE_SYSTEM_LIB})
 
 if(UNIX)
     set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/bin/glslangValidator")

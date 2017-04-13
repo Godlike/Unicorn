@@ -21,7 +21,7 @@ list(FIND
 )
 
 set(WINDOW_MANAGER_INCLUDE_DIR
-    "${UNICORN_ENGINE_ROOT}/WindowManager/include"
+    "${UNICORN_ENGINE_SYSTEM_DIR}/WindowManager/include"
 )
 
 set(WINDOW_MANAGER_LIB

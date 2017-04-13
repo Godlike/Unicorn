@@ -8,16 +8,16 @@
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/utility/Logger.hpp>
 
-#include <unicorn/window_manager/Hub.hpp>
-#include <unicorn/window_manager/Window.hpp>
+#include <unicorn/system/Manager.hpp>
+#include <unicorn/system/Window.hpp>
 
 namespace unicorn
 {
 namespace video
 {
-Graphics::Graphics(WindowManager::Hub& windowManagerHub)
+Graphics::Graphics(system::Manager& manager)
     : m_isInitialized(false)
-    , m_windowManagerHub(windowManagerHub)
+    , m_systemManager(manager)
 {
 }
 
@@ -35,7 +35,7 @@ bool Graphics::Init()
 
     LOG_INFO("Graphics initialization started.");
 
-    if (!m_windowManagerHub.IsVulkanSupported())
+    if (!m_systemManager.IsVulkanSupported())
     {
         LOG_ERROR("Vulkan not supported!");
 
@@ -73,7 +73,7 @@ bool Graphics::Render()
         {
             if (!cit->second->ShouldClose() && cit->first->Render())
             {
-                m_windowManagerHub.PollEvents();
+                m_systemManager.PollEvents();
                 ++cit;
             }
             else
@@ -91,14 +91,14 @@ bool Graphics::Render()
     return false;
 }
 
-WindowManager::Window* Graphics::SpawnWindow(int32_t width,
+system::Window* Graphics::SpawnWindow(int32_t width,
     int32_t height,
     const std::string& name,
-    WindowManager::Monitor* pMonitor,
-    WindowManager::Window* pSharedWindow)
+    system::Monitor* pMonitor,
+    system::Window* pSharedWindow)
 {
-    WindowManager::Window* pWindow = m_windowManagerHub.CreateWindow(width, height, name, pMonitor, pSharedWindow);
-    Renderer* pRenderer = new Renderer(m_windowManagerHub, pWindow);
+    system::Window* pWindow = m_systemManager.CreateWindow(width, height, name, pMonitor, pSharedWindow);
+    Renderer* pRenderer = new Renderer(m_systemManager, pWindow);
 
     if (pRenderer->Init())
     {
@@ -110,7 +110,7 @@ WindowManager::Window* Graphics::SpawnWindow(int32_t width,
     {
         LOG_WARNING("Failed to initialize new renderer for window %s", name.c_str());
 
-        if (!m_windowManagerHub.DestroyWindow(pWindow))
+        if (!m_systemManager.DestroyWindow(pWindow))
         {
             LOG_WARNING("Failed to destroy window %s", name.c_str());
 
@@ -123,32 +123,32 @@ WindowManager::Window* Graphics::SpawnWindow(int32_t width,
     return pWindow;
 }
 
-const std::vector<WindowManager::Monitor*>& Graphics::GetMonitors() const
+const std::vector<system::Monitor*>& Graphics::GetMonitors() const
 {
-    return m_windowManagerHub.GetMonitors();
+    return m_systemManager.GetMonitors();
 }
 
-WindowManager::Monitor* Graphics::GetWindowMonitor(const WindowManager::Window& window) const
+system::Monitor* Graphics::GetWindowMonitor(const system::Window& window) const
 {
-    return m_windowManagerHub.GetWindowMonitor(window);
+    return m_systemManager.GetWindowMonitor(window);
 }
 
-void Graphics::SetWindowMonitor(const WindowManager::Window& window,
-    WindowManager::Monitor* pMonitor,
+void Graphics::SetWindowMonitor(const system::Window& window,
+    system::Monitor* pMonitor,
     std::pair<int32_t, int32_t> position,
     std::pair<int32_t, int32_t> size,
     int32_t refreshRate) const
 {
-    m_windowManagerHub.SetWindowMonitor(window,
+    m_systemManager.SetWindowMonitor(window,
         pMonitor,
         position,
         size,
         refreshRate);
 }
 
-void Graphics::SetWindowCreationHint(WindowManager::WindowHint hint, int32_t value) const
+void Graphics::SetWindowCreationHint(system::WindowHint hint, int32_t value) const
 {
-    m_windowManagerHub.SetWindowCreationHint(hint, value);
+    m_systemManager.SetWindowCreationHint(hint, value);
 }
 
 void Graphics::ProcessExpiredRenderers()
@@ -159,7 +159,7 @@ void Graphics::ProcessExpiredRenderers()
         {
             delete cit->first;
 
-            if (!m_windowManagerHub.DestroyWindow(cit->second))
+            if (!m_systemManager.DestroyWindow(cit->second))
             {
                 LOG_WARNING("Failed to destroy window %s", cit->second->GetName().c_str());
 

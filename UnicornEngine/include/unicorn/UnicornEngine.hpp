@@ -17,9 +17,9 @@ namespace video
 class Graphics;
 }
 
-namespace WindowManager
+namespace system
 {
-class Hub;
+class Manager;
 class WindowProfiler;
 class MonitorProfiler;
 }
@@ -69,14 +69,14 @@ private:
     //! Flag describing if engine was initialized
     bool m_isInitialized;
 
-    //! Pointer to the window and monitor managing hub
-    WindowManager::Hub* m_pWindowManagerHub;
+    //! Pointer to the window and monitor managing manager
+    system::Manager* m_pSystemManager;
 
     //! Pointer to the window profiler
-    WindowManager::WindowProfiler* m_pWindowProfiler;
+    system::WindowProfiler* m_pWindowProfiler;
 
     //! Pointer to the monitor profiler
-    WindowManager::MonitorProfiler* m_pMonitorProfiler;
+    system::MonitorProfiler* m_pMonitorProfiler;
 
     //! Pointer to the graphics system
     video::Graphics* m_pGraphics;
