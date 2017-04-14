@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['task',['Task',['../structunicorn_1_1utility_1_1asset_1_1Storage_1_1Task.html',1,'unicorn::utility::asset::Storage']]],
-  ['taskqueue',['TaskQueue',['../classunicorn_1_1utility_1_1asset_1_1Storage_1_1TaskQueue.html',1,'unicorn::utility::asset::Storage']]],
-  ['timer',['Timer',['../classunicorn_1_1core_1_1Timer.html',1,'unicorn::core']]]
+  ['renderer',['Renderer',['../classunicorn_1_1video_1_1Renderer.html',1,'unicorn::video']]],
+  ['rendererwindowpairhash',['RendererWindowPairHash',['../structunicorn_1_1video_1_1Graphics_1_1RendererWindowPairHash.html',1,'unicorn::video::Graphics']]]
 ];

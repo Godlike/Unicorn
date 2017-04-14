@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['s_5finstance',['s_instance',['../classunicorn_1_1utility_1_1templates_1_1Singleton.html#a991f864e5dbdff8b1cec4529b9744ec9',1,'unicorn::utility::templates::Singleton']]]
+  ['green',['green',['../structunicorn_1_1system_1_1GammaRamp.html#ab7d3b6437464bd292be6cb64e9ee8e63',1,'unicorn::system::GammaRamp']]]
 ];

@@ -71,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -87,7 +87,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-types">Private Types</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classunicorn_1_1video_1_1Graphics-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -99,20 +102,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
  <a href="classunicorn_1_1video_1_1Graphics.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="Graphics_8hpp_source.html">Graphics.hpp</a>&gt;</code></p>
-<div class="dynheader">
-Collaboration diagram for unicorn::video::Graphics:</div>
-<div class="dyncontent">
-<div class="center"><img src="classunicorn_1_1video_1_1Graphics__coll__graph.png" border="0" usemap="#unicorn_1_1video_1_1Graphics_coll__map" alt="Collaboration graph"/></div>
-<map name="unicorn_1_1video_1_1Graphics_coll__map" id="unicorn_1_1video_1_1Graphics_coll__map">
-<area shape="rect" id="node2" href="classunicorn_1_1video_1_1Renderer.html" title="Vulkan renderer class. " alt="" coords="5,5,168,32"/></map>
-<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structunicorn_1_1video_1_1Graphics_1_1RendererWindowPairHash.html">RendererWindowPairHash</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper class generating hash for Renderer-Window pair.  <a href="structunicorn_1_1video_1_1Graphics_1_1RendererWindowPairHash.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a6ce5af60854424c90b0fd1325efdd302"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6ce5af60854424c90b0fd1325efdd302"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#a6ce5af60854424c90b0fd1325efdd302">Graphics</a> ()</td></tr>
-<tr class="memdesc:a6ce5af60854424c90b0fd1325efdd302"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs an empty graphics system. <br/></td></tr>
-<tr class="separator:a6ce5af60854424c90b0fd1325efdd302"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af70a7ecfa4916702db2d782d3e8253bf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af70a7ecfa4916702db2d782d3e8253bf"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#af70a7ecfa4916702db2d782d3e8253bf">Graphics</a> (system::Manager &amp;manager)</td></tr>
+<tr class="memdesc:af70a7ecfa4916702db2d782d3e8253bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs an empty graphics system. <br/></td></tr>
+<tr class="separator:af70a7ecfa4916702db2d782d3e8253bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2ede53fa1f76d7271c3bcaa4317af5c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#ae2ede53fa1f76d7271c3bcaa4317af5c">~Graphics</a> ()</td></tr>
 <tr class="memdesc:ae2ede53fa1f76d7271c3bcaa4317af5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructs a graphics system.  <a href="#ae2ede53fa1f76d7271c3bcaa4317af5c">More...</a><br/></td></tr>
 <tr class="separator:ae2ede53fa1f76d7271c3bcaa4317af5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -134,10 +136,48 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a802d24d3539739b8345eac9e8daf41c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#a802d24d3539739b8345eac9e8daf41c7">Deinit</a> ()</td></tr>
 <tr class="memdesc:a802d24d3539739b8345eac9e8daf41c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deinitializes the graphics system.  <a href="#a802d24d3539739b8345eac9e8daf41c7">More...</a><br/></td></tr>
 <tr class="separator:a802d24d3539739b8345eac9e8daf41c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acac1c21aff411a3466d2d1e7215ea408"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acac1c21aff411a3466d2d1e7215ea408"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#acac1c21aff411a3466d2d1e7215ea408">Render</a> ()</td></tr>
-<tr class="memdesc:acac1c21aff411a3466d2d1e7215ea408"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classunicorn_1_1video_1_1Graphics.html" title="Abstract graphics renderer. ">Graphics</a> renderer loop. <br/></td></tr>
-<tr class="separator:acac1c21aff411a3466d2d1e7215ea408"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad271dfbcc962fc0249734426c5b4b7f7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad271dfbcc962fc0249734426c5b4b7f7"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#ad271dfbcc962fc0249734426c5b4b7f7">Render</a> ()</td></tr>
+<tr class="memdesc:ad271dfbcc962fc0249734426c5b4b7f7"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classunicorn_1_1video_1_1Graphics.html" title="Abstract graphics renderer. ">Graphics</a> renderer loop. <br/></td></tr>
+<tr class="separator:ad271dfbcc962fc0249734426c5b4b7f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f8714edb67beb76ea83b4bc6d584c4e"><td class="memItemLeft" align="right" valign="top">UNICORN_EXPORT <a class="el" href="classunicorn_1_1system_1_1Window.html">system::Window</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#a2f8714edb67beb76ea83b4bc6d584c4e">SpawnWindow</a> (int32_t width, int32_t height, const std::string &amp;name, <a class="el" href="classunicorn_1_1system_1_1Monitor.html">system::Monitor</a> *pMonitor=nullptr, <a class="el" href="classunicorn_1_1system_1_1Window.html">system::Window</a> *pSharedWindow=nullptr)</td></tr>
+<tr class="memdesc:a2f8714edb67beb76ea83b4bc6d584c4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spawns new window.  <a href="#a2f8714edb67beb76ea83b4bc6d584c4e">More...</a><br/></td></tr>
+<tr class="separator:a2f8714edb67beb76ea83b4bc6d584c4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e5f883ee4f76e218240871157932af2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8e5f883ee4f76e218240871157932af2"></a>
+UNICORN_EXPORT const <br class="typebreak"/>
+std::vector&lt; <a class="el" href="classunicorn_1_1system_1_1Monitor.html">system::Monitor</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#a8e5f883ee4f76e218240871157932af2">GetMonitors</a> () const </td></tr>
+<tr class="memdesc:a8e5f883ee4f76e218240871157932af2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the list of known monitors. <br/></td></tr>
+<tr class="separator:a8e5f883ee4f76e218240871157932af2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a456bd26eb430c629115b99b9b25c353e"><td class="memItemLeft" align="right" valign="top">UNICORN_EXPORT <a class="el" href="classunicorn_1_1system_1_1Monitor.html">system::Monitor</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#a456bd26eb430c629115b99b9b25c353e">GetWindowMonitor</a> (const <a class="el" href="classunicorn_1_1system_1_1Window.html">system::Window</a> &amp;window) const </td></tr>
+<tr class="memdesc:a456bd26eb430c629115b99b9b25c353e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns monitor associated with given <code>window</code>.  <a href="#a456bd26eb430c629115b99b9b25c353e">More...</a><br/></td></tr>
+<tr class="separator:a456bd26eb430c629115b99b9b25c353e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f7b90118cc219d4ad0680606cfb648f"><td class="memItemLeft" align="right" valign="top">UNICORN_EXPORT void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#a2f7b90118cc219d4ad0680606cfb648f">SetWindowMonitor</a> (const <a class="el" href="classunicorn_1_1system_1_1Window.html">system::Window</a> &amp;window, <a class="el" href="classunicorn_1_1system_1_1Monitor.html">system::Monitor</a> *pMonitor, std::pair&lt; int32_t, int32_t &gt; position, std::pair&lt; int32_t, int32_t &gt; size, int32_t refreshRate) const </td></tr>
+<tr class="memdesc:a2f7b90118cc219d4ad0680606cfb648f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets monitor to be used by <code>window</code> for fullscreen mode.  <a href="#a2f7b90118cc219d4ad0680606cfb648f">More...</a><br/></td></tr>
+<tr class="separator:a2f7b90118cc219d4ad0680606cfb648f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90abd2d597df2ea0060550ee4cec5584"><td class="memItemLeft" align="right" valign="top">UNICORN_EXPORT void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#a90abd2d597df2ea0060550ee4cec5584">SetWindowCreationHint</a> (system::WindowHint hint, int32_t value) const </td></tr>
+<tr class="memdesc:a90abd2d597df2ea0060550ee4cec5584"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets window creation hints.  <a href="#a90abd2d597df2ea0060550ee4cec5584">More...</a><br/></td></tr>
+<tr class="separator:a90abd2d597df2ea0060550ee4cec5584"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-types"></a>
+Private Types</h2></td></tr>
+<tr class="memitem:ad35a9abce97492ae2ebd09186c428a6c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad35a9abce97492ae2ebd09186c428a6c"></a>
+typedef std::pair&lt; <a class="el" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a> <br class="typebreak"/>
+*, <a class="el" href="classunicorn_1_1system_1_1Window.html">system::Window</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#ad35a9abce97492ae2ebd09186c428a6c">RendererWindowPair</a></td></tr>
+<tr class="memdesc:ad35a9abce97492ae2ebd09186c428a6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Renderer-Window pair type. <br/></td></tr>
+<tr class="separator:ad35a9abce97492ae2ebd09186c428a6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7dcbc41da23f469c2151a7ff9d45dfdd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7dcbc41da23f469c2151a7ff9d45dfdd"></a>
+typedef std::unordered_set<br class="typebreak"/>
+&lt; <a class="el" href="classunicorn_1_1video_1_1Graphics.html#ad35a9abce97492ae2ebd09186c428a6c">RendererWindowPair</a>, <br class="typebreak"/>
+<a class="el" href="structunicorn_1_1video_1_1Graphics_1_1RendererWindowPairHash.html">RendererWindowPairHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#a7dcbc41da23f469c2151a7ff9d45dfdd">RendererWindowPairSet</a></td></tr>
+<tr class="memdesc:a7dcbc41da23f469c2151a7ff9d45dfdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set of Renderer-Window pairs. <br/></td></tr>
+<tr class="separator:a7dcbc41da23f469c2151a7ff9d45dfdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:afaa41cbb338d7f203a4f172be8ab483e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afaa41cbb338d7f203a4f172be8ab483e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#afaa41cbb338d7f203a4f172be8ab483e">ProcessExpiredRenderers</a> ()</td></tr>
+<tr class="memdesc:afaa41cbb338d7f203a4f172be8ab483e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if there are expired renderers and destroys them. <br/></td></tr>
+<tr class="separator:afaa41cbb338d7f203a4f172be8ab483e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -145,10 +185,18 @@ Private Attributes</h2></td></tr>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#abd08b9a571d5098ebc347e44628f0d1f">m_isInitialized</a></td></tr>
 <tr class="memdesc:abd08b9a571d5098ebc347e44628f0d1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag describing if graphics were initialized. <br/></td></tr>
 <tr class="separator:abd08b9a571d5098ebc347e44628f0d1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1670f3f282a1415e5410414ca6f99278"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1670f3f282a1415e5410414ca6f99278"></a>
-<a class="el" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#a1670f3f282a1415e5410414ca6f99278">m_pRenderer</a></td></tr>
-<tr class="memdesc:a1670f3f282a1415e5410414ca6f99278"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to renderer. <br/></td></tr>
-<tr class="separator:a1670f3f282a1415e5410414ca6f99278"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1cd5bb1d2934e876fc39a517729bf5c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab1cd5bb1d2934e876fc39a517729bf5c"></a>
+system::Manager &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#ab1cd5bb1d2934e876fc39a517729bf5c">m_systemManager</a></td></tr>
+<tr class="memdesc:ab1cd5bb1d2934e876fc39a517729bf5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reference to window and monitor managing manager. <br/></td></tr>
+<tr class="separator:ab1cd5bb1d2934e876fc39a517729bf5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8cd0fd68d2af5ad2e3db49c7c34d6631"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8cd0fd68d2af5ad2e3db49c7c34d6631"></a>
+<a class="el" href="classunicorn_1_1video_1_1Graphics.html#a7dcbc41da23f469c2151a7ff9d45dfdd">RendererWindowPairSet</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#a8cd0fd68d2af5ad2e3db49c7c34d6631">m_renderers</a></td></tr>
+<tr class="memdesc:a8cd0fd68d2af5ad2e3db49c7c34d6631"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set of Renderer-Window pairs. <br/></td></tr>
+<tr class="separator:a8cd0fd68d2af5ad2e3db49c7c34d6631"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ecce2bafee4b905261f32a11c663d7b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ecce2bafee4b905261f32a11c663d7b"></a>
+<a class="el" href="classunicorn_1_1video_1_1Graphics.html#a7dcbc41da23f469c2151a7ff9d45dfdd">RendererWindowPairSet</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#a3ecce2bafee4b905261f32a11c663d7b">m_expiredRenderers</a></td></tr>
+<tr class="memdesc:a3ecce2bafee4b905261f32a11c663d7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set of expired Renderer-Window pairs that need to be deinitialized. <br/></td></tr>
+<tr class="separator:a3ecce2bafee4b905261f32a11c663d7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract graphics renderer. </p>
@@ -188,7 +236,32 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div><div class="memdoc">
 
 <p>Deinitializes the graphics system. </p>
-<p>Deinitializes <a class="el" href="classunicorn_1_1video_1_1Graphics.html#a1670f3f282a1415e5410414ca6f99278">m_pRenderer</a> </p>
+<p>Deinitializes all Renderer-Window pairs </p>
+
+</div>
+</div>
+<a class="anchor" id="a456bd26eb430c629115b99b9b25c353e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">UNICORN_EXPORT <a class="el" href="classunicorn_1_1system_1_1Monitor.html">system::Monitor</a>* unicorn::video::Graphics::GetWindowMonitor </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classunicorn_1_1system_1_1Window.html">system::Window</a> &amp;&#160;</td>
+          <td class="paramname"><em>window</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns monitor associated with given <code>window</code>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">window</td><td>window object</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a pointer to monitor object associated with given <code>window</code> or <code>nullptr</code> if something went wrong or the window is not in fullscreen mode </dd></dl>
 
 </div>
 </div>
@@ -206,8 +279,157 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div><div class="memdoc">
 
 <p>Initializes the graphics system. </p>
-<p>Initializes <a class="el" href="classunicorn_1_1video_1_1Graphics.html#a1670f3f282a1415e5410414ca6f99278">m_pRenderer</a></p>
+<p>Ensures that window management system supports Vulkan</p>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if initialization was successful, <code>false</code> otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a90abd2d597df2ea0060550ee4cec5584"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">UNICORN_EXPORT void unicorn::video::Graphics::SetWindowCreationHint </td>
+          <td>(</td>
+          <td class="paramtype">system::WindowHint&#160;</td>
+          <td class="paramname"><em>hint</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>value</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets window creation hints. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hint</td><td>window creation hint </td></tr>
+    <tr><td class="paramname">value</td><td>new value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a2f7b90118cc219d4ad0680606cfb648f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">UNICORN_EXPORT void unicorn::video::Graphics::SetWindowMonitor </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classunicorn_1_1system_1_1Window.html">system::Window</a> &amp;&#160;</td>
+          <td class="paramname"><em>window</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classunicorn_1_1system_1_1Monitor.html">system::Monitor</a> *&#160;</td>
+          <td class="paramname"><em>pMonitor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::pair&lt; int32_t, int32_t &gt;&#160;</td>
+          <td class="paramname"><em>position</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::pair&lt; int32_t, int32_t &gt;&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>refreshRate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets monitor to be used by <code>window</code> for fullscreen mode. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">window</td><td>window object </td></tr>
+    <tr><td class="paramname">pMonitor</td><td>monitor object or <code>nullptr</code> for windowed mode </td></tr>
+    <tr><td class="paramname">position</td><td>desired position as (x, y) </td></tr>
+    <tr><td class="paramname">size</td><td>desired size as (width, height) </td></tr>
+    <tr><td class="paramname">refreshRate</td><td>desired refresh rate </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a2f8714edb67beb76ea83b4bc6d584c4e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">UNICORN_EXPORT <a class="el" href="classunicorn_1_1system_1_1Window.html">system::Window</a>* unicorn::video::Graphics::SpawnWindow </td>
+          <td>(</td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t&#160;</td>
+          <td class="paramname"><em>height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classunicorn_1_1system_1_1Monitor.html">system::Monitor</a> *&#160;</td>
+          <td class="paramname"><em>pMonitor</em> = <code>nullptr</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classunicorn_1_1system_1_1Window.html">system::Window</a> *&#160;</td>
+          <td class="paramname"><em>pSharedWindow</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Spawns new window. </p>
+<p>Also creates renderer context for created window</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">width</td><td>desired width </td></tr>
+    <tr><td class="paramname">height</td><td>desired height </td></tr>
+    <tr><td class="paramname">name</td><td>desired name </td></tr>
+    <tr><td class="paramname">pMonitor</td><td>pointer to a monitor where window should be created </td></tr>
+    <tr><td class="paramname">pSharedWindow</td><td>pointer to another window that should share all resources with created window</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a pointer to newly created window object </dd></dl>
 
 </div>
 </div>

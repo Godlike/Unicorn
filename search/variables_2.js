@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['key',['key',['../structunicorn_1_1utility_1_1asset_1_1Storage_1_1Task.html#a181ed3c8f17523f08eb89b3b6ed928bf',1,'unicorn::utility::asset::Storage::Task']]]
+  ['close',['Close',['../classunicorn_1_1system_1_1Window.html#aa0fea51af5840c0affd2ebb919792ed3',1,'unicorn::system::Window']]],
+  ['contentrefresh',['ContentRefresh',['../classunicorn_1_1system_1_1Window.html#a129ed3c81e9402d0733dd1276ea04a08',1,'unicorn::system::Window']]]
 ];

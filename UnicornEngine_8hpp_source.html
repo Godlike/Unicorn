@@ -68,7 +68,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -89,7 +89,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment">* Copyright (C) 2017 by Godlike</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">* This code is licensed under the MIT license (MIT) </span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment">* This code is licensed under the MIT license (MIT)</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">* (http://opensource.org/licenses/MIT)</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">*/</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div>
@@ -100,42 +100,64 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>unicorn</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">namespace </span>video</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">class </span>Graphics;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;}</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classunicorn_1_1UnicornEngine.html">   20</a></span>&#160;<span class="keyword">class </span>UNICORN_EXPORT <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span>video</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;{</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">class </span>Graphics;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;}</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">namespace </span>system</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>();</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    ~<a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">class </span>Manager;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">class </span>WindowProfiler;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">class </span>MonitorProfiler;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;}</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classunicorn_1_1UnicornEngine.html">   28</a></span>&#160;<span class="keyword">class </span>UNICORN_EXPORT <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;{</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>();</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>(<a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>&amp; operator=(<a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">bool</span> Init();</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    ~<a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>(<a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>&amp; operator=(<a class="code" href="classunicorn_1_1UnicornEngine.html">UnicornEngine</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordtype">void</span> Run();</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordtype">void</span> Deinit();</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classunicorn_1_1UnicornEngine.html#a5917942b6ed2aa9201d3154c5c61495f">   59</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classunicorn_1_1UnicornEngine.html#a5917942b6ed2aa9201d3154c5c61495f">m_isInitialized</a>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;</div>
-<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classunicorn_1_1UnicornEngine.html#a307b2ea0fffb550f42e29b81b44125fa">   62</a></span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Graphics.html">video::Graphics</a>* <a class="code" href="classunicorn_1_1UnicornEngine.html#a307b2ea0fffb550f42e29b81b44125fa">m_pGraphics</a>;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;};</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#endif // UNICORN_ENGINE_HPP</span></div>
-<div class="ttc" id="classunicorn_1_1UnicornEngine_html"><div class="ttname"><a href="classunicorn_1_1UnicornEngine.html">unicorn::UnicornEngine</a></div><div class="ttdoc">Engine main class. </div><div class="ttdef"><b>Definition:</b> UnicornEngine.hpp:20</div></div>
-<div class="ttc" id="classunicorn_1_1UnicornEngine_html_a5917942b6ed2aa9201d3154c5c61495f"><div class="ttname"><a href="classunicorn_1_1UnicornEngine.html#a5917942b6ed2aa9201d3154c5c61495f">unicorn::UnicornEngine::m_isInitialized</a></div><div class="ttdeci">bool m_isInitialized</div><div class="ttdoc">Flag describing if engine was initialized. </div><div class="ttdef"><b>Definition:</b> UnicornEngine.hpp:59</div></div>
-<div class="ttc" id="classunicorn_1_1UnicornEngine_html_a307b2ea0fffb550f42e29b81b44125fa"><div class="ttname"><a href="classunicorn_1_1UnicornEngine.html#a307b2ea0fffb550f42e29b81b44125fa">unicorn::UnicornEngine::m_pGraphics</a></div><div class="ttdeci">video::Graphics * m_pGraphics</div><div class="ttdoc">Pointer to graphics system. </div><div class="ttdef"><b>Definition:</b> UnicornEngine.hpp:62</div></div>
-<div class="ttc" id="classunicorn_1_1video_1_1Graphics_html"><div class="ttname"><a href="classunicorn_1_1video_1_1Graphics.html">unicorn::video::Graphics</a></div><div class="ttdoc">Abstract graphics renderer. </div><div class="ttdef"><b>Definition:</b> Graphics.hpp:20</div></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">bool</span> Init();</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">void</span> Run();</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">void</span> Deinit();</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="classunicorn_1_1UnicornEngine.html#a78ffcc30c94fcc58a2efcd7967327118">   66</a></span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Graphics.html">video::Graphics</a>* <a class="code" href="classunicorn_1_1UnicornEngine.html#a78ffcc30c94fcc58a2efcd7967327118">GetGraphics</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> m_pGraphics; }</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="classunicorn_1_1UnicornEngine.html#a5917942b6ed2aa9201d3154c5c61495f">   70</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classunicorn_1_1UnicornEngine.html#a5917942b6ed2aa9201d3154c5c61495f">m_isInitialized</a>;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="classunicorn_1_1UnicornEngine.html#aa150d04e59340b31510fcc0321949c7e">   73</a></span>&#160;    system::Manager* <a class="code" href="classunicorn_1_1UnicornEngine.html#aa150d04e59340b31510fcc0321949c7e">m_pSystemManager</a>;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classunicorn_1_1UnicornEngine.html#a23320f9627238e5d4a172c76923fe8d6">   76</a></span>&#160;    <a class="code" href="classunicorn_1_1system_1_1WindowProfiler.html">system::WindowProfiler</a>* <a class="code" href="classunicorn_1_1UnicornEngine.html#a23320f9627238e5d4a172c76923fe8d6">m_pWindowProfiler</a>;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="classunicorn_1_1UnicornEngine.html#a3e655aa3cacdf43b08fc5ee9aa0334a1">   79</a></span>&#160;    <a class="code" href="classunicorn_1_1system_1_1MonitorProfiler.html">system::MonitorProfiler</a>* <a class="code" href="classunicorn_1_1UnicornEngine.html#a3e655aa3cacdf43b08fc5ee9aa0334a1">m_pMonitorProfiler</a>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="classunicorn_1_1UnicornEngine.html#a307b2ea0fffb550f42e29b81b44125fa">   82</a></span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Graphics.html">video::Graphics</a>* <a class="code" href="classunicorn_1_1UnicornEngine.html#a307b2ea0fffb550f42e29b81b44125fa">m_pGraphics</a>;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;};</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;}</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor">#endif // UNICORN_ENGINE_HPP</span></div>
+<div class="ttc" id="classunicorn_1_1system_1_1MonitorProfiler_html"><div class="ttname"><a href="classunicorn_1_1system_1_1MonitorProfiler.html">unicorn::system::MonitorProfiler</a></div><div class="ttdoc">Class that reports all monitor events. </div><div class="ttdef"><b>Definition:</b> MonitorProfiler.hpp:20</div></div>
+<div class="ttc" id="classunicorn_1_1UnicornEngine_html_a78ffcc30c94fcc58a2efcd7967327118"><div class="ttname"><a href="classunicorn_1_1UnicornEngine.html#a78ffcc30c94fcc58a2efcd7967327118">unicorn::UnicornEngine::GetGraphics</a></div><div class="ttdeci">video::Graphics * GetGraphics() const </div><div class="ttdoc">Returns pointer to the graphics system. </div><div class="ttdef"><b>Definition:</b> UnicornEngine.hpp:66</div></div>
+<div class="ttc" id="classunicorn_1_1UnicornEngine_html_a3e655aa3cacdf43b08fc5ee9aa0334a1"><div class="ttname"><a href="classunicorn_1_1UnicornEngine.html#a3e655aa3cacdf43b08fc5ee9aa0334a1">unicorn::UnicornEngine::m_pMonitorProfiler</a></div><div class="ttdeci">system::MonitorProfiler * m_pMonitorProfiler</div><div class="ttdoc">Pointer to the monitor profiler. </div><div class="ttdef"><b>Definition:</b> UnicornEngine.hpp:79</div></div>
+<div class="ttc" id="classunicorn_1_1UnicornEngine_html"><div class="ttname"><a href="classunicorn_1_1UnicornEngine.html">unicorn::UnicornEngine</a></div><div class="ttdoc">Engine main class. </div><div class="ttdef"><b>Definition:</b> UnicornEngine.hpp:28</div></div>
+<div class="ttc" id="classunicorn_1_1UnicornEngine_html_a5917942b6ed2aa9201d3154c5c61495f"><div class="ttname"><a href="classunicorn_1_1UnicornEngine.html#a5917942b6ed2aa9201d3154c5c61495f">unicorn::UnicornEngine::m_isInitialized</a></div><div class="ttdeci">bool m_isInitialized</div><div class="ttdoc">Flag describing if engine was initialized. </div><div class="ttdef"><b>Definition:</b> UnicornEngine.hpp:70</div></div>
+<div class="ttc" id="classunicorn_1_1UnicornEngine_html_a307b2ea0fffb550f42e29b81b44125fa"><div class="ttname"><a href="classunicorn_1_1UnicornEngine.html#a307b2ea0fffb550f42e29b81b44125fa">unicorn::UnicornEngine::m_pGraphics</a></div><div class="ttdeci">video::Graphics * m_pGraphics</div><div class="ttdoc">Pointer to the graphics system. </div><div class="ttdef"><b>Definition:</b> UnicornEngine.hpp:82</div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Graphics_html"><div class="ttname"><a href="classunicorn_1_1video_1_1Graphics.html">unicorn::video::Graphics</a></div><div class="ttdoc">Abstract graphics renderer. </div><div class="ttdef"><b>Definition:</b> Graphics.hpp:38</div></div>
+<div class="ttc" id="classunicorn_1_1system_1_1WindowProfiler_html"><div class="ttname"><a href="classunicorn_1_1system_1_1WindowProfiler.html">unicorn::system::WindowProfiler</a></div><div class="ttdoc">Class that reports all window events. </div><div class="ttdef"><b>Definition:</b> WindowProfiler.hpp:22</div></div>
+<div class="ttc" id="classunicorn_1_1UnicornEngine_html_a23320f9627238e5d4a172c76923fe8d6"><div class="ttname"><a href="classunicorn_1_1UnicornEngine.html#a23320f9627238e5d4a172c76923fe8d6">unicorn::UnicornEngine::m_pWindowProfiler</a></div><div class="ttdeci">system::WindowProfiler * m_pWindowProfiler</div><div class="ttdoc">Pointer to the window profiler. </div><div class="ttdef"><b>Definition:</b> UnicornEngine.hpp:76</div></div>
+<div class="ttc" id="classunicorn_1_1UnicornEngine_html_aa150d04e59340b31510fcc0321949c7e"><div class="ttname"><a href="classunicorn_1_1UnicornEngine.html#aa150d04e59340b31510fcc0321949c7e">unicorn::UnicornEngine::m_pSystemManager</a></div><div class="ttdeci">system::Manager * m_pSystemManager</div><div class="ttdoc">Pointer to the window and monitor managing manager. </div><div class="ttdef"><b>Definition:</b> UnicornEngine.hpp:73</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

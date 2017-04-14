@@ -1,4 +1,5 @@
 <map id="unicorn::UnicornEngine" name="unicorn::UnicornEngine">
-<area shape="rect" id="node2" href="$classunicorn_1_1video_1_1Graphics.html" title="Abstract graphics renderer. " alt="" coords="5,96,168,123"/>
-<area shape="rect" id="node3" href="$classunicorn_1_1video_1_1Renderer.html" title="Vulkan renderer class. " alt="" coords="5,5,168,32"/>
+<area shape="rect" id="node2" href="$classunicorn_1_1video_1_1Graphics.html" title="Abstract graphics renderer. " alt="" coords="29,5,192,32"/>
+<area shape="rect" id="node3" href="$classunicorn_1_1system_1_1MonitorProfiler.html" title="Class that reports all monitor events. " alt="" coords="27,57,194,98"/>
+<area shape="rect" id="node4" href="$classunicorn_1_1system_1_1WindowProfiler.html" title="Class that reports all window events. " alt="" coords="5,123,216,149"/>
 </map>

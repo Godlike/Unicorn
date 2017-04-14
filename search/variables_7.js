@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['uninitialized',['uninitialized',['../structunicorn_1_1utility_1_1asset_1_1FileReader_1_1Flags.html#a7100ed9565c3b3e6b51e434dc0787518',1,'unicorn::utility::asset::FileReader::Flags']]]
+  ['handle',['handle',['../structunicorn_1_1system_1_1MonitorMemento.html#ab3946a8f954f492a984fc270a06eb6ec',1,'unicorn::system::MonitorMemento']]],
+  ['height',['height',['../structunicorn_1_1system_1_1VideoMode.html#a6dd074ef29516526ee7732af3f776414',1,'unicorn::system::VideoMode']]]
 ];

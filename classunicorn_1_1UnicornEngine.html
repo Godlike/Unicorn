@@ -71,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -104,7 +104,7 @@ Collaboration diagram for unicorn::UnicornEngine:</div>
 <div class="dyncontent">
 <div class="center"><img src="classunicorn_1_1UnicornEngine__coll__graph.png" border="0" usemap="#unicorn_1_1UnicornEngine_coll__map" alt="Collaboration graph"/></div>
 <map name="unicorn_1_1UnicornEngine_coll__map" id="unicorn_1_1UnicornEngine_coll__map">
-<area shape="rect" id="node2" href="classunicorn_1_1video_1_1Graphics.html" title="Abstract graphics renderer. " alt="" coords="5,96,168,123"/><area shape="rect" id="node3" href="classunicorn_1_1video_1_1Renderer.html" title="Vulkan renderer class. " alt="" coords="5,5,168,32"/></map>
+<area shape="rect" id="node2" href="classunicorn_1_1video_1_1Graphics.html" title="Abstract graphics renderer. " alt="" coords="29,5,192,32"/><area shape="rect" id="node3" href="classunicorn_1_1system_1_1MonitorProfiler.html" title="Class that reports all monitor events. " alt="" coords="27,57,194,98"/><area shape="rect" id="node4" href="classunicorn_1_1system_1_1WindowProfiler.html" title="Class that reports all window events. " alt="" coords="5,123,216,149"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -138,6 +138,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a4e8e43c4a3b71a64446d9e64b5350ae5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1UnicornEngine.html#a4e8e43c4a3b71a64446d9e64b5350ae5">Deinit</a> ()</td></tr>
 <tr class="memdesc:a4e8e43c4a3b71a64446d9e64b5350ae5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deinitializes the engine.  <a href="#a4e8e43c4a3b71a64446d9e64b5350ae5">More...</a><br/></td></tr>
 <tr class="separator:a4e8e43c4a3b71a64446d9e64b5350ae5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78ffcc30c94fcc58a2efcd7967327118"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a78ffcc30c94fcc58a2efcd7967327118"></a>
+<a class="el" href="classunicorn_1_1video_1_1Graphics.html">video::Graphics</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1UnicornEngine.html#a78ffcc30c94fcc58a2efcd7967327118">GetGraphics</a> () const </td></tr>
+<tr class="memdesc:a78ffcc30c94fcc58a2efcd7967327118"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns pointer to the graphics system. <br/></td></tr>
+<tr class="separator:a78ffcc30c94fcc58a2efcd7967327118"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -145,9 +149,21 @@ Private Attributes</h2></td></tr>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1UnicornEngine.html#a5917942b6ed2aa9201d3154c5c61495f">m_isInitialized</a></td></tr>
 <tr class="memdesc:a5917942b6ed2aa9201d3154c5c61495f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag describing if engine was initialized. <br/></td></tr>
 <tr class="separator:a5917942b6ed2aa9201d3154c5c61495f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa150d04e59340b31510fcc0321949c7e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa150d04e59340b31510fcc0321949c7e"></a>
+system::Manager *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1UnicornEngine.html#aa150d04e59340b31510fcc0321949c7e">m_pSystemManager</a></td></tr>
+<tr class="memdesc:aa150d04e59340b31510fcc0321949c7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the window and monitor managing manager. <br/></td></tr>
+<tr class="separator:aa150d04e59340b31510fcc0321949c7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23320f9627238e5d4a172c76923fe8d6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a23320f9627238e5d4a172c76923fe8d6"></a>
+<a class="el" href="classunicorn_1_1system_1_1WindowProfiler.html">system::WindowProfiler</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1UnicornEngine.html#a23320f9627238e5d4a172c76923fe8d6">m_pWindowProfiler</a></td></tr>
+<tr class="memdesc:a23320f9627238e5d4a172c76923fe8d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the window profiler. <br/></td></tr>
+<tr class="separator:a23320f9627238e5d4a172c76923fe8d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e655aa3cacdf43b08fc5ee9aa0334a1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3e655aa3cacdf43b08fc5ee9aa0334a1"></a>
+<a class="el" href="classunicorn_1_1system_1_1MonitorProfiler.html">system::MonitorProfiler</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1UnicornEngine.html#a3e655aa3cacdf43b08fc5ee9aa0334a1">m_pMonitorProfiler</a></td></tr>
+<tr class="memdesc:a3e655aa3cacdf43b08fc5ee9aa0334a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the monitor profiler. <br/></td></tr>
+<tr class="separator:a3e655aa3cacdf43b08fc5ee9aa0334a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a307b2ea0fffb550f42e29b81b44125fa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a307b2ea0fffb550f42e29b81b44125fa"></a>
 <a class="el" href="classunicorn_1_1video_1_1Graphics.html">video::Graphics</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1UnicornEngine.html#a307b2ea0fffb550f42e29b81b44125fa">m_pGraphics</a></td></tr>
-<tr class="memdesc:a307b2ea0fffb550f42e29b81b44125fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to graphics system. <br/></td></tr>
+<tr class="memdesc:a307b2ea0fffb550f42e29b81b44125fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the graphics system. <br/></td></tr>
 <tr class="separator:a307b2ea0fffb550f42e29b81b44125fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
