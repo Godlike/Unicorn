@@ -1,6 +1,6 @@
 /*
 * Copyright (C) 2017 by Godlike
-* This code is licensed under the MIT license (MIT) 
+* This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
 
@@ -11,9 +11,17 @@
 
 namespace unicorn
 {
+
 namespace video
 {
 class Graphics;
+}
+
+namespace system
+{
+class Manager;
+class WindowProfiler;
+class MonitorProfiler;
 }
 
 /** @brief  Engine main class */
@@ -54,11 +62,23 @@ public:
      */
     void Deinit();
 
+    /** @brief  Returns pointer to the graphics system */
+    video::Graphics* GetGraphics() const { return m_pGraphics; }
+
 private:
     //! Flag describing if engine was initialized
     bool m_isInitialized;
 
-    //! Pointer to graphics system
+    //! Pointer to the window and monitor managing manager
+    system::Manager* m_pSystemManager;
+
+    //! Pointer to the window profiler
+    system::WindowProfiler* m_pWindowProfiler;
+
+    //! Pointer to the monitor profiler
+    system::MonitorProfiler* m_pMonitorProfiler;
+
+    //! Pointer to the graphics system
     video::Graphics* m_pGraphics;
 };
 }

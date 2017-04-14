@@ -9,6 +9,9 @@
 #include <unicorn/utility/Logger.hpp>
 #include <unicorn/utility/asset/SimpleStorage.hpp>
 
+#include <unicorn/system/Manager.hpp>
+#include <unicorn/system/Window.hpp>
+
 #include <cstring>
 #include <iostream>
 #include <set>
@@ -52,16 +55,25 @@ static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flag
     return VK_FALSE;
 }
 
-Renderer::Renderer()
+Renderer::Renderer(system::Manager& manager, system::Window* pWindow)
     : m_isInitialized(false)
-    , m_pWindow(nullptr)
+    , m_systemManager(manager)
+    , m_pWindow(pWindow)
     , m_validationLayers({"VK_LAYER_LUNARG_standard_validation"})
     , m_deviceExtensions({VK_KHR_SWAPCHAIN_EXTENSION_NAME})
 {
+    m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
+    m_pWindow->SizeChanged.connect(this, &Renderer::OnWindowSizeChanged);
 }
 
 Renderer::~Renderer()
 {
+    if (m_pWindow)
+    {
+        m_pWindow->Destroyed.disconnect(this, &Renderer::OnWindowDestroyed);
+        m_pWindow->SizeChanged.disconnect(this, &Renderer::OnWindowSizeChanged);
+    }
+
     Deinit();
 }
 
@@ -72,28 +84,8 @@ bool Renderer::Init()
         return false;
     }
 
-    LOG_INFO("Vulkan render initialization started.");
+    LOG_INFO("Renderer initialization started.");
 
-    glfwInit();
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-
-    if (!glfwVulkanSupported())
-    {
-        LOG_ERROR("Vulkan not supported!");
-
-        return false;
-    }
-
-    const core::Settings& settings = core::Settings::Instance();
-
-    m_pWindow = glfwCreateWindow(settings.GetApplicationWidth(),
-        settings.GetApplicationHeight(),
-        settings.GetApplicationName().c_str(),
-        nullptr,
-        nullptr);
-    glfwSetWindowUserPointer(m_pWindow, this);
-    glfwSetWindowSizeCallback(m_pWindow, OnWindowResized);
     if (!CreateInstance() ||
         !SetupDebugCallback() ||
         !CreateSurface() ||
@@ -113,7 +105,7 @@ bool Renderer::Init()
 
     m_isInitialized = true;
 
-    LOG_INFO("Vulkan render initialized correctly.");
+    LOG_INFO("Renderer initialized correctly.");
 
     return true;
 }
@@ -133,16 +125,9 @@ void Renderer::Deinit()
     FreeDebugCallback();
     FreeInstance();
 
-    if (m_pWindow)
-    {
-        glfwSetWindowShouldClose(m_pWindow, GLFW_TRUE);
-        glfwDestroyWindow(m_pWindow);
-        m_pWindow = nullptr;
-    }
-
     if (m_isInitialized)
     {
-        LOG_INFO("Vulkan render shutdown correctly.");
+        LOG_INFO("Render shutdown correctly.");
     }
 
     m_isInitialized = false;
@@ -249,32 +234,37 @@ vk::Extent2D Renderer::ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabi
     }
 }
 
-void Renderer::Render()
+bool Renderer::Render()
 {
     if (m_isInitialized && m_pWindow)
     {
-        while (!glfwWindowShouldClose(m_pWindow))
-        {
-            glfwPollEvents();
-            if (!Frame())
-            {
-                break;
-            }
-        }
+        Frame();
+
         m_vkLogicalDevice.waitIdle();
+
+        return true;
     }
+
+    return false;
 }
 
-void Renderer::OnWindowResized(GLFWwindow* window, int width, int height)
+void Renderer::OnWindowDestroyed(system::Window* pWindow)
 {
-    if (width == 0 || height == 0)
+    LOG_INFO("Window destroyed, deinitializing renderer");
+
+    m_pWindow = nullptr;
+
+    Deinit();
+}
+
+void Renderer::OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, int32_t> size)
+{
+    if (size.first == 0 || size.second == 0)
     {
         return;
     }
 
-    Renderer* renderer = reinterpret_cast<Renderer*>(glfwGetWindowUserPointer(window));
-
-    if (!renderer->RecreateSwapChain())
+    if (!RecreateSwapChain())
     {
         LOG_ERROR("Can't recreate swapchain!");
     }
@@ -538,9 +528,10 @@ bool Renderer::CreateLogicalDevice()
 
 bool Renderer::CreateSurface()
 {
-    if (glfwCreateWindowSurface(m_vkInstance, m_pWindow, nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
+    if (!m_pWindow || m_systemManager.CreateVulkanSurfaceForWindow(*m_pWindow, m_vkInstance, nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
     {
         LOG_ERROR("Failed to create window surface!");
+
         return false;
     }
 
@@ -606,6 +597,7 @@ bool Renderer::CreateSwapChain()
     if (result != vk::Result::eSuccess)
     {
         LOG_ERROR("Failed to create Vulkan swap chain!");
+        return false;
     }
 
     m_vkSwapChain = newSwapChain;
@@ -1132,21 +1124,14 @@ bool Renderer::CheckValidationLayerSupport() const
 
 std::vector<const char*> Renderer::GetRequiredExtensions()
 {
-    std::vector<const char*> m_extensions;
-    unsigned int glfwExtensionCount = 0;
-    const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-    for (unsigned int i = 0; i < glfwExtensionCount; ++i)
-    {
-        m_extensions.push_back(glfwExtensions[i]);
-    }
+    std::vector<const char*> extensions( m_systemManager.GetRequiredVulkanExtensions() );
 
     if (s_enableValidationLayers)
     {
-        m_extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+        extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
     }
 
-    return m_extensions;
+    return extensions;
 }
 
 VkResult Renderer::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo)

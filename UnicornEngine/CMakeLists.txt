@@ -36,19 +36,6 @@ add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS -DVULKAN_HPP_TYPESAFE_CONVERSION)
 # include(TinyObjLoaderConfig)
 # add_subdirectory(${TINYOBJLOADER_ROOT_DIR})
 
-## GLFW
-# GLFW shall always be statically linked
-include(GlfwConfig)
-
-# Force BUILD_SHARED_LIBS to be OFF while saving initial value to temp variable
-set(TMP_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "Force GLFW to build static library" FORCE)
-
-add_subdirectory(${GLFW_ROOT_DIR})
-
-# Restore initial BUILD_SHARED_LIBS value
-set(BUILD_SHARED_LIBS ${TMP_BUILD_SHARED_LIBS} CACHE BOOL "Restored initial BUILD_SHARED_LIBS value" FORCE)
-
 ## GLM
 include(GlmConfig)
 add_subdirectory(${GLM_ROOT_DIR})
@@ -59,27 +46,37 @@ include(loguru)
 ## STB
 include(stb)
 
+## system
+include(system)
+
+## Wink Signals
+include(WinkSignals)
 
 if (UNIX)
     find_library(Vulkan REQUIRED)
-    include_directories(
-        ${VULKAN_INCLUDE_DIR}
-    )
-endif ()
+endif()
 
 include_directories(
-    ${UNICORN_ENGINE_INCLUDE_DIR}
-    ${TINYOBJLOADER_INCLUDE_DIR}
     ${VULKAN_INCLUDE_DIR}
-    ${GLFW_INCLUDE_DIR}
+)
+
+include_directories(
+    ${UNICORN_ENGINE_INCLUDE_DIRS}
+)
+
+include_directories( SYSTEM
+    ${WINK_SIGNALS_INCLUDE_DIR}
+    ${TINYOBJLOADER_INCLUDE_DIR}
     ${GLM_INCLUDE_DIR}
     ${LOGURU_INCLUDE_DIR}
     ${STB_INCLUDE_DIR}
 )
 
 if (BUILD_SHARED_LIBS)
-    add_definitions(-DUNICORN_SHARED)
+    add_definitions(-D${UNICORN_ENGINE_LIB}_EXPORTS)
 endif()
+
+add_subdirectory(system)
 
 set(UNICORN_ENGINE_HEADERS
     include/unicorn/core/Settings.hpp
@@ -128,8 +125,12 @@ if (UNICORN_BUILD_DOCUMENTATION)
     find_package(Doxygen)
 
     if (DOXYGEN_FOUND)
+        set(DOXYGEN_INPUT_DIRS
+            ${UNICORN_ENGINE_INCLUDE_DIR}
+            ${UNICORN_ENGINE_SYSTEM_INCLUDE_DIRS}
+        )
         set(DOXYGEN_PROJECT_NAME ${PROJECT_NAME})
-        set(DOXYGEN_INPUT ${CMAKE_CURRENT_SOURCE_DIR}/include)
+        string(REPLACE ";" " " DOXYGEN_INPUT "${DOXYGEN_INPUT_DIRS}")
 
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
@@ -144,7 +145,7 @@ if (UNICORN_BUILD_DOCUMENTATION)
     endif()
 endif()
 
-target_link_libraries(${UNICORN_ENGINE_LIB} ${VULKAN_LIBRARY} ${GLFW_LIB})
+target_link_libraries(${UNICORN_ENGINE_LIB} ${VULKAN_LIBRARY} ${UNICORN_ENGINE_SYSTEM_LIB})
 
 if(UNIX)
     set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/bin/glslangValidator")

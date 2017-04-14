@@ -1,6 +1,6 @@
 /*
 * Copyright (C) 2017 by Godlike
-* This code is licensed under the MIT license (MIT) 
+* This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
 
@@ -8,7 +8,6 @@
 #define UNICORN_VIDEO_RENDERER_HPP
 
 #include <vulkan/vulkan.hpp>
-#include <GLFW/glfw3.h>
 
 #include <cstdint>
 #include <vector>
@@ -18,6 +17,13 @@ struct GLFWwindow;
 
 namespace unicorn
 {
+
+namespace system
+{
+class Manager;
+class Window;
+}
+
 namespace video
 {
 struct QueueFamilyIndices
@@ -45,7 +51,9 @@ struct SwapChainSupportDetails
 class Renderer
 {
 public:
-    Renderer();
+    Renderer(system::Manager& manager,
+        system::Window* pWindow);
+
     ~Renderer();
 
     Renderer(const Renderer& other) = delete;
@@ -55,13 +63,18 @@ public:
 
     bool Init();
     void Deinit();
-    void Render();
-    static void OnWindowResized(GLFWwindow* window, int width, int height);
+    bool Render();
     bool RecreateSwapChain();
 
 private:
     bool m_isInitialized;
-    GLFWwindow* m_pWindow;
+
+    //! Reference to window manager manager
+    system::Manager& m_systemManager;
+
+    //! Pointer to associated window
+    system::Window* m_pWindow;
+
     vk::Instance m_vkInstance;
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;
@@ -130,6 +143,10 @@ private:
     bool SetupDebugCallback();
     VkResult CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo);
     void DestroyDebugReportCallbackEXT();
+
+    // Callbacks for window events
+    void OnWindowDestroyed(system::Window* pWindow);
+    void OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, int32_t> size);
 };
 }
 }

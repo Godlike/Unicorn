@@ -13,3 +13,6 @@
 [submodule "UnicornEngine/external/tinyobjloader"]
 	path = UnicornEngine/external/tinyobjloader
 	url = https://github.com/syoyo/tinyobjloader.git
+[submodule "UnicornEngine/external/Wink-Signals"]
+	path = UnicornEngine/external/Wink-Signals
+	url = https://github.com/Godlike/Wink-Signals.git

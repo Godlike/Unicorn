@@ -9,10 +9,17 @@
 #include <unicorn/video/Graphics.hpp>
 #include <unicorn/utility/asset/SimpleStorage.hpp>
 
+#include <unicorn/system/Manager.hpp>
+#include <unicorn/system/profilers/WindowProfiler.hpp>
+#include <unicorn/system/profilers/MonitorProfiler.hpp>
+
 namespace unicorn
 {
 UnicornEngine::UnicornEngine()
     : m_isInitialized(false)
+    , m_pSystemManager(nullptr)
+    , m_pWindowProfiler(nullptr)
+    , m_pMonitorProfiler(nullptr)
     , m_pGraphics(nullptr)
 {
 }
@@ -32,7 +39,13 @@ bool UnicornEngine::Init()
     unicorn::utility::asset::SimpleStorage::Instance();
     LOG_INFO("Engine initialization started.");
 
-    m_pGraphics = new video::Graphics();
+    m_pSystemManager = new system::Manager();
+    m_pWindowProfiler = new system::WindowProfiler(*m_pSystemManager);
+    m_pMonitorProfiler = new system::MonitorProfiler(*m_pSystemManager);
+
+    m_pSystemManager->Init();
+
+    m_pGraphics = new video::Graphics(*m_pSystemManager);
 
     if (!m_pGraphics->Init())
     {
@@ -59,6 +72,29 @@ void UnicornEngine::Deinit()
         m_pGraphics = nullptr;
     }
 
+    if (m_pSystemManager)
+    {
+        m_pSystemManager->Deinit();
+
+        if (m_pMonitorProfiler)
+        {
+            delete m_pMonitorProfiler;
+
+            m_pMonitorProfiler = nullptr;
+        }
+
+        if (m_pWindowProfiler)
+        {
+            delete m_pWindowProfiler;
+
+            m_pWindowProfiler = nullptr;
+        }
+
+        delete m_pSystemManager;
+
+        m_pSystemManager = nullptr;
+    }
+
     if (m_isInitialized)
     {
         LOG_INFO("Engine shutdown correctly.");
@@ -71,7 +107,10 @@ void UnicornEngine::Run()
 {
     if (m_pGraphics)
     {
-        m_pGraphics->Render();
+        while (m_pGraphics->Render())
+        {
+
+        }
     }
 }
 }
