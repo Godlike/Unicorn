@@ -12,12 +12,18 @@
 #include <unicorn/system/WindowHint.hpp>
 #include <unicorn/system/VideoMode.hpp>
 
+#include <unicorn/system/input/MouseButton.hpp>
+#include <unicorn/system/input/Action.hpp>
+#include <unicorn/system/input/Key.hpp>
+#include <unicorn/system/input/Joystick.hpp>
+
 #include <wink/signal.hpp>
 
 #include <vulkan/vulkan.hpp>
 
 #include <cmath>
 #include <cstdint>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -46,7 +52,7 @@ public:
      *  @param  hint    window creation hint
      *  @param  value   new value
      */
-    static void SetWindowCreationHint(system::WindowHint hint, int32_t value);
+    static void SetWindowCreationHint(WindowHint hint, int32_t value);
 
     /** @brief  Resets window creation hints */
     static void ResetWindowHints();
@@ -230,7 +236,7 @@ public:
      *
      *  @return attribute value
      */
-    static int32_t GetWindowAttribute(void* handle, system::WindowAttribute attribute);
+    static int32_t GetWindowAttribute(void* handle, WindowAttribute attribute);
 
     /** @brief  Processes events that are in event queue */
     static void PollEvents();
@@ -295,7 +301,7 @@ public:
      */
     static void SetGammaRamp(void* handle, const GammaRamp& gammaRamp);
 
-    /** @name Window events */
+    /** @name   Window events */
     //! @{
 
     /** @brief  Event triggered when window position is changed
@@ -362,7 +368,82 @@ public:
 
     //! @}
 
-    /** @name Monitor events */
+    /** @name   Input events */
+    //! @{
+
+    /** @brief  Event triggered when window receives mouse button input
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# mouse button input
+     *  -# button action type
+     *  -# modifiers mask
+     */
+    static wink::signal< wink::slot<void(void*, input::MouseButton, input::Action, uint32_t)> > WindowMouseButton;
+
+    /** @brief  Event triggered when window receives mouse position update
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# pair of values as (x, y)
+     */
+    static wink::signal< wink::slot<void(void*, std::pair<double, double>)> > WindowMousePosition;
+
+    /** @brief  Event triggered when window receives/loses mouse
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# boolean flag
+     */
+    static wink::signal< wink::slot<void(void*, bool)> > WindowMouseEnter;
+
+    /** @brief  Event triggered when window receives scroll input
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# pair of values as (x, y)
+     */
+    static wink::signal< wink::slot<void(void*, std::pair<double, double>)> > WindowScroll;
+
+    /** @brief  Event triggered when window receives keyboard input
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# key indicator
+     *  -# raw scancode value
+     *  -# key action type
+     *  -# modifiers mask
+     */
+    static wink::signal< wink::slot<void(void*, input::Key, uint32_t, input::Action, uint32_t)> > WindowKeyboard;
+
+    /** @brief  Event triggered when window receives unicode input with modifiers
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# unicode character
+     *  -# modifiers mask
+     */
+    static wink::signal< wink::slot<void(void*, uint32_t, uint32_t)> > WindowUnicode;
+
+    /** @brief  Event triggered when window receives file drop
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# vector of filepaths
+     */
+    static wink::signal< wink::slot<void(void*, std::vector<std::string>)> > WindowFileDrop;
+
+    /** @brief  Event triggered when joystick state is changed (connected/disconnected)
+     *
+     *  Event is emitted with the following signature:
+     *  -# joystick
+     *  -# joystick state
+     */
+    static wink::signal< wink::slot<void(input::Joystick, input::JoystickState)> > JoystickStateChanged;
+
+    //! @}
+
+    /** @name   Monitor events */
     //! @{
 
     /** @brief  Event triggered when monitor state is changed (connected/disconnected)
@@ -375,18 +456,38 @@ public:
 
     //! @}
 
-private:
-    /** @brief  Fills in video mode structure */
-    static VideoMode PrepareVideoMode(const void* pMode);
+    /** @name   Value conversion methods between glfw and unicorn */
+    //! @{
 
     /** @brief  Converts WindowManager hint to glfw hint */
-    static int ConvertToGlfwHint(system::WindowHint hint);
+    static int ConvertToGlfwHint(WindowHint hint);
 
     /** @brief  Converts WindowManager attribute to glfw attribute */
-    static int ConvertToGlfwAttribute(system::WindowAttribute attribute);
+    static int ConvertToGlfwAttribute(WindowAttribute attribute);
 
     /** @brief  Tries to convert WindowManager value to glfw value */
     static int ConvertToGlfwValue(int32_t value);
+
+    /** @brief  Converts mouse button from glfw to unicorn */
+    static input::MouseButton ConvertToUnicornMouseButton(int32_t button);
+
+    /** @brief  Converts action type from glfw to unicorn */
+    static input::Action ConvertToUnicornActionType(int32_t action);
+
+    /** @brief  Converts modifiers from glfw to unicorn */
+    static uint32_t ConvertToUnicornModifiers(int32_t modifiers);
+
+    /** @brief  Converts key code from glfw to unicorn */
+    static input::Key ConvertToUnicornKey(int32_t key);
+
+    /** @brief  Converts joystick from glfw to unicorn */
+    static input::Joystick ConvertToUnicornJoystick(int32_t joystick);
+
+    //!@}
+
+private:
+    /** @brief  Fills in video mode structure */
+    static VideoMode PrepareVideoMode(const void* pMode);
 
     //! Flag indicating if glfw was initialized
     static bool s_isInitialized;

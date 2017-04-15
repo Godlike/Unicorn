@@ -5,10 +5,8 @@
 cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.0)
 
-add_subdirectory(WindowManager)
-
 include_directories(
-    ${WINDOW_MANAGER_ADAPTER_INCLUDE_DIR}
+    ${UNICORN_ENGINE_SYSTEM_INCLUDE_DIRS}
 )
 
 set(SYSTEM_HEADERS
@@ -19,8 +17,47 @@ set(SYSTEM_SOURCES
     source/Manager.cpp
 )
 
+set(WINDOW_MANAGER_HEADERS
+    include/unicorn/system/adapters/${UNICORN_WINDOW_MANAGER}/config.hpp
+    include/unicorn/system/adapters/${UNICORN_WINDOW_MANAGER}/Adapter.hpp
+
+    include/unicorn/system/profilers/MonitorProfiler.hpp
+    include/unicorn/system/profilers/WindowProfiler.hpp
+
+    include/unicorn/system/CustomValue.hpp
+    include/unicorn/system/GammaRamp.hpp
+    include/unicorn/system/Monitor.hpp
+    include/unicorn/system/MonitorMemento.hpp
+    include/unicorn/system/VideoMode.hpp
+    include/unicorn/system/Window.hpp
+    include/unicorn/system/WindowAttribute.hpp
+    include/unicorn/system/WindowHint.hpp
+)
+
+set(WINDOW_MANAGER_SOURCES
+    source/adapters/${UNICORN_WINDOW_MANAGER}/Adapter.cpp
+
+    source/profilers/MonitorProfiler.cpp
+    source/profilers/WindowProfiler.cpp
+
+    source/GammaRamp.cpp
+    source/Monitor.cpp
+    source/Window.cpp
+)
+
+set(INPUT_HEADERS
+    include/unicorn/system/input/Action.hpp
+    include/unicorn/system/input/Joystick.hpp
+    include/unicorn/system/input/Key.hpp
+    include/unicorn/system/input/MouseButton.hpp
+)
+
 add_library(system STATIC
+    ${WINDOW_MANAGER_HEADERS}
+    ${INPUT_HEADERS}
     ${SYSTEM_HEADERS}
+
+    ${WINDOW_MANAGER_SOURCES}
     ${SYSTEM_SOURCES}
 )
 
@@ -28,4 +65,4 @@ if (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()
 
-target_link_libraries(system ${WINDOW_MANAGER_LIB})
+target_link_libraries(system ${WINDOW_MANAGER_LIBS})
