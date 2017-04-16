@@ -8,7 +8,7 @@ cmake_policy(VERSION 3.0)
 find_package(Threads REQUIRED)
 
 set(UTILITY_HEADERS
-	include/unicorn/utility/asset/Content.hpp
+    include/unicorn/utility/asset/Content.hpp
     include/unicorn/utility/asset/FileReader.hpp
     include/unicorn/utility/asset/Handler.hpp
     include/unicorn/utility/asset/SimpleStorage.hpp

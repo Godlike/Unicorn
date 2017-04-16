@@ -1,4 +1,4 @@
-#include <unicorn/system/Settings.hpp>
+#include <unicorn/Settings.hpp>
 
 #include <unicorn/utility/asset/Content.hpp>
 #include <unicorn/utility/asset/SimpleStorage.hpp>
@@ -26,7 +26,7 @@ void PrintHandlerContent(const unicorn::utility::asset::Handler& handler)
 
 int main(int argc, char* argv[])
 {
-    unicorn::core::Settings& settings = unicorn::core::Settings::Instance();
+    unicorn::Settings& settings = unicorn::Settings::Instance();
 
     settings.Init(argc, argv, "");
     settings.SetApplicationName("Asset simple storage test");
@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
 
     unicorn::utility::asset::SimpleStorage::Destroy();
 
-    unicorn::core::Settings::Destroy();
+    unicorn::Settings::Destroy();
 
     return EXIT_SUCCESS;
 }
