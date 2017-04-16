@@ -22,6 +22,7 @@ namespace system
 class Manager;
 class WindowProfiler;
 class MonitorProfiler;
+class MouseProfiler;
 }
 
 /** @brief  Engine main class */
@@ -77,6 +78,9 @@ private:
 
     //! Pointer to the monitor profiler
     system::MonitorProfiler* m_pMonitorProfiler;
+
+    //! Pointer to the mouse profiler
+    system::MouseProfiler* m_pMouseProfiler;
 
     //! Pointer to the graphics system
     video::Graphics* m_pGraphics;

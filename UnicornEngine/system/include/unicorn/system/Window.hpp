@@ -9,6 +9,10 @@
 
 #include <unicorn/system/Monitor.hpp>
 
+#include <unicorn/system/input/MouseButton.hpp>
+#include <unicorn/system/input/Action.hpp>
+#include <unicorn/system/input/Key.hpp>
+
 #include <unicorn/utility/SharedMacros.hpp>
 
 #include <wink/signal.hpp>
@@ -202,6 +206,73 @@ public:
      */
     wink::signal< wink::slot<void(Window*, std::pair<int32_t, int32_t>)> > FramebufferResized;
 
+    /** @name   Input events */
+    //! @{
+
+    /** @brief  Event triggered when window receives mouse button input
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# mouse button input
+     *  -# button action type
+     *  -# modifiers mask
+     */
+    wink::signal< wink::slot<void(Window*, input::MouseButton, input::Action, uint32_t)> > MouseButton;
+
+    /** @brief  Event triggered when window receives mouse position update
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# pair of values as (x, y)
+     */
+    wink::signal< wink::slot<void(Window*, std::pair<double, double>)> > MousePosition;
+
+    /** @brief  Event triggered when window receives/loses mouse
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# boolean flag
+     */
+    wink::signal< wink::slot<void(Window*, bool)> > MouseEnter;
+
+    /** @brief  Event triggered when window receives scroll input
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# pair of values as (x, y)
+     */
+    wink::signal< wink::slot<void(Window*, std::pair<double, double>)> > Scroll;
+
+    /** @brief  Event triggered when window receives keyboard input
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# key indicator
+     *  -# raw scancode value
+     *  -# key action type
+     *  -# modifiers mask
+     */
+    wink::signal< wink::slot<void(Window*, input::Key, uint32_t, input::Action, uint32_t)> > Keyboard;
+
+    /** @brief  Event triggered when window receives unicode input with modifiers
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# unicode character
+     *  -# modifiers mask
+     */
+    wink::signal< wink::slot<void(Window*, uint32_t, uint32_t)> > Unicode;
+
+    /** @brief  Event triggered when window receives file drop
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# vector of filepaths
+     */
+    wink::signal< wink::slot<void(Window*, std::vector<std::string>)> > FileDrop;
+
+    //! @}
+
 private:
     /** @brief  Slot invoked when window position is changed
      *
@@ -272,6 +343,74 @@ private:
      *  @param  size    pair of values as (width, height)
      */
     void OnWindowFramebufferResized(void* handle, std::pair<int32_t, int32_t> size);
+
+    /** @brief  Slot invoked when window receives mouse button input
+     *
+     *  Bound to Adapter::WindowMouseButton
+     *
+     *  @param  handle      window handle to be checked against @ref m_handle
+     *  @param  button      mouse button
+     *  @param  action      mouse action (press/release)
+     *  @param  modifiers   currently active modifiers
+     */
+    void OnWindowMouseButton(void* handle, input::MouseButton button, input::Action action, uint32_t modifiers);
+
+    /** @brief  Slot invoked when mouse position is changed within a window
+     *
+     *  Bound to Adapter::WindowMousePosition
+     *
+     *  @param  handle  window handle to be checked against @ref m_handle
+     *  @param  coords  pair of values as (x, y)
+     */
+    void OnWindowMousePosition(void* handle, std::pair<double, double> coords);
+
+    /** @brief  Slot invoked when mouse enters or leaves window
+     *
+     *  Bound to Adapter::WindowMouseEnter
+     *
+     *  @param  handle  window handle to be checked against @ref m_handle
+     *  @param  bool    boolean flag
+     */
+    void OnWindowMouseEnter(void* handle, bool entered);
+
+    /** @brief  Slot invoked when window receives scroll event
+     *
+     *  Bound to Adapter::WindowScroll
+     *
+     *  @param  handle  window handle to be checked against @ref m_handle
+     *  @param  coords  pair of values as (x, y)
+     */
+    void OnWindowScroll(void* handle, std::pair<double, double> coords);
+
+    /** @brief  Slot invoked when window receives keyboard input
+     *
+     *  Bound to Adapter::WindowKeyboard
+     *
+     *  @param  handle      window handle to be checked against @ref m_handle
+     *  @param  key         key associated with the event
+     *  @param  scancode    scancode for key if @p key is input::Key::Unknown
+     *  @param  modifiers   currently active modifiers
+     */
+    void OnWindowKeyboard(void* handle, input::Key key, uint32_t scancode, input::Action action, uint32_t modifiers);
+
+    /** @brief  Slot invoked when window receives unicode input
+     *
+     *  Bound to Adapter::WindowUnicode
+     *
+     *  @param  handle      window handle to be checked against @ref m_handle
+     *  @param  unicode     character code
+     *  @param  modifiers   currently active modifiers
+     */
+    void OnWindowUnicode(void* handle, uint32_t unicode, uint32_t modifiers);
+
+    /** @brief  Slot invoked when files are dropped in a window
+     *
+     *  Bound to Adapter::WindowFileDrop
+     *
+     *  @param  handle  window handle to be checked against @ref m_handle
+     *  @param  paths   vector of file paths
+     */
+    void OnWindowFileDrop(void* handle, std::vector<std::string> paths);
 
     //! Window id within application
     uint32_t m_id;

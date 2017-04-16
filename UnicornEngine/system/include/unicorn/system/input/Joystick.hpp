@@ -7,6 +7,8 @@
 #ifndef UNICORN_SYSTEM_INPUT_JOYSTICK_HPP
 #define UNICORN_SYSTEM_INPUT_JOYSTICK_HPP
 
+#include <cstdint>
+
 namespace unicorn
 {
 namespace system

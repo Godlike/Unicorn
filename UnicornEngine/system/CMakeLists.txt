@@ -18,11 +18,11 @@ set(SYSTEM_SOURCES
 )
 
 set(WINDOW_MANAGER_HEADERS
-    include/unicorn/system/adapters/${UNICORN_WINDOW_MANAGER}/config.hpp
-    include/unicorn/system/adapters/${UNICORN_WINDOW_MANAGER}/Adapter.hpp
+    include/unicorn/system/adapter/${UNICORN_WINDOW_MANAGER}/config.hpp
+    include/unicorn/system/adapter/${UNICORN_WINDOW_MANAGER}/Adapter.hpp
 
-    include/unicorn/system/profilers/MonitorProfiler.hpp
-    include/unicorn/system/profilers/WindowProfiler.hpp
+    include/unicorn/system/profiler/MonitorProfiler.hpp
+    include/unicorn/system/profiler/WindowProfiler.hpp
 
     include/unicorn/system/CustomValue.hpp
     include/unicorn/system/GammaRamp.hpp
@@ -35,10 +35,10 @@ set(WINDOW_MANAGER_HEADERS
 )
 
 set(WINDOW_MANAGER_SOURCES
-    source/adapters/${UNICORN_WINDOW_MANAGER}/Adapter.cpp
+    source/adapter/${UNICORN_WINDOW_MANAGER}/Adapter.cpp
 
-    source/profilers/MonitorProfiler.cpp
-    source/profilers/WindowProfiler.cpp
+    source/profiler/MonitorProfiler.cpp
+    source/profiler/WindowProfiler.cpp
 
     source/GammaRamp.cpp
     source/Monitor.cpp
@@ -50,6 +50,12 @@ set(INPUT_HEADERS
     include/unicorn/system/input/Joystick.hpp
     include/unicorn/system/input/Key.hpp
     include/unicorn/system/input/MouseButton.hpp
+
+    include/unicorn/system/profiler/MouseProfiler.hpp
+)
+
+set(INPUT_SOURCES
+    source/profiler/MouseProfiler.cpp
 )
 
 add_library(system STATIC
@@ -58,6 +64,7 @@ add_library(system STATIC
     ${SYSTEM_HEADERS}
 
     ${WINDOW_MANAGER_SOURCES}
+    ${INPUT_SOURCES}
     ${SYSTEM_SOURCES}
 )
 

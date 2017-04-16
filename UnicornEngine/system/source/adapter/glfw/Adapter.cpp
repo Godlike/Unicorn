@@ -4,12 +4,14 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#include <unicorn/system/adapters/glfw/Adapter.hpp>
+#include <unicorn/system/adapter/glfw/Adapter.hpp>
 
 #include <unicorn/system/CustomValue.hpp>
 #include <unicorn/system/GammaRamp.hpp>
 #include <unicorn/system/MonitorMemento.hpp>
 #include <unicorn/system/VideoMode.hpp>
+
+#include <unicorn/system/input/Modifier.hpp>
 
 #include <GLFW/glfw3.h>
 
@@ -119,12 +121,21 @@ void unicornWindowFramebufferResized(GLFWwindow* handle, int width, int height)
 
 void unicornWindowMouseButton(GLFWwindow* handle, int button, int action, int modifiers)
 {
-    Adapter::WindowMouseButton.emit(
-        static_cast<void*>(handle),
-        Adapter::ConvertToUnicornMouseButton(button),
-        Adapter::ConvertToUnicornActionType(action),
-        Adapter::ConvertToUnicornModifiers(modifiers)
-    );
+    const input::MouseButton unicornButton = Adapter::ConvertToUnicornMouseButton(button);
+    const input::Action unicornAction = Adapter::ConvertToUnicornActionType(action);
+    const uint32_t unicornModifiers = Adapter::ConvertToUnicornModifiers(modifiers);
+
+    if (input::MouseButton::Unknown != unicornButton &&
+        input::Action::Unknown != unicornAction &&
+        static_cast<uint32_t>(input::Modifier::Unknown) != unicornModifiers)
+    {
+        Adapter::WindowMouseButton.emit(
+            static_cast<void*>(handle),
+            unicornButton,
+            unicornAction,
+            unicornModifiers
+        );
+    }
 }
 
 void unicornWindowMousePosition(GLFWwindow* handle, double x, double y)
@@ -153,13 +164,22 @@ void unicornWindowScroll(GLFWwindow* handle, double x, double y)
 
 void unicornWindowKeyboard(GLFWwindow* handle, int key, int scancode, int action, int modifiers)
 {
-    Adapter::WindowKeyboard.emit(
-        static_cast<void*>(handle),
-        Adapter::ConvertToUnicornKey(key),
-        static_cast<uint32_t>(scancode),
-        Adapter::ConvertToUnicornActionType(action),
-        Adapter::ConvertToUnicornModifiers(modifiers)
-    );
+    const input::Key unicornKey = Adapter::ConvertToUnicornKey(key);
+    const input::Action unicornAction = Adapter::ConvertToUnicornActionType(action);
+    const uint32_t unicornModifiers = Adapter::ConvertToUnicornModifiers(modifiers);
+
+    if (input::Key::Unknown != unicornKey &&
+        input::Action::Unknown != unicornAction &&
+        static_cast<uint32_t>(input::Modifier::Unknown) != unicornModifiers)
+    {
+        Adapter::WindowKeyboard.emit(
+            static_cast<void*>(handle),
+            unicornKey,
+            static_cast<uint32_t>(scancode),
+            unicornAction,
+            unicornModifiers
+        );
+    }
 }
 
 void unicornWindowUnicode(GLFWwindow* handle, uint32_t unicode)
@@ -173,11 +193,16 @@ void unicornWindowUnicode(GLFWwindow* handle, uint32_t unicode)
 
 void unicornWindowUnicodeModifiers(GLFWwindow* handle, uint32_t unicode, int modifiers)
 {
-    Adapter::WindowUnicode.emit(
-        static_cast<void*>(handle),
-        unicode,
-        Adapter::ConvertToUnicornModifiers(modifiers)
-    );
+    const uint32_t unicornModifiers = Adapter::ConvertToUnicornModifiers(modifiers);
+
+    if (static_cast<uint32_t>(input::Modifier::Unknown) != unicornModifiers)
+    {
+        Adapter::WindowUnicode.emit(
+            static_cast<void*>(handle),
+            unicode,
+            unicornModifiers
+        );
+    }
 }
 
 void unicornWindowFileDrop(GLFWwindow* handle, int count, const char** rawPaths)
@@ -198,10 +223,15 @@ void unicornWindowFileDrop(GLFWwindow* handle, int count, const char** rawPaths)
 
 void unicornJoystickStateChanged(int joystick, int event)
 {
-    Adapter::JoystickStateChanged.emit(
-        Adapter::ConvertToUnicornJoystick(joystick),
-        GLFW_CONNECTED == event ? input::JoystickState::Connected : input::JoystickState::Disconnected
-    );
+    const input::Joystick unicornJoystick = Adapter::ConvertToUnicornJoystick(joystick);
+
+    if (input::Joystick::Unknown != unicornJoystick)
+    {
+        Adapter::JoystickStateChanged.emit(
+            unicornJoystick,
+            GLFW_CONNECTED == event ? input::JoystickState::Connected : input::JoystickState::Disconnected
+        );
+    }
 }
 
 void unicornMonitorStateChanged(GLFWmonitor* handle, int event)
@@ -829,6 +859,33 @@ input::Action Adapter::ConvertToUnicornActionType(int32_t action)
 
 uint32_t Adapter::ConvertToUnicornModifiers(int32_t modifiers)
 {
+    uint32_t result = input::Modifier::None;
+
+    if (modifiers & GLFW_MOD_SHIFT)
+    {
+        result |= input::Modifier::Shift;
+    }
+
+    if (modifiers & GLFW_MOD_CONTROL)
+    {
+        result |= input::Modifier::Ctrl;
+    }
+
+    if (modifiers & GLFW_MOD_ALT)
+    {
+        result |= input::Modifier::Alt;
+    }
+
+    if (modifiers & GLFW_MOD_SUPER)
+    {
+        result |= input::Modifier::Super;
+    }
+
+    if (modifiers & ~(GLFW_MOD_SHIFT | GLFW_MOD_CONTROL | GLFW_MOD_ALT |GLFW_MOD_SUPER))
+    {
+        result |= input::Modifier::Unknown;
+    }
+
     return modifiers;
 }
 
@@ -836,6 +893,10 @@ input::Key Adapter::ConvertToUnicornKey(int32_t key)
 {
     switch (key)
     {
+        case GLFW_KEY_UNKNOWN:
+        {
+            return input::Key::Unrecognized;
+        }
         case GLFW_KEY_SPACE:
         {
             return input::Key::Space;

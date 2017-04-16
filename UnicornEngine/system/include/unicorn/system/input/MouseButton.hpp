@@ -7,6 +7,8 @@
 #ifndef UNICORN_SYSTEM_INPUT_MOUSE_BUTTON_HPP
 #define UNICORN_SYSTEM_INPUT_MOUSE_BUTTON_HPP
 
+#include <cstdint>
+
 namespace unicorn
 {
 namespace system
@@ -32,6 +34,53 @@ enum class MouseButton : uint8_t
 
     Unknown     = 0xFF
 };
+
+inline const char* Stringify(const MouseButton& value)
+{
+    switch (value)
+    {
+        case MouseButton::Mouse0:
+        {
+            return "Mouse0";
+        }
+        case MouseButton::Mouse1:
+        {
+            return "Mouse1";
+        }
+        case MouseButton::Mouse2:
+        {
+            return "Mouse2";
+        }
+        case MouseButton::Mouse3:
+        {
+            return "Mouse3";
+        }
+        case MouseButton::Mouse4:
+        {
+            return "Mouse4";
+        }
+        case MouseButton::Mouse5:
+        {
+            return "Mouse5";
+        }
+        case MouseButton::Mouse6:
+        {
+            return "Mouse6";
+        }
+        case MouseButton::Mouse7:
+        {
+            return "Mouse7";
+        }
+        case MouseButton::Mouse8:
+        {
+            return "Mouse8";
+        }
+        default:
+        {
+            return "Unknown";
+        }
+    }
+}
 
 }
 }

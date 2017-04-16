@@ -7,6 +7,8 @@
 #ifndef UNICORN_SYSTEM_INPUT_KEY_HPP
 #define UNICORN_SYSTEM_INPUT_KEY_HPP
 
+#include <cstdint>
+
 namespace unicorn
 {
 namespace system
@@ -16,8 +18,10 @@ namespace input
 
 enum class Key : uint8_t
 {
+    Unrecognized    = 0x00,
+
     // Printable
-    Space           = 0x00,
+    Space,
     Apostrophe,
     Comma,
     Minus,

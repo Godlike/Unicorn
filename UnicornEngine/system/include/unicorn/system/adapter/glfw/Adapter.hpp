@@ -4,8 +4,8 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#ifndef UNICORN_SYSTEM_ADAPTERS_GLFW_ADAPTER_HPP
-#define UNICORN_SYSTEM_ADAPTERS_GLFW_ADAPTER_HPP
+#ifndef UNICORN_SYSTEM_ADAPTER_GLFW_ADAPTER_HPP
+#define UNICORN_SYSTEM_ADAPTER_GLFW_ADAPTER_HPP
 
 #include <unicorn/system/MonitorMemento.hpp>
 #include <unicorn/system/WindowAttribute.hpp>
@@ -497,4 +497,4 @@ private:
 }
 }
 
-#endif /* UNICORN_SYSTEM_ADAPTERS_GLFW_ADAPTER_HPP */
+#endif /* UNICORN_SYSTEM_ADAPTER_GLFW_ADAPTER_HPP */

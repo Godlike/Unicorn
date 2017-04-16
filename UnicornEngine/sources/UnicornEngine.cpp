@@ -10,8 +10,9 @@
 #include <unicorn/utility/asset/SimpleStorage.hpp>
 
 #include <unicorn/system/Manager.hpp>
-#include <unicorn/system/profilers/WindowProfiler.hpp>
-#include <unicorn/system/profilers/MonitorProfiler.hpp>
+#include <unicorn/system/profiler/WindowProfiler.hpp>
+#include <unicorn/system/profiler/MonitorProfiler.hpp>
+#include <unicorn/system/profiler/MouseProfiler.hpp>
 
 namespace unicorn
 {
@@ -40,8 +41,10 @@ bool UnicornEngine::Init()
     LOG_INFO("Engine initialization started.");
 
     m_pSystemManager = new system::Manager();
+
     m_pWindowProfiler = new system::WindowProfiler(*m_pSystemManager);
     m_pMonitorProfiler = new system::MonitorProfiler(*m_pSystemManager);
+    m_pMouseProfiler = new system::MouseProfiler(*m_pSystemManager);
 
     m_pSystemManager->Init();
 
@@ -75,6 +78,13 @@ void UnicornEngine::Deinit()
     if (m_pSystemManager)
     {
         m_pSystemManager->Deinit();
+
+        if (m_pMouseProfiler)
+        {
+            delete m_pMouseProfiler;
+
+            m_pMouseProfiler = nullptr;
+        }
 
         if (m_pMonitorProfiler)
         {

@@ -7,6 +7,8 @@
 #ifndef UNICORN_SYSTEM_INPUT_ACTION_HPP
 #define UNICORN_SYSTEM_INPUT_ACTION_HPP
 
+#include <cstdint>
+
 namespace unicorn
 {
 namespace system
@@ -22,6 +24,29 @@ enum class Action : uint8_t
 
     Unknown = 0xFF
 };
+
+inline const char* Stringify(const Action& value)
+{
+    switch (value)
+    {
+        case Action::Release:
+        {
+            return "Release";
+        }
+        case Action::Press:
+        {
+            return "Press";
+        }
+        case Action::Repeat:
+        {
+            return "Repeat";
+        }
+        default:
+        {
+            return "Unknown";
+        }
+    }
+}
 
 }
 }

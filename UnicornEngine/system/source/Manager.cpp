@@ -6,7 +6,7 @@
 
 #include <unicorn/system/Manager.hpp>
 
-#include <unicorn/system/adapters/Helper.hpp>
+#include <unicorn/system/adapter/Helper.hpp>
 
 #include <unicorn/system/CustomValue.hpp>
 #include <unicorn/system/MonitorMemento.hpp>
