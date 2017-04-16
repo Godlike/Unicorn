@@ -4,14 +4,14 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#ifndef UNICORN_CORE_TIMER_HPP
-#define UNICORN_CORE_TIMER_HPP
+#ifndef UNICORN_SYSTEM_TIMER_HPP
+#define UNICORN_SYSTEM_TIMER_HPP
 
 #include <chrono>
 
 namespace unicorn
 {
-namespace core
+namespace system
 {
 class Timer
 {
@@ -19,4 +19,4 @@ class Timer
 }
 }
 
-#endif // UNICORN_CORE_TIMER_HPP
+#endif // UNICORN_SYSTEM_TIMER_HPP
