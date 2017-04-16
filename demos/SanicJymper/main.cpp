@@ -12,7 +12,7 @@
 #include <unicorn/system/WindowHint.hpp>
 #include <unicorn/system/CustomValue.hpp>
 
-#include <unicorn/core/Settings.hpp>
+#include <unicorn/Settings.hpp>
 
 #include <iostream>
 
@@ -23,7 +23,7 @@ void onWindowSizeChange(unicorn::system::Window* pWindow, std::pair<int32_t, int
 
 int main(int argc, char* argv[])
 {
-    unicorn::core::Settings& settings = unicorn::core::Settings::Instance();
+    unicorn::Settings& settings = unicorn::Settings::Instance();
 
     settings.Init(argc, argv, "SANIC_JYMPER.log");
     settings.SetApplicationName("SANIC JYMPER");
@@ -89,6 +89,6 @@ int main(int argc, char* argv[])
     unicornEngine->Deinit();
     delete unicornEngine;
 
-    unicorn::core::Settings::Destroy();
+    unicorn::Settings::Destroy();
     return 0;
 }

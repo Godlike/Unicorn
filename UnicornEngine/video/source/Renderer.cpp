@@ -5,7 +5,7 @@
 */
 
 #include <unicorn/video/Renderer.hpp>
-#include <unicorn/core/Settings.hpp>
+#include <unicorn/Settings.hpp>
 #include <unicorn/utility/Logger.hpp>
 #include <unicorn/utility/asset/SimpleStorage.hpp>
 
@@ -215,7 +215,7 @@ vk::PresentModeKHR Renderer::ChooseSwapPresentMode(const std::vector<vk::Present
 
 vk::Extent2D Renderer::ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities)
 {
-    const core::Settings& settings = core::Settings::Instance();
+    const Settings& settings = Settings::Instance();
 
     if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
     {
@@ -418,7 +418,7 @@ bool Renderer::CreateInstance()
         return false;
     }
 
-    const core::Settings& settings = core::Settings::Instance();
+    const Settings& settings = Settings::Instance();
 
     vk::ApplicationInfo appInfo(settings.GetApplicationName().c_str(),
         VK_MAKE_VERSION(1, 0, 0),
