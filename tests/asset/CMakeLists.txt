@@ -5,7 +5,7 @@ project(AssetTest)
 
 include(UnicornEngineConfig)
 
-include_directories(${UNICORN_ENGINE_INCLUDE_DIR})
+include_directories(${UNICORN_ENGINE_INCLUDE_DIRS})
 
 find_package(Threads)
 

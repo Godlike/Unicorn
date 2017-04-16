@@ -13,8 +13,10 @@ set(UNICORN_ENGINE_INCLUDE_DIR
     CACHE STRING "Path to UnicornEngine include directory")
 
 set(UNICORN_ENGINE_INCLUDE_DIRS
-    "${UNICORN_ENGINE_INCLUDE_DIR}"
+    "${UNICORN_ENGINE_ROOT}/include"
     "${UNICORN_ENGINE_ROOT}/system/include"
+    "${UNICORN_ENGINE_ROOT}/video/include"
+    "${UNICORN_ENGINE_ROOT}/utility/include"
     "${UNICORN_ENGINE_ROOT}/system/WindowManager/include"
     CACHE LIST "List of UnicornEngine include directories")
 
