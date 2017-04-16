@@ -16,6 +16,7 @@ namespace system
 namespace input
 {
 
+/** @brief  Joystick identifier */
 enum class Joystick : uint8_t
 {
     Joystick0   = 0x00,

@@ -16,6 +16,7 @@ namespace system
 namespace input
 {
 
+/** @brief  Input action type */
 enum class Action : uint8_t
 {
     Release = 0x00,
@@ -25,6 +26,7 @@ enum class Action : uint8_t
     Unknown = 0xFF
 };
 
+/** @brief  Convert action value to literal string representation */
 inline const char* Stringify(const Action& value)
 {
     switch (value)

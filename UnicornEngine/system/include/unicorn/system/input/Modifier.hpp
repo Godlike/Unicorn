@@ -17,39 +17,54 @@ namespace system
 namespace input
 {
 
+/** @brief  Keyboard input modifiers  */
 struct Modifier
 {
-    static const uint8_t None = 0x00;
+    //! Alias for a masked type
+    typedef uint8_t Mask;
 
-    static const uint8_t Shift = 0x01;
-    static const uint8_t Ctrl = 0x02;
-    static const uint8_t Alt = 0x04;
-    static const uint8_t Super = 0x08;
+    //! Alias for no modifiers
+    static const Mask None = 0x00;
 
-    static const uint8_t Unknown = 0xFF;
+    //! @{
+    //! Modifier flags
+    static const Mask Shift = 0x01;
+    static const Mask Ctrl = 0x02;
+    static const Mask Alt = 0x04;
+    static const Mask Super = 0x08;
+    //! @}
 
-    inline static std::string Stringify(uint32_t value)
+    //! Alias for unknown modifiers
+    static const Mask Unknown = 0xFF ^ (Shift | Ctrl | Alt | Super);
+
+    /** @brief  Convert masked value to string
+     *
+     *  @param  value   masked value
+     *
+     *  @return string representation
+     */
+    inline static std::string Stringify(Mask value)
     {
         std::string result;
 
         if (Unknown != value)
         {
-            if (value & Shift)
+            if (Shift & value)
             {
                 result.append(" | Shift");
             }
 
-            if (value & Ctrl)
+            if (Ctrl & value)
             {
                 result.append(" | Ctrl");
             }
 
-            if (value & Alt)
+            if (Alt & value)
             {
                 result.append(" | Alt");
             }
 
-            if (value & Super)
+            if (Super & value)
             {
                 result.append(" | Super");
             }

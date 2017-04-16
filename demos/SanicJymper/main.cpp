@@ -12,6 +12,10 @@
 #include <unicorn/system/WindowHint.hpp>
 #include <unicorn/system/CustomValue.hpp>
 
+#include <unicorn/system/input/Action.hpp>
+#include <unicorn/system/input/Key.hpp>
+#include <unicorn/system/input/Modifier.hpp>
+
 #include <unicorn/core/Settings.hpp>
 
 #include <iostream>
@@ -19,6 +23,68 @@
 void onWindowSizeChange(unicorn::system::Window* pWindow, std::pair<int32_t, int32_t> size)
 {
     std::cout << "Window[" << pWindow->GetId() << "]: size changed to " << size.first << "x" << size.second << std::endl;
+}
+
+void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::Key key, uint32_t scancode, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask modifiers)
+{
+    using unicorn::system::input::Key;
+    using unicorn::system::input::Modifier;
+    using unicorn::system::input::Action;
+
+    if (Action::Release == action)
+    {
+        return;
+    }
+
+    std::pair<int32_t, int32_t> position = pWindow->GetPosition();
+    bool positionChanged = true;
+
+    uint32_t delta = 1;
+
+    if (Modifier::Shift & modifiers)
+    {
+        delta *= 10;
+    }
+
+    if (Modifier::Alt & modifiers)
+    {
+        delta *= 5;
+    }
+
+    switch (key)
+    {
+        case Key::Up:
+        {
+            position.second -= delta;
+            break;
+        }
+
+        case Key::Down:
+        {
+            position.second += delta;
+            break;
+        }
+        case Key::Left:
+        {
+            position.first -= delta;
+            break;
+        }
+        case Key::Right:
+        {
+            position.first += delta;
+            break;
+        }
+        default:
+        {
+            positionChanged = false;
+            break;
+        }
+    }
+
+    if (positionChanged)
+    {
+        pWindow->SetPosition(position);
+    }
 }
 
 int main(int argc, char* argv[])
@@ -60,6 +126,8 @@ int main(int argc, char* argv[])
             nullptr,
             nullptr );
 
+        pWindow1->Keyboard.connect(&onWindowKeyboard);
+
         // Decorated, with borders
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
             unicorn::system::CustomValue::True);
@@ -72,6 +140,7 @@ int main(int argc, char* argv[])
             nullptr );
 
         pWindow2->SizeChanged.connect(&onWindowSizeChange);
+        pWindow2->Keyboard.connect(&onWindowKeyboard);
 
         pWindow0->Minimize();
 

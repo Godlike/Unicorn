@@ -41,12 +41,12 @@ wink::signal< wink::slot<void(void*, bool)> > Adapter::WindowMinimized = {};
 wink::signal< wink::slot<void(void*, bool)> > Adapter::WindowMaximized = {};
 wink::signal< wink::slot<void(void*, std::pair<int32_t, int32_t>)> > Adapter::WindowFramebufferResized = {};
 
-wink::signal< wink::slot<void(void*, input::MouseButton, input::Action, uint32_t)> > Adapter::WindowMouseButton = {};
+wink::signal< wink::slot<void(void*, input::MouseButton, input::Action, input::Modifier::Mask)> > Adapter::WindowMouseButton = {};
 wink::signal< wink::slot<void(void*, std::pair<double, double>)> > Adapter::WindowMousePosition = {};
 wink::signal< wink::slot<void(void*, bool)> > Adapter::WindowMouseEnter = {};
 wink::signal< wink::slot<void(void*, std::pair<double, double>)> > Adapter::WindowScroll = {};
-wink::signal< wink::slot<void(void*, input::Key, uint32_t, input::Action, uint32_t)> > Adapter::WindowKeyboard = {};
-wink::signal< wink::slot<void(void*, uint32_t, uint32_t)> > Adapter::WindowUnicode = {};
+wink::signal< wink::slot<void(void*, input::Key, uint32_t, input::Action, input::Modifier::Mask)> > Adapter::WindowKeyboard = {};
+wink::signal< wink::slot<void(void*, uint32_t, input::Modifier::Mask)> > Adapter::WindowUnicode = {};
 wink::signal< wink::slot<void(void*, std::vector<std::string>)> > Adapter::WindowFileDrop = {};
 wink::signal< wink::slot<void(input::Joystick, input::JoystickState)> > Adapter::JoystickStateChanged = {};
 
@@ -123,17 +123,15 @@ void unicornWindowMouseButton(GLFWwindow* handle, int button, int action, int mo
 {
     const input::MouseButton unicornButton = Adapter::ConvertToUnicornMouseButton(button);
     const input::Action unicornAction = Adapter::ConvertToUnicornActionType(action);
-    const uint32_t unicornModifiers = Adapter::ConvertToUnicornModifiers(modifiers);
 
     if (input::MouseButton::Unknown != unicornButton &&
-        input::Action::Unknown != unicornAction &&
-        static_cast<uint32_t>(input::Modifier::Unknown) != unicornModifiers)
+        input::Action::Unknown != unicornAction)
     {
         Adapter::WindowMouseButton.emit(
             static_cast<void*>(handle),
             unicornButton,
             unicornAction,
-            unicornModifiers
+            Adapter::ConvertToUnicornModifiers(modifiers)
         );
     }
 }
@@ -166,18 +164,16 @@ void unicornWindowKeyboard(GLFWwindow* handle, int key, int scancode, int action
 {
     const input::Key unicornKey = Adapter::ConvertToUnicornKey(key);
     const input::Action unicornAction = Adapter::ConvertToUnicornActionType(action);
-    const uint32_t unicornModifiers = Adapter::ConvertToUnicornModifiers(modifiers);
 
     if (input::Key::Unknown != unicornKey &&
-        input::Action::Unknown != unicornAction &&
-        static_cast<uint32_t>(input::Modifier::Unknown) != unicornModifiers)
+        input::Action::Unknown != unicornAction)
     {
         Adapter::WindowKeyboard.emit(
             static_cast<void*>(handle),
             unicornKey,
             static_cast<uint32_t>(scancode),
             unicornAction,
-            unicornModifiers
+            Adapter::ConvertToUnicornModifiers(modifiers)
         );
     }
 }
@@ -193,16 +189,11 @@ void unicornWindowUnicode(GLFWwindow* handle, uint32_t unicode)
 
 void unicornWindowUnicodeModifiers(GLFWwindow* handle, uint32_t unicode, int modifiers)
 {
-    const uint32_t unicornModifiers = Adapter::ConvertToUnicornModifiers(modifiers);
-
-    if (static_cast<uint32_t>(input::Modifier::Unknown) != unicornModifiers)
-    {
-        Adapter::WindowUnicode.emit(
-            static_cast<void*>(handle),
-            unicode,
-            unicornModifiers
-        );
-    }
+    Adapter::WindowUnicode.emit(
+        static_cast<void*>(handle),
+        unicode,
+        Adapter::ConvertToUnicornModifiers(modifiers)
+    );
 }
 
 void unicornWindowFileDrop(GLFWwindow* handle, int count, const char** rawPaths)
@@ -857,9 +848,9 @@ input::Action Adapter::ConvertToUnicornActionType(int32_t action)
     }
 }
 
-uint32_t Adapter::ConvertToUnicornModifiers(int32_t modifiers)
+input::Modifier::Mask Adapter::ConvertToUnicornModifiers(int32_t modifiers)
 {
-    uint32_t result = input::Modifier::None;
+    input::Modifier::Mask result = input::Modifier::None;
 
     if (modifiers & GLFW_MOD_SHIFT)
     {

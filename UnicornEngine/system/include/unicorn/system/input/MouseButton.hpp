@@ -16,6 +16,7 @@ namespace system
 namespace input
 {
 
+/** @brief  Detectable mouse buttons */
 enum class MouseButton : uint8_t
 {
     Mouse0      = 0x00,
@@ -35,6 +36,7 @@ enum class MouseButton : uint8_t
     Unknown     = 0xFF
 };
 
+/** @brief  Convert mouse button to literal string representation */
 inline const char* Stringify(const MouseButton& value)
 {
     switch (value)

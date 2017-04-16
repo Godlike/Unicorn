@@ -20,9 +20,11 @@ class Graphics;
 namespace system
 {
 class Manager;
-class WindowProfiler;
+
+class KeyProfiler;
 class MonitorProfiler;
 class MouseProfiler;
+class WindowProfiler;
 }
 
 /** @brief  Engine main class */
@@ -81,6 +83,9 @@ private:
 
     //! Pointer to the mouse profiler
     system::MouseProfiler* m_pMouseProfiler;
+
+    //! Pointer to the key profiler
+    system::KeyProfiler* m_pKeyProfiler;
 
     //! Pointer to the graphics system
     video::Graphics* m_pGraphics;

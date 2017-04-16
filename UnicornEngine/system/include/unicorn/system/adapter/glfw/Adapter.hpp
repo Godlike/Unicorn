@@ -12,10 +12,11 @@
 #include <unicorn/system/WindowHint.hpp>
 #include <unicorn/system/VideoMode.hpp>
 
-#include <unicorn/system/input/MouseButton.hpp>
 #include <unicorn/system/input/Action.hpp>
-#include <unicorn/system/input/Key.hpp>
 #include <unicorn/system/input/Joystick.hpp>
+#include <unicorn/system/input/Key.hpp>
+#include <unicorn/system/input/Modifier.hpp>
+#include <unicorn/system/input/MouseButton.hpp>
 
 #include <wink/signal.hpp>
 
@@ -379,7 +380,7 @@ public:
      *  -# button action type
      *  -# modifiers mask
      */
-    static wink::signal< wink::slot<void(void*, input::MouseButton, input::Action, uint32_t)> > WindowMouseButton;
+    static wink::signal< wink::slot<void(void*, input::MouseButton, input::Action, input::Modifier::Mask)> > WindowMouseButton;
 
     /** @brief  Event triggered when window receives mouse position update
      *
@@ -414,7 +415,7 @@ public:
      *  -# key action type
      *  -# modifiers mask
      */
-    static wink::signal< wink::slot<void(void*, input::Key, uint32_t, input::Action, uint32_t)> > WindowKeyboard;
+    static wink::signal< wink::slot<void(void*, input::Key, uint32_t, input::Action, input::Modifier::Mask)> > WindowKeyboard;
 
     /** @brief  Event triggered when window receives unicode input with modifiers
      *
@@ -423,7 +424,7 @@ public:
      *  -# unicode character
      *  -# modifiers mask
      */
-    static wink::signal< wink::slot<void(void*, uint32_t, uint32_t)> > WindowUnicode;
+    static wink::signal< wink::slot<void(void*, uint32_t, input::Modifier::Mask)> > WindowUnicode;
 
     /** @brief  Event triggered when window receives file drop
      *
@@ -475,7 +476,7 @@ public:
     static input::Action ConvertToUnicornActionType(int32_t action);
 
     /** @brief  Converts modifiers from glfw to unicorn */
-    static uint32_t ConvertToUnicornModifiers(int32_t modifiers);
+    static input::Modifier::Mask ConvertToUnicornModifiers(int32_t modifiers);
 
     /** @brief  Converts key code from glfw to unicorn */
     static input::Key ConvertToUnicornKey(int32_t key);

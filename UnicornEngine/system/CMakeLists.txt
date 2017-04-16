@@ -6,7 +6,8 @@ cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.0)
 
 include_directories(
-    ${UNICORN_ENGINE_SYSTEM_INCLUDE_DIRS}
+    ${UNICORN_ENGINE_SYSTEM_INCLUDE_DIR}
+    ${WINDOW_MANAGER_ADAPTER_INCLUDE_DIR}
 )
 
 set(SYSTEM_HEADERS
@@ -51,10 +52,12 @@ set(INPUT_HEADERS
     include/unicorn/system/input/Key.hpp
     include/unicorn/system/input/MouseButton.hpp
 
+    include/unicorn/system/profiler/KeyProfiler.hpp
     include/unicorn/system/profiler/MouseProfiler.hpp
 )
 
 set(INPUT_SOURCES
+    source/profiler/KeyProfiler.cpp
     source/profiler/MouseProfiler.cpp
 )
 

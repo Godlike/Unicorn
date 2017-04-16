@@ -40,9 +40,10 @@ void MouseProfiler::OnWindowCreated(Window* pWindow)
     pWindow->MouseButton.connect(this, &MouseProfiler::OnWindowMouseButton);
     pWindow->MousePosition.connect(this, &MouseProfiler::OnWindowMousePosition);
     pWindow->MouseEnter.connect(this, &MouseProfiler::OnWindowMouseEnter);
+    pWindow->Scroll.connect(this, &MouseProfiler::OnWindowScroll);
 }
 
-void MouseProfiler::OnWindowMouseButton(Window* pWindow, input::MouseButton button, input::Action action, uint32_t modifiers)
+void MouseProfiler::OnWindowMouseButton(Window* pWindow, input::MouseButton button, input::Action action, input::Modifier::Mask modifiers)
 {
     LOG_DEBUG("Window[%d]: mouse input received: %s %s %s", pWindow->GetId(), input::Stringify(button), input::Stringify(action), input::Modifier::Stringify(modifiers).c_str());
 }
@@ -55,6 +56,11 @@ void MouseProfiler::OnWindowMousePosition(Window* pWindow, std::pair<double, dou
 void MouseProfiler::OnWindowMouseEnter(Window* pWindow, bool entered)
 {
     LOG_DEBUG("Window[%d]: mouse %s the window", pWindow->GetId(), entered ? "entered" : "left");
+}
+
+void MouseProfiler::OnWindowScroll(Window* pWindow, std::pair<double, double> coords)
+{
+    LOG_DEBUG("Window[%d]: scroll received %f:%f", pWindow->GetId(), coords.first, coords.second);
 }
 
 }

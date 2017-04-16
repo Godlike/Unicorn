@@ -9,9 +9,10 @@
 
 #include <unicorn/system/Monitor.hpp>
 
-#include <unicorn/system/input/MouseButton.hpp>
 #include <unicorn/system/input/Action.hpp>
 #include <unicorn/system/input/Key.hpp>
+#include <unicorn/system/input/Modifier.hpp>
+#include <unicorn/system/input/MouseButton.hpp>
 
 #include <unicorn/utility/SharedMacros.hpp>
 
@@ -217,7 +218,7 @@ public:
      *  -# button action type
      *  -# modifiers mask
      */
-    wink::signal< wink::slot<void(Window*, input::MouseButton, input::Action, uint32_t)> > MouseButton;
+    wink::signal< wink::slot<void(Window*, input::MouseButton, input::Action, input::Modifier::Mask)> > MouseButton;
 
     /** @brief  Event triggered when window receives mouse position update
      *
@@ -252,7 +253,7 @@ public:
      *  -# key action type
      *  -# modifiers mask
      */
-    wink::signal< wink::slot<void(Window*, input::Key, uint32_t, input::Action, uint32_t)> > Keyboard;
+    wink::signal< wink::slot<void(Window*, input::Key, uint32_t, input::Action, input::Modifier::Mask)> > Keyboard;
 
     /** @brief  Event triggered when window receives unicode input with modifiers
      *
@@ -261,7 +262,7 @@ public:
      *  -# unicode character
      *  -# modifiers mask
      */
-    wink::signal< wink::slot<void(Window*, uint32_t, uint32_t)> > Unicode;
+    wink::signal< wink::slot<void(Window*, uint32_t, input::Modifier::Mask)> > Unicode;
 
     /** @brief  Event triggered when window receives file drop
      *
@@ -353,7 +354,7 @@ private:
      *  @param  action      mouse action (press/release)
      *  @param  modifiers   currently active modifiers
      */
-    void OnWindowMouseButton(void* handle, input::MouseButton button, input::Action action, uint32_t modifiers);
+    void OnWindowMouseButton(void* handle, input::MouseButton button, input::Action action, input::Modifier::Mask modifiers);
 
     /** @brief  Slot invoked when mouse position is changed within a window
      *
@@ -369,7 +370,7 @@ private:
      *  Bound to Adapter::WindowMouseEnter
      *
      *  @param  handle  window handle to be checked against @ref m_handle
-     *  @param  bool    boolean flag
+     *  @param  entered boolean flag
      */
     void OnWindowMouseEnter(void* handle, bool entered);
 
@@ -389,9 +390,10 @@ private:
      *  @param  handle      window handle to be checked against @ref m_handle
      *  @param  key         key associated with the event
      *  @param  scancode    scancode for key if @p key is input::Key::Unknown
+     *  @param  action      key action (press/release/repeat)
      *  @param  modifiers   currently active modifiers
      */
-    void OnWindowKeyboard(void* handle, input::Key key, uint32_t scancode, input::Action action, uint32_t modifiers);
+    void OnWindowKeyboard(void* handle, input::Key key, uint32_t scancode, input::Action action, input::Modifier::Mask modifiers);
 
     /** @brief  Slot invoked when window receives unicode input
      *
@@ -401,7 +403,7 @@ private:
      *  @param  unicode     character code
      *  @param  modifiers   currently active modifiers
      */
-    void OnWindowUnicode(void* handle, uint32_t unicode, uint32_t modifiers);
+    void OnWindowUnicode(void* handle, uint32_t unicode, input::Modifier::Mask modifiers);
 
     /** @brief  Slot invoked when files are dropped in a window
      *

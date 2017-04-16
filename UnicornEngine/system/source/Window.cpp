@@ -208,7 +208,7 @@ void Window::OnWindowFramebufferResized(void* handle, std::pair<int32_t, int32_t
     }
 }
 
-void Window::OnWindowMouseButton(void* handle, input::MouseButton button, input::Action action, uint32_t modifiers)
+void Window::OnWindowMouseButton(void* handle, input::MouseButton button, input::Action action, input::Modifier::Mask modifiers)
 {
     if (handle == m_handle)
     {
@@ -240,7 +240,7 @@ void Window::OnWindowScroll(void* handle, std::pair<double, double> coords)
     }
 }
 
-void Window::OnWindowKeyboard(void* handle, input::Key key, uint32_t scancode, input::Action action, uint32_t modifiers)
+void Window::OnWindowKeyboard(void* handle, input::Key key, uint32_t scancode, input::Action action, input::Modifier::Mask modifiers)
 {
     if (handle == m_handle)
     {
@@ -248,7 +248,7 @@ void Window::OnWindowKeyboard(void* handle, input::Key key, uint32_t scancode, i
     }
 }
 
-void Window::OnWindowUnicode(void* handle, uint32_t unicode, uint32_t modifiers)
+void Window::OnWindowUnicode(void* handle, uint32_t unicode, input::Modifier::Mask modifiers)
 {
     if (handle == m_handle)
     {
