@@ -13,7 +13,7 @@
 #include <unicorn/system/VideoMode.hpp>
 
 #include <unicorn/system/input/Action.hpp>
-#include <unicorn/system/input/Joystick.hpp>
+#include <unicorn/system/input/GamepadState.hpp>
 #include <unicorn/system/input/Key.hpp>
 #include <unicorn/system/input/Modifier.hpp>
 #include <unicorn/system/input/MouseButton.hpp>
@@ -302,6 +302,33 @@ public:
      */
     static void SetGammaRamp(void* handle, const GammaRamp& gammaRamp);
 
+    /** @brief  Gets handles to connected gamepads */
+    static std::vector<void*> GetConnectedGamepads();
+
+    /** @brief  Gets name for gamepad
+     *
+     *  @param  handle  gamepad handle
+     *
+     *  @return gamepad name
+     */
+    static const char* GetGamepadName(void* handle);
+
+    /** @brief  Gets axes for gamepad
+     *
+     *  @param  handle  gamepad handle
+     *
+     *  @return vector of axis values
+     */
+    static std::vector<float> GetGamepadAxes(void* handle);
+
+    /** @brief  Gets buttons for gamepad
+     *
+     *  @param  handle  gamepad handle
+     *
+     *  @return vector of button states
+     */
+    static std::vector<bool> GetGamepadButtons(void* handle);
+
     /** @name   Window events */
     //! @{
 
@@ -434,13 +461,13 @@ public:
      */
     static wink::signal< wink::slot<void(void*, std::vector<std::string>)> > WindowFileDrop;
 
-    /** @brief  Event triggered when joystick state is changed (connected/disconnected)
+    /** @brief  Event triggered when gamepad state is changed (connected/disconnected)
      *
      *  Event is emitted with the following signature:
-     *  -# joystick
-     *  -# joystick state
+     *  -# gamepad handle
+     *  -# gamepad state
      */
-    static wink::signal< wink::slot<void(input::Joystick, input::JoystickState)> > JoystickStateChanged;
+    static wink::signal< wink::slot<void(void*, input::GamepadState)> > GamepadStateChanged;
 
     //! @}
 
@@ -480,9 +507,6 @@ public:
 
     /** @brief  Converts key code from glfw to unicorn */
     static input::Key ConvertToUnicornKey(int32_t key);
-
-    /** @brief  Converts joystick from glfw to unicorn */
-    static input::Joystick ConvertToUnicornJoystick(int32_t joystick);
 
     //!@}
 

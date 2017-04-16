@@ -21,6 +21,7 @@ namespace system
 {
 class Manager;
 
+class GamepadProfiler;
 class KeyProfiler;
 class MonitorProfiler;
 class MouseProfiler;
@@ -86,6 +87,9 @@ private:
 
     //! Pointer to the key profiler
     system::KeyProfiler* m_pKeyProfiler;
+
+    //! Pointer to the gamepad profiler
+    system::GamepadProfiler* m_pGamepadProfiler;
 
     //! Pointer to the graphics system
     video::Graphics* m_pGraphics;

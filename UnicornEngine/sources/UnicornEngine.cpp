@@ -11,6 +11,7 @@
 
 #include <unicorn/system/Manager.hpp>
 
+#include <unicorn/system/profiler/GamepadProfiler.hpp>
 #include <unicorn/system/profiler/KeyProfiler.hpp>
 #include <unicorn/system/profiler/MonitorProfiler.hpp>
 #include <unicorn/system/profiler/MouseProfiler.hpp>
@@ -48,6 +49,7 @@ bool UnicornEngine::Init()
     m_pMonitorProfiler = new system::MonitorProfiler(*m_pSystemManager);
     m_pMouseProfiler = new system::MouseProfiler(*m_pSystemManager);
     m_pKeyProfiler = new system::KeyProfiler(*m_pSystemManager);
+    m_pGamepadProfiler = new system::GamepadProfiler(*m_pSystemManager);
 
     m_pSystemManager->Init();
 
@@ -81,6 +83,13 @@ void UnicornEngine::Deinit()
     if (m_pSystemManager)
     {
         m_pSystemManager->Deinit();
+
+        if (m_pGamepadProfiler)
+        {
+            delete m_pGamepadProfiler;
+
+            m_pGamepadProfiler = nullptr;
+        }
 
         if (m_pKeyProfiler)
         {

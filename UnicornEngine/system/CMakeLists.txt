@@ -48,17 +48,22 @@ set(WINDOW_MANAGER_SOURCES
 
 set(INPUT_HEADERS
     include/unicorn/system/input/Action.hpp
-    include/unicorn/system/input/Joystick.hpp
+    include/unicorn/system/input/Gamepad.hpp
+    include/unicorn/system/input/GamepadState.hpp
     include/unicorn/system/input/Key.hpp
     include/unicorn/system/input/MouseButton.hpp
 
+    include/unicorn/system/profiler/GamepadProfiler.hpp
     include/unicorn/system/profiler/KeyProfiler.hpp
     include/unicorn/system/profiler/MouseProfiler.hpp
 )
 
 set(INPUT_SOURCES
+    source/profiler/GamepadProfiler.cpp
     source/profiler/KeyProfiler.cpp
     source/profiler/MouseProfiler.cpp
+
+    source/input/Gamepad.cpp
 )
 
 add_library(system STATIC

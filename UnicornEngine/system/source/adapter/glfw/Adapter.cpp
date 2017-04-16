@@ -48,7 +48,7 @@ wink::signal< wink::slot<void(void*, std::pair<double, double>)> > Adapter::Wind
 wink::signal< wink::slot<void(void*, input::Key, uint32_t, input::Action, input::Modifier::Mask)> > Adapter::WindowKeyboard = {};
 wink::signal< wink::slot<void(void*, uint32_t, input::Modifier::Mask)> > Adapter::WindowUnicode = {};
 wink::signal< wink::slot<void(void*, std::vector<std::string>)> > Adapter::WindowFileDrop = {};
-wink::signal< wink::slot<void(input::Joystick, input::JoystickState)> > Adapter::JoystickStateChanged = {};
+wink::signal< wink::slot<void(void*, input::GamepadState)> > Adapter::GamepadStateChanged = {};
 
 wink::signal< wink::slot<void(void*, MonitorMemento::State)> > Adapter::MonitorStateChanged = {};
 
@@ -212,17 +212,12 @@ void unicornWindowFileDrop(GLFWwindow* handle, int count, const char** rawPaths)
     );
 }
 
-void unicornJoystickStateChanged(int joystick, int event)
+void unicornGamepadStateChanged(int gamepad, int event)
 {
-    const input::Joystick unicornJoystick = Adapter::ConvertToUnicornJoystick(joystick);
-
-    if (input::Joystick::Unknown != unicornJoystick)
-    {
-        Adapter::JoystickStateChanged.emit(
-            unicornJoystick,
-            GLFW_CONNECTED == event ? input::JoystickState::Connected : input::JoystickState::Disconnected
-        );
-    }
+    Adapter::GamepadStateChanged.emit(
+        reinterpret_cast<void*>(static_cast<intptr_t>(gamepad)),
+        GLFW_CONNECTED == event ? input::GamepadState::Connected : input::GamepadState::Disconnected
+    );
 }
 
 void unicornMonitorStateChanged(GLFWmonitor* handle, int event)
@@ -242,7 +237,7 @@ void Adapter::Init()
         glfwInit();
 
         glfwSetMonitorCallback(unicornMonitorStateChanged);
-        glfwSetJoystickCallback(unicornJoystickStateChanged);
+        glfwSetJoystickCallback(unicornGamepadStateChanged);
 
         s_isInitialized = true;
     }
@@ -274,7 +269,7 @@ void Adapter::Deinit()
         WindowUnicode.clear();
         WindowUnicode.clear();
         WindowFileDrop.clear();
-        JoystickStateChanged.clear();
+        GamepadStateChanged.clear();
 
         MonitorStateChanged.clear();
 
@@ -586,6 +581,62 @@ void Adapter::SetGammaRamp(void* handle, const GammaRamp& gammaRamp)
     ramp.blue = gammaRamp.blue;
 
     glfwSetGammaRamp(static_cast<GLFWmonitor*>(handle), &ramp);
+}
+
+std::vector<void*> Adapter::GetConnectedGamepads()
+{
+    std::vector<void*> result;
+
+    result.reserve(4);
+
+    for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; ++i)
+    {
+        if (GLFW_TRUE == glfwJoystickPresent(i))
+        {
+            result.push_back(reinterpret_cast<void*>(static_cast<intptr_t>(i)));
+        }
+    }
+
+    return result;
+}
+
+const char* Adapter::GetGamepadName(void* handle)
+{
+    return glfwGetJoystickName(static_cast<int>(reinterpret_cast<intptr_t>(handle)));
+}
+
+std::vector<float> Adapter::GetGamepadAxes(void* handle)
+{
+    const int gamepad = static_cast<int>(reinterpret_cast<intptr_t>(handle));
+    int count = 0;
+
+    const float* axes = glfwGetJoystickAxes(gamepad, &count);
+
+    std::vector<float> result(count);
+
+    for (int i = 0; i < count; ++i)
+    {
+        result[i] = axes[i];
+    }
+
+    return result;
+}
+
+std::vector<bool> Adapter::GetGamepadButtons(void* handle)
+{
+    const int gamepad = static_cast<int>(reinterpret_cast<intptr_t>(handle));
+    int count = 0;
+
+    const unsigned char* buttons = glfwGetJoystickButtons(gamepad, &count);
+
+    std::vector<bool> result(count);
+
+    for (int i = 0; i < count; ++i)
+    {
+        result[i] = (GLFW_PRESS == buttons[i]) ? true : false;
+    }
+
+    return result;
 }
 
 VideoMode Adapter::PrepareVideoMode(const void* pMode)
@@ -1371,81 +1422,6 @@ input::Key Adapter::ConvertToUnicornKey(int32_t key)
         default:
         {
             return input::Key::Unknown;
-        }
-    }
-}
-
-input::Joystick Adapter::ConvertToUnicornJoystick(int32_t joystick)
-{
-    switch (joystick)
-    {
-        case GLFW_JOYSTICK_1:
-        {
-            return input::Joystick::Joystick1;
-        }
-        case GLFW_JOYSTICK_2:
-        {
-            return input::Joystick::Joystick2;
-        }
-        case GLFW_JOYSTICK_3:
-        {
-            return input::Joystick::Joystick3;
-        }
-        case GLFW_JOYSTICK_4:
-        {
-            return input::Joystick::Joystick4;
-        }
-        case GLFW_JOYSTICK_5:
-        {
-            return input::Joystick::Joystick5;
-        }
-        case GLFW_JOYSTICK_6:
-        {
-            return input::Joystick::Joystick6;
-        }
-        case GLFW_JOYSTICK_7:
-        {
-            return input::Joystick::Joystick7;
-        }
-        case GLFW_JOYSTICK_8:
-        {
-            return input::Joystick::Joystick8;
-        }
-        case GLFW_JOYSTICK_9:
-        {
-            return input::Joystick::Joystick9;
-        }
-        case GLFW_JOYSTICK_10:
-        {
-            return input::Joystick::Joystick10;
-        }
-        case GLFW_JOYSTICK_11:
-        {
-            return input::Joystick::Joystick11;
-        }
-        case GLFW_JOYSTICK_12:
-        {
-            return input::Joystick::Joystick12;
-        }
-        case GLFW_JOYSTICK_13:
-        {
-            return input::Joystick::Joystick13;
-        }
-        case GLFW_JOYSTICK_14:
-        {
-            return input::Joystick::Joystick14;
-        }
-        case GLFW_JOYSTICK_15:
-        {
-            return input::Joystick::Joystick15;
-        }
-        case GLFW_JOYSTICK_16:
-        {
-            return input::Joystick::Joystick16;
-        }
-        default:
-        {
-            return input::Joystick::Unknown;
         }
     }
 }
