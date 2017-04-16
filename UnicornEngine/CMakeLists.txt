@@ -86,7 +86,15 @@ add_subdirectory(system)
 add_subdirectory(utility)
 add_subdirectory(video)
 
-add_library(${UNICORN_ENGINE_LIB} include/unicorn/UnicornEngine.hpp source/UnicornEngine.cpp)
+set(UNICORN_ENGINE_HEADERS 
+    include/unicorn/UnicornEngine.hpp
+    include/unicorn/Settings.hpp)
+
+set(UNICORN_ENGINE_SOURCES
+    source/UnicornEngine.cpp
+    source/Settings.cpp)
+
+add_library(${UNICORN_ENGINE_LIB} ${UNICORN_ENGINE_HEADERS} ${UNICORN_ENGINE_SOURCES})
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # Workaround for a bug regarding __builtin_cpu_supports("sse2") call on GCC 5+

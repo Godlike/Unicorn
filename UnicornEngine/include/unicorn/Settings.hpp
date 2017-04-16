@@ -15,8 +15,6 @@
 
 namespace unicorn
 {
-namespace core
-{
 
 /** @brief  Provides an access to application settings */
 class Settings : public utility::templates::Singleton<Settings>
@@ -102,7 +100,6 @@ private:
     //! Engine name
     std::string m_unicornEngineName;
 };
-}
 }
 
 #endif // UNICORN_CORE_SETTINGS_HPP
