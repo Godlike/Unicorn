@@ -5,7 +5,7 @@
 */
 
 #include <unicorn/video/Renderer.hpp>
-#include <unicorn/core/Settings.hpp>
+#include <unicorn/system/Settings.hpp>
 #include <unicorn/utility/Logger.hpp>
 #include <unicorn/utility/asset/SimpleStorage.hpp>
 

@@ -12,7 +12,7 @@
 #include <unicorn/system/WindowHint.hpp>
 #include <unicorn/system/CustomValue.hpp>
 
-#include <unicorn/core/Settings.hpp>
+#include <unicorn/system/Settings.hpp>
 
 #include <iostream>
 

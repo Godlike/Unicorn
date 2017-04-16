@@ -13,10 +13,14 @@ include_directories(
 
 set(SYSTEM_HEADERS
     include/unicorn/system/Manager.hpp
+    include/unicorn/system/Timer.hpp
+    include/unicorn/system/Settings.hpp
 )
 
 set(SYSTEM_SOURCES
     source/Manager.cpp
+    source/Timer.cpp
+    source/Settings.cpp
 )
 
 add_library(system STATIC

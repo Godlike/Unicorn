@@ -4,7 +4,7 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#include <unicorn/core/Settings.hpp>
+#include <unicorn/system/Settings.hpp>
 
 #include <unicorn/utility/Logger.hpp>
 
