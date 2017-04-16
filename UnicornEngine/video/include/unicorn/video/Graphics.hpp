@@ -19,7 +19,6 @@
 
 namespace unicorn
 {
-
 namespace system
 {
 class Manager;
@@ -124,6 +123,9 @@ public:
      *  @param  value   new value
      */
     UNICORN_EXPORT void SetWindowCreationHint(system::WindowHint hint, int32_t value) const;
+
+    /** @brief  Returns new created Vulkan based renderer */
+    UNICORN_EXPORT Renderer* SpawnVulkanRenderer();
 
 private:
     //! Renderer-Window pair type
