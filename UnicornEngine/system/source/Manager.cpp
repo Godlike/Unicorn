@@ -269,5 +269,13 @@ void Manager::SetWindowCreationHint(WindowHint hint, int32_t value) const
     WINDOW_MANAGER_ADAPTER::SetWindowCreationHint(hint, value);
 }
 
+void Manager::PollGamepads()
+{
+    for (std::map<uint32_t, input::Gamepad*>::const_iterator cit = m_gamepads.cbegin(); cit != m_gamepads.cend(); ++cit)
+    {
+        cit->second->UpdateData();
+    }
+}
+
 }
 }

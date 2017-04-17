@@ -11,6 +11,9 @@
 
 #include <unicorn/utility/Logger.hpp>
 
+#include <iomanip>
+#include <sstream>
+
 namespace unicorn
 {
 namespace system
@@ -43,6 +46,8 @@ void GamepadProfiler::OnGamepadCreated(input::Gamepad* const& pGamepad)
 
     pGamepad->Destroyed.connect(this, &GamepadProfiler::OnGamepadDestroyed);
     pGamepad->Updated.connect(this, &GamepadProfiler::OnGamepadUpdated);
+
+    OnGamepadUpdated(pGamepad);
 }
 
 void GamepadProfiler::OnGamepadDestroyed(input::Gamepad* pGamepad)
@@ -52,7 +57,31 @@ void GamepadProfiler::OnGamepadDestroyed(input::Gamepad* pGamepad)
 
 void GamepadProfiler::OnGamepadUpdated(input::Gamepad* pGamepad)
 {
-    LOG_DEBUG("Gamepad[%d]: updated", pGamepad->GetId());
+    std::stringstream result;
+
+    {
+        const std::vector<float>& axes = pGamepad->GetAxes();
+
+        const uint32_t size = axes.size();
+
+        for (uint32_t i = 0; i < size; ++i)
+        {
+            result << "\r\n\t" << std::setw(8) << "axis " << std::setw(2) << i << "\t" << axes[i];
+        }
+    }
+
+    {
+        const std::vector<bool>& buttons = pGamepad->GetButtons();
+
+        const uint32_t size = buttons.size();
+
+        for (uint32_t i = 0; i < size; ++i)
+        {
+            result << "\r\n\t" << std::setw(8) << "button " << std::setw(2) << i << "\t" << buttons[i];
+        }
+    }
+
+    LOG_DEBUG("Gamepad[%d]: updated: %s", pGamepad->GetId(), result.str().c_str());
 }
 
 }

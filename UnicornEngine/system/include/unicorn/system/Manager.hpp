@@ -201,6 +201,9 @@ public:
      */
     void SetWindowCreationHint(WindowHint hint, int32_t value) const;
 
+    /** @brief  Polls all connected gamepads for new values */
+    void PollGamepads();
+
     /** @brief  Event triggered every time new window is created
      *
      *  Event is emitted with the following signature:

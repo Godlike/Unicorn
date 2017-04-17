@@ -138,7 +138,7 @@ void UnicornEngine::Run()
     {
         while (m_pGraphics->Render())
         {
-
+            m_pSystemManager->PollGamepads();
         }
     }
 }

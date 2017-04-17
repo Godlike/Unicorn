@@ -32,6 +32,8 @@ Gamepad::~Gamepad()
 
 void Gamepad::UpdateData()
 {
+    bool anyUpdates = false;
+
     {
         std::vector<float> axes = GAMEPAD_ADAPTER::GetGamepadAxes(m_handle);
 
@@ -48,6 +50,11 @@ void Gamepad::UpdateData()
 
         for (uint32_t i = 0; i < axes.size(); ++i)
         {
+            if (!anyUpdates && m_axes[i] != axes[i])
+            {
+                anyUpdates = true;
+            }
+
             m_axes[i] = axes[i];
         }
     }
@@ -68,11 +75,19 @@ void Gamepad::UpdateData()
 
         for (uint32_t i = 0; i < buttons.size(); ++i)
         {
+            if (!anyUpdates && m_buttons[i] != buttons[i])
+            {
+                anyUpdates = true;
+            }
+
             m_buttons[i] = buttons[i];
         }
     }
 
-    Updated.emit(this);
+    if (anyUpdates)
+    {
+        Updated.emit(this);
+    }
 }
 
 }
