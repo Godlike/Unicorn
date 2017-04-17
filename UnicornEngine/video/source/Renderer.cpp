@@ -11,6 +11,7 @@
 
 #include <unicorn/system/Manager.hpp>
 #include <unicorn/system/Window.hpp>
+#include <unicorn/video/vulkan/VulkanInstance.hpp>
 
 #include <cstring>
 #include <iostream>
@@ -23,44 +24,11 @@ namespace unicorn
 {
 namespace video
 {
-static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
-    VkDebugReportObjectTypeEXT objType,
-    uint64_t obj,
-    size_t location,
-    int32_t code,
-    const char* layerPrefix,
-    const char* msg,
-    void* userData)
-{
-    if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
-    {
-        LOG_ERROR("VULKAN LAYER ERROR: %s", msg);
-    }
-    if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
-    {
-        LOG_WARNING("VULKAN LAYER WARNING: %s", msg);
-    }
-    if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
-    {
-        LOG_INFO("VULKAN LAYER PERFORMANCE: %s", msg);
-    }
-    if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
-    {
-        LOG_INFO("VULKAN LAYER INFO: %s", msg);
-    }
-    if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
-    {
-        LOG_INFO("VULKAN LAYER DEBUG: %s", msg);
-    }
-    return VK_FALSE;
-}
 
 Renderer::Renderer(system::Manager& manager, system::Window* pWindow)
     : m_isInitialized(false)
     , m_systemManager(manager)
     , m_pWindow(pWindow)
-    , m_validationLayers({"VK_LAYER_LUNARG_standard_validation"})
-    , m_deviceExtensions({VK_KHR_SWAPCHAIN_EXTENSION_NAME})
 {
     m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
     m_pWindow->SizeChanged.connect(this, &Renderer::OnWindowSizeChanged);
@@ -86,9 +54,7 @@ bool Renderer::Init()
 
     LOG_INFO("Renderer initialization started.");
 
-    if (!CreateInstance() ||
-        !SetupDebugCallback() ||
-        !CreateSurface() ||
+    if (!CreateSurface() ||
         !PickPhysicalDevice() ||
         !CreateLogicalDevice() ||
         !CreateSwapChain() ||
@@ -122,8 +88,6 @@ void Renderer::Deinit()
     FreeSwapChain();
     FreeLogicalDevice();
     FreeSurface();
-    FreeDebugCallback();
-    FreeInstance();
 
     if (m_isInitialized)
     {
@@ -286,28 +250,12 @@ bool Renderer::RecreateSwapChain()
     return false;
 }
 
-void Renderer::FreeInstance()
-{
-    if (m_vkInstance)
-    {
-        m_vkInstance.destroy();
-        m_vkInstance = nullptr;
-    }
-}
-
-void Renderer::FreeDebugCallback()
-{
-    if (m_vulkanCallback != VK_NULL_HANDLE && m_vkLogicalDevice)
-    {
-        DestroyDebugReportCallbackEXT();
-    }
-}
-
 void Renderer::FreeSurface()
 {
     if (m_vkWindowSurface && m_vkLogicalDevice)
     {
-        m_vkInstance.destroySurfaceKHR(m_vkWindowSurface);
+        VulkanInstance& instance = VulkanInstance::Instance();
+        instance.GetRawInstance().destroySurfaceKHR(m_vkWindowSurface);
         m_vkWindowSurface = nullptr;
     }
 }
@@ -410,52 +358,11 @@ void Renderer::FreeSemaphores()
     }
 }
 
-bool Renderer::CreateInstance()
-{
-    if (s_enableValidationLayers && !CheckValidationLayerSupport())
-    {
-        LOG_ERROR("Vulkan validation layers requested, but not available!");
-        return false;
-    }
-
-    const Settings& settings = Settings::Instance();
-
-    vk::ApplicationInfo appInfo(settings.GetApplicationName().c_str(),
-        VK_MAKE_VERSION(1, 0, 0),
-        settings.GetUnicornEngineName().c_str(),
-        VK_MAKE_VERSION(0, 1, 0),
-        VK_API_VERSION_1_0);
-    vk::InstanceCreateInfo createInfo = {};
-    createInfo.pApplicationInfo = &appInfo;
-    auto extensions = GetRequiredExtensions();
-
-    createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
-    createInfo.ppEnabledExtensionNames = extensions.data();
-
-    if (s_enableValidationLayers)
-    {
-        createInfo.enabledLayerCount = static_cast<uint32_t>(m_validationLayers.size());
-        createInfo.ppEnabledLayerNames = m_validationLayers.data();
-    }
-    else
-    {
-        createInfo.enabledLayerCount = 0;
-    }
-
-    if (vk::createInstance(&createInfo, nullptr, &m_vkInstance) != vk::Result::eSuccess)
-    {
-        LOG_ERROR("Failed to create instance!");
-        return false;
-    }
-
-    return true;
-}
-
 bool Renderer::PickPhysicalDevice()
 {
     vk::Result result;
     std::vector<vk::PhysicalDevice> devices;
-    std::tie(result, devices) = m_vkInstance.enumeratePhysicalDevices();
+    std::tie(result, devices) = VulkanInstance::Instance().GetRawInstance().enumeratePhysicalDevices();
     if (result != vk::Result::eSuccess)
     {
         LOG_ERROR("Failed to enumerate physical devices.");
@@ -500,13 +407,13 @@ bool Renderer::CreateLogicalDevice()
     createInfo.setPQueueCreateInfos(queueCreateInfos.data());
     createInfo.setQueueCreateInfoCount(static_cast<uint32_t>(queueCreateInfos.size()));
     createInfo.setPEnabledFeatures(&deviceFeatures);
-    createInfo.setEnabledExtensionCount(static_cast<uint32_t>(m_deviceExtensions.size()));
-    createInfo.setPpEnabledExtensionNames(m_deviceExtensions.data());
+    createInfo.setEnabledExtensionCount(static_cast<uint32_t>(VulkanInstance::Instance().GetRequiredExtensions().size()));
+    createInfo.setPpEnabledExtensionNames(VulkanInstance::Instance().GetRequiredExtensions().data());
 
     if (s_enableValidationLayers)
     {
-        createInfo.setEnabledLayerCount(static_cast<uint32_t>(m_validationLayers.size()));
-        createInfo.setPpEnabledLayerNames(m_validationLayers.data());
+        createInfo.setEnabledLayerCount(static_cast<uint32_t>(VulkanInstance::Instance().GetValidationLayers().size()));
+        createInfo.setPpEnabledLayerNames(VulkanInstance::Instance().GetValidationLayers().data());
     }
     else
     {
@@ -528,7 +435,7 @@ bool Renderer::CreateLogicalDevice()
 
 bool Renderer::CreateSurface()
 {
-    if (!m_pWindow || m_systemManager.CreateVulkanSurfaceForWindow(*m_pWindow, m_vkInstance, nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
+    if (!m_pWindow || m_systemManager.CreateVulkanSurfaceForWindow(*m_pWindow, VulkanInstance::Instance().GetRawInstance(), nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
     {
         LOG_ERROR("Failed to create window surface!");
 
@@ -993,7 +900,8 @@ bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device)
         LOG_ERROR("Can't enumerate device extension properties.");
         return false;
     }
-    std::set<std::string> requiredExtensions(m_deviceExtensions.begin(), m_deviceExtensions.end());
+    auto deviceExtensions = VulkanInstance::Instance().GetRequiredExtensions();
+    std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
 
     for (const auto& extension : availableExtensions)
     {
@@ -1074,106 +982,6 @@ bool Renderer::Frame()
     }
 
     return true;
-}
-
-bool Renderer::CheckValidationLayerSupport() const
-{
-    vk::Result result;
-    std::vector<vk::LayerProperties> availableLayers;
-    std::tie(result, availableLayers) = vk::enumerateInstanceLayerProperties();
-    if (result != vk::Result::eSuccess)
-    {
-        LOG_ERROR("Can't enumerate instance layer properties!");
-        return false;
-    }
-    for (const char* layerName : m_validationLayers)
-    {
-        bool layerFound = false;
-
-        for (const auto& layerProperties : availableLayers)
-        {
-            if (strcmp(layerName, layerProperties.layerName) == 0)
-            {
-                layerFound = true;
-                break;
-            }
-        }
-
-        if (!layerFound)
-        {
-            LOG_ERROR("Can't find required Vulkan layers: ");
-
-            for (auto& requiredLayer : m_validationLayers)
-            {
-                LOG_ERROR("%s", requiredLayer);
-            }
-
-            return false;
-        }
-    }
-
-    LOG_INFO("Picked next Vulkan layers :");
-
-    for (auto& layer : m_validationLayers)
-    {
-        LOG_INFO("%s", layer);
-    }
-
-    return true;
-}
-
-std::vector<const char*> Renderer::GetRequiredExtensions()
-{
-    std::vector<const char*> extensions( m_systemManager.GetRequiredVulkanExtensions() );
-
-    if (s_enableValidationLayers)
-    {
-        extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
-    }
-
-    return extensions;
-}
-
-VkResult Renderer::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo)
-{
-    auto func = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(
-        vkGetInstanceProcAddr(m_vkInstance, "vkCreateDebugReportCallbackEXT"));
-
-    if (func != nullptr)
-    {
-        return func(m_vkInstance, pCreateInfo, nullptr, &m_vulkanCallback);
-    }
-    else
-    {
-        LOG_ERROR("Can't setup debug callback'");
-        return VK_ERROR_EXTENSION_NOT_PRESENT;
-    }
-}
-
-void Renderer::DestroyDebugReportCallbackEXT()
-{
-    auto func = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(
-        vkGetInstanceProcAddr(m_vkInstance, "vkDestroyDebugReportCallbackEXT"));
-
-    if (func != nullptr)
-    {
-        func(m_vkInstance, m_vulkanCallback, nullptr);
-    }
-}
-
-bool Renderer::SetupDebugCallback()
-{
-    if (!s_enableValidationLayers)
-    {
-        return true;
-    }
-
-    VkDebugReportCallbackCreateInfoEXT createInfo = {};
-    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
-    createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_INFORMATION_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
-    createInfo.pfnCallback = DebugCallback;
-
-    return CreateDebugReportCallbackEXT(&createInfo) == VK_SUCCESS;
 }
 }
 }

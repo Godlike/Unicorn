@@ -21,16 +21,18 @@ class VulkanDevice;
 class VulkanInstance //: public utility::templates::Singleton<VulkanInstance>
 {
 public:
-    bool IsInitialized() const;
+    static bool IsInitialized();
     VulkanDevice* GetNewDevice();
     bool DestroyDevice(VulkanDevice* device);
-    void Destroy();
+    static void Destroy();
 
     bool Initialize();
     static VulkanInstance& Instance(system::Manager& manager);
-    VulkanInstance(system::Manager& manager)
-        : m_systemManager(manager){};
-
+    static VulkanInstance& Instance();
+    VulkanInstance(system::Manager& manager);
+    const vk::Instance GetRawInstance() const;
+    const std::vector<const char*> GetRequiredExtensions() const;
+    const std::vector<const char*> GetValidationLayers() const;
 private:
     //friend class utility::templates::Singleton<VulkanInstance>;
 
@@ -40,13 +42,20 @@ private:
     VulkanInstance& operator=(VulkanInstance&& other) = delete;
     ~VulkanInstance() = delete;
 
-    bool CheckValidationLayerSupport() const;
-    std::vector<const char*> GetRequiredExtensions();
+    bool CheckValidationLayerSupport();
+    std::vector<const char*> FillRequiredExtensions();
+    static VkResult CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo);
+    static void DestroyDebugReportCallbackEXT();
+    static void SetupDebugCallback();
+    static void FreeDebugCallback();
 
     system::Manager& m_systemManager;
-    vk::Instance m_vkInstance;
+    static vk::Instance m_vkInstance;
     std::vector<const char*> m_validationLayers;
+    std::vector<const char*> m_deviceExtensions;
+    std::vector<const char*> m_instanceExtensions;
     static VulkanInstance* s_instance;
+    static VkDebugReportCallbackEXT m_vulkanCallback;
 #ifdef NDEBUG
     static const bool s_enableValidationLayers = false;
 #else

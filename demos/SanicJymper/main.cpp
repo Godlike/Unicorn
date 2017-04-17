@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
     if (unicornEngine->Init())
     {
         unicorn::video::Graphics* pGraphics = unicornEngine->GetGraphics();
-
+        pGraphics->CreateVulkanContext();
         // Borderless undecorated
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
             unicorn::system::CustomValue::False);

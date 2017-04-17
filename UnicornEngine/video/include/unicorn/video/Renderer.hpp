@@ -75,7 +75,6 @@ private:
     //! Pointer to associated window
     system::Window* m_pWindow;
 
-    vk::Instance m_vkInstance;
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;
     vk::SwapchainKHR m_vkSwapChain;
@@ -90,9 +89,6 @@ private:
     vk::CommandPool m_commandPool;
     vk::Semaphore m_imageAvailableSemaphore;
     vk::Semaphore m_renderFinishedSemaphore;
-    std::vector<const char*> m_validationLayers;
-    std::vector<const char*> m_deviceExtensions;
-    VkDebugReportCallbackEXT m_vulkanCallback;
     std::string m_gpuName;
     std::vector<vk::Image> m_swapChainImages;
     std::vector<vk::ImageView> m_swapChainImageViews;
@@ -104,8 +100,6 @@ private:
     static const bool s_enableValidationLayers = true;
 #endif
 
-    void FreeInstance();
-    void FreeDebugCallback();
     void FreeSurface();
     void FreeLogicalDevice();
     void FreeSwapChain();
@@ -117,8 +111,6 @@ private:
     void FreeCommandBuffers();
     void FreeSemaphores();
 
-    bool CreateInstance();
-    bool CheckValidationLayerSupport() const;
     bool PickPhysicalDevice();
     bool CreateLogicalDevice();
     bool CreateSurface();
@@ -134,16 +126,11 @@ private:
     bool IsDeviceSuitable(const vk::PhysicalDevice& device);
     bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device);
     bool Frame();
-    std::vector<const char*> GetRequiredExtensions();
     QueueFamilyIndices FindQueueFamilies(const vk::PhysicalDevice& device);
     bool QuerySwapChainSupport(SwapChainSupportDetails& details, const vk::PhysicalDevice& device);
     vk::SurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats);
     vk::PresentModeKHR ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes);
     vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities);
-    bool SetupDebugCallback();
-    VkResult CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo);
-    void DestroyDebugReportCallbackEXT();
-
     // Callbacks for window events
     void OnWindowDestroyed(system::Window* pWindow);
     void OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, int32_t> size);

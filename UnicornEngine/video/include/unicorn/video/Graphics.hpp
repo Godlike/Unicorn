@@ -124,7 +124,10 @@ public:
      */
     UNICORN_EXPORT void SetWindowCreationHint(system::WindowHint hint, int32_t value) const;
 
-    /** @brief  Returns new created Vulkan based renderer */
+    /** @brief  Spawn new Vulkan based Renderer, which contain @sa VulkanDevice
+     *
+     * @return Pointer to @sa Renderer
+     */
     UNICORN_EXPORT Renderer* SpawnVulkanRenderer();
 
     /** @brief  Initialize full VkInstance.
