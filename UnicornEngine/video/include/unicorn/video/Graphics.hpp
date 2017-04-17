@@ -50,8 +50,8 @@ public:
 
     Graphics(const Graphics& other) = delete;
     Graphics(const Graphics&& other) = delete;
-    Graphics& operator=(const Renderer& other) = delete;
-    Graphics& operator=(const Graphics&& other) = delete;
+    Graphics& operator=(Graphics& other) = delete;
+    Graphics& operator=(Graphics&& other) = delete;
 
     /** @brief  Initializes the graphics system
      *
@@ -124,15 +124,22 @@ public:
      */
     UNICORN_EXPORT void SetWindowCreationHint(system::WindowHint hint, int32_t value) const;
 
-    /** @brief  Returns new created Vulkan based renderer */
-    UNICORN_EXPORT Renderer* SpawnVulkanRenderer();
+    /** @brief  Spawn new Vulkan based Renderer, which contain @sa VulkanDevice
+     *  @param  window Which window to render.
+     * @return Pointer to @sa Renderer.
+     */
+    UNICORN_EXPORT Renderer* SpawnVulkanRenderer(system::Window* window) const;
 
     /** @brief  Initialize full VkInstance.
      *
      * @return true if VkInstance initialized and false, if can't.
      */
-    UNICORN_EXPORT bool CreateVulkanContext();
+    UNICORN_EXPORT bool CreateVulkanContext() const;
 
+    /** @brief Binds renderer to window.
+    *
+    */
+    UNICORN_EXPORT void BindWindowRenderer(system::Window* pWindow, video::Renderer* pRenderer);
 private:
     //! Renderer-Window pair type
     typedef std::pair<Renderer*, system::Window*> RendererWindowPair;

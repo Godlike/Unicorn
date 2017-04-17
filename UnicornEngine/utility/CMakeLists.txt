@@ -24,8 +24,8 @@ set(UTILITY_SOURCES
     sources/asset/Content.cpp
     sources/asset/FileReader.cpp
     sources/asset/Handler.cpp
-    sources/asset/SimpleStorage.cpp
     sources/asset/Storage.cpp
+    sources/asset/SimpleStorage.cpp
     sources/Logger.cpp
 )
 

@@ -4,7 +4,7 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#include <unicorn/video/vulkan/VulkanDevice.hpp>
+#include <unicorn/video/vulkan/Device.hpp>
 
 namespace unicorn
 {
