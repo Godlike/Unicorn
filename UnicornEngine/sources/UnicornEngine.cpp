@@ -142,4 +142,10 @@ void UnicornEngine::Run()
         }
     }
 }
+
+const std::map<uint32_t, system::input::Gamepad*>& UnicornEngine::GetGamepads() const
+{
+    return m_pSystemManager->GetGamepads();
+}
+
 }

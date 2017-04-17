@@ -21,6 +21,7 @@ Window::Window(uint32_t id, int32_t width, int32_t height,
     , m_name( name )
     , m_pMonitor( pMonitor )
     , m_pSharedWindow( pSharedWindow )
+    , m_focus( false )
     , m_handle( nullptr )
 {
     m_handle = WINDOW_MANAGER_ADAPTER::CreateWindow(m_size.first
@@ -180,6 +181,8 @@ void Window::OnWindowFocused(void* handle, bool flag)
 {
     if (handle == m_handle)
     {
+        m_focus = flag;
+
         Focused.emit(this, flag);
     }
 }

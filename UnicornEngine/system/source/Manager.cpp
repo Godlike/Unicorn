@@ -66,6 +66,19 @@ Window* Manager::GetWindow(uint32_t id) const
     return cit != m_windows.cend() ? cit->second : nullptr;
 }
 
+Window* Manager::GetFocusedWindow() const
+{
+    for (std::map<uint32_t, Window*>::const_iterator cit = m_windows.cbegin(); cit != m_windows.cend(); ++cit)
+    {
+        if (cit->second->IsFocused())
+        {
+            return cit->second;
+        }
+    }
+
+    return nullptr;
+}
+
 bool Manager::DestroyWindow(uint32_t id)
 {
     return DestroyWindow(GetWindow(id));

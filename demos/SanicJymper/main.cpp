@@ -13,12 +13,16 @@
 #include <unicorn/system/CustomValue.hpp>
 
 #include <unicorn/system/input/Action.hpp>
+#include <unicorn/system/input/Gamepad.hpp>
 #include <unicorn/system/input/Key.hpp>
 #include <unicorn/system/input/Modifier.hpp>
 
 #include <unicorn/core/Settings.hpp>
 
+#include <cmath>
 #include <iostream>
+
+static unicorn::video::Graphics* pGraphics = nullptr;
 
 void onWindowSizeChange(unicorn::system::Window* pWindow, std::pair<int32_t, int32_t> size)
 {
@@ -87,6 +91,58 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     }
 }
 
+void onGamepadUpdate(unicorn::system::input::Gamepad* pGamepad)
+{
+    if (!pGraphics)
+    {
+        return;
+    }
+
+    unicorn::system::Window* pWindow = pGraphics->GetFocusedWindow();
+
+    if (!pWindow)
+    {
+        return;
+    }
+
+    static const float speed = 5.0f;
+    static const float deadZone = 0.05f;
+
+    const std::vector<float>& axes = pGamepad->GetAxes();
+
+    uint32_t size = axes.size();
+
+    if (size % 2 != 0)
+    {
+        --size;
+    }
+
+    std::pair<int32_t, int32_t> position = pWindow->GetPosition();
+    int32_t oldX = position.first;
+    int32_t oldY = position.second;
+
+    for (uint32_t i = 0; i < size / 2; i += 2) // checking only sticks (at least for xbox)
+    {
+        const float x = axes[i];
+        const float y = axes[i + 1];
+
+        if (fabs(x) > deadZone)
+        {
+            position.first += round(speed * x);
+        }
+
+        if (fabs(y) > deadZone)
+        {
+            position.second += round(speed * y);
+        }
+    }
+
+    if (oldX != position.first || oldY != position.second)
+    {
+        pWindow->SetPosition(position);
+    }
+}
+
 int main(int argc, char* argv[])
 {
     unicorn::core::Settings& settings = unicorn::core::Settings::Instance();
@@ -98,7 +154,14 @@ int main(int argc, char* argv[])
 
     if (unicornEngine->Init())
     {
-        unicorn::video::Graphics* pGraphics = unicornEngine->GetGraphics();
+        pGraphics = unicornEngine->GetGraphics();
+
+        const std::map<uint32_t, unicorn::system::input::Gamepad*>& gamepads = unicornEngine->GetGamepads();
+
+        for (auto cit = gamepads.cbegin(); cit != gamepads.cend(); ++cit)
+        {
+            cit->second->Updated.connect(&onGamepadUpdate);
+        }
 
         // Borderless undecorated
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,

@@ -100,6 +100,13 @@ public:
      */
     Window* GetWindow(uint32_t id) const;
 
+    /** @brief  Returns a pointer to currently focused window
+     *
+     *  @return pointer to currently focused window or @c nullptr if there is
+     *          no focused window controlled by the program
+     */
+    Window* GetFocusedWindow() const;
+
     /** @brief  Destroys a window identified by @p id
      *
      *  Searches for the window by calling GetWindow() and then calls
@@ -200,6 +207,9 @@ public:
      *  @param  value   new value
      */
     void SetWindowCreationHint(WindowHint hint, int32_t value) const;
+
+    /** @brief  Returns all connected gamepads */
+    const std::map<uint32_t, input::Gamepad*>& GetGamepads() const { return m_gamepads; }
 
     /** @brief  Polls all connected gamepads for new values */
     void PollGamepads();

@@ -126,6 +126,9 @@ public:
     /** @brief  Maximizes window */
     UNICORN_EXPORT void Maximize();
 
+    /** @brief  Returns @c true if window has focus, @c false otherwise */
+    UNICORN_EXPORT bool IsFocused() const { return m_focus; }
+
     /** @brief  Brings window to front and sets input focus */
     UNICORN_EXPORT void Focus();
 
@@ -431,6 +434,9 @@ private:
 
     //! Pointer to another window that shares resources with this window
     Window* m_pSharedWindow;
+
+    //! Flag describing if window is focused
+    bool m_focus;
 
     //! Handle provided by window manager adapter
     void* m_handle;
