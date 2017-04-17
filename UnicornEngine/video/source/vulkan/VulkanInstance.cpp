@@ -12,7 +12,9 @@ namespace unicorn
 {
 namespace video
 {
-bool VulkanInstance::CreateInstance()
+VulkanInstance* VulkanInstance::s_instance = nullptr;
+
+bool VulkanInstance::Initialize()
 {
     if (s_enableValidationLayers && !CheckValidationLayerSupport())
     {
@@ -51,16 +53,6 @@ bool VulkanInstance::CreateInstance()
     }
 
     return true;
-}
-
-VulkanInstance::VulkanInstance()
-{
-    CreateInstance();
-}
-
-VulkanInstance::~VulkanInstance()
-{
-    DestroyInstance();
 }
 
 bool VulkanInstance::CheckValidationLayerSupport() const
@@ -109,7 +101,7 @@ bool VulkanInstance::CheckValidationLayerSupport() const
     return true;
 }
 
-void VulkanInstance::DestroyInstance()
+void VulkanInstance::Destroy()
 {
 }
 
@@ -123,6 +115,30 @@ std::vector<const char*> VulkanInstance::GetRequiredExtensions()
     }
 
     return extensions;
+}
+
+bool VulkanInstance::DestroyDevice(VulkanDevice* device)
+{
+    return false;
+}
+
+VulkanDevice* VulkanInstance::GetNewDevice()
+{
+    return nullptr;
+}
+
+VulkanInstance& VulkanInstance::Instance(system::Manager& manager)
+{
+    if (nullptr == s_instance)
+    {
+        s_instance = new VulkanInstance(manager);
+    }
+    return *s_instance;
+}
+
+bool VulkanInstance::IsInitialized() const
+{
+    return m_vkInstance;
 }
 }
 }

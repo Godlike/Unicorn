@@ -127,6 +127,12 @@ public:
     /** @brief  Returns new created Vulkan based renderer */
     UNICORN_EXPORT Renderer* SpawnVulkanRenderer();
 
+    /** @brief  Initialize full VkInstance.
+     *
+     * @return true if VkInstance initialized and false, if can't.
+     */
+    UNICORN_EXPORT bool CreateVulkanContext();
+
 private:
     //! Renderer-Window pair type
     typedef std::pair<Renderer*, system::Window*> RendererWindowPair;

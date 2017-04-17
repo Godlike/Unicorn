@@ -174,9 +174,15 @@ void Graphics::ProcessExpiredRenderers()
     }
 }
 
-Render* Graphics::SpawnVulkanRenderer()
+Renderer* Graphics::SpawnVulkanRenderer()
 {
     return nullptr;
+}
+
+bool Graphics::CreateVulkanContext()
+{
+    VulkanInstance& vulkanInstance = VulkanInstance::Instance(m_systemManager);
+    return vulkanInstance.Initialize();
 }
 }
 }

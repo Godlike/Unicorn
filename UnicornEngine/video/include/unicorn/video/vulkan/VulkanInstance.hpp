@@ -10,6 +10,7 @@
 #include <vulkan/vulkan.hpp>
 
 #include <unicorn/utility/templates/Singleton.hpp>
+#include <unicorn/system/Manager.hpp>
 
 namespace unicorn
 {
@@ -17,32 +18,27 @@ namespace video
 {
 class VulkanDevice;
 
-namespace system
+class VulkanInstance //: public utility::templates::Singleton<VulkanInstance>
 {
-class Manager;
-}
-
-class VulkanInstance : public utility::templates::Singleton<VulkanInstance>
-{
-    VulkanInstance();
-    ~VulkanInstance();
-
-    bool InstanceInitialised() const;
-
+public:
+    bool IsInitialized() const;
     VulkanDevice* GetNewDevice();
     bool DestroyDevice(VulkanDevice* device);
+    void Destroy();
+
+    bool Initialize();
+    static VulkanInstance& Instance(system::Manager& manager);
+    VulkanInstance(system::Manager& manager)
+        : m_systemManager(manager){};
 
 private:
-    friend class utility::templates::Singleton<VulkanInstance>;
+    //friend class utility::templates::Singleton<VulkanInstance>;
 
     VulkanInstance(const VulkanInstance& other) = delete;
     VulkanInstance& operator=(const VulkanInstance& other) = delete;
-
     VulkanInstance(VulkanInstance&& other) = delete;
     VulkanInstance& operator=(VulkanInstance&& other) = delete;
-
-    bool CreateInstance();
-    void DestroyInstance();
+    ~VulkanInstance() = delete;
 
     bool CheckValidationLayerSupport() const;
     std::vector<const char*> GetRequiredExtensions();
@@ -50,6 +46,7 @@ private:
     system::Manager& m_systemManager;
     vk::Instance m_vkInstance;
     std::vector<const char*> m_validationLayers;
+    static VulkanInstance* s_instance;
 #ifdef NDEBUG
     static const bool s_enableValidationLayers = false;
 #else
