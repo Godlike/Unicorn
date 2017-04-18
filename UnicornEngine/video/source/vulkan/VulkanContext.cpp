@@ -14,9 +14,9 @@ namespace video
 {
 vk::Instance VulkanContext::m_vkInstance = nullptr;
 VkDebugReportCallbackEXT VulkanContext::m_vulkanCallback = VK_NULL_HANDLE;
-std::vector<const char*> VulkanContext::m_validationLayers = { "VK_LAYER_LUNARG_standard_validation" };
-std::vector<const char*> VulkanContext::m_deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-std::vector<const char*> VulkanContext::m_instanceExtensions;
+std::vector<const char*> VulkanContext::validationLayers = { "VK_LAYER_LUNARG_standard_validation" };
+std::vector<const char*> VulkanContext::deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+std::vector<const char*> VulkanContext::instanceExtensions = { };
 
 	static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
 													  VkDebugReportObjectTypeEXT objType,
@@ -69,16 +69,16 @@ bool VulkanContext::Initialize(system::Manager& manager)
 	createInfo.pApplicationInfo = &appInfo;
 
 	//TODO: Extensions not working.
-	m_instanceExtensions = FillRequiredExtensions(manager);
+	instanceExtensions = FillRequiredExtensions(manager);
 	//m_deviceExtensions.insert( m_deviceExtensions.end(), requiredExtensions.begin(), requiredExtensions.end() );
 
-	createInfo.enabledExtensionCount = static_cast<uint32_t>(m_instanceExtensions.size());
-	createInfo.ppEnabledExtensionNames = m_instanceExtensions.data();
+	createInfo.enabledExtensionCount = static_cast<uint32_t>(instanceExtensions.size());
+	createInfo.ppEnabledExtensionNames = instanceExtensions.data();
 
 	if (s_enableValidationLayers)
 	{
-		createInfo.enabledLayerCount = static_cast<uint32_t>(m_validationLayers.size());
-		createInfo.ppEnabledLayerNames = m_validationLayers.data();
+		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+		createInfo.ppEnabledLayerNames = validationLayers.data();
 	}
 	else
 	{
@@ -104,7 +104,7 @@ bool VulkanContext::CheckValidationLayerSupport()
 		LOG_ERROR("Can't enumerate instance layer properties!");
 		return false;
 	}
-	for (const char* layerName : m_validationLayers)
+	for (const char* layerName : validationLayers)
 	{
 		bool layerFound = false;
 
@@ -121,7 +121,7 @@ bool VulkanContext::CheckValidationLayerSupport()
 		{
 			LOG_ERROR("Can't find required Vulkan layers: ");
 
-			for (auto& requiredLayer : m_validationLayers)
+			for (auto& requiredLayer : validationLayers)
 			{
 				LOG_ERROR("%s", requiredLayer);
 			}
@@ -132,7 +132,7 @@ bool VulkanContext::CheckValidationLayerSupport()
 
 	LOG_INFO("Picked next Vulkan layers :");
 
-	for (auto& layer : m_validationLayers)
+	for (auto& layer : validationLayers)
 	{
 		LOG_INFO("%s", layer);
 	}
@@ -228,9 +228,6 @@ void VulkanContext::DestroyDebugReportCallbackEXT() {
 			DestroyDebugReportCallbackEXT();
 		}
 	}
-	std::vector<const char *> VulkanContext::GetValidationLayers() { return m_validationLayers; }
-
-	std::vector<const char *> VulkanContext::GetRequiredExtensions() {return m_deviceExtensions;}
 
 }
 }

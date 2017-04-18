@@ -26,8 +26,7 @@ public:
 
 	static bool Initialize(system::Manager& manager);
 	static  vk::Instance GetVkInstance();
-	static std::vector<const char*> GetRequiredExtensions();
-	static std::vector<const char*> GetValidationLayers();
+	static std::vector<const char*> validationLayers, deviceExtensions, instanceExtensions;
 private:
 	VulkanContext(const VulkanContext& other) = delete;
 	VulkanContext& operator=(const VulkanContext& other) = delete;
@@ -43,9 +42,6 @@ private:
 	static void FreeDebugCallback();
 
 	static vk::Instance m_vkInstance;
-	static std::vector<const char*> m_validationLayers;
-	static std::vector<const char*> m_deviceExtensions;
-	static std::vector<const char*> m_instanceExtensions;
 	static VkDebugReportCallbackEXT m_vulkanCallback;
 #ifdef NDEBUG
 	static const bool s_enableValidationLayers = false;
