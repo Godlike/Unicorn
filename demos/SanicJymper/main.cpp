@@ -21,6 +21,11 @@ void onWindowSizeChange(unicorn::system::Window* pWindow, std::pair<int32_t, int
     std::cout << "Window[" << pWindow->GetId() << "]: size changed to " << size.first << "x" << size.second << std::endl;
 }
 
+void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
+{
+    std::cout << "Logic frame" << std::endl;
+}
+
 int main(int argc, char* argv[])
 {
     unicorn::core::Settings& settings = unicorn::core::Settings::Instance();
@@ -33,6 +38,8 @@ int main(int argc, char* argv[])
     if (unicornEngine->Init())
     {
         unicorn::video::Graphics* pGraphics = unicornEngine->GetGraphics();
+
+        unicornEngine->LogicFrame.connect(&onLogicFrame);
 
         // Borderless undecorated
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,

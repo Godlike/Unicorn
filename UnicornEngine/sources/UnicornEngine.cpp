@@ -107,10 +107,11 @@ void UnicornEngine::Run()
 {
     if (m_pGraphics)
     {
-        while (m_pGraphics->Render())
+        do
         {
-
+            LogicFrame.emit(this);
         }
+        while (m_pGraphics->Render());
     }
 }
 }

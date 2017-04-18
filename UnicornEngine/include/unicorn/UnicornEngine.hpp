@@ -9,6 +9,8 @@
 
 #include <unicorn/utility/SharedMacros.hpp>
 
+#include <wink/signal.hpp>
+
 namespace unicorn
 {
 
@@ -64,6 +66,13 @@ public:
 
     /** @brief  Returns pointer to the graphics system */
     video::Graphics* GetGraphics() const { return m_pGraphics; }
+
+    /** @brief  Event triggered after input processing but before rendering
+     *
+     *  Event is emitted with the following signature:
+     *  -# engine pointer
+     */
+    wink::signal< wink::slot<void(UnicornEngine*)> > LogicFrame;
 
 private:
     //! Flag describing if engine was initialized
