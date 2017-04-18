@@ -11,7 +11,7 @@
 
 #include <unicorn/system/Manager.hpp>
 #include <unicorn/system/Window.hpp>
-#include <unicorn/video/vulkan/VulkanInstance.hpp>
+#include <unicorn/video/vulkan/VulkanContext.hpp>
 
 #include <cstring>
 #include <iostream>
@@ -254,8 +254,7 @@ void Renderer::FreeSurface()
 {
     if (m_vkWindowSurface && m_vkLogicalDevice)
     {
-        VulkanInstance& instance = VulkanInstance::Instance();
-        instance.GetRawInstance().destroySurfaceKHR(m_vkWindowSurface);
+		VulkanContext::GetVkInstance().destroySurfaceKHR(m_vkWindowSurface);
         m_vkWindowSurface = nullptr;
     }
 }
@@ -362,7 +361,7 @@ bool Renderer::PickPhysicalDevice()
 {
     vk::Result result;
     std::vector<vk::PhysicalDevice> devices;
-    std::tie(result, devices) = VulkanInstance::Instance().GetRawInstance().enumeratePhysicalDevices();
+    std::tie(result, devices) = VulkanContext::GetVkInstance().enumeratePhysicalDevices();
     if (result != vk::Result::eSuccess)
     {
         LOG_ERROR("Failed to enumerate physical devices.");
@@ -407,13 +406,13 @@ bool Renderer::CreateLogicalDevice()
     createInfo.setPQueueCreateInfos(queueCreateInfos.data());
     createInfo.setQueueCreateInfoCount(static_cast<uint32_t>(queueCreateInfos.size()));
     createInfo.setPEnabledFeatures(&deviceFeatures);
-    createInfo.setEnabledExtensionCount(static_cast<uint32_t>(VulkanInstance::Instance().GetRequiredExtensions().size()));
-    createInfo.setPpEnabledExtensionNames(VulkanInstance::Instance().GetRequiredExtensions().data());
+    createInfo.setEnabledExtensionCount(static_cast<uint32_t>(VulkanContext::GetRequiredExtensions().size()));
+    createInfo.setPpEnabledExtensionNames(VulkanContext::GetRequiredExtensions().data());
 
     if (s_enableValidationLayers)
     {
-        createInfo.setEnabledLayerCount(static_cast<uint32_t>(VulkanInstance::Instance().GetValidationLayers().size()));
-        createInfo.setPpEnabledLayerNames(VulkanInstance::Instance().GetValidationLayers().data());
+        createInfo.setEnabledLayerCount(static_cast<uint32_t>(VulkanContext::GetValidationLayers().size()));
+        createInfo.setPpEnabledLayerNames(VulkanContext::GetValidationLayers().data());
     }
     else
     {
@@ -435,7 +434,7 @@ bool Renderer::CreateLogicalDevice()
 
 bool Renderer::CreateSurface()
 {
-    if (!m_pWindow || m_systemManager.CreateVulkanSurfaceForWindow(*m_pWindow, VulkanInstance::Instance().GetRawInstance(), nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
+    if (!m_pWindow || m_systemManager.CreateVulkanSurfaceForWindow(*m_pWindow, VulkanContext::GetVkInstance(), nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
     {
         LOG_ERROR("Failed to create window surface!");
 
@@ -900,7 +899,7 @@ bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device)
         LOG_ERROR("Can't enumerate device extension properties.");
         return false;
     }
-    auto deviceExtensions = VulkanInstance::Instance().GetRequiredExtensions();
+    auto deviceExtensions = VulkanContext::GetRequiredExtensions();
     std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
 
     for (const auto& extension : availableExtensions)

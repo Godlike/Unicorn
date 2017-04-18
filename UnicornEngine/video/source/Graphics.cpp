@@ -11,7 +11,7 @@
 #include <unicorn/system/Manager.hpp>
 #include <unicorn/system/Window.hpp>
 
-#include <unicorn/video/vulkan/VulkanInstance.hpp>
+#include <unicorn/video/vulkan/VulkanContext.hpp>
 #include <unicorn/video/vulkan/VulkanRenderer.hpp>
 
 namespace unicorn
@@ -181,8 +181,7 @@ Renderer* Graphics::SpawnVulkanRenderer()
 
 bool Graphics::CreateVulkanContext()
 {
-    VulkanInstance& vulkanInstance = VulkanInstance::Instance(m_systemManager);
-    return vulkanInstance.Initialize();
+    return VulkanContext::Initialize(m_systemManager);
 }
 }
 }

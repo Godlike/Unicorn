@@ -8,7 +8,7 @@ cmake_policy(VERSION 3.0)
 set(VIDEO_HEADERS
     include/unicorn/video/Graphics.hpp
     include/unicorn/video/Renderer.hpp
-    include/unicorn/video/vulkan/VulkanInstance.hpp
+    include/unicorn/video/vulkan/VulkanContext.hpp
     include/unicorn/video/vulkan/VulkanDevice.hpp
     include/unicorn/video/vulkan/VulkanRenderer.hpp
 )
@@ -16,7 +16,7 @@ set(VIDEO_HEADERS
 set(VIDEO_SOURCES
     source/Graphics.cpp
     source/Renderer.cpp
-    source/vulkan/VulkanInstance.cpp
+    source/vulkan/VulkanContext.cpp
     source/vulkan/VulkanDevice.cpp
     source/vulkan/VulkanRenderer.cpp
 )
