@@ -156,11 +156,9 @@ int main(int argc, char* argv[])
     {
         pGraphics = unicornEngine->GetGraphics();
 
-        const std::map<uint32_t, unicorn::system::input::Gamepad*>& gamepads = unicornEngine->GetGamepads();
-
-        for (auto cit = gamepads.cbegin(); cit != gamepads.cend(); ++cit)
+        for (auto const& cit : unicornEngine->GetGamepads())
         {
-            cit->second->Updated.connect(&onGamepadUpdate);
+            cit.second->Updated.connect(&onGamepadUpdate);
         }
 
         // Borderless undecorated

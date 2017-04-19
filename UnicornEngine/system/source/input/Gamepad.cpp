@@ -34,29 +34,30 @@ void Gamepad::UpdateData()
 {
     bool anyUpdates = false;
 
+    auto iterateAndUpdate = [&](auto& dest, auto& source)
+    {
+        for (uint32_t i = 0; i < source.size(); ++i)
+        {
+            if (!anyUpdates && dest[i] != source[i])
+            {
+                anyUpdates = true;
+            }
+
+            dest[i] = source[i];
+        }
+    };
+
     {
         std::vector<float> axes = GAMEPAD_ADAPTER::GetGamepadAxes(m_handle);
 
         if (!m_axes.empty() && axes.size() != m_axes.size())
         {
             LOG_WARNING("Gamepad[%d]: number of axes changed during runtime", m_id);
-
-            m_axes.resize(axes.size());
-        }
-        else if(m_axes.empty())
-        {
-            m_axes.resize(axes.size());
         }
 
-        for (uint32_t i = 0; i < axes.size(); ++i)
-        {
-            if (!anyUpdates && m_axes[i] != axes[i])
-            {
-                anyUpdates = true;
-            }
+        m_axes.resize(axes.size());
 
-            m_axes[i] = axes[i];
-        }
+        iterateAndUpdate(m_axes, axes);
     }
 
     {
@@ -65,23 +66,11 @@ void Gamepad::UpdateData()
         if (!m_buttons.empty() && buttons.size() != m_buttons.size())
         {
             LOG_WARNING("Gamepad[%d]: number of buttons changed during runtime", m_id);
-
-            m_buttons.resize(buttons.size());
-        }
-        else if (m_buttons.empty())
-        {
-            m_buttons.resize(buttons.size());
         }
 
-        for (uint32_t i = 0; i < buttons.size(); ++i)
-        {
-            if (!anyUpdates && m_buttons[i] != buttons[i])
-            {
-                anyUpdates = true;
-            }
+        m_buttons.resize(buttons.size());
 
-            m_buttons[i] = buttons[i];
-        }
+        iterateAndUpdate(m_buttons, buttons);
     }
 
     if (anyUpdates)

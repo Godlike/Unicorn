@@ -198,13 +198,7 @@ void unicornWindowUnicodeModifiers(GLFWwindow* handle, uint32_t unicode, int mod
 
 void unicornWindowFileDrop(GLFWwindow* handle, int count, const char** rawPaths)
 {
-    std::vector<std::string> paths;
-    paths.reserve(count);
-
-    for (int i = 0; i < count; ++i)
-    {
-        paths.push_back(std::string(rawPaths[i]));
-    }
+    std::vector<std::string> paths(rawPaths, rawPaths + count);
 
     Adapter::WindowFileDrop.emit(
         static_cast<void*>(handle),
@@ -462,19 +456,10 @@ void Adapter::WaitEvents(double timeoutSeconds)
 
 std::vector<const char*> Adapter::GetRequiredVulkanExtensions()
 {
-    std::vector<const char*> extensions;
-
     unsigned int glfwExtensionCount = 0;
     const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-    extensions.reserve(glfwExtensionCount);
-
-    for (unsigned int i = 0; i < glfwExtensionCount; ++i)
-    {
-        extensions.push_back(glfwExtensions[i]);
-    }
-
-    return extensions;
+    return std::vector<const char*>(glfwExtensions, glfwExtensions + glfwExtensionCount);
 }
 
 std::vector<MonitorMemento> Adapter::GetMonitors()

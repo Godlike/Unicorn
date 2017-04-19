@@ -44,7 +44,7 @@ Window* Manager::CreateWindow(int32_t width,
     WINDOW_MANAGER_ADAPTER::GetWindowPosition(result->GetHandle(), &position.first, &position.second);
     result->SetPosition(position);
 
-    m_windows.insert(std::make_pair(result->GetId(), result));
+    m_windows.emplace(result->GetId(), result);
 
     WindowCreated.emit(result);
 
@@ -61,18 +61,18 @@ VkResult Manager::CreateVulkanSurfaceForWindow(const Window& window,
 
 Window* Manager::GetWindow(uint32_t id) const
 {
-    std::map<uint32_t, Window*>::const_iterator cit = m_windows.find(id);
+    auto cit = m_windows.find(id);
 
     return cit != m_windows.cend() ? cit->second : nullptr;
 }
 
 Window* Manager::GetFocusedWindow() const
 {
-    for (std::map<uint32_t, Window*>::const_iterator cit = m_windows.cbegin(); cit != m_windows.cend(); ++cit)
+    for (auto const& cit : m_windows)
     {
-        if (cit->second->IsFocused())
+        if (cit.second->IsFocused())
         {
-            return cit->second;
+            return cit.second;
         }
     }
 
@@ -112,9 +112,9 @@ void Manager::Init()
 
         Monitor* pMonitor = nullptr;
 
-        for (std::vector<MonitorMemento>::const_iterator cit = monitors.cbegin(); cit != monitors.cend(); ++cit)
+        for (auto const& cit : monitors)
         {
-            pMonitor = new Monitor(*cit);
+            pMonitor = new Monitor(cit);
 
             m_monitors.push_back(pMonitor);
 
@@ -131,10 +131,10 @@ void Manager::Init()
 
         input::Gamepad* pGamepad = nullptr;
 
-        for (std::vector<void*>::const_iterator cit = gamepads.cbegin(); cit != gamepads.cend(); ++cit)
+        for (auto const& cit : gamepads)
         {
-            pGamepad = new input::Gamepad(*cit);
-            m_gamepads.insert( std::pair<uint32_t, input::Gamepad*>(pGamepad->GetId(), pGamepad) );
+            pGamepad = new input::Gamepad(cit);
+            m_gamepads.emplace(pGamepad->GetId(), pGamepad);
 
             GamepadCreated.push(pGamepad);
         }
@@ -147,9 +147,9 @@ void Manager::Deinit()
 {
     WindowCreated.clear();
 
-    for (std::map<uint32_t, Window*>::const_iterator cit = m_windows.cbegin(); cit != m_windows.cend(); ++cit)
+    for (auto const& cit : m_windows)
     {
-        delete cit->second;
+        delete cit.second;
     }
 
     m_windows.clear();
@@ -176,11 +176,11 @@ Monitor* Manager::GetMonitor(uint32_t id) const
 {
     Monitor* result = nullptr;
 
-    for (std::vector<Monitor*>::const_iterator cit = m_monitors.cbegin(); cit != m_monitors.cend(); ++cit)
+    for (auto const& cit : m_monitors)
     {
-        if (id == (*cit)->GetId())
+        if (id == cit->GetId())
         {
-            result = *cit;
+            result = cit;
             break;
         }
     }
@@ -208,7 +208,7 @@ void Manager::OnMonitorStateChanged(void* handle, MonitorMemento::State state)
 void Manager::OnGamepadStateChanged(void* handle, input::GamepadState state)
 {
     uint32_t id = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(handle));
-    std::map<uint32_t, input::Gamepad*>::const_iterator cit = m_gamepads.find(id);
+    auto cit = m_gamepads.find(id);
 
     switch (state)
     {
@@ -218,12 +218,13 @@ void Manager::OnGamepadStateChanged(void* handle, input::GamepadState state)
             {
                 input::Gamepad* pGamepad = new input::Gamepad(handle);
 
-                m_gamepads.insert(std::pair<uint32_t, input::Gamepad*>(pGamepad->GetId(), pGamepad));
+                m_gamepads.emplace(pGamepad->GetId(), pGamepad);
 
                 GamepadCreated.push(pGamepad);
 
                 GamepadCreated.emit();
             }
+
             break;
         }
         case input::GamepadState::Disconnected:
@@ -231,8 +232,10 @@ void Manager::OnGamepadStateChanged(void* handle, input::GamepadState state)
             if(cit != m_gamepads.cend())
             {
                 delete cit->second;
+
                 m_gamepads.erase(cit);
             }
+
             break;
         }
         default:
@@ -246,11 +249,12 @@ Monitor* Manager::GetMonitor(void* handle) const
 {
     Monitor* result = nullptr;
 
-    for (std::vector<Monitor*>::const_iterator cit = m_monitors.cbegin(); cit != m_monitors.cend(); ++cit)
+    for (auto const& cit : m_monitors)
     {
-        if (handle == (*cit)->GetHandle())
+        if (handle == cit->GetHandle())
         {
-            result = *cit;
+            result = cit;
+
             break;
         }
     }
@@ -284,9 +288,9 @@ void Manager::SetWindowCreationHint(WindowHint hint, int32_t value) const
 
 void Manager::PollGamepads()
 {
-    for (std::map<uint32_t, input::Gamepad*>::const_iterator cit = m_gamepads.cbegin(); cit != m_gamepads.cend(); ++cit)
+    for (auto const& cit : m_gamepads)
     {
-        cit->second->UpdateData();
+        cit.second->UpdateData();
     }
 }
 

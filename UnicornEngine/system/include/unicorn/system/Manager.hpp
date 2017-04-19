@@ -27,7 +27,7 @@ namespace system
 
 namespace input
 {
-    class Gamepad;
+class Gamepad;
 }
 
 class Monitor;
