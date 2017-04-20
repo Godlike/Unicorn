@@ -11,9 +11,12 @@ namespace unicorn
 {
 namespace video
 {
-    class VulkanDevice
-    {
-    };
+	namespace vulkan
+	{
+	class Device
+	{
+	};
+	}
 }
 }
 #endif // UNICORN_VIDEO_VULKAN_VULKAN_DEVICE_HPP

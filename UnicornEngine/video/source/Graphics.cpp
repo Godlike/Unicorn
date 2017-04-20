@@ -11,8 +11,8 @@
 #include <unicorn/system/Manager.hpp>
 #include <unicorn/system/Window.hpp>
 
-#include <unicorn/video/vulkan/VulkanContext.hpp>
-#include <unicorn/video/vulkan/VulkanRenderer.hpp>
+#include <unicorn/video/vulkan/Context.hpp>
+#include <unicorn/video/vulkan/Renderer.hpp>
 
 namespace unicorn
 {
@@ -101,7 +101,7 @@ system::Window* Graphics::SpawnWindow(int32_t width,
     system::Window* pSharedWindow)
 {
     system::Window* pWindow = m_systemManager.CreateWindow(width, height, name, pMonitor, pSharedWindow);
-    Renderer* pRenderer = new Renderer(m_systemManager, pWindow);
+    Renderer* pRenderer = new vulkan::Renderer(m_systemManager, pWindow);
 
     if (pRenderer->Init())
     {
@@ -181,7 +181,7 @@ Renderer* Graphics::SpawnVulkanRenderer()
 
 bool Graphics::CreateVulkanContext()
 {
-    return VulkanContext::Initialize(m_systemManager);
+    return vulkan::Context::Initialize(m_systemManager);
 }
 }
 }
