@@ -91,6 +91,13 @@ public:
         system::Monitor* pMonitor = nullptr,
         system::Window* pSharedWindow = nullptr);
 
+    /** @brief  Returns a pointer to currently focused window
+     *
+     *  @return pointer to currently focused window or @c nullptr if there is
+     *          no focused window controlled by the program
+     */
+    UNICORN_EXPORT system::Window* GetFocusedWindow() const;
+
     /** @brief  Returns the list of known monitors */
     UNICORN_EXPORT const std::vector<system::Monitor*>& GetMonitors() const;
 

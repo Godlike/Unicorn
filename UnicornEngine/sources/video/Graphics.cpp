@@ -123,6 +123,11 @@ system::Window* Graphics::SpawnWindow(int32_t width,
     return pWindow;
 }
 
+system::Window* Graphics::GetFocusedWindow() const
+{
+    return m_systemManager.GetFocusedWindow();
+}
+
 const std::vector<system::Monitor*>& Graphics::GetMonitors() const
 {
     return m_systemManager.GetMonitors();

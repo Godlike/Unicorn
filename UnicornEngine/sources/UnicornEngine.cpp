@@ -10,8 +10,12 @@
 #include <unicorn/utility/asset/SimpleStorage.hpp>
 
 #include <unicorn/system/Manager.hpp>
-#include <unicorn/system/profilers/WindowProfiler.hpp>
-#include <unicorn/system/profilers/MonitorProfiler.hpp>
+
+#include <unicorn/system/profiler/GamepadProfiler.hpp>
+#include <unicorn/system/profiler/KeyProfiler.hpp>
+#include <unicorn/system/profiler/MonitorProfiler.hpp>
+#include <unicorn/system/profiler/MouseProfiler.hpp>
+#include <unicorn/system/profiler/WindowProfiler.hpp>
 
 namespace unicorn
 {
@@ -40,8 +44,12 @@ bool UnicornEngine::Init()
     LOG_INFO("Engine initialization started.");
 
     m_pSystemManager = new system::Manager();
+
     m_pWindowProfiler = new system::WindowProfiler(*m_pSystemManager);
     m_pMonitorProfiler = new system::MonitorProfiler(*m_pSystemManager);
+    m_pMouseProfiler = new system::MouseProfiler(*m_pSystemManager);
+    m_pKeyProfiler = new system::KeyProfiler(*m_pSystemManager);
+    m_pGamepadProfiler = new system::GamepadProfiler(*m_pSystemManager);
 
     m_pSystemManager->Init();
 
@@ -75,6 +83,27 @@ void UnicornEngine::Deinit()
     if (m_pSystemManager)
     {
         m_pSystemManager->Deinit();
+
+        if (m_pGamepadProfiler)
+        {
+            delete m_pGamepadProfiler;
+
+            m_pGamepadProfiler = nullptr;
+        }
+
+        if (m_pKeyProfiler)
+        {
+            delete m_pKeyProfiler;
+
+            m_pKeyProfiler = nullptr;
+        }
+
+        if (m_pMouseProfiler)
+        {
+            delete m_pMouseProfiler;
+
+            m_pMouseProfiler = nullptr;
+        }
 
         if (m_pMonitorProfiler)
         {
@@ -110,8 +139,16 @@ void UnicornEngine::Run()
         do
         {
             LogicFrame.emit(this);
+
+            m_pSystemManager->PollGamepads();
         }
         while (m_pGraphics->Render());
     }
 }
+
+const std::map<uint32_t, system::input::Gamepad*>& UnicornEngine::GetGamepads() const
+{
+    return m_pSystemManager->GetGamepads();
+}
+
 }

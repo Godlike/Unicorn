@@ -4,7 +4,7 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#include <unicorn/system/profilers/WindowProfiler.hpp>
+#include <unicorn/system/profiler/WindowProfiler.hpp>
 
 #include <unicorn/system/Manager.hpp>
 #include <unicorn/system/Window.hpp>

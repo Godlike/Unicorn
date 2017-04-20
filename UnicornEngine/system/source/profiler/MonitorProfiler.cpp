@@ -4,7 +4,7 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#include <unicorn/system/profilers/MonitorProfiler.hpp>
+#include <unicorn/system/profiler/MonitorProfiler.hpp>
 
 #include <unicorn/system/Manager.hpp>
 
