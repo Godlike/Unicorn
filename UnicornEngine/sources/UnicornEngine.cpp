@@ -138,9 +138,9 @@ void UnicornEngine::Run()
     {
         do
         {
-            LogicFrame.emit(this);
-
             m_pSystemManager->PollGamepads();
+
+            LogicFrame.emit(this);
         }
         while (m_pGraphics->Render());
     }
