@@ -7,9 +7,10 @@
 #ifndef UNICORN_SYSTEM_MANAGER_HPP
 #define UNICORN_SYSTEM_MANAGER_HPP
 
-#include <unicorn/system/Monitor.hpp>
-#include <unicorn/system/Window.hpp>
 #include <unicorn/system/WindowHint.hpp>
+#include <unicorn/system/MonitorMemento.hpp>
+
+#include <unicorn/system/input/GamepadState.hpp>
 
 #include <wink/signal.hpp>
 #include <wink/event_queue.hpp>
@@ -23,6 +24,14 @@ namespace unicorn
 {
 namespace system
 {
+
+namespace input
+{
+class Gamepad;
+}
+
+class Monitor;
+class Window;
 
 /** @brief  Provides interface to managing windows and monitors
  *
@@ -90,6 +99,13 @@ public:
      *          was not found
      */
     Window* GetWindow(uint32_t id) const;
+
+    /** @brief  Returns a pointer to currently focused window
+     *
+     *  @return pointer to currently focused window or @c nullptr if there is
+     *          no focused window controlled by the program
+     */
+    Window* GetFocusedWindow() const;
 
     /** @brief  Destroys a window identified by @p id
      *
@@ -192,6 +208,12 @@ public:
      */
     void SetWindowCreationHint(WindowHint hint, int32_t value) const;
 
+    /** @brief  Returns all connected gamepads */
+    const std::map<uint32_t, input::Gamepad*>& GetGamepads() const { return m_gamepads; }
+
+    /** @brief  Polls all connected gamepads for new values */
+    void PollGamepads();
+
     /** @brief  Event triggered every time new window is created
      *
      *  Event is emitted with the following signature:
@@ -206,15 +228,28 @@ public:
      */
     wink::event_queue<Monitor*> MonitorCreated;
 
+    /** @brief  Event queue triggered every time new bath of gamepads is created
+     *
+     *  Event is emitted with the following signature:
+     *  -# newly created gamepad
+     */
+    wink::event_queue<input::Gamepad*> GamepadCreated;
+
 private:
     /** @brief  Slot invoked when monitor state is changed (connected/disconnected) */
     void OnMonitorStateChanged(void* handle, MonitorMemento::State state);
+
+    /** @brief  Slot invoked when gamepad state is changed (connected/disconnected) */
+    void OnGamepadStateChanged(void* handle, input::GamepadState state);
 
     //! Returns a monitor identified by handle
     Monitor* GetMonitor(void* handle) const;
 
     //! A map of @ref Window objects identified by their id
     std::map<uint32_t, Window*> m_windows;
+
+    //! A map of @ref input::Gamepad objects identified by their id
+    std::map<uint32_t, input::Gamepad*> m_gamepads;
 
     //! A vector of available @ref Monitor objects
     std::vector<Monitor*> m_monitors;

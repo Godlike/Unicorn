@@ -14,7 +14,12 @@ namespace unicorn
 namespace system
 {
 
-/** @brief  Contains gamma ramp information */
+/** @brief  Contains gamma ramp information
+ *
+ *  Object controls the lifetime of @p red, @p green and @p blue channels.
+ *  Any or all channels are allowed to use the same buffer and it will be
+ *  deallocated only once.
+ */
 struct GammaRamp
 {
     /** @brief  Constructs gamma ramp object */

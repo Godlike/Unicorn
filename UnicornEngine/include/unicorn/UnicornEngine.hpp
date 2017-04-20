@@ -9,6 +9,9 @@
 
 #include <unicorn/utility/SharedMacros.hpp>
 
+#include <cstdio>
+#include <map>
+
 namespace unicorn
 {
 
@@ -19,9 +22,19 @@ class Graphics;
 
 namespace system
 {
+
+namespace input
+{
+class Gamepad;
+}
+
 class Manager;
-class WindowProfiler;
+
+class GamepadProfiler;
+class KeyProfiler;
 class MonitorProfiler;
+class MouseProfiler;
+class WindowProfiler;
 }
 
 /** @brief  Engine main class */
@@ -65,6 +78,15 @@ public:
     /** @brief  Returns pointer to the graphics system */
     video::Graphics* GetGraphics() const { return m_pGraphics; }
 
+    /** @brief  Returns all connected gamepads
+     *
+     *  @todo   Create system::Input class to control input related stuff when
+     *          there will be some extra functionality in addition to gamepads
+     *
+     *  @return a map of connected gamepads
+     */
+    const std::map<uint32_t, system::input::Gamepad*>& GetGamepads() const;
+
 private:
     //! Flag describing if engine was initialized
     bool m_isInitialized;
@@ -77,6 +99,15 @@ private:
 
     //! Pointer to the monitor profiler
     system::MonitorProfiler* m_pMonitorProfiler;
+
+    //! Pointer to the mouse profiler
+    system::MouseProfiler* m_pMouseProfiler;
+
+    //! Pointer to the key profiler
+    system::KeyProfiler* m_pKeyProfiler;
+
+    //! Pointer to the gamepad profiler
+    system::GamepadProfiler* m_pGamepadProfiler;
 
     //! Pointer to the graphics system
     video::Graphics* m_pGraphics;
