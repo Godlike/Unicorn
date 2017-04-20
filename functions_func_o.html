@@ -86,6 +86,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions_func_g.html#index_g"><span>g</span></a></li>
       <li><a href="functions_func_h.html#index_h"><span>h</span></a></li>
       <li><a href="functions_func_i.html#index_i"><span>i</span></a></li>
+      <li><a href="functions_func_k.html#index_k"><span>k</span></a></li>
       <li><a href="functions_func_l.html#index_l"><span>l</span></a></li>
       <li><a href="functions_func_m.html#index_m"><span>m</span></a></li>
       <li class="current"><a href="functions_func_o.html#index_o"><span>o</span></a></li>
@@ -117,11 +118,24 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 &#160;
 
 <h3><a class="anchor" id="index_o"></a>- o -</h3><ul>
+<li>OnGamepadCreated()
+: <a class="el" href="classunicorn_1_1system_1_1GamepadProfiler.html#a410dec01254bd007de55c3e710a4486c">unicorn::system::GamepadProfiler</a>
+</li>
+<li>OnGamepadDestroyed()
+: <a class="el" href="classunicorn_1_1system_1_1GamepadProfiler.html#a071b9d821d09b50a444e217307f5a335">unicorn::system::GamepadProfiler</a>
+</li>
+<li>OnGamepadStateChanged()
+: <a class="el" href="classunicorn_1_1system_1_1Manager.html#a026b6e1996c7e846fb4f01b13bf971c4">unicorn::system::Manager</a>
+</li>
+<li>OnGamepadUpdated()
+: <a class="el" href="classunicorn_1_1system_1_1GamepadProfiler.html#aa78e9335955061b4deb75d9647eb2e97">unicorn::system::GamepadProfiler</a>
+</li>
 <li>OnMonitorCreated()
 : <a class="el" href="classunicorn_1_1system_1_1MonitorProfiler.html#a0024f796450002d8f65cd285b223bd56">unicorn::system::MonitorProfiler</a>
 </li>
 <li>OnMonitorStateChanged()
-: <a class="el" href="classunicorn_1_1system_1_1Monitor.html#ad86bcfdea41e4d4bfac59051b96591e5">unicorn::system::Monitor</a>
+: <a class="el" href="classunicorn_1_1system_1_1Manager.html#ac5aad5df195f164dd736a13c2a7af307">unicorn::system::Manager</a>
+, <a class="el" href="classunicorn_1_1system_1_1Monitor.html#ad86bcfdea41e4d4bfac59051b96591e5">unicorn::system::Monitor</a>
 , <a class="el" href="classunicorn_1_1system_1_1MonitorProfiler.html#a91b9f3affebe45ea3c4d81e6b1789998">unicorn::system::MonitorProfiler</a>
 </li>
 <li>OnWindowClose()
@@ -133,10 +147,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="classunicorn_1_1system_1_1WindowProfiler.html#aede4d8c50e6b8785aa6beac922752cf0">unicorn::system::WindowProfiler</a>
 </li>
 <li>OnWindowCreated()
-: <a class="el" href="classunicorn_1_1system_1_1WindowProfiler.html#ae6380b5efa193eda5f9aeb79250ca4c6">unicorn::system::WindowProfiler</a>
+: <a class="el" href="classunicorn_1_1system_1_1KeyProfiler.html#ab916b2b609dac16da1222c774c0e305b">unicorn::system::KeyProfiler</a>
+, <a class="el" href="classunicorn_1_1system_1_1MouseProfiler.html#a04991cf0226959cc3bc026e730c32001">unicorn::system::MouseProfiler</a>
+, <a class="el" href="classunicorn_1_1system_1_1WindowProfiler.html#ae6380b5efa193eda5f9aeb79250ca4c6">unicorn::system::WindowProfiler</a>
 </li>
 <li>OnWindowDestroyed()
 : <a class="el" href="classunicorn_1_1system_1_1WindowProfiler.html#a1fd77a77239e5cc9d09b409532b265a6">unicorn::system::WindowProfiler</a>
+</li>
+<li>OnWindowFileDrop()
+: <a class="el" href="classunicorn_1_1system_1_1Window.html#a2131079b0a5106579f1221d5abd15a2b">unicorn::system::Window</a>
 </li>
 <li>OnWindowFocused()
 : <a class="el" href="classunicorn_1_1system_1_1Window.html#a7f57313feeec29f68fa706c15f7f2014">unicorn::system::Window</a>
@@ -146,6 +165,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classunicorn_1_1system_1_1Window.html#ae6a0c03b8d83ea53ec82755f4e768cbd">unicorn::system::Window</a>
 , <a class="el" href="classunicorn_1_1system_1_1WindowProfiler.html#abb4875fd7ee2c8065cffc125d29e4aef">unicorn::system::WindowProfiler</a>
 </li>
+<li>OnWindowKeyboard()
+: <a class="el" href="classunicorn_1_1system_1_1KeyProfiler.html#abe6ec435fe1cea7c94a6fa703c95fdc3">unicorn::system::KeyProfiler</a>
+, <a class="el" href="classunicorn_1_1system_1_1Window.html#aa71b90b8c3ff133826157c375e38e257">unicorn::system::Window</a>
+</li>
 <li>OnWindowMaximized()
 : <a class="el" href="classunicorn_1_1system_1_1Window.html#a690e75c7aecdfb06af2b5c4b7a9073d6">unicorn::system::Window</a>
 , <a class="el" href="classunicorn_1_1system_1_1WindowProfiler.html#a9529d1329caf00721c5acf8e4ffe8644">unicorn::system::WindowProfiler</a>
@@ -154,13 +177,33 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="classunicorn_1_1system_1_1Window.html#ac4a0350868a5a430e29b74cfbf804555">unicorn::system::Window</a>
 , <a class="el" href="classunicorn_1_1system_1_1WindowProfiler.html#a317c147ceeb6b9361bafa4ef254b882c">unicorn::system::WindowProfiler</a>
 </li>
+<li>OnWindowMouseButton()
+: <a class="el" href="classunicorn_1_1system_1_1MouseProfiler.html#afa27b356fbca4f74f00733bc71e9338b">unicorn::system::MouseProfiler</a>
+, <a class="el" href="classunicorn_1_1system_1_1Window.html#adb6c3c5d08ecc4cc906120a976a75c3d">unicorn::system::Window</a>
+</li>
+<li>OnWindowMouseEnter()
+: <a class="el" href="classunicorn_1_1system_1_1MouseProfiler.html#aedfaa8bf862c638a3c903a461010773a">unicorn::system::MouseProfiler</a>
+, <a class="el" href="classunicorn_1_1system_1_1Window.html#a9ef540ecfc78c91686de17ed97532056">unicorn::system::Window</a>
+</li>
+<li>OnWindowMousePosition()
+: <a class="el" href="classunicorn_1_1system_1_1MouseProfiler.html#a93babc38962f10a420a502989b72f5e1">unicorn::system::MouseProfiler</a>
+, <a class="el" href="classunicorn_1_1system_1_1Window.html#aa21c597b75bf717e75742c3769e623c8">unicorn::system::Window</a>
+</li>
 <li>OnWindowPositionChanged()
 : <a class="el" href="classunicorn_1_1system_1_1Window.html#a6499aaafb113f0efe57d8b8ff78e4342">unicorn::system::Window</a>
 , <a class="el" href="classunicorn_1_1system_1_1WindowProfiler.html#a298bf30e181d7bc9cd05aa900523f89e">unicorn::system::WindowProfiler</a>
 </li>
+<li>OnWindowScroll()
+: <a class="el" href="classunicorn_1_1system_1_1MouseProfiler.html#a8ca9f1bfc178e15c48a6f7507fe46d75">unicorn::system::MouseProfiler</a>
+, <a class="el" href="classunicorn_1_1system_1_1Window.html#a40c1dacaf7d02ca99ff212274bac31aa">unicorn::system::Window</a>
+</li>
 <li>OnWindowSizeChanged()
 : <a class="el" href="classunicorn_1_1system_1_1Window.html#ad3eee37eb30e452b201cb5743ad2d671">unicorn::system::Window</a>
 , <a class="el" href="classunicorn_1_1system_1_1WindowProfiler.html#af850ec61f6f7e1fb8c1f01e7a0de16a0">unicorn::system::WindowProfiler</a>
+</li>
+<li>OnWindowUnicode()
+: <a class="el" href="classunicorn_1_1system_1_1KeyProfiler.html#a69473e5543eefa194c5300fa5b019b6f">unicorn::system::KeyProfiler</a>
+, <a class="el" href="classunicorn_1_1system_1_1Window.html#ac31bbde0d2e2b3cf177f257a35ff2585">unicorn::system::Window</a>
 </li>
 <li>operator!=()
 : <a class="el" href="classunicorn_1_1utility_1_1asset_1_1Handler.html#a0e6a5ade5816fc5bac845074692a4e8c">unicorn::utility::asset::Handler</a>
@@ -170,8 +213,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="structunicorn_1_1video_1_1Graphics_1_1RendererWindowPairHash.html#ac5563cf3416883f375d54a2a03ab113e">unicorn::video::Graphics::RendererWindowPairHash</a>
 </li>
 <li>operator=()
-: <a class="el" href="structunicorn_1_1system_1_1GammaRamp.html#a856615af90a1043bf81a313b4103be9b">unicorn::system::GammaRamp</a>
-, <a class="el" href="classunicorn_1_1utility_1_1asset_1_1Handler.html#a4f2808d3cea262fb0c500eff84a3caaf">unicorn::utility::asset::Handler</a>
+: <a class="el" href="structunicorn_1_1system_1_1GammaRamp.html#a5deb7d14016648acf0a55ea53ae5849a">unicorn::system::GammaRamp</a>
+, <a class="el" href="classunicorn_1_1utility_1_1asset_1_1Handler.html#a4a665fad1df3f00ece83fe59b0ea5712">unicorn::utility::asset::Handler</a>
 , <a class="el" href="structunicorn_1_1utility_1_1asset_1_1Storage_1_1Task.html#a2cd50639dc3aa81ca948620c8afccaab">unicorn::utility::asset::Storage::Task</a>
 </li>
 <li>operator==()

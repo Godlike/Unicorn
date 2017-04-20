@@ -1,5 +1,9 @@
 <map id="unicorn::UnicornEngine" name="unicorn::UnicornEngine">
-<area shape="rect" id="node2" href="$classunicorn_1_1video_1_1Graphics.html" title="Abstract graphics renderer. " alt="" coords="29,5,192,32"/>
-<area shape="rect" id="node3" href="$classunicorn_1_1system_1_1MonitorProfiler.html" title="Class that reports all monitor events. " alt="" coords="27,57,194,98"/>
-<area shape="rect" id="node4" href="$classunicorn_1_1system_1_1WindowProfiler.html" title="Class that reports all window events. " alt="" coords="5,123,216,149"/>
+<area shape="rect" id="node2" href="$classunicorn_1_1system_1_1Manager.html" title="Provides interface to managing windows and monitors. " alt="" coords="5,164,179,191"/>
+<area shape="rect" id="node3" href="$classunicorn_1_1video_1_1Graphics.html" title="Abstract graphics renderer. " alt="" coords="368,55,531,81"/>
+<area shape="rect" id="node4" href="$classunicorn_1_1system_1_1KeyProfiler.html" title="Class that reports all window events. " alt="" coords="356,105,543,132"/>
+<area shape="rect" id="node5" href="$classunicorn_1_1system_1_1MonitorProfiler.html" title="Class that reports all monitor events. " alt="" coords="366,157,533,198"/>
+<area shape="rect" id="node6" href="$classunicorn_1_1system_1_1GamepadProfiler.html" title="Class that reports all gamepad events. " alt="" coords="360,222,539,263"/>
+<area shape="rect" id="node7" href="$classunicorn_1_1system_1_1MouseProfiler.html" title="Class that reports all window events. " alt="" coords="348,288,551,315"/>
+<area shape="rect" id="node8" href="$classunicorn_1_1system_1_1WindowProfiler.html" title="Class that reports all window events. " alt="" coords="344,339,555,365"/>
 </map>

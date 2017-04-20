@@ -102,6 +102,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
  <a href="classunicorn_1_1video_1_1Graphics.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="Graphics_8hpp_source.html">Graphics.hpp</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for unicorn::video::Graphics:</div>
+<div class="dyncontent">
+<div class="center"><img src="classunicorn_1_1video_1_1Graphics__coll__graph.png" border="0" usemap="#unicorn_1_1video_1_1Graphics_coll__map" alt="Collaboration graph"/></div>
+<map name="unicorn_1_1video_1_1Graphics_coll__map" id="unicorn_1_1video_1_1Graphics_coll__map">
+<area shape="rect" id="node2" href="classunicorn_1_1system_1_1Manager.html" title="Provides interface to managing windows and monitors. " alt="" coords="5,5,179,32"/></map>
+<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -112,7 +119,7 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af70a7ecfa4916702db2d782d3e8253bf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af70a7ecfa4916702db2d782d3e8253bf"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#af70a7ecfa4916702db2d782d3e8253bf">Graphics</a> (system::Manager &amp;manager)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#af70a7ecfa4916702db2d782d3e8253bf">Graphics</a> (<a class="el" href="classunicorn_1_1system_1_1Manager.html">system::Manager</a> &amp;manager)</td></tr>
 <tr class="memdesc:af70a7ecfa4916702db2d782d3e8253bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs an empty graphics system. <br/></td></tr>
 <tr class="separator:af70a7ecfa4916702db2d782d3e8253bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2ede53fa1f76d7271c3bcaa4317af5c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#ae2ede53fa1f76d7271c3bcaa4317af5c">~Graphics</a> ()</td></tr>
@@ -143,6 +150,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a2f8714edb67beb76ea83b4bc6d584c4e"><td class="memItemLeft" align="right" valign="top">UNICORN_EXPORT <a class="el" href="classunicorn_1_1system_1_1Window.html">system::Window</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#a2f8714edb67beb76ea83b4bc6d584c4e">SpawnWindow</a> (int32_t width, int32_t height, const std::string &amp;name, <a class="el" href="classunicorn_1_1system_1_1Monitor.html">system::Monitor</a> *pMonitor=nullptr, <a class="el" href="classunicorn_1_1system_1_1Window.html">system::Window</a> *pSharedWindow=nullptr)</td></tr>
 <tr class="memdesc:a2f8714edb67beb76ea83b4bc6d584c4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spawns new window.  <a href="#a2f8714edb67beb76ea83b4bc6d584c4e">More...</a><br/></td></tr>
 <tr class="separator:a2f8714edb67beb76ea83b4bc6d584c4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae17ba492e298bf628815f1401d9d4754"><td class="memItemLeft" align="right" valign="top">UNICORN_EXPORT <a class="el" href="classunicorn_1_1system_1_1Window.html">system::Window</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#ae17ba492e298bf628815f1401d9d4754">GetFocusedWindow</a> () const </td></tr>
+<tr class="memdesc:ae17ba492e298bf628815f1401d9d4754"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a pointer to currently focused window.  <a href="#ae17ba492e298bf628815f1401d9d4754">More...</a><br/></td></tr>
+<tr class="separator:ae17ba492e298bf628815f1401d9d4754"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e5f883ee4f76e218240871157932af2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8e5f883ee4f76e218240871157932af2"></a>
 UNICORN_EXPORT const <br class="typebreak"/>
 std::vector&lt; <a class="el" href="classunicorn_1_1system_1_1Monitor.html">system::Monitor</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#a8e5f883ee4f76e218240871157932af2">GetMonitors</a> () const </td></tr>
@@ -186,7 +196,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:abd08b9a571d5098ebc347e44628f0d1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag describing if graphics were initialized. <br/></td></tr>
 <tr class="separator:abd08b9a571d5098ebc347e44628f0d1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1cd5bb1d2934e876fc39a517729bf5c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab1cd5bb1d2934e876fc39a517729bf5c"></a>
-system::Manager &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#ab1cd5bb1d2934e876fc39a517729bf5c">m_systemManager</a></td></tr>
+<a class="el" href="classunicorn_1_1system_1_1Manager.html">system::Manager</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Graphics.html#ab1cd5bb1d2934e876fc39a517729bf5c">m_systemManager</a></td></tr>
 <tr class="memdesc:ab1cd5bb1d2934e876fc39a517729bf5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reference to window and monitor managing manager. <br/></td></tr>
 <tr class="separator:ab1cd5bb1d2934e876fc39a517729bf5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8cd0fd68d2af5ad2e3db49c7c34d6631"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8cd0fd68d2af5ad2e3db49c7c34d6631"></a>
@@ -237,6 +247,24 @@ system::Manager &amp;&#160;</td><td class="memItemRight" valign="bottom"><a clas
 
 <p>Deinitializes the graphics system. </p>
 <p>Deinitializes all Renderer-Window pairs </p>
+
+</div>
+</div>
+<a class="anchor" id="ae17ba492e298bf628815f1401d9d4754"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">UNICORN_EXPORT <a class="el" href="classunicorn_1_1system_1_1Window.html">system::Window</a>* unicorn::video::Graphics::GetFocusedWindow </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns a pointer to currently focused window. </p>
+<dl class="section return"><dt>Returns</dt><dd>pointer to currently focused window or <code>nullptr</code> if there is no focused window controlled by the program </dd></dl>
 
 </div>
 </div>

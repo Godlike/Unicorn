@@ -182,6 +182,10 @@ UNICORN_EXPORT void&#160;</td><td class="memItemRight" valign="bottom"><a class=
 UNICORN_EXPORT void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#aa775ff1922f89d30538e76a4ad8bc735">Maximize</a> ()</td></tr>
 <tr class="memdesc:aa775ff1922f89d30538e76a4ad8bc735"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximizes window. <br/></td></tr>
 <tr class="separator:aa775ff1922f89d30538e76a4ad8bc735"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a583e3606800475a713ab691fd427f1be"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a583e3606800475a713ab691fd427f1be"></a>
+UNICORN_EXPORT bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a583e3606800475a713ab691fd427f1be">IsFocused</a> () const </td></tr>
+<tr class="memdesc:a583e3606800475a713ab691fd427f1be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>true</code> if window has focus, <code>false</code> otherwise. <br/></td></tr>
+<tr class="separator:a583e3606800475a713ab691fd427f1be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70f2f042ef8116e9f5fd96895475efbc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a70f2f042ef8116e9f5fd96895475efbc"></a>
 UNICORN_EXPORT void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a70f2f042ef8116e9f5fd96895475efbc">Focus</a> ()</td></tr>
 <tr class="memdesc:a70f2f042ef8116e9f5fd96895475efbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Brings window to front and sets input focus. <br/></td></tr>
@@ -234,6 +238,40 @@ Public Attributes</h2></td></tr>
 *, std::pair&lt; int32_t, int32_t &gt;)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a910cc6d6e6b3674a2f24eb33f16938d6">FramebufferResized</a></td></tr>
 <tr class="memdesc:a910cc6d6e6b3674a2f24eb33f16938d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when window framebuffer size is changed.  <a href="#a910cc6d6e6b3674a2f24eb33f16938d6">More...</a><br/></td></tr>
 <tr class="separator:a910cc6d6e6b3674a2f24eb33f16938d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Input events</div></td></tr>
+<tr class="memitem:ace99339d91de356a0782fff3d6d0b0a5"><td class="memItemLeft" align="right" valign="top">wink::signal&lt; wink::slot&lt; void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> <br class="typebreak"/>
+*, input::MouseButton, <br class="typebreak"/>
+input::Action, <br class="typebreak"/>
+<a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a>)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#ace99339d91de356a0782fff3d6d0b0a5">MouseButton</a></td></tr>
+<tr class="memdesc:ace99339d91de356a0782fff3d6d0b0a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when window receives mouse button input.  <a href="#ace99339d91de356a0782fff3d6d0b0a5">More...</a><br/></td></tr>
+<tr class="separator:ace99339d91de356a0782fff3d6d0b0a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e0c3437ae0684a5099fd2a3eed8f75a"><td class="memItemLeft" align="right" valign="top">wink::signal&lt; wink::slot&lt; void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> <br class="typebreak"/>
+*, std::pair&lt; double, double &gt;)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a7e0c3437ae0684a5099fd2a3eed8f75a">MousePosition</a></td></tr>
+<tr class="memdesc:a7e0c3437ae0684a5099fd2a3eed8f75a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when window receives mouse position update.  <a href="#a7e0c3437ae0684a5099fd2a3eed8f75a">More...</a><br/></td></tr>
+<tr class="separator:a7e0c3437ae0684a5099fd2a3eed8f75a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c2bb01a1bf50a067a9a4fe61ec61a5e"><td class="memItemLeft" align="right" valign="top">wink::signal&lt; wink::slot&lt; void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> <br class="typebreak"/>
+*, bool)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a2c2bb01a1bf50a067a9a4fe61ec61a5e">MouseEnter</a></td></tr>
+<tr class="memdesc:a2c2bb01a1bf50a067a9a4fe61ec61a5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when window receives/loses mouse.  <a href="#a2c2bb01a1bf50a067a9a4fe61ec61a5e">More...</a><br/></td></tr>
+<tr class="separator:a2c2bb01a1bf50a067a9a4fe61ec61a5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca3eb2d3851c3c580a7c900dc36e7429"><td class="memItemLeft" align="right" valign="top">wink::signal&lt; wink::slot&lt; void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> <br class="typebreak"/>
+*, std::pair&lt; double, double &gt;)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#aca3eb2d3851c3c580a7c900dc36e7429">Scroll</a></td></tr>
+<tr class="memdesc:aca3eb2d3851c3c580a7c900dc36e7429"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when window receives scroll input.  <a href="#aca3eb2d3851c3c580a7c900dc36e7429">More...</a><br/></td></tr>
+<tr class="separator:aca3eb2d3851c3c580a7c900dc36e7429"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a190d82783f248069dc9702493e8c9944"><td class="memItemLeft" align="right" valign="top">wink::signal&lt; wink::slot&lt; void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> <br class="typebreak"/>
+*, input::Key, uint32_t, <br class="typebreak"/>
+input::Action, <br class="typebreak"/>
+<a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a>)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a190d82783f248069dc9702493e8c9944">Keyboard</a></td></tr>
+<tr class="memdesc:a190d82783f248069dc9702493e8c9944"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when window receives keyboard input.  <a href="#a190d82783f248069dc9702493e8c9944">More...</a><br/></td></tr>
+<tr class="separator:a190d82783f248069dc9702493e8c9944"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e91dae0fccaa6c507d0698ed028d5f6"><td class="memItemLeft" align="right" valign="top">wink::signal&lt; wink::slot&lt; void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> <br class="typebreak"/>
+*, uint32_t, <br class="typebreak"/>
+<a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a>)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a1e91dae0fccaa6c507d0698ed028d5f6">Unicode</a></td></tr>
+<tr class="memdesc:a1e91dae0fccaa6c507d0698ed028d5f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when window receives unicode input with modifiers.  <a href="#a1e91dae0fccaa6c507d0698ed028d5f6">More...</a><br/></td></tr>
+<tr class="separator:a1e91dae0fccaa6c507d0698ed028d5f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79e07cf5f773e57807636799c33f1999"><td class="memItemLeft" align="right" valign="top">wink::signal&lt; wink::slot&lt; void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> <br class="typebreak"/>
+*, std::vector&lt; std::string &gt;)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a79e07cf5f773e57807636799c33f1999">FileDrop</a></td></tr>
+<tr class="memdesc:a79e07cf5f773e57807636799c33f1999"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when window receives file drop.  <a href="#a79e07cf5f773e57807636799c33f1999">More...</a><br/></td></tr>
+<tr class="separator:a79e07cf5f773e57807636799c33f1999"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -261,6 +299,27 @@ Private Member Functions</h2></td></tr>
 <tr class="memitem:ae6a0c03b8d83ea53ec82755f4e768cbd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#ae6a0c03b8d83ea53ec82755f4e768cbd">OnWindowFramebufferResized</a> (void *handle, std::pair&lt; int32_t, int32_t &gt; size)</td></tr>
 <tr class="memdesc:ae6a0c03b8d83ea53ec82755f4e768cbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Slot invoked when window framebuffer size is changed.  <a href="#ae6a0c03b8d83ea53ec82755f4e768cbd">More...</a><br/></td></tr>
 <tr class="separator:ae6a0c03b8d83ea53ec82755f4e768cbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb6c3c5d08ecc4cc906120a976a75c3d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#adb6c3c5d08ecc4cc906120a976a75c3d">OnWindowMouseButton</a> (void *handle, input::MouseButton button, input::Action action, <a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a> modifiers)</td></tr>
+<tr class="memdesc:adb6c3c5d08ecc4cc906120a976a75c3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Slot invoked when window receives mouse button input.  <a href="#adb6c3c5d08ecc4cc906120a976a75c3d">More...</a><br/></td></tr>
+<tr class="separator:adb6c3c5d08ecc4cc906120a976a75c3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa21c597b75bf717e75742c3769e623c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#aa21c597b75bf717e75742c3769e623c8">OnWindowMousePosition</a> (void *handle, std::pair&lt; double, double &gt; coords)</td></tr>
+<tr class="memdesc:aa21c597b75bf717e75742c3769e623c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Slot invoked when mouse position is changed within a window.  <a href="#aa21c597b75bf717e75742c3769e623c8">More...</a><br/></td></tr>
+<tr class="separator:aa21c597b75bf717e75742c3769e623c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ef540ecfc78c91686de17ed97532056"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a9ef540ecfc78c91686de17ed97532056">OnWindowMouseEnter</a> (void *handle, bool entered)</td></tr>
+<tr class="memdesc:a9ef540ecfc78c91686de17ed97532056"><td class="mdescLeft">&#160;</td><td class="mdescRight">Slot invoked when mouse enters or leaves window.  <a href="#a9ef540ecfc78c91686de17ed97532056">More...</a><br/></td></tr>
+<tr class="separator:a9ef540ecfc78c91686de17ed97532056"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40c1dacaf7d02ca99ff212274bac31aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a40c1dacaf7d02ca99ff212274bac31aa">OnWindowScroll</a> (void *handle, std::pair&lt; double, double &gt; coords)</td></tr>
+<tr class="memdesc:a40c1dacaf7d02ca99ff212274bac31aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Slot invoked when window receives scroll event.  <a href="#a40c1dacaf7d02ca99ff212274bac31aa">More...</a><br/></td></tr>
+<tr class="separator:a40c1dacaf7d02ca99ff212274bac31aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa71b90b8c3ff133826157c375e38e257"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#aa71b90b8c3ff133826157c375e38e257">OnWindowKeyboard</a> (void *handle, input::Key key, uint32_t scancode, input::Action action, <a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a> modifiers)</td></tr>
+<tr class="memdesc:aa71b90b8c3ff133826157c375e38e257"><td class="mdescLeft">&#160;</td><td class="mdescRight">Slot invoked when window receives keyboard input.  <a href="#aa71b90b8c3ff133826157c375e38e257">More...</a><br/></td></tr>
+<tr class="separator:aa71b90b8c3ff133826157c375e38e257"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac31bbde0d2e2b3cf177f257a35ff2585"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#ac31bbde0d2e2b3cf177f257a35ff2585">OnWindowUnicode</a> (void *handle, uint32_t unicode, <a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a> modifiers)</td></tr>
+<tr class="memdesc:ac31bbde0d2e2b3cf177f257a35ff2585"><td class="mdescLeft">&#160;</td><td class="mdescRight">Slot invoked when window receives unicode input.  <a href="#ac31bbde0d2e2b3cf177f257a35ff2585">More...</a><br/></td></tr>
+<tr class="separator:ac31bbde0d2e2b3cf177f257a35ff2585"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2131079b0a5106579f1221d5abd15a2b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a2131079b0a5106579f1221d5abd15a2b">OnWindowFileDrop</a> (void *handle, std::vector&lt; std::string &gt; paths)</td></tr>
+<tr class="memdesc:a2131079b0a5106579f1221d5abd15a2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Slot invoked when files are dropped in a window.  <a href="#a2131079b0a5106579f1221d5abd15a2b">More...</a><br/></td></tr>
+<tr class="separator:a2131079b0a5106579f1221d5abd15a2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -288,6 +347,10 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#aa576e6af83b337adff39b237a3d4421d">m_pSharedWindow</a></td></tr>
 <tr class="memdesc:aa576e6af83b337adff39b237a3d4421d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to another window that shares resources with this window. <br/></td></tr>
 <tr class="separator:aa576e6af83b337adff39b237a3d4421d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6ec64413ca908bc48188a3f83c41348"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac6ec64413ca908bc48188a3f83c41348"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#ac6ec64413ca908bc48188a3f83c41348">m_focus</a></td></tr>
+<tr class="memdesc:ac6ec64413ca908bc48188a3f83c41348"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag describing if window is focused. <br/></td></tr>
+<tr class="separator:ac6ec64413ca908bc48188a3f83c41348"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a145bd295b4af6542375368e50bc74757"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a145bd295b4af6542375368e50bc74757"></a>
 void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a145bd295b4af6542375368e50bc74757">m_handle</a></td></tr>
 <tr class="memdesc:a145bd295b4af6542375368e50bc74757"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle provided by window manager adapter. <br/></td></tr>
@@ -427,6 +490,50 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 
 </div>
 </div>
+<a class="anchor" id="a2131079b0a5106579f1221d5abd15a2b"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void unicorn::system::Window::OnWindowFileDrop </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>handle</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; std::string &gt;&#160;</td>
+          <td class="paramname"><em>paths</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Slot invoked when files are dropped in a window. </p>
+<p>Bound to Adapter::WindowFileDrop</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handle</td><td>window handle to be checked against <a class="el" href="classunicorn_1_1system_1_1Window.html#a145bd295b4af6542375368e50bc74757">m_handle</a> </td></tr>
+    <tr><td class="paramname">paths</td><td>vector of file paths </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="a7f57313feeec29f68fa706c15f7f2014"></a>
 <div class="memitem">
 <div class="memproto">
@@ -509,6 +616,71 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
   <table class="params">
     <tr><td class="paramname">handle</td><td>window handle to be checked against <a class="el" href="classunicorn_1_1system_1_1Window.html#a145bd295b4af6542375368e50bc74757">m_handle</a> </td></tr>
     <tr><td class="paramname">size</td><td>pair of values as (width, height) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="aa71b90b8c3ff133826157c375e38e257"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void unicorn::system::Window::OnWindowKeyboard </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>handle</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">input::Key&#160;</td>
+          <td class="paramname"><em>key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>scancode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">input::Action&#160;</td>
+          <td class="paramname"><em>action</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a>&#160;</td>
+          <td class="paramname"><em>modifiers</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Slot invoked when window receives keyboard input. </p>
+<p>Bound to Adapter::WindowKeyboard</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handle</td><td>window handle to be checked against <a class="el" href="classunicorn_1_1system_1_1Window.html#a145bd295b4af6542375368e50bc74757">m_handle</a> </td></tr>
+    <tr><td class="paramname">key</td><td>key associated with the event </td></tr>
+    <tr><td class="paramname">scancode</td><td>scancode for key if <code>key</code> is input::Key::Unknown </td></tr>
+    <tr><td class="paramname">action</td><td>key action (press/release/repeat) </td></tr>
+    <tr><td class="paramname">modifiers</td><td>currently active modifiers </td></tr>
   </table>
   </dd>
 </dl>
@@ -603,6 +775,152 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 
 </div>
 </div>
+<a class="anchor" id="adb6c3c5d08ecc4cc906120a976a75c3d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void unicorn::system::Window::OnWindowMouseButton </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>handle</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">input::MouseButton&#160;</td>
+          <td class="paramname"><em>button</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">input::Action&#160;</td>
+          <td class="paramname"><em>action</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a>&#160;</td>
+          <td class="paramname"><em>modifiers</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Slot invoked when window receives mouse button input. </p>
+<p>Bound to Adapter::WindowMouseButton</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handle</td><td>window handle to be checked against <a class="el" href="classunicorn_1_1system_1_1Window.html#a145bd295b4af6542375368e50bc74757">m_handle</a> </td></tr>
+    <tr><td class="paramname">button</td><td>mouse button </td></tr>
+    <tr><td class="paramname">action</td><td>mouse action (press/release) </td></tr>
+    <tr><td class="paramname">modifiers</td><td>currently active modifiers </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a9ef540ecfc78c91686de17ed97532056"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void unicorn::system::Window::OnWindowMouseEnter </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>handle</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>entered</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Slot invoked when mouse enters or leaves window. </p>
+<p>Bound to Adapter::WindowMouseEnter</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handle</td><td>window handle to be checked against <a class="el" href="classunicorn_1_1system_1_1Window.html#a145bd295b4af6542375368e50bc74757">m_handle</a> </td></tr>
+    <tr><td class="paramname">entered</td><td>boolean flag </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="aa21c597b75bf717e75742c3769e623c8"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void unicorn::system::Window::OnWindowMousePosition </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>handle</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::pair&lt; double, double &gt;&#160;</td>
+          <td class="paramname"><em>coords</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Slot invoked when mouse position is changed within a window. </p>
+<p>Bound to Adapter::WindowMousePosition</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handle</td><td>window handle to be checked against <a class="el" href="classunicorn_1_1system_1_1Window.html#a145bd295b4af6542375368e50bc74757">m_handle</a> </td></tr>
+    <tr><td class="paramname">coords</td><td>pair of values as (x, y) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="a6499aaafb113f0efe57d8b8ff78e4342"></a>
 <div class="memitem">
 <div class="memproto">
@@ -647,6 +965,50 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 
 </div>
 </div>
+<a class="anchor" id="a40c1dacaf7d02ca99ff212274bac31aa"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void unicorn::system::Window::OnWindowScroll </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>handle</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::pair&lt; double, double &gt;&#160;</td>
+          <td class="paramname"><em>coords</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Slot invoked when window receives scroll event. </p>
+<p>Bound to Adapter::WindowScroll</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handle</td><td>window handle to be checked against <a class="el" href="classunicorn_1_1system_1_1Window.html#a145bd295b4af6542375368e50bc74757">m_handle</a> </td></tr>
+    <tr><td class="paramname">coords</td><td>pair of values as (x, y) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="ad3eee37eb30e452b201cb5743ad2d671"></a>
 <div class="memitem">
 <div class="memproto">
@@ -685,6 +1047,57 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
   <table class="params">
     <tr><td class="paramname">handle</td><td>window handle to be checked against <a class="el" href="classunicorn_1_1system_1_1Window.html#a145bd295b4af6542375368e50bc74757">m_handle</a> </td></tr>
     <tr><td class="paramname">size</td><td>pair of values as (width, height) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ac31bbde0d2e2b3cf177f257a35ff2585"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void unicorn::system::Window::OnWindowUnicode </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>handle</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>unicode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a>&#160;</td>
+          <td class="paramname"><em>modifiers</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Slot invoked when window receives unicode input. </p>
+<p>Bound to Adapter::WindowUnicode</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handle</td><td>window handle to be checked against <a class="el" href="classunicorn_1_1system_1_1Window.html#a145bd295b4af6542375368e50bc74757">m_handle</a> </td></tr>
+    <tr><td class="paramname">unicode</td><td>character code </td></tr>
+    <tr><td class="paramname">modifiers</td><td>currently active modifiers </td></tr>
   </table>
   </dd>
 </dl>
@@ -902,6 +1315,25 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 
 </div>
 </div>
+<a class="anchor" id="a79e07cf5f773e57807636799c33f1999"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">wink::signal&lt; wink::slot&lt;void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a>*, std::vector&lt;std::string&gt;)&gt; &gt; unicorn::system::Window::FileDrop</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Event triggered when window receives file drop. </p>
+<p>Event is emitted with the following signature:</p>
+<ol type="1">
+<li>window pointer</li>
+<li>vector of filepaths </li>
+</ol>
+
+</div>
+</div>
 <a class="anchor" id="ae30cf7d6f0d595cdea7b5522013eff2d"></a>
 <div class="memitem">
 <div class="memproto">
@@ -936,6 +1368,28 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <ol type="1">
 <li>window pointer</li>
 <li>pair of values as (width, height) </li>
+</ol>
+
+</div>
+</div>
+<a class="anchor" id="a190d82783f248069dc9702493e8c9944"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">wink::signal&lt; wink::slot&lt;void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a>*, input::Key, uint32_t, input::Action, <a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a>)&gt; &gt; unicorn::system::Window::Keyboard</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Event triggered when window receives keyboard input. </p>
+<p>Event is emitted with the following signature:</p>
+<ol type="1">
+<li>window pointer</li>
+<li>key indicator</li>
+<li>raw scancode value</li>
+<li>key action type</li>
+<li>modifiers mask </li>
 </ol>
 
 </div>
@@ -978,6 +1432,65 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 
 </div>
 </div>
+<a class="anchor" id="ace99339d91de356a0782fff3d6d0b0a5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">wink::signal&lt; wink::slot&lt;void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a>*, input::MouseButton, input::Action, <a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a>)&gt; &gt; unicorn::system::Window::MouseButton</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Event triggered when window receives mouse button input. </p>
+<p>Event is emitted with the following signature:</p>
+<ol type="1">
+<li>window pointer</li>
+<li>mouse button input</li>
+<li>button action type</li>
+<li>modifiers mask </li>
+</ol>
+
+</div>
+</div>
+<a class="anchor" id="a2c2bb01a1bf50a067a9a4fe61ec61a5e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">wink::signal&lt; wink::slot&lt;void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a>*, bool)&gt; &gt; unicorn::system::Window::MouseEnter</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Event triggered when window receives/loses mouse. </p>
+<p>Event is emitted with the following signature:</p>
+<ol type="1">
+<li>window pointer</li>
+<li>boolean flag </li>
+</ol>
+
+</div>
+</div>
+<a class="anchor" id="a7e0c3437ae0684a5099fd2a3eed8f75a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">wink::signal&lt; wink::slot&lt;void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a>*, std::pair&lt;double, double&gt;)&gt; &gt; unicorn::system::Window::MousePosition</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Event triggered when window receives mouse position update. </p>
+<p>Event is emitted with the following signature:</p>
+<ol type="1">
+<li>window pointer</li>
+<li>pair of values as (x, y) </li>
+</ol>
+
+</div>
+</div>
 <a class="anchor" id="a2868f5995190a4f8bd2e45689abbf9e9"></a>
 <div class="memitem">
 <div class="memproto">
@@ -989,6 +1502,25 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </div><div class="memdoc">
 
 <p>Event triggered when window position is changed. </p>
+<p>Event is emitted with the following signature:</p>
+<ol type="1">
+<li>window pointer</li>
+<li>pair of values as (x, y) </li>
+</ol>
+
+</div>
+</div>
+<a class="anchor" id="aca3eb2d3851c3c580a7c900dc36e7429"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">wink::signal&lt; wink::slot&lt;void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a>*, std::pair&lt;double, double&gt;)&gt; &gt; unicorn::system::Window::Scroll</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Event triggered when window receives scroll input. </p>
 <p>Event is emitted with the following signature:</p>
 <ol type="1">
 <li>window pointer</li>
@@ -1016,8 +1548,28 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 
 </div>
 </div>
+<a class="anchor" id="a1e91dae0fccaa6c507d0698ed028d5f6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">wink::signal&lt; wink::slot&lt;void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a>*, uint32_t, <a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a>)&gt; &gt; unicorn::system::Window::Unicode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Event triggered when window receives unicode input with modifiers. </p>
+<p>Event is emitted with the following signature:</p>
+<ol type="1">
+<li>window pointer</li>
+<li>unicode character</li>
+<li>modifiers mask </li>
+</ol>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/home/travis/build/Godlike/Unicorn/UnicornEngine/system/WindowManager/include/unicorn/system/<a class="el" href="Window_8hpp_source.html">Window.hpp</a></li>
+<li>/home/travis/build/Godlike/Unicorn/UnicornEngine/system/include/unicorn/system/<a class="el" href="Window_8hpp_source.html">Window.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
