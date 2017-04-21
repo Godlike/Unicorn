@@ -136,10 +136,13 @@ void UnicornEngine::Run()
 {
     if (m_pGraphics)
     {
-        while (m_pGraphics->Render())
+        do
         {
             m_pSystemManager->PollGamepads();
+
+            LogicFrame.emit(this);
         }
+        while (m_pGraphics->Render());
     }
 }
 
