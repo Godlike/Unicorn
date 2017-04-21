@@ -1,20 +1,7 @@
 var searchData=
 [
-  ['width',['width',['../structunicorn_1_1system_1_1VideoMode.html#a108b71f9d6af7f05b8ca14a5f169ada8',1,'unicorn::system::VideoMode']]],
-  ['windowclose',['WindowClose',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#ad53580f65f86b462eeeae0e5af297904',1,'unicorn::system::glfw::Adapter']]],
-  ['windowcontentrefresh',['WindowContentRefresh',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a7f77505716bd5ac8d39e7e8a614a0267',1,'unicorn::system::glfw::Adapter']]],
-  ['windowcreated',['WindowCreated',['../classunicorn_1_1system_1_1Manager.html#adf65c0fdcb7a767a46c92c27b2323b43',1,'unicorn::system::Manager']]],
-  ['windowfiledrop',['WindowFileDrop',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a089ad0e753f6362acb5f2ebfff04096b',1,'unicorn::system::glfw::Adapter']]],
-  ['windowfocused',['WindowFocused',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a8ed0f5314dd43b6559a968dc3b1f06bc',1,'unicorn::system::glfw::Adapter']]],
-  ['windowframebufferresized',['WindowFramebufferResized',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#adb6f95c65e75539feed5c9596db13bdb',1,'unicorn::system::glfw::Adapter']]],
-  ['windowkeyboard',['WindowKeyboard',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#aa4b1a09dd543c5f0d6831df260fff2f9',1,'unicorn::system::glfw::Adapter']]],
-  ['windowmaximized',['WindowMaximized',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a7dd9b80df51ddb4eb6671616ba5cba64',1,'unicorn::system::glfw::Adapter']]],
-  ['windowminimized',['WindowMinimized',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a287f0a38a81d3452240f95f924a85e96',1,'unicorn::system::glfw::Adapter']]],
-  ['windowmousebutton',['WindowMouseButton',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a3d8b4853d3d8bde4221d656823e63a9a',1,'unicorn::system::glfw::Adapter']]],
-  ['windowmouseenter',['WindowMouseEnter',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#af7e5d81dec2f4fffe37ddb3ad6941100',1,'unicorn::system::glfw::Adapter']]],
-  ['windowmouseposition',['WindowMousePosition',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a75073e4e7240e7b86fa52fccf3133423',1,'unicorn::system::glfw::Adapter']]],
-  ['windowpositionchanged',['WindowPositionChanged',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a84c8a83a1918f8e91efa01c66c2d9ec6',1,'unicorn::system::glfw::Adapter']]],
-  ['windowscroll',['WindowScroll',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a821b5b11f6a5d794ea24b6939ecc2132',1,'unicorn::system::glfw::Adapter']]],
-  ['windowsizechanged',['WindowSizeChanged',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a16dd13168c7501148a87b6509daf2ded',1,'unicorn::system::glfw::Adapter']]],
-  ['windowunicode',['WindowUnicode',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a13c173e4d5e7df12eea2ce24c13dafee',1,'unicorn::system::glfw::Adapter']]]
+  ['unicode',['Unicode',['../classunicorn_1_1system_1_1Window.html#a1e91dae0fccaa6c507d0698ed028d5f6',1,'unicorn::system::Window']]],
+  ['uninitialized',['uninitialized',['../structunicorn_1_1utility_1_1asset_1_1FileReader_1_1Flags.html#a7100ed9565c3b3e6b51e434dc0787518',1,'unicorn::utility::asset::FileReader::Flags']]],
+  ['unknown',['Unknown',['../structunicorn_1_1system_1_1input_1_1Modifier.html#acfd6662cb0c6939ebcd92871e0806d0a',1,'unicorn::system::input::Modifier']]],
+  ['updated',['Updated',['../classunicorn_1_1system_1_1input_1_1Gamepad.html#ac4e0f413e97ba9e9548a7db013584e7d',1,'unicorn::system::input::Gamepad']]]
 ];

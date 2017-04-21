@@ -7,7 +7,7 @@ var searchData=
   ['instance',['Instance',['../classunicorn_1_1utility_1_1templates_1_1Singleton.html#a878bd59a82594bbba36107ddf3e17753',1,'unicorn::utility::templates::Singleton']]],
   ['isfocused',['IsFocused',['../classunicorn_1_1system_1_1Window.html#a583e3606800475a713ab691fd427f1be',1,'unicorn::system::Window']]],
   ['isgood',['IsGood',['../classunicorn_1_1utility_1_1asset_1_1FileReader.html#af537a181297b30f515ac0eaceb751157',1,'unicorn::utility::asset::FileReader']]],
-  ['isprimary',['IsPrimary',['../classunicorn_1_1system_1_1Monitor.html#a9b137793ed8d27733d28004c72aa867f',1,'unicorn::system::Monitor::IsPrimary()'],['../structunicorn_1_1system_1_1MonitorMemento.html#a749a5961ec0ca9f6ecda72e2f1a811e3',1,'unicorn::system::MonitorMemento::isPrimary()']]],
+  ['isprimary',['isPrimary',['../structunicorn_1_1system_1_1MonitorMemento.html#a749a5961ec0ca9f6ecda72e2f1a811e3',1,'unicorn::system::MonitorMemento::isPrimary()'],['../classunicorn_1_1system_1_1Monitor.html#a9b137793ed8d27733d28004c72aa867f',1,'unicorn::system::Monitor::IsPrimary()']]],
   ['isvalid',['IsValid',['../classunicorn_1_1utility_1_1asset_1_1Handler.html#aba1a3394d4f44eb30afec3279799f0d7',1,'unicorn::utility::asset::Handler']]],
   ['isvulkansupported',['IsVulkanSupported',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a23c99ddb2ac36facb4bee2931140cdbf',1,'unicorn::system::glfw::Adapter::IsVulkanSupported()'],['../classunicorn_1_1system_1_1Manager.html#acd8427d41a0a265dd03359c846fd0c22',1,'unicorn::system::Manager::IsVulkanSupported()']]],
   ['iterator',['iterator',['../classunicorn_1_1utility_1_1concurrent_1_1UnorderedMap.html#a087da67c13bdd0fbb2c7eaff290ab6c2',1,'unicorn::utility::concurrent::UnorderedMap']]]

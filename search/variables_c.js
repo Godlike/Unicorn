@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['ok',['ok',['../structunicorn_1_1utility_1_1asset_1_1FileReader_1_1Flags.html#ac8e7402030ffe15468af5428ec46616b',1,'unicorn::utility::asset::FileReader::Flags']]],
-  ['opengl_5fapi',['OpenGL_API',['../structunicorn_1_1system_1_1CustomValue.html#a649946f71dcac1d5842bec2e96b8780f',1,'unicorn::system::CustomValue']]]
+  ['name',['name',['../structunicorn_1_1system_1_1MonitorMemento.html#ad471e1c1d98c70a1725f3cbfa1be26ff',1,'unicorn::system::MonitorMemento']]],
+  ['nativecontextapi',['NativeContextAPI',['../structunicorn_1_1system_1_1CustomValue.html#a550615d8af0403156ebec591ae0bb1a2',1,'unicorn::system::CustomValue']]],
+  ['none',['None',['../structunicorn_1_1system_1_1input_1_1Modifier.html#a0e24bded9a19dd37462fbb85b1538c2a',1,'unicorn::system::input::Modifier']]]
 ];
