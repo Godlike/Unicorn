@@ -29,6 +29,11 @@ void onWindowSizeChange(unicorn::system::Window* pWindow, std::pair<int32_t, int
     std::cout << "Window[" << pWindow->GetId() << "]: size changed to " << size.first << "x" << size.second << std::endl;
 }
 
+void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
+{
+    std::cout << "Logic frame" << std::endl;
+}
+
 void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::Key key, uint32_t scancode, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask modifiers)
 {
     using unicorn::system::input::Key;
@@ -160,6 +165,8 @@ int main(int argc, char* argv[])
         {
             cit.second->Updated.connect(&onGamepadUpdate);
         }
+
+        unicornEngine->LogicFrame.connect(&onLogicFrame);
 
         // Borderless undecorated
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,

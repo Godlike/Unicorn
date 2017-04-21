@@ -9,7 +9,7 @@
 
 #include <unicorn/utility/SharedMacros.hpp>
 
-#include <cstdio>
+#include <wink/signal.hpp>
 #include <map>
 
 namespace unicorn
@@ -86,6 +86,13 @@ public:
      *  @return a map of connected gamepads
      */
     const std::map<uint32_t, system::input::Gamepad*>& GetGamepads() const;
+
+    /** @brief  Event triggered after input processing but before rendering
+     *
+     *  Event is emitted with the following signature:
+     *  -# engine pointer
+     */
+    wink::signal< wink::slot<void(UnicornEngine*)> > LogicFrame;
 
 private:
     //! Flag describing if engine was initialized
