@@ -44,15 +44,6 @@ public:
     /** @brief  Destructs the input system */
     ~Input();
 
-    /** @brief  Initializes the input system
-     *
-     *  @return @c true if initialization was successful, @c false otherwise
-     */
-    bool Init();
-
-    /** @brief  Deinitializes the input system */
-    void Deinit();
-
     /** @brief  Process all inputs */
     void Process();
 

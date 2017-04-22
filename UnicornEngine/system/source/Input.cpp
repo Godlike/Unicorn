@@ -21,16 +21,6 @@ Input::Input(system::Manager& manager)
 
 Input::~Input()
 {
-    Deinit();
-}
-
-bool Input::Init()
-{
-    return true;
-}
-
-void Input::Deinit()
-{
 
 }
 
