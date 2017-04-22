@@ -46,14 +46,14 @@ include(loguru)
 ## STB
 include(stb)
 
+## utility
+include(utility)
+
 ## system
 include(system)
 
 ## video
 include(video)
-
-## utility
-include(utility)
 
 ## Wink Signals
 include(WinkSignals)

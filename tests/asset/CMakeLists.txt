@@ -22,7 +22,7 @@ add_test(
 )
 
 add_executable(StorageTest StorageTest.cpp)
-target_link_libraries(StorageTest ${UNICORN_ENGINE_LIB} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(StorageTest ${UNICORN_ENGINE_LIB})
 add_test(
     NAME StorageTest
     WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/TestInput"

@@ -135,7 +135,7 @@ void UnicornEngine::Deinit()
 void UnicornEngine::Run()
 {
     if (m_pGraphics)
-    {
+    {        
         do
         {
             m_pSystemManager->PollGamepads();

@@ -12,7 +12,6 @@
 
 #include <atomic>
 #include <chrono>
-#include <cstdint>
 #include <string>
 
 namespace unicorn
