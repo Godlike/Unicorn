@@ -36,63 +36,156 @@ void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
 
 void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::Key key, uint32_t scancode, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask modifiers)
 {
+    using unicorn::system::CursorShape;
+    using unicorn::system::MouseMode;
     using unicorn::system::input::Key;
     using unicorn::system::input::Modifier;
     using unicorn::system::input::Action;
 
-    if (Action::Release == action)
+    switch (action)
     {
-        return;
-    }
-
-    std::pair<int32_t, int32_t> position = pWindow->GetPosition();
-    bool positionChanged = true;
-
-    uint32_t delta = 1;
-
-    if (Modifier::Shift & modifiers)
-    {
-        delta *= 10;
-    }
-
-    if (Modifier::Alt & modifiers)
-    {
-        delta *= 5;
-    }
-
-    switch (key)
-    {
-        case Key::Up:
+        case Action::Release:
         {
-            position.second -= delta;
+            switch (key)
+            {
+                case Key::A:
+                {
+                    pWindow->SetCursorShape(CursorShape::Arrow);
+
+                    break;
+                }
+                case Key::C:
+                {
+                    if (Modifier::Alt & modifiers)
+                    {
+                        pWindow->SetMouseMode(MouseMode::Captured);
+                    }
+                    else
+                    {
+                        pWindow->SetCursorShape(CursorShape::Crosshair);
+                    }
+
+                    break;
+                }
+                case Key::H:
+                {
+                    if (Modifier::Shift & modifiers)
+                    {
+                        pWindow->SetCursorShape(CursorShape::HorizontalResize);
+                    }
+                    else if (Modifier::Alt & modifiers)
+                    {
+                        pWindow->SetMouseMode(MouseMode::Hidden);
+                    }
+                    else
+                    {
+                        pWindow->SetCursorShape(CursorShape::Hand);
+                    }
+
+                    break;
+                }
+                case Key::N:
+                {
+                    if (Modifier::Alt & modifiers)
+                    {
+                        pWindow->SetMouseMode(MouseMode::Normal);
+                    }
+
+                    break;
+                }
+                case Key::R:
+                {
+                    pWindow->SetCursorShape(CursorShape::Reset);
+
+                    break;
+                }
+                case Key::T:
+                {
+                    pWindow->SetCursorShape(CursorShape::TextBeam);
+
+                    break;
+                }
+                case Key::V:
+                {
+                    if (Modifier::Shift & modifiers)
+                    {
+                        pWindow->SetCursorShape(CursorShape::VerticalResize);
+                    }
+
+                    break;
+                }
+
+                case Key::Escape:
+                {
+                    pWindow->SetCursorShape(CursorShape::Reset);
+                    pWindow->SetMouseMode(MouseMode::Normal);
+
+                    break;
+                }
+
+                default:
+                {
+                    break;
+                }
+            }
+
             break;
         }
 
-        case Key::Down:
-        {
-            position.second += delta;
-            break;
-        }
-        case Key::Left:
-        {
-            position.first -= delta;
-            break;
-        }
-        case Key::Right:
-        {
-            position.first += delta;
-            break;
-        }
         default:
         {
-            positionChanged = false;
+            std::pair<int32_t, int32_t> position = pWindow->GetPosition();
+            bool positionChanged = true;
+
+            uint32_t delta = 1;
+
+            if (Modifier::Shift & modifiers)
+            {
+                delta *= 10;
+            }
+
+            if (Modifier::Alt & modifiers)
+            {
+                delta *= 5;
+            }
+
+            switch (key)
+            {
+                case Key::Up:
+                {
+                    position.second -= delta;
+                    break;
+                }
+
+                case Key::Down:
+                {
+                    position.second += delta;
+                    break;
+                }
+                case Key::Left:
+                {
+                    position.first -= delta;
+                    break;
+                }
+                case Key::Right:
+                {
+                    position.first += delta;
+                    break;
+                }
+                default:
+                {
+                    positionChanged = false;
+                    break;
+                }
+            }
+
+            if (positionChanged)
+            {
+                pWindow->SetPosition(position);
+            }
+
             break;
         }
-    }
-
-    if (positionChanged)
-    {
-        pWindow->SetPosition(position);
     }
 }
 
@@ -150,6 +243,11 @@ void onGamepadUpdate(unicorn::system::input::Gamepad* pGamepad)
 
 int main(int argc, char* argv[])
 {
+    using unicorn::system::CustomValue;
+    using unicorn::system::Monitor;
+    using unicorn::system::Window;
+    using unicorn::system::WindowHint;
+
     unicorn::core::Settings& settings = unicorn::core::Settings::Instance();
 
     settings.Init(argc, argv, "SANIC_JYMPER.log");
@@ -169,25 +267,25 @@ int main(int argc, char* argv[])
         unicornEngine->LogicFrame.connect(&onLogicFrame);
 
         // Borderless undecorated
-        pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
-            unicorn::system::CustomValue::False);
+        pGraphics->SetWindowCreationHint(WindowHint::Decorated,
+            CustomValue::False);
 
         // Resizable
-        pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Resizable,
-            unicorn::system::CustomValue::True);
+        pGraphics->SetWindowCreationHint(WindowHint::Resizable,
+            CustomValue::True);
 
-        const std::vector<unicorn::system::Monitor*>& monitors = pGraphics->GetMonitors();
-        unicorn::system::Monitor* lastMonitor = monitors.back();
-        unicorn::system::VideoMode activeMode = lastMonitor->GetActiveVideoMode();
+        auto const& monitors = pGraphics->GetMonitors();
+        Monitor* lastMonitor = monitors.back();
+        auto activeMode = lastMonitor->GetActiveVideoMode();
 
-        unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(
+        Window* pWindow0 = pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
             settings.GetApplicationName(),
             nullptr,
             nullptr );
 
-        unicorn::system::Window* pWindow1 = pGraphics->SpawnWindow(
+        Window* pWindow1 = pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
             std::string("Hmm ") + settings.GetApplicationName(),
@@ -197,10 +295,10 @@ int main(int argc, char* argv[])
         pWindow1->Keyboard.connect(&onWindowKeyboard);
 
         // Decorated, with borders
-        pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
-            unicorn::system::CustomValue::True);
+        pGraphics->SetWindowCreationHint(WindowHint::Decorated,
+            CustomValue::True);
 
-        unicorn::system::Window* pWindow2 = pGraphics->SpawnWindow(
+        Window* pWindow2 = pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
             std::string("wat ") + settings.GetApplicationName(),

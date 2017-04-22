@@ -47,6 +47,9 @@ set(WINDOW_MANAGER_SOURCES
 )
 
 set(INPUT_HEADERS
+    include/unicorn/system/CursorShape.hpp
+    include/unicorn/system/MouseMode.hpp
+
     include/unicorn/system/input/Action.hpp
     include/unicorn/system/input/Gamepad.hpp
     include/unicorn/system/input/GamepadState.hpp
