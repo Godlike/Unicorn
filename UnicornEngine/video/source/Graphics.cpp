@@ -100,35 +100,21 @@ system::Window* Graphics::SpawnWindow(int32_t width,
     system::Monitor* pMonitor,
     system::Window* pSharedWindow)
 {
-    system::Window* pWindow = m_systemManager.CreateWindow(width, height, name, pMonitor, pSharedWindow);
-    Renderer* pRenderer = new vulkan::Renderer(m_systemManager, pWindow);
+    
+    //LOG_WARNING("Failed to initialize new renderer for window %s", name.c_str());
+    //if (!m_systemManager.DestroyWindow(pWindow))    
 
-    if (pRenderer->Init())
-    {
-        LOG_DEBUG("Created renderer for window %s", name.c_str());
-
-        m_renderers.insert(RendererWindowPair(pRenderer, pWindow));
-    }
-    else
-    {
-        LOG_WARNING("Failed to initialize new renderer for window %s", name.c_str());
-
-        if (!m_systemManager.DestroyWindow(pWindow))
-        {
-            LOG_WARNING("Failed to destroy window %s", name.c_str());
-
-            delete pWindow;
-        }
-    }
-
-    LOG_INFO("Graphics initialization started.");
-
-    return pWindow;
+    return m_systemManager.CreateWindow(width, height, name, pMonitor, pSharedWindow);
 }
 
 const std::vector<system::Monitor*>& Graphics::GetMonitors() const
 {
     return m_systemManager.GetMonitors();
+}
+
+void Graphics::BindWindowRenderer(system::Window* pWindow, video::Renderer* pRenderer)
+{
+    m_renderers.insert(RendererWindowPair(pRenderer, pWindow));
 }
 
 system::Monitor* Graphics::GetWindowMonitor(const system::Window& window) const
@@ -174,12 +160,14 @@ void Graphics::ProcessExpiredRenderers()
     }
 }
 
-Renderer* Graphics::SpawnVulkanRenderer()
+Renderer* Graphics::SpawnVulkanRenderer(system::Window* window) const
 {
-    return nullptr;
+    auto* renderer = new vulkan::Renderer(m_systemManager, window);
+    renderer->Init();
+    return renderer;
 }
 
-bool Graphics::CreateVulkanContext()
+bool Graphics::CreateVulkanContext() const
 {
     return vulkan::Context::Initialize(m_systemManager);
 }

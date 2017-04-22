@@ -7,11 +7,10 @@
 #include <unicorn/UnicornEngine.hpp>
 
 #include <unicorn/video/Graphics.hpp>
-
+#include <unicorn/video/Camera.hpp>
 #include <unicorn/system/Window.hpp>
 #include <unicorn/system/WindowHint.hpp>
 #include <unicorn/system/CustomValue.hpp>
-
 #include <unicorn/Settings.hpp>
 
 #include <iostream>
@@ -34,18 +33,10 @@ int main(int argc, char* argv[])
     {
         unicorn::video::Graphics* pGraphics = unicornEngine->GetGraphics();
         pGraphics->CreateVulkanContext();
-        // Borderless undecorated
-        pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
-            unicorn::system::CustomValue::False);
-
         // Resizable
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Resizable,
             unicorn::system::CustomValue::True);
-
-        const std::vector<unicorn::system::Monitor*>& monitors = pGraphics->GetMonitors();
-        unicorn::system::Monitor* lastMonitor = monitors.back();
-        unicorn::system::VideoMode activeMode = lastMonitor->GetActiveVideoMode();
-
+       
         unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
@@ -60,28 +51,11 @@ int main(int argc, char* argv[])
             nullptr,
             nullptr );
 
-        // Decorated, with borders
-        pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
-            unicorn::system::CustomValue::True);
+        auto vkRenderer0 = pGraphics->SpawnVulkanRenderer(pWindow0);
+        auto vkRenderer1 = pGraphics->SpawnVulkanRenderer(pWindow1);
 
-        unicorn::system::Window* pWindow2 = pGraphics->SpawnWindow(
-            settings.GetApplicationWidth(),
-            settings.GetApplicationHeight(),
-            std::string("wat ") + settings.GetApplicationName(),
-            nullptr,
-            nullptr );
-
-        pWindow2->SizeChanged.connect(&onWindowSizeChange);
-
-        pWindow0->Minimize();
-
-        std::pair<int32_t, int32_t> win2pos = pWindow1->GetPosition();
-        win2pos.first += 640;
-        win2pos.second += 480;
-        pWindow1->SetPosition(win2pos);
-        pWindow1->SetName("Ayy lmao");
-
-        pWindow2->Focus();
+        pGraphics->BindWindowRenderer(pWindow0, vkRenderer0);
+        pGraphics->BindWindowRenderer(pWindow1, vkRenderer1);
 
         unicornEngine->Run();
     }

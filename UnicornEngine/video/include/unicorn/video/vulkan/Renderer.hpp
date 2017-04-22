@@ -44,8 +44,7 @@ namespace unicorn
 			class Renderer : public video::Renderer
 			{
 			public:
-				Renderer(system::Manager& manager,
-					system::Window* pWindow);
+				Renderer(system::Manager& manager, system::Window* window);
 
 				~Renderer() override;
 
@@ -58,7 +57,6 @@ namespace unicorn
 				void Deinit() override;
 				bool Render() override;
 				bool RecreateSwapChain() override;
-
 			private:
 				vk::PhysicalDevice m_vkPhysicalDevice;
 				vk::Device m_vkLogicalDevice;

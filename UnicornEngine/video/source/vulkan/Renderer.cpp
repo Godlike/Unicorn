@@ -25,12 +25,12 @@ namespace unicorn
 namespace video
 {
 	namespace vulkan {
-		Renderer::Renderer(system::Manager& manager, system::Window* pWindow) : video::Renderer(manager, pWindow)
+		Renderer::Renderer(system::Manager& manager, system::Window* window) : video::Renderer(manager, window)
 		{
 			m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
 			m_pWindow->SizeChanged.connect(this, &Renderer::OnWindowSizeChanged);
 		}
-
+		
 		Renderer::~Renderer()
 		{
 			if (m_pWindow)
