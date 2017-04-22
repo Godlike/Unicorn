@@ -4,13 +4,19 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#ifndef UNICORN_SYSTEM_ADAPTERS_GLFW_ADAPTER_HPP
-#define UNICORN_SYSTEM_ADAPTERS_GLFW_ADAPTER_HPP
+#ifndef UNICORN_SYSTEM_ADAPTER_GLFW_ADAPTER_HPP
+#define UNICORN_SYSTEM_ADAPTER_GLFW_ADAPTER_HPP
 
 #include <unicorn/system/MonitorMemento.hpp>
 #include <unicorn/system/WindowAttribute.hpp>
 #include <unicorn/system/WindowHint.hpp>
 #include <unicorn/system/VideoMode.hpp>
+
+#include <unicorn/system/input/Action.hpp>
+#include <unicorn/system/input/GamepadState.hpp>
+#include <unicorn/system/input/Key.hpp>
+#include <unicorn/system/input/Modifier.hpp>
+#include <unicorn/system/input/MouseButton.hpp>
 
 #include <wink/signal.hpp>
 
@@ -18,6 +24,7 @@
 
 #include <cmath>
 #include <cstdint>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -46,7 +53,7 @@ public:
      *  @param  hint    window creation hint
      *  @param  value   new value
      */
-    static void SetWindowCreationHint(system::WindowHint hint, int32_t value);
+    static void SetWindowCreationHint(WindowHint hint, int32_t value);
 
     /** @brief  Resets window creation hints */
     static void ResetWindowHints();
@@ -230,7 +237,7 @@ public:
      *
      *  @return attribute value
      */
-    static int32_t GetWindowAttribute(void* handle, system::WindowAttribute attribute);
+    static int32_t GetWindowAttribute(void* handle, WindowAttribute attribute);
 
     /** @brief  Processes events that are in event queue */
     static void PollEvents();
@@ -295,7 +302,34 @@ public:
      */
     static void SetGammaRamp(void* handle, const GammaRamp& gammaRamp);
 
-    /** @name Window events */
+    /** @brief  Gets handles to connected gamepads */
+    static std::vector<void*> GetConnectedGamepads();
+
+    /** @brief  Gets name for gamepad
+     *
+     *  @param  handle  gamepad handle
+     *
+     *  @return gamepad name
+     */
+    static const char* GetGamepadName(void* handle);
+
+    /** @brief  Gets axes for gamepad
+     *
+     *  @param  handle  gamepad handle
+     *
+     *  @return vector of axis values
+     */
+    static std::vector<float> GetGamepadAxes(void* handle);
+
+    /** @brief  Gets buttons for gamepad
+     *
+     *  @param  handle  gamepad handle
+     *
+     *  @return vector of button states
+     */
+    static std::vector<bool> GetGamepadButtons(void* handle);
+
+    /** @name   Window events */
     //! @{
 
     /** @brief  Event triggered when window position is changed
@@ -362,7 +396,82 @@ public:
 
     //! @}
 
-    /** @name Monitor events */
+    /** @name   Input events */
+    //! @{
+
+    /** @brief  Event triggered when window receives mouse button input
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# mouse button input
+     *  -# button action type
+     *  -# modifiers mask
+     */
+    static wink::signal< wink::slot<void(void*, input::MouseButton, input::Action, input::Modifier::Mask)> > WindowMouseButton;
+
+    /** @brief  Event triggered when window receives mouse position update
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# pair of values as (x, y)
+     */
+    static wink::signal< wink::slot<void(void*, std::pair<double, double>)> > WindowMousePosition;
+
+    /** @brief  Event triggered when window receives/loses mouse
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# boolean flag
+     */
+    static wink::signal< wink::slot<void(void*, bool)> > WindowMouseEnter;
+
+    /** @brief  Event triggered when window receives scroll input
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# pair of values as (x, y)
+     */
+    static wink::signal< wink::slot<void(void*, std::pair<double, double>)> > WindowScroll;
+
+    /** @brief  Event triggered when window receives keyboard input
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# key indicator
+     *  -# raw scancode value
+     *  -# key action type
+     *  -# modifiers mask
+     */
+    static wink::signal< wink::slot<void(void*, input::Key, uint32_t, input::Action, input::Modifier::Mask)> > WindowKeyboard;
+
+    /** @brief  Event triggered when window receives unicode input with modifiers
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# unicode character
+     *  -# modifiers mask
+     */
+    static wink::signal< wink::slot<void(void*, uint32_t, input::Modifier::Mask)> > WindowUnicode;
+
+    /** @brief  Event triggered when window receives file drop
+     *
+     *  Event is emitted with the following signature:
+     *  -# window handle
+     *  -# vector of filepaths
+     */
+    static wink::signal< wink::slot<void(void*, std::vector<std::string>)> > WindowFileDrop;
+
+    /** @brief  Event triggered when gamepad state is changed (connected/disconnected)
+     *
+     *  Event is emitted with the following signature:
+     *  -# gamepad handle
+     *  -# gamepad state
+     */
+    static wink::signal< wink::slot<void(void*, input::GamepadState)> > GamepadStateChanged;
+
+    //! @}
+
+    /** @name   Monitor events */
     //! @{
 
     /** @brief  Event triggered when monitor state is changed (connected/disconnected)
@@ -375,18 +484,35 @@ public:
 
     //! @}
 
-private:
-    /** @brief  Fills in video mode structure */
-    static VideoMode PrepareVideoMode(const void* pMode);
+    /** @name   Value conversion methods between glfw and unicorn */
+    //! @{
 
     /** @brief  Converts WindowManager hint to glfw hint */
-    static int ConvertToGlfwHint(system::WindowHint hint);
+    static int ConvertToGlfwHint(WindowHint hint);
 
     /** @brief  Converts WindowManager attribute to glfw attribute */
-    static int ConvertToGlfwAttribute(system::WindowAttribute attribute);
+    static int ConvertToGlfwAttribute(WindowAttribute attribute);
 
     /** @brief  Tries to convert WindowManager value to glfw value */
     static int ConvertToGlfwValue(int32_t value);
+
+    /** @brief  Converts mouse button from glfw to unicorn */
+    static input::MouseButton ConvertToUnicornMouseButton(int32_t button);
+
+    /** @brief  Converts action type from glfw to unicorn */
+    static input::Action ConvertToUnicornActionType(int32_t action);
+
+    /** @brief  Converts modifiers from glfw to unicorn */
+    static input::Modifier::Mask ConvertToUnicornModifiers(int32_t modifiers);
+
+    /** @brief  Converts key code from glfw to unicorn */
+    static input::Key ConvertToUnicornKey(int32_t key);
+
+    //!@}
+
+private:
+    /** @brief  Fills in video mode structure */
+    static VideoMode PrepareVideoMode(const void* pMode);
 
     //! Flag indicating if glfw was initialized
     static bool s_isInitialized;
@@ -396,4 +522,4 @@ private:
 }
 }
 
-#endif /* UNICORN_SYSTEM_ADAPTERS_GLFW_ADAPTER_HPP */
+#endif /* UNICORN_SYSTEM_ADAPTER_GLFW_ADAPTER_HPP */

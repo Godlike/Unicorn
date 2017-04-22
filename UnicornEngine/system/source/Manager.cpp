@@ -6,11 +6,14 @@
 
 #include <unicorn/system/Manager.hpp>
 
-#include <unicorn/system/adapters/Helper.hpp>
+#include <unicorn/system/adapter/Helper.hpp>
 
 #include <unicorn/system/CustomValue.hpp>
+#include <unicorn/system/Monitor.hpp>
 #include <unicorn/system/MonitorMemento.hpp>
-#include <unicorn/system/WindowHint.hpp>
+#include <unicorn/system/Window.hpp>
+
+#include <unicorn/system/input/Gamepad.hpp>
 
 #include <unicorn/utility/Logger.hpp>
 
@@ -41,7 +44,7 @@ Window* Manager::CreateWindow(int32_t width,
     WINDOW_MANAGER_ADAPTER::GetWindowPosition(result->GetHandle(), &position.first, &position.second);
     result->SetPosition(position);
 
-    m_windows.insert(std::make_pair(result->GetId(), result));
+    m_windows.emplace(result->GetId(), result);
 
     WindowCreated.emit(result);
 
@@ -58,9 +61,22 @@ VkResult Manager::CreateVulkanSurfaceForWindow(const Window& window,
 
 Window* Manager::GetWindow(uint32_t id) const
 {
-    std::map<uint32_t, Window*>::const_iterator cit = m_windows.find(id);
+    auto cit = m_windows.find(id);
 
     return cit != m_windows.cend() ? cit->second : nullptr;
+}
+
+Window* Manager::GetFocusedWindow() const
+{
+    for (auto const& cit : m_windows)
+    {
+        if (cit.second->IsFocused())
+        {
+            return cit.second;
+        }
+    }
+
+    return nullptr;
 }
 
 bool Manager::DestroyWindow(uint32_t id)
@@ -89,31 +105,51 @@ void Manager::Init()
 
     WINDOW_MANAGER_ADAPTER::MonitorStateChanged.connect(this, &Manager::OnMonitorStateChanged);
 
-    const std::vector<MonitorMemento>& monitors = WINDOW_MANAGER_ADAPTER::GetMonitors();
-
-    m_monitors.reserve(monitors.size());
-
-    Monitor* pMonitor = nullptr;
-
-    for (std::vector<MonitorMemento>::const_iterator cit = monitors.cbegin(); cit != monitors.cend(); ++cit)
     {
-        pMonitor = new Monitor(*cit);
+        std::vector<MonitorMemento> monitors = WINDOW_MANAGER_ADAPTER::GetMonitors();
 
-        m_monitors.push_back(pMonitor);
+        m_monitors.reserve(monitors.size());
 
-        MonitorCreated.push(pMonitor);
+        Monitor* pMonitor = nullptr;
+
+        for (auto const& cit : monitors)
+        {
+            pMonitor = new Monitor(cit);
+
+            m_monitors.push_back(pMonitor);
+
+            MonitorCreated.push(pMonitor);
+        }
+
+        MonitorCreated.emit();
     }
 
-    MonitorCreated.emit();
+    GAMEPAD_ADAPTER::GamepadStateChanged.connect(this, &Manager::OnGamepadStateChanged);
+
+    {
+        std::vector<void*> gamepads = GAMEPAD_ADAPTER::GetConnectedGamepads();
+
+        input::Gamepad* pGamepad = nullptr;
+
+        for (auto const& cit : gamepads)
+        {
+            pGamepad = new input::Gamepad(cit);
+            m_gamepads.emplace(pGamepad->GetId(), pGamepad);
+
+            GamepadCreated.push(pGamepad);
+        }
+
+        GamepadCreated.emit();
+    }
 }
 
 void Manager::Deinit()
 {
     WindowCreated.clear();
 
-    for (std::map<uint32_t, Window*>::const_iterator cit = m_windows.cbegin(); cit != m_windows.cend(); ++cit)
+    for (auto const& cit : m_windows)
     {
-        delete cit->second;
+        delete cit.second;
     }
 
     m_windows.clear();
@@ -140,11 +176,11 @@ Monitor* Manager::GetMonitor(uint32_t id) const
 {
     Monitor* result = nullptr;
 
-    for (std::vector<Monitor*>::const_iterator cit = m_monitors.cbegin(); cit != m_monitors.cend(); ++cit)
+    for (auto const& cit : m_monitors)
     {
-        if (id == (*cit)->GetId())
+        if (id == cit->GetId())
         {
-            result = *cit;
+            result = cit;
             break;
         }
     }
@@ -169,15 +205,56 @@ void Manager::OnMonitorStateChanged(void* handle, MonitorMemento::State state)
     MonitorCreated.emit();
 }
 
+void Manager::OnGamepadStateChanged(void* handle, input::GamepadState state)
+{
+    uint32_t id = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(handle));
+    auto cit = m_gamepads.find(id);
+
+    switch (state)
+    {
+        case input::GamepadState::Connected:
+        {
+            if (cit == m_gamepads.cend())
+            {
+                input::Gamepad* pGamepad = new input::Gamepad(handle);
+
+                m_gamepads.emplace(pGamepad->GetId(), pGamepad);
+
+                GamepadCreated.push(pGamepad);
+
+                GamepadCreated.emit();
+            }
+
+            break;
+        }
+        case input::GamepadState::Disconnected:
+        {
+            if(cit != m_gamepads.cend())
+            {
+                delete cit->second;
+
+                m_gamepads.erase(cit);
+            }
+
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+}
+
 Monitor* Manager::GetMonitor(void* handle) const
 {
     Monitor* result = nullptr;
 
-    for (std::vector<Monitor*>::const_iterator cit = m_monitors.cbegin(); cit != m_monitors.cend(); ++cit)
+    for (auto const& cit : m_monitors)
     {
-        if (handle == (*cit)->GetHandle())
+        if (handle == cit->GetHandle())
         {
-            result = *cit;
+            result = cit;
+
             break;
         }
     }
@@ -207,6 +284,14 @@ void Manager::SetWindowMonitor(const Window& window,
 void Manager::SetWindowCreationHint(WindowHint hint, int32_t value) const
 {
     WINDOW_MANAGER_ADAPTER::SetWindowCreationHint(hint, value);
+}
+
+void Manager::PollGamepads()
+{
+    for (auto const& cit : m_gamepads)
+    {
+        cit.second->UpdateData();
+    }
 }
 
 }
