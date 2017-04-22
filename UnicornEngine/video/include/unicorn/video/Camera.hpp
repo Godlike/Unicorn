@@ -39,10 +39,6 @@ namespace unicorn
         private:
             glm::vec3 m_rotation;
             glm::vec3 m_position;
-
-            float m_rotationSpeed;
-            float m_movementSpeed;
-
             struct
             {
                 glm::mat4 m_perspective;
