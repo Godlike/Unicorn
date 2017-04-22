@@ -7,6 +7,7 @@
 #include <unicorn/UnicornEngine.hpp>
 
 #include <unicorn/video/Graphics.hpp>
+#include <unicorn/system/Input.hpp>
 
 #include <unicorn/system/Window.hpp>
 #include <unicorn/system/WindowHint.hpp>
@@ -22,7 +23,8 @@
 #include <cmath>
 #include <iostream>
 
-static unicorn::video::Graphics* pGraphics = nullptr;
+static unicorn::video::Graphics* s_pGraphics = nullptr;
+static unicorn::system::Input* s_pInput = nullptr;
 
 void onWindowSizeChange(unicorn::system::Window* pWindow, std::pair<int32_t, int32_t> size)
 {
@@ -98,12 +100,12 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
 
 void onGamepadUpdate(unicorn::system::input::Gamepad* pGamepad)
 {
-    if (!pGraphics)
+    if (!s_pGraphics)
     {
         return;
     }
 
-    unicorn::system::Window* pWindow = pGraphics->GetFocusedWindow();
+    unicorn::system::Window* pWindow = s_pGraphics->GetFocusedWindow();
 
     if (!pWindow)
     {
@@ -148,6 +150,11 @@ void onGamepadUpdate(unicorn::system::input::Gamepad* pGamepad)
     }
 }
 
+void onGamepadCreated(unicorn::system::input::Gamepad* const& pGamepad)
+{
+    pGamepad->Updated.connect(&onGamepadUpdate);
+}
+
 int main(int argc, char* argv[])
 {
     unicorn::core::Settings& settings = unicorn::core::Settings::Instance();
@@ -159,9 +166,12 @@ int main(int argc, char* argv[])
 
     if (unicornEngine->Init())
     {
-        pGraphics = unicornEngine->GetGraphics();
+        s_pGraphics = unicornEngine->GetGraphics();
+        s_pInput = unicornEngine->GetInput();
 
-        for (auto const& cit : unicornEngine->GetGamepads())
+        s_pInput->GamepadCreated.connect(&onGamepadCreated);
+
+        for (auto const& cit : s_pInput->GetGamepads())
         {
             cit.second->Updated.connect(&onGamepadUpdate);
         }
@@ -169,25 +179,25 @@ int main(int argc, char* argv[])
         unicornEngine->LogicFrame.connect(&onLogicFrame);
 
         // Borderless undecorated
-        pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
+        s_pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
             unicorn::system::CustomValue::False);
 
         // Resizable
-        pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Resizable,
+        s_pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Resizable,
             unicorn::system::CustomValue::True);
 
-        const std::vector<unicorn::system::Monitor*>& monitors = pGraphics->GetMonitors();
+        const std::vector<unicorn::system::Monitor*>& monitors = s_pGraphics->GetMonitors();
         unicorn::system::Monitor* lastMonitor = monitors.back();
         unicorn::system::VideoMode activeMode = lastMonitor->GetActiveVideoMode();
 
-        unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(
+        unicorn::system::Window* pWindow0 = s_pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
             settings.GetApplicationName(),
             nullptr,
             nullptr );
 
-        unicorn::system::Window* pWindow1 = pGraphics->SpawnWindow(
+        unicorn::system::Window* pWindow1 = s_pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
             std::string("Hmm ") + settings.GetApplicationName(),
@@ -197,10 +207,10 @@ int main(int argc, char* argv[])
         pWindow1->Keyboard.connect(&onWindowKeyboard);
 
         // Decorated, with borders
-        pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
+        s_pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
             unicorn::system::CustomValue::True);
 
-        unicorn::system::Window* pWindow2 = pGraphics->SpawnWindow(
+        unicorn::system::Window* pWindow2 = s_pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
             std::string("wat ") + settings.GetApplicationName(),
