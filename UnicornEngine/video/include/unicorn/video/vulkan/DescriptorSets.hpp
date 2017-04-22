@@ -15,21 +15,20 @@ namespace unicorn
 	{
 		namespace vulkan
 		{
-
 			class DescriptorSets
 			{
 			public:
 				DescriptorSets();
 				~DescriptorSets();
 
-				Result create(
+			    vk::Result Create(
 					vk::Device device,
 					const std::vector<vk::DescriptorSetLayoutBinding>& descriptorBindings,
 					uint32_t setsCount);
-				void destroy();
+				void Destroy();
 
-				vk::DescriptorSet& getVkDescriptorSet(size_t index);
-				vk::DescriptorSetLayout& getVkDescriptorSetLayout();
+				vk::DescriptorSet& GetVkDescriptorSet(size_t index);
+				vk::DescriptorSetLayout& GetVkDescriptorSetLayout();
 			private:
 				vk::Device m_device;
 				vk::DescriptorPool m_descriptorPool;
@@ -39,3 +38,5 @@ namespace unicorn
 		}
 	}
 }
+
+#endif // UNICORN_VIDEO_VULKAN_DESCRIPTOR_POOL_HPP

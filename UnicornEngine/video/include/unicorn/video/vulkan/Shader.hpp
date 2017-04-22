@@ -1,13 +1,36 @@
-class Shader
+/*
+* Copyright (C) 2017 by Godlike
+* This code is licensed under the MIT license (MIT)
+* (http://opensource.org/licenses/MIT)
+*/
+
+#ifndef UNICORN_VIDEO_VULKAN_SHADER_HPP
+#define UNICORN_VIDEO_VULKAN_SHADER_HPP
+
+#include <vulkan/vulkan.hpp>
+
+namespace unicorn
 {
-    vk::Device m_device;
-    vk::ShaderModule m_shaderModule;
-public:
-    Shader();
-    ~Shader();
+    namespace video
+    {
+        namespace vulkan
+        {
+            class Shader
+            {
+            public:
+                Shader();
+                ~Shader();
 
-    Result create(vk::Device device, size_t size, void* code);
-    void destroy();
+                vk::Result Create(vk::Device device, size_t size, void* code);
+                void Destroy();
 
-    vk::ShaderModule& getVkShaderModule();
-};
+                vk::ShaderModule& GetVkShaderModule();
+            private:
+                vk::Device m_device;
+                vk::ShaderModule m_shaderModule;
+            };
+        }
+    }
+}
+
+#endif // UNICORN_VIDEO_VULKAN_SHADER_HPP

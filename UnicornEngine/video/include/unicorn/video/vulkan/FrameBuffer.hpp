@@ -21,16 +21,16 @@ namespace unicorn
                 Framebuffer();
                 ~Framebuffer();
 
-                Result create(
+                vk::Result Create(
                     vk::Device device,
                     uint32_t width,
                     uint32_t height,
                     vk::ImageView colorImageView,
                     vk::ImageView depthImageView,
                     vk::RenderPass renderPass);
-                void destroy();
+                void Destroy();
 
-                vk::Framebuffer& getVkFrameBuffer();
+                vk::Framebuffer& GetVkFrameBuffer();
             private:
                 vk::Device m_device;
                 vk::Framebuffer m_framebuffer;

@@ -12,6 +12,17 @@ set(VIDEO_HEADERS
     include/unicorn/video/vulkan/Context.hpp
     include/unicorn/video/vulkan/Device.hpp
     include/unicorn/video/vulkan/Renderer.hpp
+	include/unicorn/video/vulkan/Buffer.hpp
+	include/unicorn/video/vulkan/CommandBuffers.hpp
+	include/unicorn/video/vulkan/DescriptorSets.hpp
+	include/unicorn/video/vulkan/FrameBuffer.hpp
+	include/unicorn/video/vulkan/GraphicsPipeline.hpp
+	include/unicorn/video/vulkan/Image.hpp
+	include/unicorn/video/vulkan/Queue.hpp
+	include/unicorn/video/vulkan/RenderPass.hpp
+	include/unicorn/video/vulkan/Shader.hpp
+	include/unicorn/video/vulkan/SwapChain.hpp
+
 )
 
 set(VIDEO_SOURCES
@@ -21,6 +32,16 @@ set(VIDEO_SOURCES
     source/vulkan/Context.cpp
     source/vulkan/Device.cpp
     source/vulkan/Renderer.cpp
+	source/vulkan/Buffer.cpp
+	source/vulkan/CommandBuffers.cpp
+	source/vulkan/DescriptorSets.cpp
+	source/vulkan/FrameBuffer.cpp
+	source/vulkan/GraphicsPipeline.cpp
+	source/vulkan/Image.cpp
+	source/vulkan/Queue.cpp
+	source/vulkan/RenderPass.cpp
+	source/vulkan/Shader.cpp
+	source/vulkan/SwapChain.cpp
 )
 
 add_library(video STATIC

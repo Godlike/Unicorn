@@ -5,7 +5,7 @@
 */
 
 #ifndef UNICORN_VIDEO_VULKAN_COMMAND_BUFFERS_HPP
-#define UNICORN_VIDEO_VULKAN_BUFFER_HPP
+#define UNICORN_VIDEO_VULKAN_COMMAND_BUFFERS_HPP
 
 #include <vulkan/vulkan.hpp>
 
@@ -22,12 +22,12 @@ namespace unicorn
 				CommandBuffers();
 				~CommandBuffers();
 
-				Result create(vk::Device device, size_t count);
-				void destroy();
+			    vk::Result Create(vk::Device device, size_t count);
+				void Destroy();
 
-				vk::CommandPool& getVkCommandPool();
-				vk::CommandBuffer& getVkCommandBuffer(size_t index);
-				const std::vector<vk::CommandBuffer>& getVkCommandBuffers();
+				vk::CommandPool& GetVkCommandPool();
+				vk::CommandBuffer& GetVkCommandBuffer(size_t index);
+				const std::vector<vk::CommandBuffer>& GetVkCommandBuffers();
 			private:
 				vk::Device m_device;
 				vk::CommandPool m_cmdPool;
@@ -36,3 +36,5 @@ namespace unicorn
 		}
 	}
 }
+
+#endif // UNICORN_VIDEO_VULKAN_COMMAND_BUFFERS_HPP

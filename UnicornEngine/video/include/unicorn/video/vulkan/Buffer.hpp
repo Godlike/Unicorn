@@ -21,14 +21,14 @@ namespace unicorn
 				Buffer();
 				~Buffer();
 
-				Result create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::BufferUsageFlags usage, size_t size);
-				void destroy();
-				void write(const void* pData);
+			    vk::Result Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::BufferUsageFlags usage, size_t size);
+				void Destroy() const;
+				void Write(const void* pData) const;
 
-				size_t getSize();
-				vk::BufferUsageFlags getUsage();
+				size_t GetSize() const;
+				vk::BufferUsageFlags GetUsage();
 
-				vk::Buffer& getVkBuffer();
+				vk::Buffer& GetVkBuffer();
 			private:
 				vk::Device m_device;
 				vk::BufferUsageFlags m_usage;

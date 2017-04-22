@@ -50,8 +50,8 @@ public:
 
     Graphics(const Graphics& other) = delete;
     Graphics(const Graphics&& other) = delete;
-    Graphics& operator=(const Renderer& other) = delete;
-    Graphics& operator=(const Graphics&& other) = delete;
+    Graphics& operator=(Graphics& other) = delete;
+    Graphics& operator=(Graphics&& other) = delete;
 
     /** @brief  Initializes the graphics system
      *

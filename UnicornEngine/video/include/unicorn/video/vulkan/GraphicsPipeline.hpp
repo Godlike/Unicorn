@@ -20,7 +20,7 @@ namespace unicorn
             public:
                 GraphicsPipeline();
                 ~GraphicsPipeline();
-                Result create(
+                vk::Result create(
                     vk::Device device,
                     vk::ShaderModule vertexShader,
                     vk::ShaderModule fragmentShader,
@@ -30,10 +30,10 @@ namespace unicorn
                     vk::Viewport viewport,
                     vk::Rect2D scissor,
                     vk::RenderPass renderPass);
-                void destroy();
+                void Destroy();
 
-                vk::PipelineLayout& getVkPipelineLayout();
-                vk::Pipeline& getVkPipeline();
+                vk::PipelineLayout& GetVkPipelineLayout();
+                vk::Pipeline& GetVkPipeline();
             private:
                 vk::Device m_device;
                 vk::PipelineCache m_pipelineCache;
