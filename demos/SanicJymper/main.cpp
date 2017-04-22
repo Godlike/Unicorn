@@ -12,13 +12,10 @@
 #include <unicorn/system/WindowHint.hpp>
 #include <unicorn/system/CustomValue.hpp>
 #include <unicorn/Settings.hpp>
-
 #include <unicorn/system/input/Action.hpp>
 #include <unicorn/system/input/Gamepad.hpp>
 #include <unicorn/system/input/Key.hpp>
 #include <unicorn/system/input/Modifier.hpp>
-
-#include <unicorn/core/Settings.hpp>
 
 #include <cmath>
 #include <iostream>
@@ -157,10 +154,10 @@ int main(int argc, char* argv[])
     settings.SetApplicationName("SANIC JYMPER");
 
     unicorn::UnicornEngine* unicornEngine = new unicorn::UnicornEngine();
-
     if (unicornEngine->Init())
     {
         pGraphics = unicornEngine->GetGraphics();
+        pGraphics->CreateVulkanContext();
 
         for (auto const& cit : unicornEngine->GetGamepads())
         {
@@ -169,52 +166,35 @@ int main(int argc, char* argv[])
 
         unicornEngine->LogicFrame.connect(&onLogicFrame);
 
-        // Borderless undecorated
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
-            unicorn::system::CustomValue::False);
+            unicorn::system::CustomValue::True);
 
-        unicorn::video::Graphics* pGraphics = unicornEngine->GetGraphics();
-        pGraphics->CreateVulkanContext();
-        // Resizable
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Resizable,
             unicorn::system::CustomValue::True);
-       
+
         unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
             settings.GetApplicationName(),
             nullptr,
-            nullptr );
+            nullptr);
 
         unicorn::system::Window* pWindow1 = pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
             std::string("Hmm ") + settings.GetApplicationName(),
             nullptr,
-            nullptr );
+            nullptr);
 
-        pWindow1->Keyboard.connect(&onWindowKeyboard);
-
-        // Decorated, with borders
-        pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
-            unicorn::system::CustomValue::True);
         auto vkRenderer0 = pGraphics->SpawnVulkanRenderer(pWindow0);
         auto vkRenderer1 = pGraphics->SpawnVulkanRenderer(pWindow1);
 
-        unicorn::system::Window* pWindow2 = pGraphics->SpawnWindow(
-            settings.GetApplicationWidth(),
-            settings.GetApplicationHeight(),
-            std::string("wat ") + settings.GetApplicationName(),
-            nullptr,
-            nullptr );
-
-        pWindow2->SizeChanged.connect(&onWindowSizeChange);
-        pWindow2->Keyboard.connect(&onWindowKeyboard);
-
-        pWindow0->Minimize();
         pGraphics->BindWindowRenderer(pWindow0, vkRenderer0);
         pGraphics->BindWindowRenderer(pWindow1, vkRenderer1);
 
+        pWindow1->Keyboard.connect(&onWindowKeyboard);
+        pWindow0->SizeChanged.connect(&onWindowSizeChange);
+        pWindow0->Keyboard.connect(&onWindowKeyboard);
         unicornEngine->Run();
     }
 

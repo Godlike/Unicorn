@@ -8,6 +8,7 @@
 #define UNICORN_ENGINE_HPP
 
 #include <unicorn/utility/SharedMacros.hpp>
+#include <unicorn/system/Timer.hpp>
 
 #include <wink/signal.hpp>
 #include <map>
@@ -22,7 +23,6 @@ class Graphics;
 
 namespace system
 {
-
 namespace input
 {
 class Gamepad;

@@ -8,6 +8,7 @@
 #define UNICORN_SYSTEM_TIMER_HPP
 
 #include <chrono>
+#include <unicorn/utility/SharedMacros.hpp>
 
 namespace unicorn
 {
@@ -20,13 +21,11 @@ class Timer
     using Seconds = std::chrono::seconds;
     using Minutes = std::chrono::minutes;
 public:
-    explicit Timer(bool run = false);
-    void Reset();
-    Milliseconds ElapsedMilliseconds() const;
-    Seconds ElapsedSeconds() const;
-    Minutes ElapsedMinutes() const;
-    template <typename T, typename Traits>
-    friend std::basic_ostream<T, Traits>& operator<<(std::basic_ostream<T, Traits>& out, const Timer& timer);
+    UNICORN_EXPORT Timer(bool run = false);
+    UNICORN_EXPORT void Start();
+    UNICORN_EXPORT Milliseconds ElapsedMilliseconds() const;
+    UNICORN_EXPORT Seconds ElapsedSeconds() const;
+    UNICORN_EXPORT Minutes ElapsedMinutes() const;
 private:
     HighResolutionClock::time_point m_start;
 };

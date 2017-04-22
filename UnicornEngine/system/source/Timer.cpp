@@ -14,11 +14,11 @@ namespace unicorn
         {
             if (run)
             {
-                Reset();
+                Start();
             }
         }
 
-        void Timer::Reset()
+        void Timer::Start()
         {
             m_start = HighResolutionClock::now();
         }
@@ -36,12 +36,6 @@ namespace unicorn
         Timer::Minutes Timer::ElapsedMinutes() const
         {
             return std::chrono::duration_cast<Minutes>(HighResolutionClock::now() - m_start);
-        }
-
-        template <typename T, typename Traits>
-        std::basic_ostream<T, Traits>& Timer::operator<<(std::basic_ostream<T, Traits>& out, const Timer& timer)
-        {
-            return out << timer.Elapsed().count();
         }
     }
 }
