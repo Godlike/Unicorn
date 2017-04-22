@@ -23,7 +23,7 @@ namespace unicorn
         public:
             Camera();
 
-            void SetPerspective(float fov, float aspect, float znear, float zfar);;
+            void SetPerspective(float fov, float aspect, float znear, float zfar);
 
             void UpdateAspectRatio(float aspect);
 

@@ -20,8 +20,6 @@ vk::Result Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, 
     m_usage = usage;
     m_size = size;
 
-    vk::Result result;
-
     //init BufferCreateInfo
     vk::BufferCreateInfo bufferInfo;
     bufferInfo.setFlags(vk::BufferCreateFlagBits());
@@ -32,7 +30,7 @@ vk::Result Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, 
     bufferInfo.setSharingMode(vk::SharingMode::eExclusive);
 
     //create VertexBuffer
-    result = m_device.createBuffer(&bufferInfo, nullptr, &m_buffer);
+    vk::Result result = m_device.createBuffer(&bufferInfo, nullptr, &m_buffer);
     if (result != vk::Result::eSuccess)
     {
         return result;
@@ -48,7 +46,7 @@ vk::Result Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, 
 
     uint32_t memoryTypeBits = req.memoryTypeBits;
     uint32_t memoryTypeIndex = 0;
-    for (int i = 0; i < (sizeof(memoryTypeBits) * 8); ++i)
+    for (unsigned int i = 0; i < (sizeof(memoryTypeBits) * 8); ++i)
     {
         if ((memoryTypeBits >> i) & 1)
         {
@@ -94,7 +92,7 @@ void Buffer::Write(const void* pData) const
 #ifdef VKCPP_ENHANCED_MODE
     mappedMemory = m_device.mapMemory(m_memory, 0, m_size, vk::MemoryMapFlagBits());
 #else
-    vk::Result result = m_device.mapMemory(m_memory, 0, m_size, vk::MemoryMapFlagBits(), &mappedMemory);
+    m_device.mapMemory(m_memory, 0, m_size, vk::MemoryMapFlagBits(), &mappedMemory);
 #endif
     //copy Vertexes
     memcpy(mappedMemory, pData, m_size);
