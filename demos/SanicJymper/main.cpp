@@ -113,7 +113,7 @@ void onGamepadUpdate(unicorn::system::input::Gamepad* pGamepad)
 
     const std::vector<float>& axes = pGamepad->GetAxes();
 
-    uint32_t size = axes.size();
+    uint32_t size = static_cast<std::uint32_t>(axes.size());
 
     if (size % 2 != 0)
     {
@@ -131,12 +131,12 @@ void onGamepadUpdate(unicorn::system::input::Gamepad* pGamepad)
 
         if (fabs(x) > deadZone)
         {
-            position.first += round(speed * x);
+            position.first += static_cast<std::int32_t>(round(speed * x));
         }
 
         if (fabs(y) > deadZone)
         {
-            position.second += round(speed * y);
+            position.second += static_cast<std::int32_t>(round(speed * y));
         }
     }
 

@@ -20,7 +20,7 @@ namespace unicorn
             public:
                 GraphicsPipeline();
                 ~GraphicsPipeline();
-                vk::Result create(
+                vk::Result Create(
                     vk::Device device,
                     vk::ShaderModule vertexShader,
                     vk::ShaderModule fragmentShader,

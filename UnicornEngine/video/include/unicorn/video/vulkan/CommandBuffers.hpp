@@ -23,7 +23,7 @@ namespace unicorn
 				~CommandBuffers();
 
 			    vk::Result Create(vk::Device device, size_t count);
-				void Destroy();
+				void Destroy() const;
 
 				vk::CommandPool& GetVkCommandPool();
 				vk::CommandBuffer& GetVkCommandBuffer(size_t index);
