@@ -10,6 +10,8 @@
 #include <vector>
 #include <cstdint>
 
+#include <unicorn/video/geometry/Mesh.hpp>
+
 namespace unicorn
 {
 
@@ -21,7 +23,7 @@ namespace system
 
 namespace video
 {
-	class Camera;
+class Camera;
 class Renderer
 {
 public:
@@ -38,6 +40,12 @@ public:
 	virtual void Deinit() = 0;
 	virtual bool Render() = 0;
 	virtual bool RecreateSwapChain() = 0;
+	geometry::Mesh* SpawnMesh()
+	{
+		auto mesh = new geometry::Mesh();
+		m_meshes.push_back(mesh);
+		return mesh;
+	}
 protected:
 	bool m_isInitialized;
 
@@ -47,7 +55,8 @@ protected:
 	system::Window* m_pWindow;
 	//! Main view camera
 	Camera* m_pCamera;
-
+	//! Array of renderer meshes
+	std::vector<geometry::Mesh*> m_meshes;
 	// Callbacks for window events
 	virtual void OnWindowDestroyed(system::Window* pWindow) = 0;
 	virtual void OnWindowSizeChanged(system::Window* pWindow, std::pair<std::int32_t, std::int32_t> size) = 0;

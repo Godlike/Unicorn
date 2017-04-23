@@ -17,6 +17,10 @@
 #include <unicorn/system/profiler/MouseProfiler.hpp>
 #include <unicorn/system/profiler/WindowProfiler.hpp>
 
+// TODO: TEMP
+#include <unicorn/video/geometry/Triangle.hpp>
+// TODO: Really temp
+
 namespace unicorn
 {
 UnicornEngine::UnicornEngine()
@@ -26,6 +30,7 @@ UnicornEngine::UnicornEngine()
     , m_pMonitorProfiler(nullptr)
     , m_pGraphics(nullptr)
 {
+    video::geometry::Triangle(new video::geometry::Mesh); //TODO: This fucking temporal solution for this shitty error ffs
 }
 
 UnicornEngine::~UnicornEngine()
