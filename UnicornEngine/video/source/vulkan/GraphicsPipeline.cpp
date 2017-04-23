@@ -151,10 +151,12 @@ namespace unicorn
                 blendInfo.setLogicOp(vk::LogicOp::eClear);
                 blendInfo.setAttachmentCount(1);
                 blendInfo.setPAttachments(&blendState);
-                blendInfo.setBlendConstants(std::array<float, 4>{0.0f, 0.0f, 0.0f, 0.0f});
+                blendInfo.blendConstants[0] = 0.0f;
+                blendInfo.blendConstants[1] = 0.0f;
+                blendInfo.blendConstants[2] = 0.0f;
+                blendInfo.blendConstants[3] = 0.0f;
 
                 vk::GraphicsPipelineCreateInfo pipelineInfo;
-                pipelineInfo.setFlags(vk::PipelineCreateFlagBits());
                 pipelineInfo.setStageCount(2);
                 pipelineInfo.setPStages(stageInfos);
                 pipelineInfo.setPVertexInputState(&vertexInputInfo);
