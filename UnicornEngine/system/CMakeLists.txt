@@ -11,10 +11,12 @@ include_directories(
 )
 
 set(SYSTEM_HEADERS
+    include/unicorn/system/Input.hpp
     include/unicorn/system/Manager.hpp
 )
 
 set(SYSTEM_SOURCES
+    source/Input.cpp
     source/Manager.cpp
 )
 

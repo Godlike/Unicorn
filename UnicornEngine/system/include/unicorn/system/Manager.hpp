@@ -147,7 +147,7 @@ public:
      */
     void Deinit();
 
-    /** @brief  Polls for window and monitor events */
+    /** @brief  Polls for window, monitor and input events */
     void PollEvents() const;
 
     /** @brief  Checks whether window managing subsystem supports Vulkan
