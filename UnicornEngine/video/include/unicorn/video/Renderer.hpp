@@ -21,33 +21,34 @@ namespace system
 
 namespace video
 {
-    class Camera;
+	class Camera;
 class Renderer
 {
 public:
-    Renderer(system::Manager& manager, system::Window* window);
+	Renderer(system::Manager& manager, system::Window* window);
 
-    virtual ~Renderer() {};
+	virtual ~Renderer() {};
 
-    Renderer(const Renderer& other) = delete;
-    Renderer(const Renderer&& other) = delete;
-    Renderer& operator=(const Renderer& other) = delete;
-    Renderer& operator=(const Renderer&& other) = delete;
+	Renderer(const Renderer& other) = delete;
+	Renderer(const Renderer&& other) = delete;
+	Renderer& operator=(const Renderer& other) = delete;
+	Renderer& operator=(const Renderer&& other) = delete;
 
 	virtual bool Init() = 0;
 	virtual void Deinit() = 0;
 	virtual bool Render() = 0;
-    virtual bool RecreateSwapChain() = 0;
+	virtual bool RecreateSwapChain() = 0;
 protected:
-    bool m_isInitialized;
+	bool m_isInitialized;
 
-    //! Reference to window manager manager
-    system::Manager& m_systemManager;
-    //! Pointer to associated window
-    system::Window* m_pWindow;
+	//! Reference to window manager manager
+	system::Manager& m_systemManager;
+	//! Pointer to associated window
+	system::Window* m_pWindow;
 	//! Main view camera
 	Camera* m_pCamera;
-    // Callbacks for window events
+
+	// Callbacks for window events
 	virtual void OnWindowDestroyed(system::Window* pWindow) = 0;
 	virtual void OnWindowSizeChanged(system::Window* pWindow, std::pair<std::int32_t, std::int32_t> size) = 0;
 };

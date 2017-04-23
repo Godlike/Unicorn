@@ -12,9 +12,9 @@ namespace unicorn
     {
         Camera::Camera() : m_rotation({ 0.0, 0.0, 0.0 }),
             m_position({ 0.0, 0.0, 0.0 }),
-            m_fov(0.0),
-            m_znear(0.0),
-            m_zfar(0.0)
+            m_fov(45.0),
+            m_znear(0.1),
+            m_zfar(100.0)
         {
         }
 

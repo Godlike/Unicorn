@@ -38,7 +38,7 @@ class WindowProfiler;
 }
 
 /** @brief  Engine main class */
-class UNICORN_EXPORT UnicornEngine
+class UnicornEngine
 {
 public:
     /** @brief  Constructs an empty engine */
@@ -64,19 +64,19 @@ public:
      *
      *  @return @c true if initialization was successful, @c false otherwise
      */
-    bool Init();
+    UNICORN_EXPORT bool Init();
 
     /** @brief  Engine's main loop */
-    void Run();
+    UNICORN_EXPORT void Run();
 
     /** @brief  Deinitializes the engine
      *
      *  Deinitializes @ref m_pGraphics
      */
-    void Deinit();
+    UNICORN_EXPORT void Deinit();
 
     /** @brief  Returns pointer to the graphics system */
-    video::Graphics* GetGraphics() const { return m_pGraphics; }
+    UNICORN_EXPORT video::Graphics* GetGraphics() const { return m_pGraphics; }
 
     /** @brief  Returns all connected gamepads
      *
@@ -85,7 +85,7 @@ public:
      *
      *  @return a map of connected gamepads
      */
-    const std::map<uint32_t, system::input::Gamepad*>& GetGamepads() const;
+    UNICORN_EXPORT const std::map<uint32_t, system::input::Gamepad*>& GetGamepads() const;
 
     /** @brief  Event triggered after input processing but before rendering
      *

@@ -5,13 +5,10 @@
 cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.0)
 
-set(VIDEO_HEADERS
-    include/unicorn/video/Graphics.hpp
-    include/unicorn/video/Renderer.hpp
-	include/unicorn/video/Camera.hpp
-    include/unicorn/video/vulkan/Context.hpp
-    include/unicorn/video/vulkan/Device.hpp
-    include/unicorn/video/vulkan/Renderer.hpp
+set(VULKAN_HEADERS
+	include/unicorn/video/vulkan/Context.hpp
+	include/unicorn/video/vulkan/Device.hpp
+	include/unicorn/video/vulkan/Renderer.hpp
 	include/unicorn/video/vulkan/Buffer.hpp
 	include/unicorn/video/vulkan/CommandBuffers.hpp
 	include/unicorn/video/vulkan/DescriptorSets.hpp
@@ -22,16 +19,12 @@ set(VIDEO_HEADERS
 	include/unicorn/video/vulkan/RenderPass.hpp
 	include/unicorn/video/vulkan/Shader.hpp
 	include/unicorn/video/vulkan/SwapChain.hpp
-
 )
 
-set(VIDEO_SOURCES
-    source/Graphics.cpp
-	source/Renderer.cpp
-	source/Camera.cpp
-    source/vulkan/Context.cpp
-    source/vulkan/Device.cpp
-    source/vulkan/Renderer.cpp
+set(VULKAN_SOURCES
+	source/vulkan/Context.cpp
+	source/vulkan/Device.cpp
+	source/vulkan/Renderer.cpp
 	source/vulkan/Buffer.cpp
 	source/vulkan/CommandBuffers.cpp
 	source/vulkan/DescriptorSets.cpp
@@ -44,11 +37,25 @@ set(VIDEO_SOURCES
 	source/vulkan/SwapChain.cpp
 )
 
+set(VIDEO_HEADERS
+	include/unicorn/video/Graphics.hpp
+	include/unicorn/video/Renderer.hpp
+	include/unicorn/video/Camera.hpp
+	${VULKAN_HEADERS}
+)
+
+set(VIDEO_SOURCES
+	source/Graphics.cpp
+	source/Renderer.cpp
+	source/Camera.cpp
+	${VULKAN_SOURCES}
+)
+
 add_library(video STATIC
-    ${VIDEO_HEADERS}
-    ${VIDEO_SOURCES}
+	${VIDEO_HEADERS}
+	${VIDEO_SOURCES}
 )
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()

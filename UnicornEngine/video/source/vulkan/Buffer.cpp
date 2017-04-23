@@ -1,3 +1,9 @@
+/*
+* Copyright (C) 2017 by Godlike
+* This code is licensed under the MIT license (MIT)
+* (http://opensource.org/licenses/MIT)
+*/
+
 #include <unicorn/video/vulkan/Buffer.hpp>
 
 namespace unicorn
@@ -6,7 +12,7 @@ namespace video
 {
 namespace vulkan
 {
-Buffer::Buffer()
+Buffer::Buffer(): m_size(0)
 {
 }
 
@@ -20,7 +26,6 @@ vk::Result Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, 
     m_usage = usage;
     m_size = size;
 
-    //init BufferCreateInfo
     vk::BufferCreateInfo bufferInfo;
     bufferInfo.setFlags(vk::BufferCreateFlagBits());
     bufferInfo.setUsage(m_usage);
@@ -29,18 +34,15 @@ vk::Result Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, 
     bufferInfo.setPQueueFamilyIndices(nullptr);
     bufferInfo.setSharingMode(vk::SharingMode::eExclusive);
 
-    //create VertexBuffer
     vk::Result result = m_device.createBuffer(&bufferInfo, nullptr, &m_buffer);
     if (result != vk::Result::eSuccess)
     {
         return result;
     }
 
-    //get PhysicalDeviceMemoryProperties
     vk::PhysicalDeviceMemoryProperties memoryProperties;
     physicalDevice.getMemoryProperties(&memoryProperties);
 
-    //get MemoryRequirements
     vk::MemoryRequirements req;
     m_device.getBufferMemoryRequirements(m_buffer, &req);
 
@@ -58,19 +60,16 @@ vk::Result Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, 
         }
     }
 
-    //init MemoryAllocateInfo
     vk::MemoryAllocateInfo memoryInfo;
     memoryInfo.setMemoryTypeIndex(memoryTypeIndex);
     memoryInfo.setAllocationSize(req.size);
 
-    //allocate VertexMemory
     result = m_device.allocateMemory(&memoryInfo, nullptr, &m_memory);
     if (result != vk::Result::eSuccess)
     {
         return result;
     }
 
-//bind VertexMemory to VertexBuffer
 #ifdef VKCPP_ENHANCED_MODE
     m_device.bindBufferMemory(m_buffer, m_memory, 0);
 #else
@@ -94,10 +93,8 @@ void Buffer::Write(const void* pData) const
 #else
     m_device.mapMemory(m_memory, 0, m_size, vk::MemoryMapFlagBits(), &mappedMemory);
 #endif
-    //copy Vertexes
     memcpy(mappedMemory, pData, m_size);
 
-    //unmap VertexMemory
     m_device.unmapMemory(m_memory);
 }
 
