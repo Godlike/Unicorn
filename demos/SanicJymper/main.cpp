@@ -16,7 +16,9 @@
 #include <unicorn/system/input/Gamepad.hpp>
 #include <unicorn/system/input/Key.hpp>
 #include <unicorn/system/input/Modifier.hpp>
-
+#include <unicorn/video/geometry/Mesh.hpp>
+#include <unicorn/video/geometry/Triangle.hpp>
+#include <unicorn/video/Renderer.hpp>
 #include <cmath>
 #include <iostream>
 
@@ -186,8 +188,10 @@ int main(int argc, char* argv[])
             nullptr,
             nullptr);
 
-        auto vkRenderer0 = pGraphics->SpawnVulkanRenderer(pWindow0);
+        auto* vkRenderer0 = pGraphics->SpawnVulkanRenderer(pWindow0);
         auto vkRenderer1 = pGraphics->SpawnVulkanRenderer(pWindow1);
+
+        unicorn::video::geometry::Triangle triangle(vkRenderer0->SpawnMesh());
 
         pGraphics->BindWindowRenderer(pWindow0, vkRenderer0);
         pGraphics->BindWindowRenderer(pWindow1, vkRenderer1);

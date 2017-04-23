@@ -42,7 +42,7 @@ class UnicornEngine
 {
 public:
     /** @brief  Constructs an empty engine */
-    UnicornEngine();
+    UNICORN_EXPORT UnicornEngine();
 
     /** @brief  Destructs an engine
      *
@@ -50,7 +50,7 @@ public:
      *
      *  @sa Deinit()
      */
-    ~UnicornEngine();
+    UNICORN_EXPORT ~UnicornEngine();
 
     UnicornEngine(const UnicornEngine& other) = delete;
     UnicornEngine& operator=(const UnicornEngine& other) = delete;

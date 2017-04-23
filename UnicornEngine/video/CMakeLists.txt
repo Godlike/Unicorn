@@ -5,6 +5,23 @@
 cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.0)
 
+
+set(GEOMETRY_HEADERS
+	include/unicorn/video/geometry/Cube.hpp
+	include/unicorn/video/geometry/Mesh.hpp
+	include/unicorn/video/geometry/Quad.hpp
+	include/unicorn/video/geometry/Sphere.hpp
+	include/unicorn/video/geometry/Triangle.hpp
+)
+
+set(GEOMETRY_SOURCES
+	source/geometry/Cube.cpp
+	source/geometry/Mesh.cpp
+	source/geometry/Quad.cpp
+	source/geometry/Sphere.cpp
+	source/geometry/Triangle.cpp
+)
+
 set(VULKAN_HEADERS
 	include/unicorn/video/vulkan/Context.hpp
 	include/unicorn/video/vulkan/Device.hpp
@@ -42,6 +59,7 @@ set(VIDEO_HEADERS
 	include/unicorn/video/Renderer.hpp
 	include/unicorn/video/Camera.hpp
 	${VULKAN_HEADERS}
+    ${GEOMETRY_HEADERS}
 )
 
 set(VIDEO_SOURCES
@@ -49,6 +67,7 @@ set(VIDEO_SOURCES
 	source/Renderer.cpp
 	source/Camera.cpp
 	${VULKAN_SOURCES}
+    ${GEOMETRY_SOURCES}
 )
 
 add_library(video STATIC

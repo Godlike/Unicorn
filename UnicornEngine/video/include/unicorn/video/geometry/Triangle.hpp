@@ -7,6 +7,11 @@
 #ifndef UNICORN_VIDEO_GEOMETRY_TRIANGLE_HPP
 #define UNICORN_VIDEO_GEOMETRY_TRIANGLE_HPP
 
+#include <unicorn/utility/SharedMacros.hpp>
+#include <unicorn/video/geometry/Mesh.hpp>
+
+#include <vector>
+
 namespace unicorn
 {
     namespace video
@@ -15,7 +20,8 @@ namespace unicorn
         {
             class Triangle
             {
-
+            public:
+                UNICORN_EXPORT Triangle(Mesh* mesh);
             };
         }
     }
