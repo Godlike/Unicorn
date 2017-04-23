@@ -43,7 +43,7 @@ namespace video
                 m_physicalDevices[deviceIndex].getQueueFamilyProperties(&queueFamilyPropertiesCount, queueFamilyProperties.data());
 
                 uint32_t familyIndex = 0;
-                for (int i = 0; i < queueFamilyProperties.size(); ++i)
+                for (unsigned int i = 0; i < queueFamilyProperties.size(); ++i)
                 {
                     if (queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eGraphics)
                     {
