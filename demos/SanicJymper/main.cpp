@@ -7,6 +7,7 @@
 #include <unicorn/UnicornEngine.hpp>
 
 #include <unicorn/video/Graphics.hpp>
+#include <unicorn/system/Input.hpp>
 
 #include <unicorn/system/Window.hpp>
 #include <unicorn/system/WindowHint.hpp>
@@ -22,7 +23,8 @@
 #include <cmath>
 #include <iostream>
 
-static unicorn::video::Graphics* pGraphics = nullptr;
+static unicorn::video::Graphics* s_pGraphics = nullptr;
+static unicorn::system::Input* s_pInput = nullptr;
 
 void onWindowSizeChange(unicorn::system::Window* pWindow, std::pair<int32_t, int32_t> size)
 {
@@ -191,12 +193,12 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
 
 void onGamepadUpdate(unicorn::system::input::Gamepad* pGamepad)
 {
-    if (!pGraphics)
+    if (!s_pGraphics)
     {
         return;
     }
 
-    unicorn::system::Window* pWindow = pGraphics->GetFocusedWindow();
+    unicorn::system::Window* pWindow = s_pGraphics->GetFocusedWindow();
 
     if (!pWindow)
     {
@@ -241,6 +243,11 @@ void onGamepadUpdate(unicorn::system::input::Gamepad* pGamepad)
     }
 }
 
+void onGamepadCreated(unicorn::system::input::Gamepad* const& pGamepad)
+{
+    pGamepad->Updated.connect(&onGamepadUpdate);
+}
+
 int main(int argc, char* argv[])
 {
     using unicorn::system::CustomValue;
@@ -257,9 +264,12 @@ int main(int argc, char* argv[])
 
     if (unicornEngine->Init())
     {
-        pGraphics = unicornEngine->GetGraphics();
+        s_pGraphics = unicornEngine->GetGraphics();
+        s_pInput = unicornEngine->GetInput();
 
-        for (auto const& cit : unicornEngine->GetGamepads())
+        s_pInput->GamepadCreated.connect(&onGamepadCreated);
+
+        for (auto const& cit : s_pInput->GetGamepads())
         {
             cit.second->Updated.connect(&onGamepadUpdate);
         }
@@ -267,25 +277,25 @@ int main(int argc, char* argv[])
         unicornEngine->LogicFrame.connect(&onLogicFrame);
 
         // Borderless undecorated
-        pGraphics->SetWindowCreationHint(WindowHint::Decorated,
+        s_pGraphics->SetWindowCreationHint(WindowHint::Decorated,
             CustomValue::False);
 
         // Resizable
-        pGraphics->SetWindowCreationHint(WindowHint::Resizable,
+        s_pGraphics->SetWindowCreationHint(WindowHint::Resizable,
             CustomValue::True);
 
-        auto const& monitors = pGraphics->GetMonitors();
+        auto const& monitors = s_pGraphics->GetMonitors();
         Monitor* lastMonitor = monitors.back();
         auto activeMode = lastMonitor->GetActiveVideoMode();
 
-        Window* pWindow0 = pGraphics->SpawnWindow(
+        Window* pWindow0 = s_pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
             settings.GetApplicationName(),
             nullptr,
             nullptr );
 
-        Window* pWindow1 = pGraphics->SpawnWindow(
+        Window* pWindow1 = s_pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
             std::string("Hmm ") + settings.GetApplicationName(),
@@ -295,10 +305,10 @@ int main(int argc, char* argv[])
         pWindow1->Keyboard.connect(&onWindowKeyboard);
 
         // Decorated, with borders
-        pGraphics->SetWindowCreationHint(WindowHint::Decorated,
+        s_pGraphics->SetWindowCreationHint(WindowHint::Decorated,
             CustomValue::True);
 
-        Window* pWindow2 = pGraphics->SpawnWindow(
+        Window* pWindow2 = s_pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
             std::string("wat ") + settings.GetApplicationName(),

@@ -9,6 +9,7 @@
 #include <unicorn/video/Graphics.hpp>
 #include <unicorn/utility/asset/SimpleStorage.hpp>
 
+#include <unicorn/system/Input.hpp>
 #include <unicorn/system/Manager.hpp>
 
 #include <unicorn/system/profiler/GamepadProfiler.hpp>
@@ -17,14 +18,31 @@
 #include <unicorn/system/profiler/MouseProfiler.hpp>
 #include <unicorn/system/profiler/WindowProfiler.hpp>
 
+namespace
+{
+    //! Pointer to the window profiler
+    static unicorn::system::WindowProfiler* s_pWindowProfiler = nullptr;
+
+    //! Pointer to the monitor profiler
+    static unicorn::system::MonitorProfiler* s_pMonitorProfiler = nullptr;
+
+    //! Pointer to the mouse profiler
+    static unicorn::system::MouseProfiler* s_pMouseProfiler = nullptr;
+
+    //! Pointer to the key profiler
+    static unicorn::system::KeyProfiler* s_pKeyProfiler = nullptr;
+
+    //! Pointer to the gamepad profiler
+    static unicorn::system::GamepadProfiler* s_pGamepadProfiler = nullptr;
+}
+
 namespace unicorn
 {
 UnicornEngine::UnicornEngine()
     : m_isInitialized(false)
     , m_pSystemManager(nullptr)
-    , m_pWindowProfiler(nullptr)
-    , m_pMonitorProfiler(nullptr)
     , m_pGraphics(nullptr)
+    , m_pInput(nullptr)
 {
 }
 
@@ -45,15 +63,16 @@ bool UnicornEngine::Init()
 
     m_pSystemManager = new system::Manager();
 
-    m_pWindowProfiler = new system::WindowProfiler(*m_pSystemManager);
-    m_pMonitorProfiler = new system::MonitorProfiler(*m_pSystemManager);
-    m_pMouseProfiler = new system::MouseProfiler(*m_pSystemManager);
-    m_pKeyProfiler = new system::KeyProfiler(*m_pSystemManager);
-    m_pGamepadProfiler = new system::GamepadProfiler(*m_pSystemManager);
+    s_pWindowProfiler = new system::WindowProfiler(*m_pSystemManager);
+    s_pMonitorProfiler = new system::MonitorProfiler(*m_pSystemManager);
+    s_pMouseProfiler = new system::MouseProfiler(*m_pSystemManager);
+    s_pKeyProfiler = new system::KeyProfiler(*m_pSystemManager);
+    s_pGamepadProfiler = new system::GamepadProfiler(*m_pSystemManager);
 
     m_pSystemManager->Init();
 
     m_pGraphics = new video::Graphics(*m_pSystemManager);
+    m_pInput = new system::Input(*m_pSystemManager);
 
     if (!m_pGraphics->Init())
     {
@@ -84,39 +103,39 @@ void UnicornEngine::Deinit()
     {
         m_pSystemManager->Deinit();
 
-        if (m_pGamepadProfiler)
+        if (s_pGamepadProfiler)
         {
-            delete m_pGamepadProfiler;
+            delete s_pGamepadProfiler;
 
-            m_pGamepadProfiler = nullptr;
+            s_pGamepadProfiler = nullptr;
         }
 
-        if (m_pKeyProfiler)
+        if (s_pKeyProfiler)
         {
-            delete m_pKeyProfiler;
+            delete s_pKeyProfiler;
 
-            m_pKeyProfiler = nullptr;
+            s_pKeyProfiler = nullptr;
         }
 
-        if (m_pMouseProfiler)
+        if (s_pMouseProfiler)
         {
-            delete m_pMouseProfiler;
+            delete s_pMouseProfiler;
 
-            m_pMouseProfiler = nullptr;
+            s_pMouseProfiler = nullptr;
         }
 
-        if (m_pMonitorProfiler)
+        if (s_pMonitorProfiler)
         {
-            delete m_pMonitorProfiler;
+            delete s_pMonitorProfiler;
 
-            m_pMonitorProfiler = nullptr;
+            s_pMonitorProfiler = nullptr;
         }
 
-        if (m_pWindowProfiler)
+        if (s_pWindowProfiler)
         {
-            delete m_pWindowProfiler;
+            delete s_pWindowProfiler;
 
-            m_pWindowProfiler = nullptr;
+            s_pWindowProfiler = nullptr;
         }
 
         delete m_pSystemManager;
@@ -138,17 +157,14 @@ void UnicornEngine::Run()
     {
         do
         {
-            m_pSystemManager->PollGamepads();
+            m_pSystemManager->PollEvents();
+
+            m_pInput->Process();
 
             LogicFrame.emit(this);
         }
         while (m_pGraphics->Render());
     }
-}
-
-const std::map<uint32_t, system::input::Gamepad*>& UnicornEngine::GetGamepads() const
-{
-    return m_pSystemManager->GetGamepads();
 }
 
 }
