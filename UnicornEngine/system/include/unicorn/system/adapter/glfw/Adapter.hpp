@@ -7,10 +7,12 @@
 #ifndef UNICORN_SYSTEM_ADAPTER_GLFW_ADAPTER_HPP
 #define UNICORN_SYSTEM_ADAPTER_GLFW_ADAPTER_HPP
 
+#include <unicorn/system/CursorShape.hpp>
 #include <unicorn/system/MonitorMemento.hpp>
+#include <unicorn/system/MouseMode.hpp>
+#include <unicorn/system/VideoMode.hpp>
 #include <unicorn/system/WindowAttribute.hpp>
 #include <unicorn/system/WindowHint.hpp>
-#include <unicorn/system/VideoMode.hpp>
 
 #include <unicorn/system/input/Action.hpp>
 #include <unicorn/system/input/GamepadState.hpp>
@@ -238,6 +240,60 @@ public:
      *  @return attribute value
      */
     static int32_t GetWindowAttribute(void* handle, WindowAttribute attribute);
+
+    /** @brief  Sets a cursor shape for a window
+     *
+     *  @param  handle  window handle
+     *  @param  shape   cursor shape
+     */
+    static void SetWindowCursorShape(void* handle, CursorShape shape);
+
+    /** @brief  Returns a mouse mode for a window
+     *
+     *  @param  handle  window handle
+     *
+     *  @return mouse mode
+     */
+    static MouseMode GetWindowMouseMode(void* handle);
+
+    /** @brief  Sets mouse mode for a window
+     *
+     *  @param  handle  window handle
+     *  @param  mode    mouse mode
+     */
+    static void SetWindowMouseMode(void* handle, MouseMode mode);
+
+    /** @brief  Checks if window has sticky mouse buttons
+     *
+     *  @param  handle  window handle
+     *
+     *  @return @c true if window has sticky mouse buttons enabled,
+     *          @c false otherwise
+     */
+    static bool GetWindowStickyMouse(void* handle);
+
+    /** @brief  Sets mouse button sticky mode for a window
+     *
+     *  @param  handle  window handle
+     *  @param  flag    new value
+     */
+    static void SetWindowStickyMouse(void* handle, bool flag);
+
+    /** @brief  Checks if window has sticky keys
+     *
+     *  @param  handle  window handle
+     *
+     *  @return @c true if window has sticky keys enabled,
+     *          @c false otherwise
+     */
+    static bool GetWindowStickyKeys(void* handle);
+
+    /** @brief  Sets sticky keys mode for a window
+     *
+     *  @param  handle  window handle
+     *  @param  flag    new value
+     */
+    static void SetWindowStickyKeys(void* handle, bool flag);
 
     /** @brief  Processes events that are in event queue */
     static void PollEvents();

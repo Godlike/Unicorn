@@ -222,6 +222,13 @@ void unicornMonitorStateChanged(GLFWmonitor* handle, int event)
     );
 }
 
+static GLFWcursor* s_pArrowCursor = nullptr;
+static GLFWcursor* s_pIBeamCursor = nullptr;
+static GLFWcursor* s_pCrosshairCursor = nullptr;
+static GLFWcursor* s_pHandCursor = nullptr;
+static GLFWcursor* s_pHResizeCursor = nullptr;
+static GLFWcursor* s_pVResizeCursor = nullptr;
+
 }
 
 void Adapter::Init()
@@ -243,6 +250,42 @@ void Adapter::Deinit()
     {
         glfwSetMonitorCallback(NULL);
         glfwSetJoystickCallback(NULL);
+
+        if (s_pArrowCursor)
+        {
+            glfwDestroyCursor(s_pArrowCursor);
+            s_pArrowCursor = nullptr;
+        }
+
+        if (s_pIBeamCursor)
+        {
+            glfwDestroyCursor(s_pIBeamCursor);
+            s_pIBeamCursor = nullptr;
+        }
+
+        if (s_pCrosshairCursor)
+        {
+            glfwDestroyCursor(s_pCrosshairCursor);
+            s_pCrosshairCursor = nullptr;
+        }
+
+        if (s_pHandCursor)
+        {
+            glfwDestroyCursor(s_pHandCursor);
+            s_pHandCursor = nullptr;
+        }
+
+        if (s_pHResizeCursor)
+        {
+            glfwDestroyCursor(s_pHResizeCursor);
+            s_pHResizeCursor = nullptr;
+        }
+
+        if (s_pVResizeCursor)
+        {
+            glfwDestroyCursor(s_pVResizeCursor);
+            s_pVResizeCursor = nullptr;
+        }
 
         glfwTerminate();
 
@@ -435,6 +478,158 @@ void Adapter::SetWindowMonitor(void* windowHandle,
 int32_t Adapter::GetWindowAttribute(void* handle, WindowAttribute attribute)
 {
     return glfwGetWindowAttrib(static_cast<GLFWwindow*>(handle), ConvertToGlfwAttribute(attribute));
+}
+
+void Adapter::SetWindowCursorShape(void* handle, CursorShape shape)
+{
+    GLFWcursor* cursor = nullptr;
+
+    switch (shape)
+    {
+        case CursorShape::Arrow:
+        {
+            if (!s_pArrowCursor)
+            {
+                s_pArrowCursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+            }
+
+            cursor = s_pArrowCursor;
+
+            break;
+        }
+        case CursorShape::TextBeam:
+        {
+            if (!s_pIBeamCursor)
+            {
+                s_pIBeamCursor = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
+            }
+
+            cursor = s_pIBeamCursor;
+
+            break;
+        }
+        case CursorShape::Crosshair:
+        {
+            if (!s_pCrosshairCursor)
+            {
+                s_pCrosshairCursor = glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR);
+            }
+
+            cursor = s_pCrosshairCursor;
+
+            break;
+        }
+        case CursorShape::Hand:
+        {
+            if (!s_pHandCursor)
+            {
+                s_pHandCursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
+            }
+
+            cursor = s_pHandCursor;
+
+            break;
+        }
+        case CursorShape::HorizontalResize:
+        {
+            if (!s_pHResizeCursor)
+            {
+                s_pHResizeCursor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
+            }
+
+            cursor = s_pHResizeCursor;
+
+            break;
+        }
+        case CursorShape::VerticalResize:
+        {
+            if (!s_pVResizeCursor)
+            {
+                s_pVResizeCursor = glfwCreateStandardCursor(GLFW_VRESIZE_CURSOR);
+            }
+
+            cursor = s_pVResizeCursor;
+
+            break;
+        }
+        default:
+        {
+            cursor = nullptr;
+            break;
+        }
+    }
+
+    glfwSetCursor(static_cast<GLFWwindow*>(handle), cursor);
+}
+
+MouseMode Adapter::GetWindowMouseMode(void* handle)
+{
+    MouseMode result = MouseMode::Normal;
+
+    switch (glfwGetInputMode(static_cast<GLFWwindow*>(handle), GLFW_CURSOR))
+    {
+        case GLFW_CURSOR_HIDDEN:
+        {
+            result = MouseMode::Hidden;
+            break;
+        }
+        case GLFW_CURSOR_DISABLED:
+        {
+            result = MouseMode::Captured;
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    return result;
+}
+
+void Adapter::SetWindowMouseMode(void* handle, MouseMode mode)
+{
+    int value = GLFW_CURSOR_NORMAL;
+
+    switch (mode)
+    {
+        case MouseMode::Hidden:
+        {
+            value = GLFW_CURSOR_HIDDEN;
+            break;
+        }
+        case MouseMode::Captured:
+        {
+            value = GLFW_CURSOR_DISABLED;
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    glfwSetInputMode(static_cast<GLFWwindow*>(handle), GLFW_CURSOR, value);
+}
+
+bool Adapter::GetWindowStickyMouse(void* handle)
+{
+    return glfwGetInputMode(static_cast<GLFWwindow*>(handle), GLFW_STICKY_MOUSE_BUTTONS) == GLFW_TRUE;
+}
+
+void Adapter::SetWindowStickyMouse(void* handle, bool flag)
+{
+    glfwSetInputMode(static_cast<GLFWwindow*>(handle), GLFW_STICKY_MOUSE_BUTTONS, flag ? GLFW_TRUE : GLFW_FALSE);
+}
+
+bool Adapter::GetWindowStickyKeys(void* handle)
+{
+    return glfwGetInputMode(static_cast<GLFWwindow*>(handle), GLFW_STICKY_KEYS) == GLFW_TRUE;
+}
+
+void Adapter::SetWindowStickyKeys(void* handle, bool flag)
+{
+    glfwSetInputMode(static_cast<GLFWwindow*>(handle), GLFW_STICKY_KEYS, flag ? GLFW_TRUE : GLFW_FALSE);
 }
 
 void Adapter::PollEvents()

@@ -63,6 +63,10 @@ Window::~Window()
     Focused.clear();
     Minimized.clear();
     Maximized.clear();
+    CursorShapeChanged.clear();
+    MouseModeChanged.clear();
+    StickyMouseChanged.clear();
+    StickyKeysChanged.clear();
     FramebufferResized.clear();
 
     MouseButton.clear();
@@ -139,6 +143,49 @@ void Window::Hide()
 void Window::Show()
 {
     WINDOW_MANAGER_ADAPTER::ShowWindow(m_handle);
+}
+
+void Window::SetCursorShape(CursorShape shape)
+{
+    WINDOW_MANAGER_ADAPTER::SetWindowCursorShape(m_handle, shape);
+
+    CursorShapeChanged.emit(this, shape);
+}
+
+MouseMode Window::GetMouseMode() const
+{
+    return WINDOW_MANAGER_ADAPTER::GetWindowMouseMode(m_handle);
+}
+
+void Window::SetMouseMode(MouseMode mode)
+{
+    WINDOW_MANAGER_ADAPTER::SetWindowMouseMode(m_handle, mode);
+
+    MouseModeChanged.emit(this, mode);
+}
+
+bool Window::GetStickyMouse() const
+{
+    return WINDOW_MANAGER_ADAPTER::GetWindowStickyMouse(m_handle);
+}
+
+void Window::SetStickyMouse(bool flag)
+{
+    WINDOW_MANAGER_ADAPTER::SetWindowStickyMouse(m_handle, flag);
+
+    StickyMouseChanged.emit(this, flag);
+}
+
+bool Window::GetStickyKeys() const
+{
+    return WINDOW_MANAGER_ADAPTER::GetWindowStickyKeys(m_handle);
+}
+
+void Window::SetStickyKeys(bool flag)
+{
+    WINDOW_MANAGER_ADAPTER::SetWindowStickyKeys(m_handle, flag);
+
+    StickyKeysChanged.emit(this, flag);
 }
 
 void Window::OnWindowPositionChanged(void* handle, std::pair<int32_t, int32_t> position)
