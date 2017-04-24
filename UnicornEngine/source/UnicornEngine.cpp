@@ -30,7 +30,6 @@ UnicornEngine::UnicornEngine()
     , m_pMonitorProfiler(nullptr)
     , m_pGraphics(nullptr)
 {
-    video::geometry::Triangle(new video::geometry::Mesh); //TODO: This fucking temporal solution for this shitty error ffs
 }
 
 UnicornEngine::~UnicornEngine()

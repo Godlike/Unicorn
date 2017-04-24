@@ -5,3 +5,14 @@
 */
 
 #include <unicorn/video/geometry/Mesh.hpp>
+
+namespace unicorn
+{
+	namespace video
+	{
+		namespace geometry
+		{
+			Mesh::Mesh() {}
+		}
+	}
+}

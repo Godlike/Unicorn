@@ -94,7 +94,23 @@ set(UNICORN_ENGINE_SOURCES
     source/UnicornEngine.cpp
     source/Settings.cpp)
 
-add_library(${UNICORN_ENGINE_LIB} ${UNICORN_ENGINE_HEADERS} ${UNICORN_ENGINE_SOURCES})
+add_library(${UNICORN_ENGINE_LIB}
+	${UNICORN_ENGINE_HEADERS}
+	${UNICORN_ENGINE_SOURCES}
+	
+	$<TARGET_OBJECTS:${UNICORN_ENGINE_UTILITY_LIB}>
+    $<TARGET_OBJECTS:${UNICORN_ENGINE_VIDEO_LIB}>
+    $<TARGET_OBJECTS:${UNICORN_ENGINE_SYSTEM_LIB}>
+)
+
+target_link_libraries(${UNICORN_ENGINE_LIB}
+	${WINDOW_MANAGER_LIBS}
+    ${VULKAN_LIBRARY}
+)
+
+if (UNIX)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+endif()
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # Workaround for a bug regarding __builtin_cpu_supports("sse2") call on GCC 5+
@@ -125,12 +141,6 @@ if (UNICORN_BUILD_DOCUMENTATION)
         message(FATAL_ERROR "Doxygen is required to build documentation")
     endif()
 endif()
-
-target_link_libraries(${UNICORN_ENGINE_LIB} 
-    ${UNICORN_ENGINE_UTILITY_LIB}  
-    ${UNICORN_ENGINE_VIDEO_LIB}
-    ${UNICORN_ENGINE_SYSTEM_LIB}
-    ${VULKAN_LIBRARY}) 
 
 if(UNIX)
     set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/bin/glslangValidator")
