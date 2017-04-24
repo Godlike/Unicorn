@@ -68,7 +68,7 @@ set(INPUT_SOURCES
     source/input/Gamepad.cpp
 )
 
-add_library(system STATIC
+add_library(system OBJECT
     ${WINDOW_MANAGER_HEADERS}
     ${INPUT_HEADERS}
     ${SYSTEM_HEADERS}
@@ -79,7 +79,5 @@ add_library(system STATIC
 )
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()
-
-target_link_libraries(system ${WINDOW_MANAGER_LIBS})

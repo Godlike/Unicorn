@@ -26,10 +26,7 @@ namespace unicorn
             class Mesh
             {
             public:
-                UNICORN_EXPORT Mesh()
-                {
-                    
-                }
+				UNICORN_EXPORT Mesh();
                 UNICORN_EXPORT void SetVertices(const std::vector<Vertex>& vertices)
                 {
                     m_vertices = vertices;

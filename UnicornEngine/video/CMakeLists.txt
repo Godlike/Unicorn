@@ -70,11 +70,11 @@ set(VIDEO_SOURCES
     ${GEOMETRY_SOURCES}
 )
 
-add_library(video STATIC
+add_library(video OBJECT
 	${VIDEO_HEADERS}
 	${VIDEO_SOURCES}
 )
 
 if (UNIX)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()

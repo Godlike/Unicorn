@@ -15,7 +15,7 @@ namespace unicorn
 		namespace vulkan
 		{
 			vk::Instance Context::m_vkInstance = nullptr;
-			VkDebugReportCallbackEXT Context::m_vulkanCallback = nullptr;
+			VkDebugReportCallbackEXT Context::m_vulkanCallback = NULL;
 			std::vector<const char*> Context::validationLayers = { "VK_LAYER_LUNARG_standard_validation" };
 			std::vector<const char*> Context::deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
 			std::vector<const char*> Context::instanceExtensions = { };
@@ -225,7 +225,7 @@ namespace unicorn
 			}
 
 			void Context::FreeDebugCallback() {
-				if (m_vulkanCallback != nullptr)
+				if (m_vulkanCallback != NULL)
 				{
 					DestroyDebugReportCallbackEXT();
 				}

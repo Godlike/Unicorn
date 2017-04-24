@@ -29,13 +29,11 @@ set(UTILITY_SOURCES
     sources/Logger.cpp
 )
 
-add_library(utility STATIC
+add_library(utility OBJECT
     ${UTILITY_HEADERS}
     ${UTILITY_SOURCES}
 )
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()
-
-target_link_libraries(utility ${CMAKE_THREAD_LIBS_INIT})
