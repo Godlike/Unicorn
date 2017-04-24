@@ -9,6 +9,7 @@
 
 #include <vulkan/vulkan.hpp>
 #include <unicorn/video/Renderer.hpp>
+#include <unicorn/video/vulkan/VkMesh.hpp>
 
 namespace unicorn
 {
@@ -57,8 +58,8 @@ namespace unicorn
 				bool Init() override;
 				void Deinit() override;
 				bool Render() override;
-				bool RecreateSwapChain() override;
-                geometry::Mesh* SpawnMesh() override;
+				bool RecreateSwapChain();
+				std::shared_ptr<geometry::Mesh> SpawnMesh() override;
 			private:
 				vk::PhysicalDevice m_vkPhysicalDevice;
 				vk::Device m_vkLogicalDevice;
@@ -80,6 +81,7 @@ namespace unicorn
 				std::vector<vk::ImageView> m_swapChainImageViews;
 				std::vector<vk::Framebuffer> m_swapChainFramebuffers;
 				std::vector<vk::CommandBuffer> m_commandBuffers;
+                std::vector<VkMesh*> m_vkMeshes;
 #ifdef NDEBUG
 				static const bool s_enableValidationLayers = false;
 #else

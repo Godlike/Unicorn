@@ -11,6 +11,7 @@
 #include <unicorn/system/Manager.hpp>
 #include <unicorn/system/Window.hpp>
 #include <unicorn/video/vulkan/Context.hpp>
+#include <unicorn/video/vulkan/VkMesh.hpp>
 
 #include <cstring>
 #include <iostream>
@@ -18,7 +19,6 @@
 #include <algorithm>
 #include <array>
 #include <tuple>
-#include "unicorn/video/vulkan/Mesh.hpp"
 
 namespace unicorn
 {
@@ -247,10 +247,13 @@ namespace video
 			return false;
 		}
 
-		geometry::Mesh* Renderer::SpawnMesh()
+		std::shared_ptr<geometry::Mesh> Renderer::SpawnMesh()
 		{
-            auto mesh = new vulkan::Mesh(m_vkLogicalDevice, m_vkPhysicalDevice);
-            m_meshes.push_back(mesh);
+			auto mesh = std::make_shared<geometry::Mesh>();
+			auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, mesh);
+			m_vkMeshes.push_back(vkmesh);
+			m_meshes.push_back(mesh);
+			CreateCommandBuffers();
 			return mesh;
 		}
 
@@ -563,8 +566,7 @@ namespace video
 
 		bool Renderer::CreateRenderPass()
 		{
-			vk::Result result;
-			FreeRenderPass();
+		    FreeRenderPass();
 
 			vk::AttachmentDescription colorAttachment;
 			colorAttachment.format = m_swapChainImageFormat;
@@ -591,7 +593,7 @@ namespace video
 			renderPassInfo.subpassCount = 1;
 			renderPassInfo.pSubpasses = &subpass;
 
-			result = m_vkLogicalDevice.createRenderPass(&renderPassInfo, {}, &m_renderPass);
+			vk::Result result = m_vkLogicalDevice.createRenderPass(&renderPassInfo, {}, &m_renderPass);
 			if (result != vk::Result::eSuccess)
 			{
 				LOG_ERROR("Failed to create render pass!");
@@ -673,11 +675,13 @@ namespace video
 				LOG_ERROR("Can't create shader module!");
 				return false;
 			}
+			
+			auto vertexInputInfo = m_shaderProgram->GetVertexInputInfo();
 
 			vk::GraphicsPipelineCreateInfo pipelineInfo;
 			pipelineInfo.stageCount = 2;
 			pipelineInfo.pStages = m_shaderProgram->GetShaderStageInfoData();
-			pipelineInfo.pVertexInputState = &m_shaderProgram->GetVertexInputInfo();
+			pipelineInfo.pVertexInputState = &vertexInputInfo;
 			pipelineInfo.pInputAssemblyState = &inputAssembly;
 			pipelineInfo.pViewportState = &viewportState;
 			pipelineInfo.pRasterizationState = &rasterizer;
@@ -792,11 +796,11 @@ namespace video
 				m_commandBuffers[i].beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
 				m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
 
-				for(geometry::Mesh* mesh : m_meshes)
+				for(VkMesh* vkMesh : m_vkMeshes)
 				{
-                    vk::Buffer buffer[] = { static_cast<vulkan::Mesh*>(mesh)->GetBuffer() };
-					m_commandBuffers[i].bindVertexBuffers(0, 1, buffer, 0);
-					m_commandBuffers[i].draw(mesh->VerticesSize(), 1, 0, 0);
+					vk::Buffer buffer[] = { vkMesh->GetBuffer() };
+					m_commandBuffers[i].bindVertexBuffers(0, 1, buffer, nullptr);
+					m_commandBuffers[i].draw(vkMesh->VerticesSize(), 1, 0, 0);
 				}				
 
 				m_commandBuffers[i].endRenderPass();

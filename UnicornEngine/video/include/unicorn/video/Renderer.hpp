@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <cstdint>
+#include <memory>
 
 #include <unicorn/video/geometry/Mesh.hpp>
 
@@ -39,8 +40,7 @@ public:
 	virtual bool Init() = 0;
 	virtual void Deinit() = 0;
 	virtual bool Render() = 0;
-	virtual bool RecreateSwapChain() = 0;
-	virtual geometry::Mesh* SpawnMesh() = 0;
+	virtual std::shared_ptr<geometry::Mesh> SpawnMesh() = 0;
 protected:
 	bool m_isInitialized;
 
@@ -51,7 +51,7 @@ protected:
 	//! Main view camera
 	Camera* m_pCamera;
 	//! Array of renderer meshes
-	std::vector<geometry::Mesh*> m_meshes;
+	std::vector<std::shared_ptr<geometry::Mesh>> m_meshes;
 	// Callbacks for window events
 	virtual void OnWindowDestroyed(system::Window* pWindow) = 0;
 	virtual void OnWindowSizeChanged(system::Window* pWindow, std::pair<std::int32_t, std::int32_t> size) = 0;

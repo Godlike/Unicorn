@@ -13,7 +13,13 @@ namespace unicorn
 		namespace geometry
 		{
 			Mesh::Mesh() {}
+
 			Mesh::~Mesh() {}
+
+		    std::uint32_t Mesh::VerticesSize() const
+		    {
+		        return static_cast<uint32_t>(m_vertices.size());
+		    }
 		}
 	}
 }

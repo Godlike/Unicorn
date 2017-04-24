@@ -37,7 +37,7 @@ set(VULKAN_HEADERS
 	include/unicorn/video/vulkan/ShaderModule.hpp
 	include/unicorn/video/vulkan/SwapChain.hpp
 	include/unicorn/video/vulkan/ShaderProgram.hpp
-	include/unicorn/video/vulkan/Mesh.hpp
+	include/unicorn/video/vulkan/VkMesh.hpp
 )
 
 set(VULKAN_SOURCES
@@ -55,7 +55,7 @@ set(VULKAN_SOURCES
 	source/vulkan/ShaderModule.cpp
 	source/vulkan/SwapChain.cpp
 	source/vulkan/ShaderProgram.cpp
-	source/vulkan/Mesh.cpp
+	source/vulkan/VkMesh.cpp
 )
 
 set(VIDEO_HEADERS

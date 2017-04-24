@@ -12,20 +12,20 @@ namespace unicorn
     {
         namespace geometry
         {
-            Triangle::Triangle(Mesh* mesh) : m_mesh(mesh)
+            Triangle::Triangle(std::shared_ptr<Mesh> mesh) : m_mesh(mesh)
             {
                 std::vector<Vertex> verts = {
                     { { 0.0f, -0.5f },{ 1.0f, 0.0f, 0.0f } },
                     { { 0.5f, 0.5f },{ 0.0f, 1.0f, 0.0f } },
                     { { -0.5f, 0.5f },{ 0.0f, 0.0f, 1.0f } }
                 };
-                m_mesh->m_vertices = verts;
-                m_mesh->Create();
+                SetVertices(verts);
             }
 
             void Triangle::SetVertices(const std::vector<Vertex>& verts)
             {
                 m_mesh->m_vertices = verts;
+                m_mesh->m_dataUpdated.emit();
             }
         }
     }

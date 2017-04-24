@@ -10,6 +10,7 @@
 #include <vulkan/vulkan.hpp>
 #include <unicorn/video/geometry/Mesh.hpp>
 #include <unicorn/video/vulkan/Buffer.hpp>
+#include <wink/slot.hpp>
 
 namespace unicorn
 {
@@ -17,19 +18,18 @@ namespace unicorn
     {
         namespace vulkan
         {
-            class Mesh : public geometry::Mesh
+            class VkMesh
             {
             public:
-                Mesh(vk::Device device, vk::PhysicalDevice physicalDevice);
-                bool Create() override;
-                vk::Buffer GetBuffer()
-                {
-                    return m_buffer.GetVkBuffer();
-                }
+                VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, std::shared_ptr<geometry::Mesh> mesh);
+                void AllocateOnGPU();
+                vk::Buffer GetBuffer();
+                std::uint32_t VerticesSize();
             private:
                 vk::Device m_device;
                 vk::PhysicalDevice m_physicalDevice;
                 vulkan::Buffer m_buffer;
+                std::shared_ptr<geometry::Mesh> m_mesh;
             };
         }
     }
