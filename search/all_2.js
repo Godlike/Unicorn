@@ -25,5 +25,6 @@ var searchData=
   ['createvulkansurface',['CreateVulkanSurface',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a61293cf2f0a8dc829dc18f3fa006d26e',1,'unicorn::system::glfw::Adapter']]],
   ['createvulkansurfaceforwindow',['CreateVulkanSurfaceForWindow',['../classunicorn_1_1system_1_1Manager.html#a86f3ed9f0285269d5b5997ae1722d3e7',1,'unicorn::system::Manager']]],
   ['createwindow',['CreateWindow',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a52b4392a8db02ba2c79a556ca9e6ae99',1,'unicorn::system::glfw::Adapter::CreateWindow()'],['../classunicorn_1_1system_1_1Manager.html#a4923161940518d65962ddfb26a0c5ac5',1,'unicorn::system::Manager::CreateWindow()']]],
+  ['cursorshapechanged',['CursorShapeChanged',['../classunicorn_1_1system_1_1Window.html#adeb293fcb533c1e412a9f1c471b7e2ec',1,'unicorn::system::Window']]],
   ['customvalue',['CustomValue',['../structunicorn_1_1system_1_1CustomValue.html',1,'unicorn::system']]]
 ];

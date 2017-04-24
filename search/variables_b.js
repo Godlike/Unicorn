@@ -53,5 +53,6 @@ var searchData=
   ['monitorstatechanged',['MonitorStateChanged',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a02dbdc19072bfa89d1e7e9a6af08a6cc',1,'unicorn::system::glfw::Adapter']]],
   ['mousebutton',['MouseButton',['../classunicorn_1_1system_1_1Window.html#ace99339d91de356a0782fff3d6d0b0a5',1,'unicorn::system::Window']]],
   ['mouseenter',['MouseEnter',['../classunicorn_1_1system_1_1Window.html#a2c2bb01a1bf50a067a9a4fe61ec61a5e',1,'unicorn::system::Window']]],
+  ['mousemodechanged',['MouseModeChanged',['../classunicorn_1_1system_1_1Window.html#a041f2ae29c30814aea2f0e11f5c460ed',1,'unicorn::system::Window']]],
   ['mouseposition',['MousePosition',['../classunicorn_1_1system_1_1Window.html#a7e0c3437ae0684a5099fd2a3eed8f75a',1,'unicorn::system::Window']]]
 ];

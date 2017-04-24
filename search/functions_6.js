@@ -27,6 +27,7 @@ var searchData=
   ['getlastreferenceduration',['GetLastReferenceDuration',['../classunicorn_1_1utility_1_1asset_1_1Handler.html#a74a326d70be92a7bf9cffb2a80588852',1,'unicorn::utility::asset::Handler']]],
   ['getmonitor',['GetMonitor',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a0819e2a8e7478d35fd2c4366d3038228',1,'unicorn::system::glfw::Adapter::GetMonitor()'],['../classunicorn_1_1system_1_1Manager.html#a12000212fc8b81af903f4dae02ae7514',1,'unicorn::system::Manager::GetMonitor(uint32_t id) const '],['../classunicorn_1_1system_1_1Manager.html#ae1d030613260a58fe74fb6665bcb1eec',1,'unicorn::system::Manager::GetMonitor(void *handle) const ']]],
   ['getmonitors',['GetMonitors',['../classunicorn_1_1video_1_1Graphics.html#a8e5f883ee4f76e218240871157932af2',1,'unicorn::video::Graphics::GetMonitors()'],['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#adb63c8be9de74819743994861e6af55e',1,'unicorn::system::glfw::Adapter::GetMonitors()'],['../classunicorn_1_1system_1_1Manager.html#aa38f0f177115e0276d87f47976ff0f4b',1,'unicorn::system::Manager::GetMonitors()']]],
+  ['getmousemode',['GetMouseMode',['../classunicorn_1_1system_1_1Window.html#a3ba2651af7a2d01bc8d48258af0921c0',1,'unicorn::system::Window']]],
   ['getname',['GetName',['../classunicorn_1_1utility_1_1asset_1_1Handler.html#a2181ec1eccb3e0c2dd8ed11d157e2e20',1,'unicorn::utility::asset::Handler::GetName()'],['../classunicorn_1_1system_1_1input_1_1Gamepad.html#acd1488bc79867708e792e0179472b1e2',1,'unicorn::system::input::Gamepad::GetName()'],['../classunicorn_1_1system_1_1Monitor.html#a1beddb5f3ace563bdad156aae0867156',1,'unicorn::system::Monitor::GetName()'],['../classunicorn_1_1system_1_1Window.html#a8088286fa80479c847daa5675b8e4f6c',1,'unicorn::system::Window::GetName()']]],
   ['getpath',['GetPath',['../classunicorn_1_1utility_1_1asset_1_1FileReader.html#a25e69b83a8f57fa6970c127302eaff0c',1,'unicorn::utility::asset::FileReader']]],
   ['getphysicalsize',['GetPhysicalSize',['../classunicorn_1_1system_1_1Monitor.html#a9ea0881e2def6ceb201c0216d870498e',1,'unicorn::system::Monitor']]],
@@ -35,6 +36,8 @@ var searchData=
   ['getrequiredvulkanextensions',['GetRequiredVulkanExtensions',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a10a71c8c7425bd21b5f05f57e720e109',1,'unicorn::system::glfw::Adapter::GetRequiredVulkanExtensions()'],['../classunicorn_1_1system_1_1Manager.html#a19a3f7f70589474f1692b66b39ef8cf4',1,'unicorn::system::Manager::GetRequiredVulkanExtensions()']]],
   ['getsize',['GetSize',['../classunicorn_1_1utility_1_1asset_1_1Content.html#a594c01b3186f7cbcf8604d2d8831d69e',1,'unicorn::utility::asset::Content::GetSize()'],['../classunicorn_1_1system_1_1Window.html#ad2b364256704ad30896f30e58b67f281',1,'unicorn::system::Window::GetSize()']]],
   ['getstate',['GetState',['../classunicorn_1_1system_1_1Monitor.html#ab2cd5ac83677feb0fb7943b1cd2aea38',1,'unicorn::system::Monitor']]],
+  ['getstickykeys',['GetStickyKeys',['../classunicorn_1_1system_1_1Window.html#a8bd4aa954aa37a30d66642e7c7ab3ead',1,'unicorn::system::Window']]],
+  ['getstickymouse',['GetStickyMouse',['../classunicorn_1_1system_1_1Window.html#ab4b6eabe2bd12fe075d4a8e0a8ffece1',1,'unicorn::system::Window']]],
   ['getunderlyingmap',['GetUnderlyingMap',['../classunicorn_1_1utility_1_1concurrent_1_1UnorderedMap.html#a8cad23d8e993e746a5e81de4a577992f',1,'unicorn::utility::concurrent::UnorderedMap']]],
   ['getunicornenginename',['GetUnicornEngineName',['../classunicorn_1_1core_1_1Settings.html#ae92e07944f2772fc4ff8941e7cef8241',1,'unicorn::core::Settings']]],
   ['getuniquelock',['GetUniqueLock',['../classunicorn_1_1utility_1_1concurrent_1_1UnorderedMap.html#a9f0b935b796d527f2d0df154ef90194a',1,'unicorn::utility::concurrent::UnorderedMap']]],
@@ -43,7 +46,10 @@ var searchData=
   ['getwindow',['GetWindow',['../classunicorn_1_1system_1_1Manager.html#a6695be171576c11023b67e2c0c375f3d',1,'unicorn::system::Manager']]],
   ['getwindowattribute',['GetWindowAttribute',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a4460b5dde18795fdc262eb683a61fcbe',1,'unicorn::system::glfw::Adapter']]],
   ['getwindowmonitor',['GetWindowMonitor',['../classunicorn_1_1video_1_1Graphics.html#a456bd26eb430c629115b99b9b25c353e',1,'unicorn::video::Graphics::GetWindowMonitor()'],['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a783bd6697453fe287b8be30464655b3b',1,'unicorn::system::glfw::Adapter::GetWindowMonitor()'],['../classunicorn_1_1system_1_1Manager.html#ad3f82f475c1811197f8ea5c87b2e0bce',1,'unicorn::system::Manager::GetWindowMonitor()']]],
+  ['getwindowmousemode',['GetWindowMouseMode',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#ad519bde1685a017f207588cbb33615fd',1,'unicorn::system::glfw::Adapter']]],
   ['getwindowposition',['GetWindowPosition',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a5bad866d4ec392e98da81ac2ceda0f15',1,'unicorn::system::glfw::Adapter']]],
   ['getwindowsize',['GetWindowSize',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#acef3d95523c1b13e7d29e34cdac0098d',1,'unicorn::system::glfw::Adapter']]],
+  ['getwindowstickykeys',['GetWindowStickyKeys',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a6983e1c25c77d34033cb2403f7a82654',1,'unicorn::system::glfw::Adapter']]],
+  ['getwindowstickymouse',['GetWindowStickyMouse',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#adb7da7097d2dbf424b788d280e609f75',1,'unicorn::system::glfw::Adapter']]],
   ['graphics',['Graphics',['../classunicorn_1_1video_1_1Graphics.html#af70a7ecfa4916702db2d782d3e8253bf',1,'unicorn::video::Graphics']]]
 ];

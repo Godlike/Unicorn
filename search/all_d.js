@@ -1,12 +1,16 @@
 var searchData=
 [
   ['ok',['ok',['../structunicorn_1_1utility_1_1asset_1_1FileReader_1_1Flags.html#ac8e7402030ffe15468af5428ec46616b',1,'unicorn::utility::asset::FileReader::Flags']]],
+  ['oncursorshapechanged',['OnCursorShapeChanged',['../classunicorn_1_1system_1_1WindowProfiler.html#ab05b66be6fa1c34b21e6c712d1fc99bc',1,'unicorn::system::WindowProfiler']]],
   ['ongamepadcreated',['OnGamepadCreated',['../classunicorn_1_1system_1_1GamepadProfiler.html#a410dec01254bd007de55c3e710a4486c',1,'unicorn::system::GamepadProfiler']]],
   ['ongamepaddestroyed',['OnGamepadDestroyed',['../classunicorn_1_1system_1_1GamepadProfiler.html#a071b9d821d09b50a444e217307f5a335',1,'unicorn::system::GamepadProfiler']]],
   ['ongamepadstatechanged',['OnGamepadStateChanged',['../classunicorn_1_1system_1_1Manager.html#a026b6e1996c7e846fb4f01b13bf971c4',1,'unicorn::system::Manager']]],
   ['ongamepadupdated',['OnGamepadUpdated',['../classunicorn_1_1system_1_1GamepadProfiler.html#aa78e9335955061b4deb75d9647eb2e97',1,'unicorn::system::GamepadProfiler']]],
   ['onmonitorcreated',['OnMonitorCreated',['../classunicorn_1_1system_1_1MonitorProfiler.html#a0024f796450002d8f65cd285b223bd56',1,'unicorn::system::MonitorProfiler']]],
   ['onmonitorstatechanged',['OnMonitorStateChanged',['../classunicorn_1_1system_1_1Manager.html#ac5aad5df195f164dd736a13c2a7af307',1,'unicorn::system::Manager::OnMonitorStateChanged()'],['../classunicorn_1_1system_1_1Monitor.html#ad86bcfdea41e4d4bfac59051b96591e5',1,'unicorn::system::Monitor::OnMonitorStateChanged()'],['../classunicorn_1_1system_1_1MonitorProfiler.html#a91b9f3affebe45ea3c4d81e6b1789998',1,'unicorn::system::MonitorProfiler::OnMonitorStateChanged()']]],
+  ['onmousemodechanged',['OnMouseModeChanged',['../classunicorn_1_1system_1_1WindowProfiler.html#a6bc51ce9e715e69aa0f0e4316119eb22',1,'unicorn::system::WindowProfiler']]],
+  ['onstickykeyschanged',['OnStickyKeysChanged',['../classunicorn_1_1system_1_1WindowProfiler.html#a27fa61099db06966677b56c97b0c4864',1,'unicorn::system::WindowProfiler']]],
+  ['onstickymousechanged',['OnStickyMouseChanged',['../classunicorn_1_1system_1_1WindowProfiler.html#aabd2ade48201a547639c3cca9f26c6b3',1,'unicorn::system::WindowProfiler']]],
   ['onwindowclose',['OnWindowClose',['../classunicorn_1_1system_1_1WindowProfiler.html#a1c41c63d8a3ddf2c8e925846f860e4a3',1,'unicorn::system::WindowProfiler::OnWindowClose()'],['../classunicorn_1_1system_1_1Window.html#a3878c33c4c9e85bdd8392d536d7ebf42',1,'unicorn::system::Window::OnWindowClose()']]],
   ['onwindowcontentrefresh',['OnWindowContentRefresh',['../classunicorn_1_1system_1_1WindowProfiler.html#aede4d8c50e6b8785aa6beac922752cf0',1,'unicorn::system::WindowProfiler::OnWindowContentRefresh()'],['../classunicorn_1_1system_1_1Window.html#a32c698a93030df79e88d3287bdabcbe8',1,'unicorn::system::Window::OnWindowContentRefresh()']]],
   ['onwindowcreated',['OnWindowCreated',['../classunicorn_1_1system_1_1KeyProfiler.html#ab916b2b609dac16da1222c774c0e305b',1,'unicorn::system::KeyProfiler::OnWindowCreated()'],['../classunicorn_1_1system_1_1MouseProfiler.html#a04991cf0226959cc3bc026e730c32001',1,'unicorn::system::MouseProfiler::OnWindowCreated()'],['../classunicorn_1_1system_1_1WindowProfiler.html#ae6380b5efa193eda5f9aeb79250ca4c6',1,'unicorn::system::WindowProfiler::OnWindowCreated()']]],
