@@ -8,35 +8,38 @@
 #define UNICORN_VIDEO_GEOMETRY_MESH_HPP
 
 #include <unicorn/utility/SharedMacros.hpp>
-
+#include <wink/signal.hpp>
 #include <glm/glm.hpp>
 #include <vector>
 
 namespace unicorn
 {
-    namespace video
-    {
-        namespace geometry
-        {
-            struct Vertex {
-                glm::vec2 pos;
-                glm::vec3 color;
-            };
+	namespace video
+	{
+		namespace geometry
+		{
+			struct Vertex {
+				glm::vec2 pos;
+				glm::vec3 color;
+			};
 
-            class Mesh
-            {
-            public:
+		    /**
+			 * \brief 
+			 */
+			class Mesh
+			{
+			public:
 				UNICORN_EXPORT Mesh();
-                UNICORN_EXPORT void SetVertices(const std::vector<Vertex>& vertices)
-                {
-                    m_vertices = vertices;
-                }
-            private:
-                glm::mat4 m_model; 
-                std::vector<Vertex> m_vertices;
-            };
-        }
-    }
+				UNICORN_EXPORT ~Mesh();
+				UNICORN_EXPORT std::uint32_t VerticesSize() const;
+
+				glm::mat4 m_model;
+				std::vector<Vertex> m_vertices;
+
+                wink::signal<wink::slot<void ()>> m_dataUpdated;
+			};
+		}
+	}
 }
 
 #endif // UNICORN_VIDEO_GEOMETRY_MESH_HPP

@@ -11,6 +11,7 @@
 #include <unicorn/video/geometry/Mesh.hpp>
 
 #include <vector>
+#include <memory>
 
 namespace unicorn
 {
@@ -21,7 +22,10 @@ namespace unicorn
             class Triangle
             {
             public:
-                UNICORN_EXPORT Triangle(Mesh* mesh);
+                UNICORN_EXPORT Triangle(std::shared_ptr<Mesh> mesh);
+                UNICORN_EXPORT void SetVertices(const std::vector<Vertex>& verts);
+            private:
+                std::shared_ptr<Mesh> m_mesh;
             };
         }
     }

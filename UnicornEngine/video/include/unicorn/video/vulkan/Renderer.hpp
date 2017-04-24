@@ -9,6 +9,7 @@
 
 #include <vulkan/vulkan.hpp>
 #include <unicorn/video/Renderer.hpp>
+#include <unicorn/video/vulkan/VkMesh.hpp>
 
 namespace unicorn
 {
@@ -40,6 +41,7 @@ namespace unicorn
 				std::vector<vk::PresentModeKHR> presentModes;
 			};
 
+			class ShaderProgram;
 
 			class Renderer : public video::Renderer
 			{
@@ -56,7 +58,8 @@ namespace unicorn
 				bool Init() override;
 				void Deinit() override;
 				bool Render() override;
-				bool RecreateSwapChain() override;
+				bool RecreateSwapChain();
+				std::shared_ptr<geometry::Mesh> SpawnMesh() override;
 			private:
 				vk::PhysicalDevice m_vkPhysicalDevice;
 				vk::Device m_vkLogicalDevice;
@@ -72,17 +75,18 @@ namespace unicorn
 				vk::CommandPool m_commandPool;
 				vk::Semaphore m_imageAvailableSemaphore;
 				vk::Semaphore m_renderFinishedSemaphore;
+				ShaderProgram* m_shaderProgram;
 				std::string m_gpuName;
 				std::vector<vk::Image> m_swapChainImages;
 				std::vector<vk::ImageView> m_swapChainImageViews;
 				std::vector<vk::Framebuffer> m_swapChainFramebuffers;
 				std::vector<vk::CommandBuffer> m_commandBuffers;
+                std::vector<VkMesh*> m_vkMeshes;
 #ifdef NDEBUG
 				static const bool s_enableValidationLayers = false;
 #else
 				static const bool s_enableValidationLayers = true;
 #endif
-
 				void FreeSurface();
 				void FreeLogicalDevice();
 				void FreeSwapChain();
@@ -105,7 +109,6 @@ namespace unicorn
 				bool CreateCommandPool();
 				bool CreateCommandBuffers();
 				bool CreateSemaphores();
-				bool CreateShaderModule(const std::vector<uint8_t>& code, vk::ShaderModule& shaderModule);
 				bool IsDeviceSuitable(const vk::PhysicalDevice& device);
 				bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device);
 				bool Frame();

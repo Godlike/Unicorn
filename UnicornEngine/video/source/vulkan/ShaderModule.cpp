@@ -4,7 +4,7 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#include <unicorn/video/vulkan/Shader.hpp>
+#include <unicorn/video/vulkan/ShaderModule.hpp>
 
 namespace unicorn
 {
@@ -12,15 +12,15 @@ namespace unicorn
     {
         namespace vulkan
         {
-            Shader::Shader()
+            ShaderModule::ShaderModule()
             {
             }
 
-            Shader::~Shader()
+            ShaderModule::~ShaderModule()
             {
             }
 
-            vk::Result Shader::Create(vk::Device device, size_t size, void* code)
+            vk::Result ShaderModule::Create(vk::Device device, size_t size, void* code)
             {
                 m_device = device;
 
@@ -32,12 +32,12 @@ namespace unicorn
                 return result;
             }
 
-            void Shader::Destroy()
+            void ShaderModule::Destroy()
             {
                 m_device.destroyShaderModule(m_shaderModule, nullptr);
             }
 
-            vk::ShaderModule& Shader::GetVkShaderModule()
+            vk::ShaderModule& ShaderModule::GetVkShaderModule()
             {
                 return m_shaderModule;
             }
