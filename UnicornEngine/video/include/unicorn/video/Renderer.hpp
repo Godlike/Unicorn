@@ -42,7 +42,7 @@ public:
 	virtual bool RecreateSwapChain() = 0;
 	geometry::Mesh* SpawnMesh()
 	{
-		auto mesh = new geometry::Mesh();
+		auto mesh = new geometry::Mesh(); //TODO shared
 		m_meshes.push_back(mesh);
 		return mesh;
 	}

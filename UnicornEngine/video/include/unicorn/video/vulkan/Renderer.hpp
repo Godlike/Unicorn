@@ -40,6 +40,7 @@ namespace unicorn
 				std::vector<vk::PresentModeKHR> presentModes;
 			};
 
+			class ShaderProgram;
 
 			class Renderer : public video::Renderer
 			{
@@ -72,6 +73,7 @@ namespace unicorn
 				vk::CommandPool m_commandPool;
 				vk::Semaphore m_imageAvailableSemaphore;
 				vk::Semaphore m_renderFinishedSemaphore;
+				ShaderProgram* m_shaderProgram;
 				std::string m_gpuName;
 				std::vector<vk::Image> m_swapChainImages;
 				std::vector<vk::ImageView> m_swapChainImageViews;
@@ -82,7 +84,6 @@ namespace unicorn
 #else
 				static const bool s_enableValidationLayers = true;
 #endif
-
 				void FreeSurface();
 				void FreeLogicalDevice();
 				void FreeSwapChain();
@@ -105,7 +106,6 @@ namespace unicorn
 				bool CreateCommandPool();
 				bool CreateCommandBuffers();
 				bool CreateSemaphores();
-				bool CreateShaderModule(const std::vector<uint8_t>& code, vk::ShaderModule& shaderModule);
 				bool IsDeviceSuitable(const vk::PhysicalDevice& device);
 				bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device);
 				bool Frame();

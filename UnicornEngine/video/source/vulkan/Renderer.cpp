@@ -7,8 +7,7 @@
 #include <unicorn/video/vulkan/Renderer.hpp>
 #include <unicorn/Settings.hpp>
 #include <unicorn/utility/Logger.hpp>
-#include <unicorn/utility/asset/SimpleStorage.hpp>
-
+#include <unicorn/video/vulkan/ShaderProgram.hpp>
 #include <unicorn/system/Manager.hpp>
 #include <unicorn/system/Window.hpp>
 #include <unicorn/video/vulkan/Context.hpp>
@@ -599,30 +598,7 @@ namespace video
 			vk::Result result;
 			FreeGraphicsPipeline();
 
-			unicorn::utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
-			unicorn::utility::asset::Handler simpleVertShaderHandler = storage.Get("data/shaders/shader.vert.spv");
-			unicorn::utility::asset::Handler simpleFragShaderHandler = storage.Get("data/shaders/shader.frag.spv");
-
-			if (!simpleVertShaderHandler.IsValid() || !simpleFragShaderHandler.IsValid())
-			{
-				LOG_ERROR("Can't find shaders!");
-				return false;
-			}
-
-			vk::ShaderModule vertShaderModule, fragShaderModule;
-			bool shadersCreatedFailed = !CreateShaderModule(simpleVertShaderHandler.GetContent().GetBuffer(), vertShaderModule) || !CreateShaderModule(simpleFragShaderHandler.GetContent().GetBuffer(), fragShaderModule);
-
-			vk::PipelineShaderStageCreateInfo vertShaderStageInfo = {};
-			vertShaderStageInfo.stage = vk::ShaderStageFlagBits::eVertex;
-			vertShaderStageInfo.module = vertShaderModule;
-			vertShaderStageInfo.pName = "main";
-
-			vk::PipelineShaderStageCreateInfo fragShaderStageInfo = {};
-			fragShaderStageInfo.stage = vk::ShaderStageFlagBits::eFragment;
-			fragShaderStageInfo.module = fragShaderModule;
-			fragShaderStageInfo.pName = "main";
-
-			vk::PipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+			m_shaderProgram = new ShaderProgram(m_vkLogicalDevice, "data/shaders/shader.vert.spv", "data/shaders/shader.frag.spv");
 
 			vk::PipelineVertexInputStateCreateInfo vertexInputInfo;
 
@@ -686,7 +662,7 @@ namespace video
 				return false;
 			}
 
-			if (shadersCreatedFailed)
+			if (!m_shaderProgram->IsCreated())
 			{
 				LOG_ERROR("Can't create shader module!");
 				return false;
@@ -694,7 +670,7 @@ namespace video
 
 			vk::GraphicsPipelineCreateInfo pipelineInfo;
 			pipelineInfo.stageCount = 2;
-			pipelineInfo.pStages = shaderStages;
+			pipelineInfo.pStages = m_shaderProgram->GetShaderStageInfoData();
 			pipelineInfo.pVertexInputState = &vertexInputInfo;
 			pipelineInfo.pInputAssemblyState = &inputAssembly;
 			pipelineInfo.pViewportState = &viewportState;
@@ -715,8 +691,7 @@ namespace video
 				LOG_ERROR("Can't create graphics pipeline.");
 				return false;
 			}
-			m_vkLogicalDevice.destroyShaderModule(vertShaderModule);
-			m_vkLogicalDevice.destroyShaderModule(fragShaderModule);
+			m_shaderProgram->DestroyShaderModules();
 
 			return true;
 		}
@@ -830,29 +805,6 @@ namespace video
 
 			LOG_ERROR("Failed to create semaphores!");
 			return false;
-		}
-
-		bool Renderer::CreateShaderModule(const std::vector<uint8_t>& code, vk::ShaderModule& shaderModule)
-		{
-			vk::Result result;
-			vk::ShaderModuleCreateInfo createInfo;
-			if (code.size() % sizeof(uint32_t) != 0)
-			{
-				LOG_ERROR("Shader code size is not multiple of sizeof(uint32_t), look at VkShaderModuleCreateInfo(3) Manual Page.");
-				return false;
-			}
-			createInfo.codeSize = code.size();
-			createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
-
-			result = m_vkLogicalDevice.createShaderModule(&createInfo, {}, &shaderModule);
-
-			if (result != vk::Result::eSuccess)
-			{
-				LOG_ERROR("Failed to create shader module!");
-				return false;
-			}
-
-			return true;
 		}
 
 		bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
