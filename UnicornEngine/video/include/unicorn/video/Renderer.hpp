@@ -40,12 +40,7 @@ public:
 	virtual void Deinit() = 0;
 	virtual bool Render() = 0;
 	virtual bool RecreateSwapChain() = 0;
-	geometry::Mesh* SpawnMesh()
-	{
-		auto mesh = new geometry::Mesh(); //TODO shared
-		m_meshes.push_back(mesh);
-		return mesh;
-	}
+	virtual geometry::Mesh* SpawnMesh() = 0;
 protected:
 	bool m_isInitialized;
 

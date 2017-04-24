@@ -4,8 +4,8 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#ifndef UNICORN_VIDEO_VULKAN_SHADER_HPP
-#define UNICORN_VIDEO_VULKAN_SHADER_HPP
+#ifndef UNICORN_VIDEO_VULKAN_SHADER_MODULE_HPP
+#define UNICORN_VIDEO_VULKAN_SHADER_MODULE_HPP
 
 #include <vulkan/vulkan.hpp>
 
@@ -15,11 +15,11 @@ namespace unicorn
     {
         namespace vulkan
         {
-            class Shader
+            class ShaderModule
             {
             public:
-                Shader();
-                ~Shader();
+                ShaderModule();
+                ~ShaderModule();
 
                 vk::Result Create(vk::Device device, size_t size, void* code);
                 void Destroy();
@@ -33,4 +33,4 @@ namespace unicorn
     }
 }
 
-#endif // UNICORN_VIDEO_VULKAN_SHADER_HPP
+#endif // UNICORN_VIDEO_VULKAN_SHADER_MODULE_HPP

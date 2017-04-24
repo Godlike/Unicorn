@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <array>
 #include <tuple>
+#include "unicorn/video/vulkan/Mesh.hpp"
 
 namespace unicorn
 {
@@ -244,6 +245,13 @@ namespace video
 				return true;
 			}
 			return false;
+		}
+
+		geometry::Mesh* Renderer::SpawnMesh()
+		{
+            auto mesh = new vulkan::Mesh(m_vkLogicalDevice, m_vkPhysicalDevice);
+            m_meshes.push_back(mesh);
+			return mesh;
 		}
 
 		void Renderer::FreeSurface()
@@ -599,9 +607,7 @@ namespace video
 			FreeGraphicsPipeline();
 
 			m_shaderProgram = new ShaderProgram(m_vkLogicalDevice, "data/shaders/shader.vert.spv", "data/shaders/shader.frag.spv");
-
-			vk::PipelineVertexInputStateCreateInfo vertexInputInfo;
-
+						
 			vk::PipelineInputAssemblyStateCreateInfo inputAssembly;
 			inputAssembly.topology = vk::PrimitiveTopology::eTriangleList;
 
@@ -671,7 +677,7 @@ namespace video
 			vk::GraphicsPipelineCreateInfo pipelineInfo;
 			pipelineInfo.stageCount = 2;
 			pipelineInfo.pStages = m_shaderProgram->GetShaderStageInfoData();
-			pipelineInfo.pVertexInputState = &vertexInputInfo;
+			pipelineInfo.pVertexInputState = &m_shaderProgram->GetVertexInputInfo();
 			pipelineInfo.pInputAssemblyState = &inputAssembly;
 			pipelineInfo.pViewportState = &viewportState;
 			pipelineInfo.pRasterizationState = &rasterizer;
@@ -785,7 +791,14 @@ namespace video
 
 				m_commandBuffers[i].beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
 				m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
-				m_commandBuffers[i].draw(3, 1, 0, 0);
+
+				for(geometry::Mesh* mesh : m_meshes)
+				{
+                    vk::Buffer buffer[] = { static_cast<vulkan::Mesh*>(mesh)->GetBuffer() };
+					m_commandBuffers[i].bindVertexBuffers(0, 1, buffer, 0);
+					m_commandBuffers[i].draw(mesh->VerticesSize(), 1, 0, 0);
+				}				
+
 				m_commandBuffers[i].endRenderPass();
 
 				m_commandBuffers[i].end();

@@ -14,29 +14,31 @@
 
 namespace unicorn
 {
-    namespace video
-    {
-        namespace geometry
-        {
-            struct Vertex {
-                glm::vec2 pos;
-                glm::vec3 color;
-            };
+	namespace video
+	{
+		namespace geometry
+		{
+			struct Vertex {
+				glm::vec2 pos;
+				glm::vec3 color;
+			};
 
-            class Mesh
-            {
-            public:
+			class Mesh
+			{
+			public:
 				UNICORN_EXPORT Mesh();
-                UNICORN_EXPORT void SetVertices(const std::vector<Vertex>& vertices)
-                {
-                    m_vertices = vertices;
-                }
-            private:
-                glm::mat4 m_model; 
-                std::vector<Vertex> m_vertices;
-            };
-        }
-    }
+				UNICORN_EXPORT virtual ~Mesh();
+				UNICORN_EXPORT virtual bool Create() = 0;
+				UNICORN_EXPORT std::uint32_t VerticesSize() const
+				{
+					return static_cast<uint32_t>(m_vertices.size());
+				}
+
+				glm::mat4 m_model;
+				std::vector<Vertex> m_vertices;
+			};
+		}
+	}
 }
 
 #endif // UNICORN_VIDEO_GEOMETRY_MESH_HPP

@@ -34,9 +34,10 @@ set(VULKAN_HEADERS
 	include/unicorn/video/vulkan/Image.hpp
 	include/unicorn/video/vulkan/Queue.hpp
 	include/unicorn/video/vulkan/RenderPass.hpp
-	include/unicorn/video/vulkan/Shader.hpp
+	include/unicorn/video/vulkan/ShaderModule.hpp
 	include/unicorn/video/vulkan/SwapChain.hpp
 	include/unicorn/video/vulkan/ShaderProgram.hpp
+	include/unicorn/video/vulkan/Mesh.hpp
 )
 
 set(VULKAN_SOURCES
@@ -51,9 +52,10 @@ set(VULKAN_SOURCES
 	source/vulkan/Image.cpp
 	source/vulkan/Queue.cpp
 	source/vulkan/RenderPass.cpp
-	source/vulkan/Shader.cpp
+	source/vulkan/ShaderModule.cpp
 	source/vulkan/SwapChain.cpp
 	source/vulkan/ShaderProgram.cpp
+	source/vulkan/Mesh.cpp
 )
 
 set(VIDEO_HEADERS
@@ -61,7 +63,7 @@ set(VIDEO_HEADERS
 	include/unicorn/video/Renderer.hpp
 	include/unicorn/video/Camera.hpp
 	${VULKAN_HEADERS}
-    ${GEOMETRY_HEADERS}
+	${GEOMETRY_HEADERS}
 )
 
 set(VIDEO_SOURCES
@@ -69,7 +71,7 @@ set(VIDEO_SOURCES
 	source/Renderer.cpp
 	source/Camera.cpp
 	${VULKAN_SOURCES}
-    ${GEOMETRY_SOURCES}
+	${GEOMETRY_SOURCES}
 )
 
 add_library(video OBJECT
@@ -78,5 +80,5 @@ add_library(video OBJECT
 )
 
 if (UNIX)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()

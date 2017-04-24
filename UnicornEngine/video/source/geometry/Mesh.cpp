@@ -13,6 +13,7 @@ namespace unicorn
 		namespace geometry
 		{
 			Mesh::Mesh() {}
+			Mesh::~Mesh() {}
 		}
 	}
 }

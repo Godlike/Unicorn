@@ -27,7 +27,6 @@ vk::Result Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, 
     m_size = size;
 
     vk::BufferCreateInfo bufferInfo;
-    bufferInfo.setFlags(vk::BufferCreateFlagBits());
     bufferInfo.setUsage(m_usage);
     bufferInfo.setSize(m_size);
     bufferInfo.setQueueFamilyIndexCount(0);

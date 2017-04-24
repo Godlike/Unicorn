@@ -22,6 +22,9 @@ namespace unicorn
             {
             public:
                 UNICORN_EXPORT Triangle(Mesh* mesh);
+                UNICORN_EXPORT void SetVertices(const std::vector<Vertex>& verts);
+            private:
+                Mesh* m_mesh;
             };
         }
     }

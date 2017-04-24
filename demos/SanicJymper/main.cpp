@@ -155,6 +155,18 @@ int main(int argc, char* argv[])
     settings.Init(argc, argv, "SANIC_JYMPER.log");
     settings.SetApplicationName("SANIC JYMPER");
 
+    std::vector<unicorn::video::geometry::Vertex> redTriangle = {
+        { { 0.0f, -0.5f },{ 1.0f, 0.0f, 0.0f } },
+        { { 0.5f, 0.5f },{ 1.0f, 1.0f, 0.0f } },
+        { { -0.5f, 0.5f },{ 0.0f, 0.0f, 1.0f } }
+    };
+
+    std::vector<unicorn::video::geometry::Vertex> blueTrianlge = {
+        { { 0.0f, -0.5f },{ 1.0f, 0.0f, 0.0f } },
+        { { 0.5f, 0.5f },{ 0.0f, 1.0f, 1.0f } },
+        { { -0.5f, 0.5f },{ 0.0f, 0.0f, 1.0f } }
+    };
+
     unicorn::UnicornEngine* unicornEngine = new unicorn::UnicornEngine();
     if (unicornEngine->Init())
     {
@@ -188,10 +200,14 @@ int main(int argc, char* argv[])
             nullptr,
             nullptr);
 
-        auto* vkRenderer0 = pGraphics->SpawnVulkanRenderer(pWindow0);
+
+        auto vkRenderer0 = pGraphics->SpawnVulkanRenderer(pWindow0);
         auto vkRenderer1 = pGraphics->SpawnVulkanRenderer(pWindow1);
 
-        unicorn::video::geometry::Triangle triangle(vkRenderer0->SpawnMesh());
+        unicorn::video::geometry::Triangle triangle0(vkRenderer0->SpawnMesh());
+        //triangle0.SetVertices(redTriangle);
+        unicorn::video::geometry::Triangle triangle1(vkRenderer1->SpawnMesh());
+        //triangle1.SetVertices(blueTrianlge);
 
         pGraphics->BindWindowRenderer(pWindow0, vkRenderer0);
         pGraphics->BindWindowRenderer(pWindow1, vkRenderer1);

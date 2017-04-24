@@ -47,7 +47,12 @@ namespace unicorn
 				fragShaderStageInfo.module = m_fragShaderModule;
 				fragShaderStageInfo.pName = "main";
 
-				m_shaderStages = { vertShaderStageInfo, fragShaderStageInfo };
+                m_shaderStages = { { vertShaderStageInfo, fragShaderStageInfo } };
+
+                CreateBindingDescription();
+                CreateAttributeDescription();
+                CreateVertexInputInfo();
+
 				m_isCreated = true;
 			}
 
@@ -72,12 +77,25 @@ namespace unicorn
 				m_attributeDescription.at(1).setOffset(offsetof(geometry::Vertex, color));
 			}
 
+			void ShaderProgram::CreateVertexInputInfo()
+			{
+                m_vertexInputInfo.vertexBindingDescriptionCount = 1;
+                m_vertexInputInfo.vertexAttributeDescriptionCount = m_attributeDescription.size();
+                m_vertexInputInfo.pVertexBindingDescriptions = &m_bindingDescription;
+                m_vertexInputInfo.pVertexAttributeDescriptions = m_attributeDescription.data();
+			}
+
 			vk::PipelineShaderStageCreateInfo* ShaderProgram::GetShaderStageInfoData()
 			{
 				return m_shaderStages.data();
 			}
 
-			bool ShaderProgram::IsCreated()
+		    vk::PipelineVertexInputStateCreateInfo ShaderProgram::GetVertexInputInfo()
+		    {
+                return m_vertexInputInfo;
+		    }
+
+		    bool ShaderProgram::IsCreated()
 			{
 				return m_isCreated;
 			}

@@ -48,13 +48,11 @@ namespace unicorn
                 }
 
                 vk::PipelineShaderStageCreateInfo stageInfos[2];
-                stageInfos[0].setFlags(vk::PipelineShaderStageCreateFlagBits());
                 stageInfos[0].setStage(vk::ShaderStageFlagBits::eVertex);
                 stageInfos[0].setModule(vertexShader);
                 stageInfos[0].setPName("main");
                 stageInfos[0].setPSpecializationInfo(nullptr);
 
-                stageInfos[1].setFlags(vk::PipelineShaderStageCreateFlagBits());
                 stageInfos[1].setStage(vk::ShaderStageFlagBits::eFragment);
                 stageInfos[1].setModule(fragmentShader);
                 stageInfos[1].setPName("main");
@@ -131,7 +129,6 @@ namespace unicorn
                 depthInfo.setMinDepthBounds(0.0f);
                 depthInfo.setMaxDepthBounds(0.0f);
 
-                //init PipelineColorBlendAttachmentState
                 vk::PipelineColorBlendAttachmentState blendState;
                 blendState.setBlendEnable(false);
                 blendState.setSrcColorBlendFactor(vk::BlendFactor::eZero);
