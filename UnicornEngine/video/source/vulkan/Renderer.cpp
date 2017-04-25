@@ -12,6 +12,7 @@
 #include <unicorn/system/Window.hpp>
 #include <unicorn/video/vulkan/Context.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
+#include <unicorn/video/vulkan/UniformObject.hpp>
 
 #include <cstring>
 #include <iostream>
@@ -25,7 +26,7 @@ namespace unicorn
 namespace video
 {
 	namespace vulkan {
-		Renderer::Renderer(system::Manager& manager, system::Window* window) : video::Renderer(manager, window)
+		Renderer::Renderer(system::Manager& manager, system::Window* window) : video::Renderer(manager, window), m_unifromBufferObject(nullptr)
 		{
 			m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
 			m_pWindow->SizeChanged.connect(this, &Renderer::OnWindowSizeChanged);
@@ -57,10 +58,10 @@ namespace video
 				!CreateSwapChain() ||
 				!CreateImageViews() ||
 				!CreateRenderPass() ||
+				!CreateUniformObject() ||
 				!CreateGraphicsPipeline() ||
 				!CreateFramebuffers() ||
 				!CreateCommandPool() ||
-				!CreateCommandBuffers() ||
 				!CreateSemaphores())
 			{
 				return false;
@@ -75,14 +76,15 @@ namespace video
 
 		void Renderer::Deinit()
 		{
-            for(auto& vkmesh : m_vkMeshes)
-            {
-                vkmesh->DeallocateOnGPU();
-            }
+			for(auto& vkmesh : m_vkMeshes)
+			{
+				vkmesh->DeallocateOnGPU();
+			}
 			FreeSemaphores();
 			FreeCommandBuffers();
 			FreeCommandPool();
 			FreeFrameBuffers();
+			FreeUniformObject();
 			FreeGraphicsPipeline();
 			FreeRenderPass();
 			FreeImageViews();
@@ -203,6 +205,7 @@ namespace video
 		{
 			if (m_isInitialized && m_pWindow)
 			{
+                //m_unifromBufferObject->Update(0.1, ); // TODO: WHAT
 				Frame();
 
 				m_vkLogicalDevice.waitIdle();
@@ -373,6 +376,15 @@ namespace video
 			}
 		}
 
+		void Renderer::FreeUniformObject()
+		{
+			if(m_unifromBufferObject != nullptr)
+			{
+				m_unifromBufferObject->Destroy();
+				m_unifromBufferObject = nullptr;
+			}
+		}
+
 		bool Renderer::PickPhysicalDevice()
 		{
 			vk::Result result;
@@ -458,6 +470,12 @@ namespace video
 			}
 
 			return true;
+		}
+
+		bool Renderer::CreateUniformObject()
+		{
+			m_unifromBufferObject = new UniformObject(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue);
+			return m_unifromBufferObject->Create();
 		}
 
 		bool Renderer::CreateSwapChain()
@@ -667,10 +685,10 @@ namespace video
 			colorBlending.blendConstants[3] = 0.0f;
 
 			vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
-			pipelineLayoutInfo.setLayoutCount = 0;
-			pipelineLayoutInfo.pSetLayouts = nullptr;
-			pipelineLayoutInfo.pushConstantRangeCount = 0;
-			pipelineLayoutInfo.pPushConstantRanges = 0;
+			pipelineLayoutInfo.setLayoutCount = 1;
+            //TODO: absolutely not right, why i just can't &m_unifromBufferObject->GetDescriptorLayout()
+            vk::DescriptorSetLayout descriptorSetLayout = m_unifromBufferObject->GetDescriptorLayout();
+			pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
 
 			result = m_vkLogicalDevice.createPipelineLayout(&pipelineLayoutInfo, nullptr, &m_pipelineLayout);
 			if (result != vk::Result::eSuccess)
@@ -805,13 +823,13 @@ namespace video
 				m_commandBuffers[i].beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
 				m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
 
-                vk::DeviceSize offsets[] = { 0 };
+				vk::DeviceSize offsets[] = { 0 };
 
 				for(VkMesh* vkMesh : m_vkMeshes)
 				{
 					vk::Buffer vertexBuffer[] = { vkMesh->GetVertexBuffer() };
 					m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);
-                    m_commandBuffers[i].bindIndexBuffer(vkMesh->GetIndexBuffer(), 0, vk::IndexType::eUint16);
+					m_commandBuffers[i].bindIndexBuffer(vkMesh->GetIndexBuffer(), 0, vk::IndexType::eUint16);
 					m_commandBuffers[i].drawIndexed(vkMesh->IndicesSize(), 1, 0, 0, 0);
 				}				
 
@@ -952,13 +970,13 @@ namespace video
 				RecreateSwapChain();
 				return true;
 			}
-			else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
-			{
-				LOG_ERROR("Failed to acquire swap chain image!");
-				return false;
-			}
+		    if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
+		    {
+		        LOG_ERROR("Failed to acquire swap chain image!");
+		        return false;
+		    }
 
-			return true;
+		    return true;
 		}
 	}
 }

@@ -42,7 +42,7 @@ namespace unicorn
 			};
 
 			class ShaderProgram;
-
+            class UniformObject;
 			class Renderer : public video::Renderer
 			{
 			public:
@@ -81,7 +81,8 @@ namespace unicorn
 				std::vector<vk::ImageView> m_swapChainImageViews;
 				std::vector<vk::Framebuffer> m_swapChainFramebuffers;
 				std::vector<vk::CommandBuffer> m_commandBuffers;
-                std::vector<VkMesh*> m_vkMeshes;
+				std::vector<VkMesh*> m_vkMeshes;
+                UniformObject* m_unifromBufferObject;
 #ifdef NDEBUG
 				static const bool s_enableValidationLayers = false;
 #else
@@ -97,10 +98,12 @@ namespace unicorn
 				void FreeCommandPool();
 				void FreeCommandBuffers();
 				void FreeSemaphores();
+                void FreeUniformObject();
 
 				bool PickPhysicalDevice();
 				bool CreateLogicalDevice();
 				bool CreateSurface();
+				bool CreateUniformObject();
 				bool CreateSwapChain();
 				bool CreateImageViews();
 				bool CreateRenderPass();
@@ -112,7 +115,7 @@ namespace unicorn
 				bool IsDeviceSuitable(const vk::PhysicalDevice& device);
 				bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device);
 				bool Frame();
-                void OnMeshReallocated(VkMesh*);
+				void OnMeshReallocated(VkMesh*);
 				QueueFamilyIndices FindQueueFamilies(const vk::PhysicalDevice& device);
 				bool QuerySwapChainSupport(SwapChainSupportDetails& details, const vk::PhysicalDevice& device);
 				vk::SurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats);
