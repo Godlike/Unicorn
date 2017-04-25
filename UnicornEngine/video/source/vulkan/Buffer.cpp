@@ -51,7 +51,7 @@ vk::Result Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, 
     {
         if ((memoryTypeBits >> i) & 1)
         {
-            if (memoryProperties.memoryTypes[i].propertyFlags & vk::MemoryPropertyFlagBits::eHostVisible)
+            if (memoryProperties.memoryTypes[i].propertyFlags & memoryPropertyFlags)
             {
                 memoryTypeIndex = i;
                 break;
