@@ -79,8 +79,14 @@ vk::Result Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, 
 
 void Buffer::Destroy() const
 {
-    m_device.freeMemory(m_memory, nullptr);
-    m_device.destroyBuffer(m_buffer, nullptr);
+    if(m_memory)
+    {
+        m_device.freeMemory(m_memory);
+    }
+    if(m_buffer)
+    {
+        m_device.destroyBuffer(m_buffer);
+    }    
 }
 
 void Buffer::Write(const void* pData) const

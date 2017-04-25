@@ -112,6 +112,7 @@ namespace unicorn
 				bool IsDeviceSuitable(const vk::PhysicalDevice& device);
 				bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device);
 				bool Frame();
+                void OnMeshReallocated(VkMesh*);
 				QueueFamilyIndices FindQueueFamilies(const vk::PhysicalDevice& device);
 				bool QuerySwapChainSupport(SwapChainSupportDetails& details, const vk::PhysicalDevice& device);
 				vk::SurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats);

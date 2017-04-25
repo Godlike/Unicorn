@@ -73,7 +73,7 @@ namespace unicorn
 				//Color
 				m_attributeDescription.at(1).setBinding(0);
 				m_attributeDescription.at(1).setLocation(1);
-				m_attributeDescription.at(1).setFormat(vk::Format::eR32G32Sfloat);
+				m_attributeDescription.at(1).setFormat(vk::Format::eR32G32B32Sfloat);
 				m_attributeDescription.at(1).setOffset(offsetof(geometry::Vertex, color));
 			}
 

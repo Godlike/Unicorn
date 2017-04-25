@@ -23,7 +23,7 @@ namespace unicorn
 				glm::vec3 color;
 			};
 
-		    /**
+			/**
 			 * \brief 
 			 */
 			class Mesh
@@ -33,10 +33,13 @@ namespace unicorn
 				UNICORN_EXPORT ~Mesh();
 				UNICORN_EXPORT std::uint32_t VerticesSize() const;
 
+				wink::signal<wink::slot<void()>> DataUpdated;
+				bool IsSizeChanged() const;
+				void SetVertices(const std::vector<Vertex>& newVertices);
+                std::vector<Vertex> m_vertices;
+			private:
+				bool m_isVerticesSizeChanged;
 				glm::mat4 m_model;
-				std::vector<Vertex> m_vertices;
-
-                wink::signal<wink::slot<void ()>> m_dataUpdated;
 			};
 		}
 	}
