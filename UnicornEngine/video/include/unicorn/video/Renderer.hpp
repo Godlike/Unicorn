@@ -53,8 +53,8 @@ protected:
 	//! Array of renderer meshes
 	std::vector<std::shared_ptr<geometry::Mesh>> m_meshes;
 	// Callbacks for window events
-	virtual void OnWindowDestroyed(system::Window* pWindow) = 0;
-	virtual void OnWindowSizeChanged(system::Window* pWindow, std::pair<std::int32_t, std::int32_t> size) = 0;
+	void OnWindowDestroyed(system::Window* pWindow);
+	void OnWindowSizeChanged(system::Window* pWindow, std::pair<std::int32_t, std::int32_t> size);
 };
 }
 }

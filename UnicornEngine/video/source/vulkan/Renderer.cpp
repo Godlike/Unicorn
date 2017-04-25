@@ -75,6 +75,10 @@ namespace video
 
 		void Renderer::Deinit()
 		{
+            for(auto& vkmesh : m_vkMeshes)
+            {
+                vkmesh->DeallocateOnGPU();
+            }
 			FreeSemaphores();
 			FreeCommandBuffers();
 			FreeCommandPool();

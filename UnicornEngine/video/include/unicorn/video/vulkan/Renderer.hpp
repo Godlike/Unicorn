@@ -119,8 +119,8 @@ namespace unicorn
 				vk::PresentModeKHR ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes);
 				vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities);
 				// Callbacks for window events
-				void OnWindowDestroyed(system::Window* pWindow) override;
-				void OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, int32_t> size) override;
+				void OnWindowDestroyed(system::Window* pWindow);
+				void OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, int32_t> size);
 			};
 		}
 	}

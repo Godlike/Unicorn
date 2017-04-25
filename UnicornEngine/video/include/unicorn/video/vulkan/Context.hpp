@@ -22,11 +22,9 @@ class Context
 {
 public:
     static bool IsInitialized();
-    static Device* GetNewDevice();
-    static bool DestroyDevice(Device* device);
-    static void Destroy();
 
     static bool Initialize(system::Manager& manager);
+    static void Deinitialize();
     static vk::Instance GetVkInstance();
     static std::vector<const char*> validationLayers, deviceExtensions, instanceExtensions;
 

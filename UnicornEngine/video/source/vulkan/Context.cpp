@@ -142,14 +142,14 @@ namespace unicorn
 				return true;
 			}
 
-			void Context::Destroy()
+			void Context::Deinitialize()
 			{
+				FreeDebugCallback();
 				if (IsInitialized())
 				{
 					m_vkInstance.destroy();
 					m_vkInstance = nullptr;
 				}
-				FreeDebugCallback();
 			}
 
 			std::vector<const char*> Context::FillRequiredExtensions(system::Manager& manager)
@@ -162,18 +162,7 @@ namespace unicorn
 				}
 
 				return extensions;
-			}
-
-			bool Context::DestroyDevice(Device* device)
-			{
-				return false;
-			}
-
-			Device* Context::GetNewDevice()
-			{
-				return nullptr;
-			}
-
+			}		
 
 			vk::Instance Context::GetVkInstance()
 			{

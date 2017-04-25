@@ -23,6 +23,7 @@ namespace unicorn
             public:
                 VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, std::shared_ptr<geometry::Mesh> mesh);
                 void AllocateOnGPU();
+                void DeallocateOnGPU();
                 vk::Buffer GetVertexBuffer();
                 vk::Buffer GetIndexBuffer();
                 std::uint32_t VerticesSize();

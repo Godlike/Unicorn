@@ -176,7 +176,6 @@ int main(int argc, char* argv[])
     if (unicornEngine->Init())
     {
         pGraphics = unicornEngine->GetGraphics();
-        pGraphics->CreateVulkanContext();
 
         for (auto const& cit : unicornEngine->GetGamepads())
         {
@@ -213,9 +212,6 @@ int main(int argc, char* argv[])
         unicorn::video::geometry::Triangle triangle1(blueTrianlge, vkRenderer1->SpawnMesh());
         unicorn::video::geometry::Triangle triangle2(yellowTriangle, vkRenderer1->SpawnMesh());
         unicorn::video::geometry::Triangle triangle3(redTriangle, vkRenderer1->SpawnMesh());
-
-        pGraphics->BindWindowRenderer(pWindow0, vkRenderer0);
-        pGraphics->BindWindowRenderer(pWindow1, vkRenderer1);
 
         pWindow1->Keyboard.connect(&onWindowKeyboard);
         pWindow0->SizeChanged.connect(&onWindowSizeChange);
