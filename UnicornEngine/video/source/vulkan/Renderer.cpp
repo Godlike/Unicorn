@@ -247,13 +247,18 @@ namespace video
 			return false;
 		}
 
+		void Renderer::OnMeshReallocated(VkMesh*)
+		{
+			CreateCommandBuffers();
+		}
+
 		std::shared_ptr<geometry::Mesh> Renderer::SpawnMesh()
 		{
 			auto mesh = std::make_shared<geometry::Mesh>();
 			auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, mesh);
+			vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
 			m_vkMeshes.push_back(vkmesh);
 			m_meshes.push_back(mesh);
-			CreateCommandBuffers();
 			return mesh;
 		}
 
@@ -566,7 +571,7 @@ namespace video
 
 		bool Renderer::CreateRenderPass()
 		{
-		    FreeRenderPass();
+			FreeRenderPass();
 
 			vk::AttachmentDescription colorAttachment;
 			colorAttachment.format = m_swapChainImageFormat;
@@ -796,10 +801,12 @@ namespace video
 				m_commandBuffers[i].beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
 				m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
 
+                vk::DeviceSize offsets[] = { 0 };
+
 				for(VkMesh* vkMesh : m_vkMeshes)
 				{
 					vk::Buffer buffer[] = { vkMesh->GetBuffer() };
-					m_commandBuffers[i].bindVertexBuffers(0, 1, buffer, nullptr);
+					m_commandBuffers[i].bindVertexBuffers(0, 1, buffer, offsets);
 					m_commandBuffers[i].draw(vkMesh->VerticesSize(), 1, 0, 0);
 				}				
 

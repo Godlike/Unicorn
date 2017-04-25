@@ -12,14 +12,29 @@ namespace unicorn
 	{
 		namespace geometry
 		{
-			Mesh::Mesh() {}
+			Mesh::Mesh(): m_isVerticesSizeChanged(false)
+			{
+			}
 
 			Mesh::~Mesh() {}
 
-		    std::uint32_t Mesh::VerticesSize() const
-		    {
-		        return static_cast<uint32_t>(m_vertices.size());
-		    }
+			std::uint32_t Mesh::VerticesSize() const
+			{
+				return static_cast<uint32_t>(m_vertices.size());
+			}
+
+			bool Mesh::IsSizeChanged() const 
+			{
+				return m_isVerticesSizeChanged;
+			}
+
+			void Mesh::SetVertices(const std::vector<Vertex>& newVertices)
+			{
+				if (newVertices.size() != m_vertices.size())
+					m_isVerticesSizeChanged = true;
+				m_vertices = newVertices;
+				DataUpdated.emit();
+			}
 		}
 	}
 }

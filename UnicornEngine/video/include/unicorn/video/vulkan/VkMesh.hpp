@@ -10,7 +10,7 @@
 #include <vulkan/vulkan.hpp>
 #include <unicorn/video/geometry/Mesh.hpp>
 #include <unicorn/video/vulkan/Buffer.hpp>
-#include <wink/slot.hpp>
+#include <wink/signal.hpp>
 
 namespace unicorn
 {
@@ -25,6 +25,7 @@ namespace unicorn
                 void AllocateOnGPU();
                 vk::Buffer GetBuffer();
                 std::uint32_t VerticesSize();
+                wink::signal<wink::slot<void(VkMesh*)>> ReallocatedOnGpu;
             private:
                 vk::Device m_device;
                 vk::PhysicalDevice m_physicalDevice;
