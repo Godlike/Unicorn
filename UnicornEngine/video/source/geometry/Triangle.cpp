@@ -14,7 +14,10 @@ namespace unicorn
         {
             Triangle::Triangle(const std::vector<Vertex>& verts, std::shared_ptr<Mesh> mesh) : m_mesh(mesh)
             {
-                m_mesh->SetVertices(verts);
+                const std::vector<uint16_t> indices = {
+                    0, 1, 2
+                };
+                m_mesh->SetDrawData(verts, indices);
             }
 
         }

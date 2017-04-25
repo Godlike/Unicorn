@@ -23,13 +23,15 @@ namespace unicorn
             public:
                 VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, std::shared_ptr<geometry::Mesh> mesh);
                 void AllocateOnGPU();
-                vk::Buffer GetBuffer();
+                vk::Buffer GetVertexBuffer();
+                vk::Buffer GetIndexBuffer();
                 std::uint32_t VerticesSize();
+                std::uint32_t IndicesSize();
                 wink::signal<wink::slot<void(VkMesh*)>> ReallocatedOnGpu;
             private:
                 vk::Device m_device;
                 vk::PhysicalDevice m_physicalDevice;
-                vulkan::Buffer m_buffer, m_stagingBuffer;
+                vulkan::Buffer m_vertexBuffer, m_indexBuffer;
                 std::shared_ptr<geometry::Mesh> m_mesh;
                 vk::CommandPool m_pool;
                 vk::Queue m_queue;

@@ -32,13 +32,13 @@ namespace unicorn
 				UNICORN_EXPORT Mesh();
 				UNICORN_EXPORT ~Mesh();
 				UNICORN_EXPORT std::uint32_t VerticesSize() const;
-
+                UNICORN_EXPORT std::uint32_t IndicesSize() const;
 				wink::signal<wink::slot<void()>> DataUpdated;
-				bool IsSizeChanged() const;
-				void SetVertices(const std::vector<Vertex>& newVertices);
+				void SetDrawData(const std::vector<Vertex>& newVertices, const std::vector<uint16_t>& indices);
+                
                 std::vector<Vertex> m_vertices;
+                std::vector<uint16_t> m_indices;
 			private:
-				bool m_isVerticesSizeChanged;
 				glm::mat4 m_model;
 			};
 		}

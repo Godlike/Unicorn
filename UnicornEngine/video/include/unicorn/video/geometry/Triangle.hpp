@@ -22,7 +22,7 @@ namespace unicorn
             class Triangle
             {
             public:
-                UNICORN_EXPORT Triangle(const std::vector<Vertex>& verts, std::shared_ptr<Mesh> mesh);
+                UNICORN_EXPORT Triangle(const std::vector<Vertex>& verts,  std::shared_ptr<Mesh> mesh);
             private:
                 std::shared_ptr<Mesh> m_mesh;
             };
