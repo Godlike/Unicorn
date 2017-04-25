@@ -10,6 +10,7 @@
 #include <vulkan/vulkan.hpp>
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
+#include "UniformObject.hpp"
 
 namespace unicorn
 {
@@ -42,7 +43,7 @@ namespace unicorn
 			};
 
 			class ShaderProgram;
-
+            class UniformObject;
 			class Renderer : public video::Renderer
 			{
 			public:
@@ -75,13 +76,17 @@ namespace unicorn
 				vk::CommandPool m_commandPool;
 				vk::Semaphore m_imageAvailableSemaphore;
 				vk::Semaphore m_renderFinishedSemaphore;
+                vk::DescriptorPool m_descriptorPool;
 				ShaderProgram* m_shaderProgram;
 				std::string m_gpuName;
 				std::vector<vk::Image> m_swapChainImages;
 				std::vector<vk::ImageView> m_swapChainImageViews;
 				std::vector<vk::Framebuffer> m_swapChainFramebuffers;
 				std::vector<vk::CommandBuffer> m_commandBuffers;
-                std::vector<VkMesh*> m_vkMeshes;
+				std::vector<VkMesh*> m_vkMeshes;
+                UniformObject* m_unifromBufferObject;
+                UniformBufferObject m_uniformObject;
+
 #ifdef NDEBUG
 				static const bool s_enableValidationLayers = false;
 #else
@@ -97,10 +102,13 @@ namespace unicorn
 				void FreeCommandPool();
 				void FreeCommandBuffers();
 				void FreeSemaphores();
+                void FreeUniformObject();
+                void FreeDescriptorPool();
 
 				bool PickPhysicalDevice();
 				bool CreateLogicalDevice();
 				bool CreateSurface();
+				bool CreateUniformObject();
 				bool CreateSwapChain();
 				bool CreateImageViews();
 				bool CreateRenderPass();
@@ -109,18 +117,19 @@ namespace unicorn
 				bool CreateCommandPool();
 				bool CreateCommandBuffers();
 				bool CreateSemaphores();
+			    bool CreateDescriptorPool();
 				bool IsDeviceSuitable(const vk::PhysicalDevice& device);
 				bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device);
 				bool Frame();
-                void OnMeshReallocated(VkMesh*);
+				void OnMeshReallocated(VkMesh*);
 				QueueFamilyIndices FindQueueFamilies(const vk::PhysicalDevice& device);
 				bool QuerySwapChainSupport(SwapChainSupportDetails& details, const vk::PhysicalDevice& device);
 				vk::SurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats);
 				vk::PresentModeKHR ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes);
 				vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities);
 				// Callbacks for window events
-				void OnWindowDestroyed(system::Window* pWindow) override;
-				void OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, int32_t> size) override;
+				void OnWindowDestroyed(system::Window* pWindow);
+				void OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, int32_t> size);
 			};
 		}
 	}

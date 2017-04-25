@@ -23,8 +23,13 @@ namespace unicorn
             public:
                 VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, std::shared_ptr<geometry::Mesh> mesh);
                 void AllocateOnGPU();
+                void DeallocateOnGPU();
                 vk::Buffer GetVertexBuffer();
                 vk::Buffer GetIndexBuffer();
+                glm::mat4 GetModel()
+                {
+                    return m_mesh->GetModel();
+                }
                 std::uint32_t VerticesSize();
                 std::uint32_t IndicesSize();
                 wink::signal<wink::slot<void(VkMesh*)>> ReallocatedOnGpu;

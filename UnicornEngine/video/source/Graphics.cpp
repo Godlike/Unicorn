@@ -19,18 +19,20 @@ namespace unicorn
 namespace video
 {
 Graphics::Graphics(system::Manager& manager)
-    : m_isInitialized(false)
-    , m_systemManager(manager)
-{
-}
+        : m_isInitialized(false)
+          , m_systemManager(manager), m_driver()
+    {
+    }
 
 Graphics::~Graphics()
 {
     Deinit();
 }
 
-bool Graphics::Init()
+bool Graphics::Init(const DriverType& whichDriver)
 {
+    m_driver = whichDriver;
+
     if (m_isInitialized)
     {
         return false;
@@ -38,13 +40,21 @@ bool Graphics::Init()
 
     LOG_INFO("Graphics initialization started.");
 
-    if (!m_systemManager.IsVulkanSupported())
+    switch(m_driver)
     {
-        LOG_ERROR("Vulkan not supported!");
-
-        return false;
+    case DriverType::Vulkan:
+        if (!m_systemManager.IsVulkanSupported())
+        {
+            LOG_ERROR("Vulkan not supported!");
+            return false;
+        }
+        if(!vulkan::Context::Initialize(m_systemManager))
+        {
+            LOG_ERROR("Vulkan context not initialized!");
+            return false;
+        }
+        break;
     }
-
     m_isInitialized = true;
 
     LOG_INFO("Graphics initialized correctly.");
@@ -59,6 +69,13 @@ void Graphics::Deinit()
     m_renderers.clear();
 
     ProcessExpiredRenderers();
+
+    switch (m_driver)
+    {
+    case DriverType::Vulkan:
+        vulkan::Context::Deinitialize();
+        break;
+    }
 
     if (m_isInitialized)
     {
@@ -165,16 +182,12 @@ void Graphics::ProcessExpiredRenderers()
     }
 }
 
-Renderer* Graphics::SpawnVulkanRenderer(system::Window* window) const
+Renderer* Graphics::SpawnVulkanRenderer(system::Window* window)
 {
     auto* renderer = new vulkan::Renderer(m_systemManager, window);
     renderer->Init();
+    BindWindowRenderer(window, renderer);
     return renderer;
-}
-
-bool Graphics::CreateVulkanContext() const
-{
-    return vulkan::Context::Initialize(m_systemManager);
 }
 }
 }

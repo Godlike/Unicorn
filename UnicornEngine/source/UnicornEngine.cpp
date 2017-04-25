@@ -24,13 +24,16 @@
 namespace unicorn
 {
 UnicornEngine::UnicornEngine()
-    : m_isInitialized(false)
-    , m_pSystemManager(nullptr)
-    , m_pWindowProfiler(nullptr)
-    , m_pMonitorProfiler(nullptr)
-    , m_pGraphics(nullptr)
-{
-}
+        : m_isInitialized(false)
+          , m_pSystemManager(nullptr)
+          , m_pWindowProfiler(nullptr)
+          , m_pMonitorProfiler(nullptr)
+          , m_pMouseProfiler(nullptr), 
+            m_pKeyProfiler(nullptr),
+            m_pGamepadProfiler(nullptr), 
+            m_pGraphics(nullptr)
+    {
+    }
 
 UnicornEngine::~UnicornEngine()
 {
@@ -59,7 +62,7 @@ bool UnicornEngine::Init()
 
     m_pGraphics = new video::Graphics(*m_pSystemManager);
 
-    if (!m_pGraphics->Init())
+    if (!m_pGraphics->Init(video::DriverType::Vulkan))
     {
         Deinit();
 

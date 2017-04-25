@@ -30,6 +30,11 @@ namespace video
 {
 class Renderer;
 
+enum class DriverType
+{
+    Vulkan
+};
+
 /** @brief Abstract graphics renderer
  *
  *  Initializes graphics system and proxies render calls to the renderer
@@ -57,9 +62,11 @@ public:
      *
      *  Ensures that window management system supports Vulkan
      *
+     *  @param  whichDriver Driver, which will render our all graphics.
+     *
      *  @return @c true if initialization was successful, @c false otherwise
      */
-    bool Init();
+    bool Init(const DriverType& whichDriver);
 
     /** @brief  Deinitializes the graphics system
      *
@@ -135,13 +142,7 @@ public:
      *  @param  window Which window to render.
      * @return Pointer to @sa Renderer.
      */
-    UNICORN_EXPORT Renderer* SpawnVulkanRenderer(system::Window* window) const;
-
-    /** @brief  Initialize full VkInstance.
-     *
-     * @return true if VkInstance initialized and false, if can't.
-     */
-    UNICORN_EXPORT bool CreateVulkanContext() const;
+    UNICORN_EXPORT Renderer* SpawnVulkanRenderer(system::Window* window);
 
     /** @brief Binds renderer to window.
     *
@@ -179,6 +180,9 @@ private:
 
     //! Set of expired Renderer-Window pairs that need to be deinitialized
     RendererWindowPairSet m_expiredRenderers;
+
+    //! Hold which driver we are using for correct deallocation
+    DriverType m_driver;
 };
 }
 }
