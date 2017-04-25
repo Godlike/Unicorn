@@ -20,7 +20,7 @@ Buffer::~Buffer()
 {
 }
 
-vk::Result Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::BufferUsageFlags usage, size_t size)
+vk::Result Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags memoryPropertyFlags, size_t size)
 {
     m_device = device;
     m_usage = usage;
@@ -102,6 +102,38 @@ void Buffer::Write(const void* pData) const
 
     m_device.unmapMemory(m_memory);
 }
+
+    void Buffer::CopyToBuffer(vk::CommandPool pool, vk::Queue queue, const vulkan::Buffer& dstBuffer, vk::DeviceSize size)
+    {
+        vk::CommandBufferAllocateInfo allocInfo;
+        allocInfo.level = vk::CommandBufferLevel::ePrimary;
+        allocInfo.commandPool = pool;
+        allocInfo.commandBufferCount = 1;
+
+        vk::CommandBuffer commandBuffer;
+        m_device.allocateCommandBuffers(&allocInfo, &commandBuffer);
+
+        vk::CommandBufferBeginInfo beginInfo;
+        beginInfo.flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit;
+
+        commandBuffer.begin(&beginInfo);
+
+        vk::BufferCopy copyRegion;
+        copyRegion.srcOffset = 0;
+        copyRegion.dstOffset = 0;
+        copyRegion.size = size;
+        commandBuffer.copyBuffer(m_buffer, dstBuffer.GetVkBuffer(), 1, &copyRegion);
+
+        commandBuffer.end();
+
+        vk::SubmitInfo submitInfo;
+        submitInfo.commandBufferCount = 1;
+        submitInfo.pCommandBuffers = &commandBuffer;
+
+        queue.submit(1, &submitInfo, nullptr); // TODO: paralelize this, move to another queue 
+        queue.waitIdle();
+        m_device.freeCommandBuffers(pool, 1, &commandBuffer);
+    }
 
 size_t Buffer::GetSize() const
 {
