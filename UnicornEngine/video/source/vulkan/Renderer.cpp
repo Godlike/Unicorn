@@ -805,9 +805,10 @@ namespace video
 
 				for(VkMesh* vkMesh : m_vkMeshes)
 				{
-					vk::Buffer buffer[] = { vkMesh->GetBuffer() };
-					m_commandBuffers[i].bindVertexBuffers(0, 1, buffer, offsets);
-					m_commandBuffers[i].draw(vkMesh->VerticesSize(), 1, 0, 0);
+					vk::Buffer vertexBuffer[] = { vkMesh->GetVertexBuffer() };
+					m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);
+                    m_commandBuffers[i].bindIndexBuffer(vkMesh->GetIndexBuffer(), 0, vk::IndexType::eUint16);
+					m_commandBuffers[i].drawIndexed(vkMesh->IndicesSize(), 1, 0, 0, 0);
 				}				
 
 				m_commandBuffers[i].endRenderPass();

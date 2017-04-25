@@ -21,27 +21,48 @@ namespace unicorn
 
             void VkMesh::AllocateOnGPU()
             {
-                m_buffer.Destroy();
-                Buffer hostBuffer;
+                m_vertexBuffer.Destroy();
+                m_indexBuffer.Destroy();
+                Buffer stagingBuffer;
+                //Vertexes filling
                 auto size = sizeof(m_mesh->m_vertices[0]) * m_mesh->m_vertices.size();
-                hostBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc, 
+                stagingBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc,
                     vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, size);
-                m_buffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eVertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal, size);
+                m_vertexBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eVertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal, size);
                 
-                hostBuffer.Write(m_mesh->m_vertices.data());
-                hostBuffer.CopyToBuffer(m_pool, m_queue, m_buffer, m_buffer.GetSize());
-                hostBuffer.Destroy();
+                stagingBuffer.Write(m_mesh->m_vertices.data());
+                stagingBuffer.CopyToBuffer(m_pool, m_queue, m_vertexBuffer, m_vertexBuffer.GetSize());
+                stagingBuffer.Destroy();
+                //Indexes filling
+                size = sizeof(m_mesh->m_indices[0]) * m_mesh->m_indices.size();
+
+                stagingBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc,
+                    vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, size); 
+                m_indexBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eVertexBuffer, vk::MemoryPropertyFlagBits::eDeviceLocal, size);
+                stagingBuffer.Write(m_mesh->m_indices.data());
+                stagingBuffer.CopyToBuffer(m_pool, m_queue, m_indexBuffer, m_indexBuffer.GetSize());
+                stagingBuffer.Destroy();
                 ReallocatedOnGpu.emit(this);
             }
 
-            vk::Buffer VkMesh::GetBuffer()
+            vk::Buffer VkMesh::GetVertexBuffer()
             {
-                return m_buffer.GetVkBuffer();
+                return m_vertexBuffer.GetVkBuffer();
             }
 
             std::uint32_t VkMesh::VerticesSize()
             {
                 return m_mesh->VerticesSize();
+            }
+
+            vk::Buffer VkMesh::GetIndexBuffer()
+            {
+                return m_indexBuffer.GetVkBuffer();
+            }
+
+            std::uint32_t VkMesh::IndicesSize()
+            {
+                return m_mesh->IndicesSize();
             }
         }
     }
