@@ -21,7 +21,7 @@ namespace unicorn
             class VkMesh
             {
             public:
-                VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, std::shared_ptr<geometry::Mesh> mesh);
+                VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, std::shared_ptr<geometry::Mesh> mesh);
                 void AllocateOnGPU();
                 vk::Buffer GetBuffer();
                 std::uint32_t VerticesSize();
@@ -29,8 +29,10 @@ namespace unicorn
             private:
                 vk::Device m_device;
                 vk::PhysicalDevice m_physicalDevice;
-                vulkan::Buffer m_buffer;
+                vulkan::Buffer m_buffer, m_stagingBuffer;
                 std::shared_ptr<geometry::Mesh> m_mesh;
+                vk::CommandPool m_pool;
+                vk::Queue m_queue;
             };
         }
     }
