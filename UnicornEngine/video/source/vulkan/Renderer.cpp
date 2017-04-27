@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <array>
 #include <tuple>
+#include <chrono>
 
 namespace unicorn
 {
@@ -32,8 +33,8 @@ namespace video
 			m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
 			m_pWindow->SizeChanged.connect(this, &Renderer::OnWindowSizeChanged);
             m_pCamera = new Camera();
-            m_pCamera->SetPerspective(45, 1920 / 1080, 0.1, 100);
-            m_pCamera->SetPosition({1.0, 1.0, 1.0});
+            m_pCamera->SetPerspective(45, window->GetSize().first / window->GetSize().second, 0.1, 100);
+            m_pCamera->SetPosition({0.0, 0.0, 0.0});
 		}
 		
 		Renderer::~Renderer()
@@ -837,9 +838,14 @@ namespace video
 
 				m_commandBuffers[i].beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
 				m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
+                static auto startTime = std::chrono::high_resolution_clock::now();
 
+                auto currentTime = std::chrono::high_resolution_clock::now();
+                float time = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count() / 1000.0f;
+
+                m_uniformObject.proj[1][1] *= -1;
 				vk::DeviceSize offsets[] = { 0 };
-                m_uniformObject.view = m_pCamera->GetView();
+                m_uniformObject.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
                 m_uniformObject.proj = m_pCamera->GetProjection();
 				for(VkMesh* vkMesh : m_vkMeshes)
 				{
