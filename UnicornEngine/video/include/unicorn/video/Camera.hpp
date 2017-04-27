@@ -36,6 +36,16 @@ namespace unicorn
             void SetTranslation(glm::vec3 translation);
 
             void Translate(glm::vec3 delta);
+
+            glm::mat4 GetProjection()
+            {
+                return m_matrices.m_perspective;
+            }
+
+            glm::mat4 GetView()
+            {
+                return m_matrices.m_view;
+            }
         private:
             glm::vec3 m_rotation;
             glm::vec3 m_position;

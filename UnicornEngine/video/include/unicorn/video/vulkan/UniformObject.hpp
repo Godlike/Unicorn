@@ -30,10 +30,16 @@ namespace unicorn
                 UniformObject(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue);
                 ~UniformObject();
 
-                bool Create();
+                bool CreateLayout();
+                bool CreateSet(vk::DescriptorPool descrPool);
                 void Destroy();
                 void Update(float deltaTime, const UniformBufferObject& ubo);
                 vk::DescriptorSetLayout GetDescriptorLayout() const;
+                vk::DescriptorSet GetDescriptorSet() const;
+                void SetCommandPool(vk::CommandPool newpool)
+                {
+                    m_pool = newpool;
+                }
             private:
                 vk::Device m_device;
                 vk::PhysicalDevice m_physicalDevice;
@@ -42,6 +48,7 @@ namespace unicorn
                 vk::DescriptorSetLayout m_descriptorSetLayout;
                 Buffer m_uniformStagingBuffer; 
                 Buffer m_uniformBuffer;
+                vk::DescriptorSet m_descriptorSet;
             };
         }
     }

@@ -26,6 +26,10 @@ namespace unicorn
                 void DeallocateOnGPU();
                 vk::Buffer GetVertexBuffer();
                 vk::Buffer GetIndexBuffer();
+                glm::mat4 GetModel()
+                {
+                    return m_mesh->GetModel();
+                }
                 std::uint32_t VerticesSize();
                 std::uint32_t IndicesSize();
                 wink::signal<wink::slot<void(VkMesh*)>> ReallocatedOnGpu;

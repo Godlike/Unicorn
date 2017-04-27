@@ -12,7 +12,7 @@ namespace unicorn
 	{
 		namespace geometry
 		{
-			Mesh::Mesh()
+			Mesh::Mesh() : m_model(glm::mat4())
 			{
 			}
 

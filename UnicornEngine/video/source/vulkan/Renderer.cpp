@@ -13,6 +13,7 @@
 #include <unicorn/video/vulkan/Context.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
 #include <unicorn/video/vulkan/UniformObject.hpp>
+#include <unicorn/video/Camera.hpp>
 
 #include <cstring>
 #include <iostream>
@@ -30,6 +31,9 @@ namespace video
 		{
 			m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
 			m_pWindow->SizeChanged.connect(this, &Renderer::OnWindowSizeChanged);
+            m_pCamera = new Camera();
+            m_pCamera->SetPerspective(45, 1920 / 1080, 0.1, 100);
+            m_pCamera->SetPosition({1.0, 1.0, 1.0});
 		}
 		
 		Renderer::~Renderer()
@@ -58,8 +62,9 @@ namespace video
 				!CreateSwapChain() ||
 				!CreateImageViews() ||
 				!CreateRenderPass() ||
-				!CreateUniformObject() ||
-				!CreateGraphicsPipeline() ||
+                !CreateGraphicsPipeline() ||
+                !CreateDescriptorPool() ||
+                !CreateUniformObject() ||
 				!CreateFramebuffers() ||
 				!CreateCommandPool() ||
 				!CreateSemaphores())
@@ -82,6 +87,7 @@ namespace video
 			}
 			FreeSemaphores();
 			FreeCommandBuffers();
+            FreeDescriptorPool();
 			FreeCommandPool();
 			FreeFrameBuffers();
 			FreeUniformObject();
@@ -205,7 +211,6 @@ namespace video
 		{
 			if (m_isInitialized && m_pWindow)
 			{
-                //m_unifromBufferObject->Update(0.1, ); // TODO: WHAT
 				Frame();
 
 				m_vkLogicalDevice.waitIdle();
@@ -246,8 +251,7 @@ namespace video
 				CreateImageViews() &&
 				CreateRenderPass() &&
 				CreateGraphicsPipeline() &&
-				CreateFramebuffers() &&
-				CreateCommandBuffers())
+				CreateFramebuffers())
 			{
 				return true;
 			}
@@ -385,7 +389,16 @@ namespace video
 			}
 		}
 
-		bool Renderer::PickPhysicalDevice()
+	    void Renderer::FreeDescriptorPool()
+	    {
+            if(m_descriptorPool)
+            {
+                m_vkLogicalDevice.destroyDescriptorPool(m_descriptorPool);
+                m_descriptorPool = nullptr;
+            }
+	    }
+
+	    bool Renderer::PickPhysicalDevice()
 		{
 			vk::Result result;
 			std::vector<vk::PhysicalDevice> devices;
@@ -474,8 +487,7 @@ namespace video
 
 		bool Renderer::CreateUniformObject()
 		{
-			m_unifromBufferObject = new UniformObject(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue);
-			return m_unifromBufferObject->Create();
+			return m_unifromBufferObject->CreateSet(m_descriptorPool);
 		}
 
 		bool Renderer::CreateSwapChain()
@@ -686,6 +698,9 @@ namespace video
 
 			vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
 			pipelineLayoutInfo.setLayoutCount = 1;
+
+            m_unifromBufferObject = new UniformObject(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue);
+            m_unifromBufferObject->CreateLayout();
             //TODO: absolutely not right, why i just can't &m_unifromBufferObject->GetDescriptorLayout()
             vk::DescriptorSetLayout descriptorSetLayout = m_unifromBufferObject->GetDescriptorLayout();
 			pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
@@ -766,17 +781,17 @@ namespace video
 
 		bool Renderer::CreateCommandPool()
 		{
-			vk::Result result;
-			QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(m_vkPhysicalDevice);
+		    QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(m_vkPhysicalDevice);
 
 			vk::CommandPoolCreateInfo poolInfo = {};
 			poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
-			result = m_vkLogicalDevice.createCommandPool(&poolInfo, {}, &m_commandPool);
+			vk::Result result = m_vkLogicalDevice.createCommandPool(&poolInfo, {}, &m_commandPool);
 			if (result != vk::Result::eSuccess)
 			{
 				LOG_ERROR("Failed to create command pool!");
 				return false;
 			}
+            m_unifromBufferObject->SetCommandPool(m_commandPool);
 
 			return true;
 		}
@@ -824,12 +839,17 @@ namespace video
 				m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
 
 				vk::DeviceSize offsets[] = { 0 };
-
+                m_uniformObject.view = m_pCamera->GetView();
+                m_uniformObject.proj = m_pCamera->GetProjection();
 				for(VkMesh* vkMesh : m_vkMeshes)
 				{
 					vk::Buffer vertexBuffer[] = { vkMesh->GetVertexBuffer() };
 					m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);
 					m_commandBuffers[i].bindIndexBuffer(vkMesh->GetIndexBuffer(), 0, vk::IndexType::eUint16);
+                    m_uniformObject.model = vkMesh->GetModel();
+                    m_unifromBufferObject->Update(1.0, m_uniformObject);
+                    vk::DescriptorSet set = m_unifromBufferObject->GetDescriptorSet();
+                    m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout, 0, 1, &set, 0, nullptr);                   
 					m_commandBuffers[i].drawIndexed(vkMesh->IndicesSize(), 1, 0, 0, 0);
 				}				
 
@@ -854,7 +874,27 @@ namespace video
 			return false;
 		}
 
-		bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
+	    bool Renderer::CreateDescriptorPool()
+	    {
+            vk::DescriptorPoolSize poolSize;
+            poolSize.type = vk::DescriptorType::eUniformBuffer;
+            poolSize.descriptorCount = 1;
+
+            vk::DescriptorPoolCreateInfo poolInfo;
+            poolInfo.poolSizeCount = 1;
+            poolInfo.pPoolSizes = &poolSize;
+            poolInfo.maxSets = 1;
+
+            vk::Result result = m_vkLogicalDevice.createDescriptorPool(&poolInfo, nullptr, &m_descriptorPool);
+
+            if(result != vk::Result::eSuccess)
+            {
+                LOG_ERROR("Failed to create descriptor pool!");
+                return false;
+            }
+            return true;
+	    }
+	    bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
 		{
 			vk::PhysicalDeviceProperties deviceProperties = device.getProperties();
 
@@ -930,6 +970,9 @@ namespace video
 				LOG_ERROR("Failed to acquire swap chain image!");
 				return false;
 			}
+
+
+            CreateCommandBuffers(); //TODO: burn my eyes
 
 			vk::SubmitInfo submitInfo;
 

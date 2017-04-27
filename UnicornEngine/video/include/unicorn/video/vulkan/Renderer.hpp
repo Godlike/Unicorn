@@ -10,6 +10,7 @@
 #include <vulkan/vulkan.hpp>
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
+#include "UniformObject.hpp"
 
 namespace unicorn
 {
@@ -75,6 +76,7 @@ namespace unicorn
 				vk::CommandPool m_commandPool;
 				vk::Semaphore m_imageAvailableSemaphore;
 				vk::Semaphore m_renderFinishedSemaphore;
+                vk::DescriptorPool m_descriptorPool;
 				ShaderProgram* m_shaderProgram;
 				std::string m_gpuName;
 				std::vector<vk::Image> m_swapChainImages;
@@ -83,6 +85,8 @@ namespace unicorn
 				std::vector<vk::CommandBuffer> m_commandBuffers;
 				std::vector<VkMesh*> m_vkMeshes;
                 UniformObject* m_unifromBufferObject;
+                UniformBufferObject m_uniformObject;
+
 #ifdef NDEBUG
 				static const bool s_enableValidationLayers = false;
 #else
@@ -99,6 +103,7 @@ namespace unicorn
 				void FreeCommandBuffers();
 				void FreeSemaphores();
                 void FreeUniformObject();
+                void FreeDescriptorPool();
 
 				bool PickPhysicalDevice();
 				bool CreateLogicalDevice();
@@ -112,6 +117,7 @@ namespace unicorn
 				bool CreateCommandPool();
 				bool CreateCommandBuffers();
 				bool CreateSemaphores();
+			    bool CreateDescriptorPool();
 				bool IsDeviceSuitable(const vk::PhysicalDevice& device);
 				bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device);
 				bool Frame();
