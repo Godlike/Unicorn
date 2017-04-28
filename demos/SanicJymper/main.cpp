@@ -48,7 +48,7 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     std::pair<int32_t, int32_t> position = pWindow->GetPosition();
     bool positionChanged = true;
 
-    uint32_t delta = 1;
+    int32_t delta = 1;
 
     if (Modifier::Shift & modifiers)
     {
@@ -62,6 +62,37 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
 
     switch (key)
     {
+     
+        case Key::W:
+        {
+            pCamera->Translate({0.0f, 0.0f, -delta });
+            break;
+        }
+        case Key::S:
+        {
+            pCamera->Translate({ 0.0f, 0.0f, delta});
+            break;
+        }
+        case Key::A:
+        {
+            pCamera->Translate({ -delta, 0.0f, 0.0f });
+            break;
+        }
+        case Key::D:
+        {
+            pCamera->Translate({ delta, 0.0f, 0.0f });
+            break;
+        }
+        case Key::Q:
+        {
+            pCamera->Translate({ 0.0f, -delta, 0.0f });
+            break;
+        }
+        case Key::E:
+        {
+            pCamera->Translate({ 0.0f, delta, 0.0f });
+            break;
+        }
         case Key::Up:
         {
             position.second -= delta;

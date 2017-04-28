@@ -13,6 +13,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <unicorn/utility/SharedMacros.hpp>
 
 namespace unicorn
 {
@@ -23,15 +24,15 @@ namespace unicorn
         public:
             Camera(glm::vec3 postion, glm::vec3 direction);
 
-            void SetPerspective(float fov, float aspect, float znear, float zfar);
+            UNICORN_EXPORT void SetPerspective(float fov, float aspect, float znear, float zfar);
 
-            void UpdateAspectRatio(float aspect);
+            UNICORN_EXPORT void UpdateAspectRatio(float aspect);
 
-            void Translate(glm::vec3 delta);
+            UNICORN_EXPORT void Translate(glm::vec3 delta);
 
-            glm::mat4 GetProjection() const;
+            UNICORN_EXPORT glm::mat4 GetProjection() const;
 
-            glm::mat4 GetView() const;
+            UNICORN_EXPORT glm::mat4 GetView() const;
         private:
             float m_camSpeed;
             float m_camYawSpeed;
