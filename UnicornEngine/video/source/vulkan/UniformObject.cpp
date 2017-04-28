@@ -50,7 +50,6 @@ namespace unicorn
 
             bool UniformObject::CreateSet(vk::DescriptorPool descrPool)
             {
-                vk::Result result;
                 vk::DeviceSize bufferSize = sizeof(UniformBufferObject);
 
                 m_uniformStagingBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc,
@@ -63,7 +62,7 @@ namespace unicorn
                 allocInfo.descriptorSetCount = 1;
                 allocInfo.pSetLayouts = layouts;
 
-                result = m_device.allocateDescriptorSets(&allocInfo, &m_descriptorSet);
+                vk::Result result = m_device.allocateDescriptorSets(&allocInfo, &m_descriptorSet);
 
                 if (result != vk::Result::eSuccess)
                 {
@@ -88,7 +87,7 @@ namespace unicorn
                 return true;
             }
 
-            void UniformObject::Destroy()
+            void UniformObject::Destroy() const
             {
                 if (m_descriptorSetLayout)
                 {

@@ -11,7 +11,8 @@ set(GEOMETRY_HEADERS
 	include/unicorn/video/geometry/Mesh.hpp
 	include/unicorn/video/geometry/Quad.hpp
 	include/unicorn/video/geometry/Sphere.hpp
-	include/unicorn/video/geometry/Triangle.hpp
+	include/unicorn/video/geometry/Triangle.hpp    
+	include/unicorn/video/geometry/MeshDescriptor.hpp
 )
 
 set(GEOMETRY_SOURCES
@@ -20,6 +21,7 @@ set(GEOMETRY_SOURCES
 	source/geometry/Quad.cpp
 	source/geometry/Sphere.cpp
 	source/geometry/Triangle.cpp
+    source/geometry/MeshDescriptor.cpp
 )
 
 set(VULKAN_HEADERS
@@ -64,6 +66,7 @@ set(VIDEO_HEADERS
 	include/unicorn/video/Graphics.hpp
 	include/unicorn/video/Renderer.hpp
 	include/unicorn/video/Camera.hpp
+    include/unicorn/video/Color.hpp
 	${VULKAN_HEADERS}
 	${GEOMETRY_HEADERS}
 )

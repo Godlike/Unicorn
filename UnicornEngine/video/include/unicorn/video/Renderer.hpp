@@ -20,6 +20,7 @@ namespace system
 {
 	class Manager;
 	class Window;
+    class Timer;
 }
 
 namespace video
@@ -40,6 +41,7 @@ public:
 	virtual bool Init() = 0;
 	virtual void Deinit() = 0;
 	virtual bool Render() = 0;
+    UNICORN_EXPORT Camera* GetCamera() const;
 	virtual std::shared_ptr<geometry::Mesh> SpawnMesh() = 0;
 protected:
 	bool m_isInitialized;

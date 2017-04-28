@@ -32,7 +32,7 @@ namespace unicorn
 
                 bool CreateLayout();
                 bool CreateSet(vk::DescriptorPool descrPool);
-                void Destroy();
+                void Destroy() const;
                 void Update(float deltaTime, const UniformBufferObject& ubo);
                 vk::DescriptorSetLayout GetDescriptorLayout() const;
                 vk::DescriptorSet GetDescriptorSet() const;

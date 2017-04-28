@@ -12,26 +12,14 @@ namespace unicorn
 	{
 		namespace geometry
 		{
-			Mesh::Mesh() : m_model(glm::mat4())
+			Mesh::Mesh() : model(glm::mat4())
 			{
 			}
 
 			Mesh::~Mesh() {}
 
-			std::uint32_t Mesh::VerticesSize() const
-			{
-				return static_cast<uint32_t>(m_vertices.size());
-			}
-
-			std::uint32_t Mesh::IndicesSize() const
-			{
-				return static_cast<uint32_t>(m_indices.size());
-			}
-
-			void Mesh::SetDrawData(const std::vector<Vertex>& newVertices, const std::vector<uint16_t>& indices)
+			void Mesh::Updated() const
 			{				
-				m_vertices = newVertices;
-				m_indices = indices;
 				DataUpdated.emit();
 			}
 		}

@@ -28,7 +28,7 @@ namespace unicorn
                 vk::Buffer GetIndexBuffer();
                 glm::mat4 GetModel()
                 {
-                    return m_mesh->GetModel();
+                    return m_mesh->model;
                 }
                 std::uint32_t VerticesSize();
                 std::uint32_t IndicesSize();

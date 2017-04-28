@@ -21,34 +21,27 @@ namespace unicorn
         class Camera
         {
         public:
-            Camera();
+            Camera(glm::vec3 postion, glm::vec3 direction);
 
             void SetPerspective(float fov, float aspect, float znear, float zfar);
 
             void UpdateAspectRatio(float aspect);
 
-            void SetPosition(glm::vec3 position);
-
-            void SetRotation(glm::vec3 rotation);
-
-            void Rotate(glm::vec3 delta);
-
-            void SetTranslation(glm::vec3 translation);
-
             void Translate(glm::vec3 delta);
 
-            glm::mat4 GetProjection()
-            {
-                return m_matrices.m_perspective;
-            }
+            glm::mat4 GetProjection() const;
 
-            glm::mat4 GetView()
-            {
-                return m_matrices.m_view;
-            }
+            glm::mat4 GetView() const;
         private:
-            glm::vec3 m_rotation;
-            glm::vec3 m_position;
+            float m_camSpeed;
+            float m_camYawSpeed;
+            float m_camYaw;
+            float m_aspect;
+            double m_lastX, m_lastY, m_yaw, m_pitch;
+            double m_sensitivity;
+            glm::vec3 m_camPosition;
+            glm::vec3 m_upVector;
+            glm::vec3 m_camDirection;
             struct
             {
                 glm::mat4 m_perspective;
@@ -59,6 +52,7 @@ namespace unicorn
             float m_znear, m_zfar;
 
             void UpdateViewMatrix();
+            void UpdateProjectionMatrix();
         };
     }
 }

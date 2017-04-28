@@ -23,7 +23,7 @@
 #include <iostream>
 
 static unicorn::video::Graphics* pGraphics = nullptr;
-
+static unicorn::video::Camera* pCamera = nullptr;
 void onWindowSizeChange(unicorn::system::Window* pWindow, std::pair<int32_t, int32_t> size)
 {
     std::cout << "Window[" << pWindow->GetId() << "]: size changed to " << size.first << "x" << size.second << std::endl;
@@ -154,23 +154,6 @@ int main(int argc, char* argv[])
 
     settings.Init(argc, argv, "SANIC_JYMPER.log");
     settings.SetApplicationName("SANIC JYMPER");
-
-    std::vector<unicorn::video::geometry::Vertex> redTriangle = {
-        { { 0.5f, 0.0f },{ 1.0f, 0.0f, 0.0f } },
-        { { 1.0f, 1.0f },{ 1.0f, 0.0f, 0.0f } },
-        { { 0.0f, 1.0f },{ 1.0f, 0.0f, 0.0f } }
-    };
-
-    std::vector<unicorn::video::geometry::Vertex> blueTrianlge = {
-        { { -0.5f, -1.0f },{ 0.0f, 0.0f, 1.0f } },
-        { { 0.0f, 0.0f },{ 0.0f, 0.0f, 1.0f } },
-        { { -1.0f, 0.0f },{ 0.0f, 0.0f, 1.0f } }
-    };
-    std::vector<unicorn::video::geometry::Vertex> yellowTriangle = {
-        { { -0.5f, 0.0f },{ 1.0f, 1.0f, 0.0f } },
-        { { 0.0f, 1.0f },{ 1.0f, 1.0f, 0.0f } },
-        { { -1.0f, 1.0f },{ 1.0f, 1.0f, 0.0f } }
-    };
     
     unicorn::UnicornEngine* unicornEngine = new unicorn::UnicornEngine();
     if (unicornEngine->Init())
@@ -197,23 +180,10 @@ int main(int argc, char* argv[])
             nullptr,
             nullptr);
 
-        unicorn::system::Window* pWindow1 = pGraphics->SpawnWindow(
-            settings.GetApplicationWidth(),
-            settings.GetApplicationHeight(),
-            std::string("Hmm ") + settings.GetApplicationName(),
-            nullptr,
-            nullptr);
-
-
         auto vkRenderer0 = pGraphics->SpawnVulkanRenderer(pWindow0);
-        auto vkRenderer1 = pGraphics->SpawnVulkanRenderer(pWindow1);
+        pCamera = vkRenderer0->GetCamera();
+        unicorn::video::geometry::Triangle triangle0(vkRenderer0->SpawnMesh());
 
-        unicorn::video::geometry::Triangle triangle0(redTriangle, vkRenderer0->SpawnMesh());
-        unicorn::video::geometry::Triangle triangle1(blueTrianlge, vkRenderer1->SpawnMesh());
-        unicorn::video::geometry::Triangle triangle2(yellowTriangle, vkRenderer1->SpawnMesh());
-        unicorn::video::geometry::Triangle triangle3(redTriangle, vkRenderer1->SpawnMesh());
-
-        pWindow1->Keyboard.connect(&onWindowKeyboard);
         pWindow0->SizeChanged.connect(&onWindowSizeChange);
         pWindow0->Keyboard.connect(&onWindowKeyboard);
         unicornEngine->Run();

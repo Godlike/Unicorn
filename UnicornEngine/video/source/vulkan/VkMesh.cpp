@@ -25,21 +25,21 @@ namespace unicorn
                 m_indexBuffer.Destroy();
                 Buffer stagingBuffer;
                 //Vertexes filling
-                auto size = sizeof(m_mesh->m_vertices[0]) * m_mesh->m_vertices.size();
+                auto size = sizeof(m_mesh->vertices[0]) * m_mesh->vertices.size();
                 stagingBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc,
                     vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, size);
                 m_vertexBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, size);
                 
-                stagingBuffer.Write(m_mesh->m_vertices.data());
+                stagingBuffer.Write(m_mesh->vertices.data());
                 stagingBuffer.CopyToBuffer(m_pool, m_queue, m_vertexBuffer, m_vertexBuffer.GetSize());
                 stagingBuffer.Destroy();
                 //Indexes filling
-                size = sizeof(m_mesh->m_indices[0]) * m_mesh->m_indices.size();
+                size = sizeof(m_mesh->indices[0]) * m_mesh->indices.size();
 
                 stagingBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc,
                     vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, size); 
                 m_indexBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, size);
-                stagingBuffer.Write(m_mesh->m_indices.data());
+                stagingBuffer.Write(m_mesh->indices.data());
                 stagingBuffer.CopyToBuffer(m_pool, m_queue, m_indexBuffer, m_indexBuffer.GetSize());
                 stagingBuffer.Destroy();
                 ReallocatedOnGpu.emit(this);
@@ -58,7 +58,7 @@ namespace unicorn
 
             std::uint32_t VkMesh::VerticesSize()
             {
-                return m_mesh->VerticesSize();
+                return m_mesh->vertices.size();
             }
 
             vk::Buffer VkMesh::GetIndexBuffer()
@@ -68,7 +68,7 @@ namespace unicorn
 
             std::uint32_t VkMesh::IndicesSize()
             {
-                return m_mesh->IndicesSize();
+                return m_mesh->indices.size();
             }
         }
     }
