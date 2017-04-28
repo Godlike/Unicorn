@@ -75,6 +75,7 @@ set(VIDEO_SOURCES
 	source/Graphics.cpp
 	source/Renderer.cpp
 	source/Camera.cpp
+    source/Color.cpp
 	${VULKAN_SOURCES}
 	${GEOMETRY_SOURCES}
 )

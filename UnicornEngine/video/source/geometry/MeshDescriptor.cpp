@@ -12,7 +12,31 @@ namespace unicorn
     {
         namespace geometry
         {
+            void MeshDescriptor::Rotate(Axis axis, float angle)
+            {
+            }
 
+            void MeshDescriptor::Move(glm::vec3 diff)
+            {
+                for (auto& vertex : m_mesh->vertices)
+                {
+                    vertex.pos += diff;
+                }
+                m_mesh->Updated();
+            }
+
+            void MeshDescriptor::Scale(glm::vec3 diff)
+            {
+            }
+
+            void MeshDescriptor::SetColor(glm::vec3 color)
+            {
+                for(auto& vertex : m_mesh->vertices)
+                {
+                    vertex.color = color;
+                }
+                m_mesh->Updated();
+            }
         }
     }
 }

@@ -32,9 +32,9 @@ namespace unicorn
                 UNICORN_EXPORT MeshDescriptor(std::shared_ptr<Mesh> mesh) : m_mesh(mesh) {};
                 UNICORN_EXPORT ~MeshDescriptor() {} ;
                 UNICORN_EXPORT void Rotate(Axis axis, float angle);
-                UNICORN_EXPORT void Move(Axis axis, float diff);
-                UNICORN_EXPORT void Scale(Axis axis, float diff);
-                UNICORN_EXPORT void SetColor(Color color);
+                UNICORN_EXPORT void Move(glm::vec3 diff);
+                UNICORN_EXPORT void Scale(glm::vec3 diff);
+                UNICORN_EXPORT void SetColor(glm::vec3 color);
             protected:
                 std::shared_ptr<Mesh> m_mesh;
             };

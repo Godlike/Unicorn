@@ -8,14 +8,19 @@
 #define UNICORN_VIDEO_COLOR_HPP
 
 #include <glm/glm.hpp>
+#include <unicorn/utility/SharedMacros.hpp>
 
 namespace unicorn
 {
     namespace video
     {
-        enum class Color : int
+        struct Color
         {
-            
+            UNICORN_EXPORT static glm::vec3 Red;
+            UNICORN_EXPORT static glm::vec3 Green;
+            UNICORN_EXPORT static glm::vec3 Blue;
+            UNICORN_EXPORT static glm::vec3 White;
+            UNICORN_EXPORT static glm::vec3 Black;
         };
     }
 }
