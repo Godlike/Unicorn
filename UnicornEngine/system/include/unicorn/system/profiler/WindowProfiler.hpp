@@ -10,6 +10,9 @@
 #include <cstdint>
 #include <utility>
 
+#include <unicorn/system/CursorShape.hpp>
+#include <unicorn/system/MouseMode.hpp>
+
 namespace unicorn
 {
 namespace system
@@ -63,6 +66,18 @@ private:
 
     /** @brief  Slot invoked when window maximized state is changed */
     void OnWindowMaximized(Window* pWindow, bool flag);
+
+    /** @brief  Slot invoked when cursor shape for a window is changed */
+    void OnCursorShapeChanged(Window* pWindow, CursorShape shape);
+
+    /** @brief  Slot invoked when mouse interaction mode of window is changed */
+    void OnMouseModeChanged(Window* pWindow, MouseMode mode);
+
+    /** @brief  Slot invoked when sticky mouse mode of window is changed */
+    void OnStickyMouseChanged(Window* pWindow, bool flag);
+
+    /** @brief  Slot invoked when sticky keys mode of window is changed */
+    void OnStickyKeysChanged(Window* pWindow, bool flag);
 
     /** @brief  Slot invoked when window framebuffer size is changed */
     void OnWindowFramebufferResized(Window* pWindow, std::pair<int32_t, int32_t> size);

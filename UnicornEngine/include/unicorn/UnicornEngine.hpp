@@ -28,13 +28,8 @@ namespace input
 class Gamepad;
 }
 
+class Input;
 class Manager;
-
-class GamepadProfiler;
-class KeyProfiler;
-class MonitorProfiler;
-class MouseProfiler;
-class WindowProfiler;
 }
 
 /** @brief  Engine main class */
@@ -78,14 +73,8 @@ public:
     /** @brief  Returns pointer to the graphics system */
     UNICORN_EXPORT video::Graphics* GetGraphics() const { return m_pGraphics; }
 
-    /** @brief  Returns all connected gamepads
-     *
-     *  @todo   Create system::Input class to control input related stuff when
-     *          there will be some extra functionality in addition to gamepads
-     *
-     *  @return a map of connected gamepads
-     */
-    UNICORN_EXPORT const std::map<uint32_t, system::input::Gamepad*>& GetGamepads() const;
+    /** @brief  Returns pointer to the input system */
+    system::Input* GetInput() const { return m_pInput; }
 
     /** @brief  Event triggered after input processing but before rendering
      *
@@ -101,23 +90,11 @@ private:
     //! Pointer to the window and monitor managing manager
     system::Manager* m_pSystemManager;
 
-    //! Pointer to the window profiler
-    system::WindowProfiler* m_pWindowProfiler;
-
-    //! Pointer to the monitor profiler
-    system::MonitorProfiler* m_pMonitorProfiler;
-
-    //! Pointer to the mouse profiler
-    system::MouseProfiler* m_pMouseProfiler;
-
-    //! Pointer to the key profiler
-    system::KeyProfiler* m_pKeyProfiler;
-
-    //! Pointer to the gamepad profiler
-    system::GamepadProfiler* m_pGamepadProfiler;
-
     //! Pointer to the graphics system
     video::Graphics* m_pGraphics;
+
+    //! Pointer to the input system
+    system::Input* m_pInput;
 };
 }
 
