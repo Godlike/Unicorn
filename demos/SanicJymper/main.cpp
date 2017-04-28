@@ -43,8 +43,13 @@ void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
     if( elapsedTime >= 1000) {
         fps = nbFrames * 1000.0 / double(elapsedTime);
         nbFrames = 0;
-        timer.Start();
+        timer.Reset();
     }    
+}
+
+void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double, double> pos)
+{
+    pCamera->UpdateMouseView(pos.first, pos.second);
 }
 
 void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::Key key, uint32_t scancode, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask modifiers)
@@ -52,6 +57,7 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     using unicorn::system::input::Key;
     using unicorn::system::input::Modifier;
     using unicorn::system::input::Action;
+    using unicorn::system::MouseMode;
 
     if (Action::Release == action)
     {
@@ -127,6 +133,16 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
             position.first += delta;
             break;
         }
+        case Key::C:
+        {
+            pWindow->SetMouseMode(MouseMode::Captured);
+            break;
+        }
+        case Key::Escape:
+        {
+            pWindow->SetMouseMode(MouseMode::Normal);
+            break;
+        }
         default:
         {
             positionChanged = false;
@@ -140,74 +156,16 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     }
 }
 
-void onGamepadUpdate(unicorn::system::input::Gamepad* pGamepad)
-{
-    if (!pGraphics)
-    {
-        return;
-    }
-
-    unicorn::system::Window* pWindow = pGraphics->GetFocusedWindow();
-
-    if (!pWindow)
-    {
-        return;
-    }
-
-    static const float speed = 5.0f;
-    static const float deadZone = 0.05f;
-
-    const std::vector<float>& axes = pGamepad->GetAxes();
-
-    uint32_t size = static_cast<std::uint32_t>(axes.size());
-
-    if (size % 2 != 0)
-    {
-        --size;
-    }
-
-    std::pair<int32_t, int32_t> position = pWindow->GetPosition();
-    int32_t oldX = position.first;
-    int32_t oldY = position.second;
-
-    for (uint32_t i = 0; i < size / 2; i += 2) // checking only sticks (at least for xbox)
-    {
-        const float x = axes[i];
-        const float y = axes[i + 1];
-
-        if (fabs(x) > deadZone)
-        {
-            position.first += static_cast<std::int32_t>(round(speed * x));
-        }
-
-        if (fabs(y) > deadZone)
-        {
-            position.second += static_cast<std::int32_t>(round(speed * y));
-        }
-    }
-
-    if (oldX != position.first || oldY != position.second)
-    {
-        pWindow->SetPosition(position);
-    }
-}
-
 int main(int argc, char* argv[])
 {
     unicorn::Settings& settings = unicorn::Settings::Instance();
 
     settings.Init(argc, argv, "Sanic_Jymper.log");
     settings.SetApplicationName("SANIC JYMPER");
-    
     unicorn::UnicornEngine* unicornEngine = new unicorn::UnicornEngine();
     if (unicornEngine->Init())
     {
         pGraphics = unicornEngine->GetGraphics();
-
-        for (auto const& cit : unicornEngine->GetGamepads())
-        {
-            cit.second->Updated.connect(&onGamepadUpdate);
-        }
 
         unicornEngine->LogicFrame.connect(&onLogicFrame);
 
@@ -217,13 +175,17 @@ int main(int argc, char* argv[])
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Resizable,
             unicorn::system::CustomValue::True);
 
+        auto h = pGraphics->GetMonitors().back()->GetActiveVideoMode().height;
+        auto w = pGraphics->GetMonitors().back()->GetActiveVideoMode().width;
+        settings.SetApplicationHeight(h / 2);
+        settings.SetApplicationWidth(w);
         unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
             settings.GetApplicationHeight(),
             settings.GetApplicationName(),
             nullptr,
             nullptr);
-
+        pWindow0->SetMouseMode(unicorn::system::MouseMode::Captured);
         auto vkRenderer0 = pGraphics->SpawnVulkanRenderer(pWindow0);
         pCamera = vkRenderer0->GetCamera();
         unicorn::video::geometry::Triangle triangle0(vkRenderer0->SpawnMesh());
@@ -237,6 +199,7 @@ int main(int argc, char* argv[])
         triangle1.Move({ 1.5f, 0.0, 0.0 });
 
         pWindow0->SizeChanged.connect(&onWindowSizeChange);
+        pWindow0->MousePosition.connect(&onCursorPositionChanged);
         pWindow0->Keyboard.connect(&onWindowKeyboard);
         unicornEngine->Run();
     }

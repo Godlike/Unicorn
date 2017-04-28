@@ -5,6 +5,7 @@
 */
 
 #include <unicorn/video/Camera.hpp>
+#include "unicorn/utility/Logger.hpp"
 
 namespace unicorn
 {
@@ -16,7 +17,13 @@ namespace unicorn
                            m_camDirection(direction),
                            m_fov(45.0),
                            m_znear(0.1),
-                           m_zfar(100.0)
+                           m_zfar(100.0),
+                           m_sensitivity(1.5f),
+                           m_lastX(0.0),
+                           m_lastY(0.0),
+                        m_yaw(0),
+                        m_pitch(0)
+
         {
             UpdateViewMatrix();
             UpdateProjectionMatrix();
@@ -41,6 +48,34 @@ namespace unicorn
         void Camera::Translate(glm::vec3 delta)
         {
             m_camPosition += delta;
+            UpdateViewMatrix();
+        }
+
+        void Camera::UpdateMouseView(double posX, double posY)
+        {
+            LOG_ERROR("posX %f posY %f", posX, posY);
+            double xoffset = posX - m_lastX;
+            double yoffset = m_lastY - posY;
+            m_lastX = posX;
+            m_lastY = posY;
+
+            xoffset *= m_sensitivity;
+            yoffset *= m_sensitivity;
+
+            m_yaw += xoffset;
+            m_pitch += yoffset;
+
+            if (m_pitch > 89.0f)
+                m_pitch = 89.0f;
+            if (m_pitch < -89.0f)
+                m_pitch = -89.0f;
+
+            glm::vec3 front;
+            front.x = static_cast<float>(cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
+            front.y = static_cast<float>(sin(glm::radians(m_pitch)));
+            front.z = static_cast<float>(sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
+            LOG_ERROR("x %f y %f z%f ", front.x, front.y, front.z);
+            m_camDirection = glm::normalize(front);
             UpdateViewMatrix();
         }
 

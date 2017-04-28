@@ -93,6 +93,8 @@ namespace unicorn
                 {
                     m_device.destroyDescriptorSetLayout(m_descriptorSetLayout);
                 }
+                m_uniformStagingBuffer.Destroy();
+                m_uniformBuffer.Destroy();
             }
 
             vk::DescriptorSetLayout UniformObject::GetDescriptorLayout() const

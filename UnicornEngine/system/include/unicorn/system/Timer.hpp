@@ -22,7 +22,7 @@ class Timer
     using Minutes = std::chrono::minutes;
 public:
     UNICORN_EXPORT Timer(bool run = false);
-    UNICORN_EXPORT void Start();
+    UNICORN_EXPORT void Reset();
     UNICORN_EXPORT Milliseconds ElapsedMilliseconds() const;
     UNICORN_EXPORT Seconds ElapsedSeconds() const;
     UNICORN_EXPORT Minutes ElapsedMinutes() const;
