@@ -26,7 +26,7 @@ public:
      *  @param  argv        arguments
      *  @param  logFileName name of the log file
      */
-    UNICORN_EXPORT void Init(int argc, char* argv[], const std::string& logFileName);
+    UNICORN_EXPORT void Init(int argc, char* argv[], const std::string& logFileName = "");
 
     /** @brief  Returns application width
      *

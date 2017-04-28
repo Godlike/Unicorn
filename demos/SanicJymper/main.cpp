@@ -24,14 +24,27 @@
 
 static unicorn::video::Graphics* pGraphics = nullptr;
 static unicorn::video::Camera* pCamera = nullptr;
+unicorn::system::Window* pWindow0;
 void onWindowSizeChange(unicorn::system::Window* pWindow, std::pair<int32_t, int32_t> size)
 {
     std::cout << "Window[" << pWindow->GetId() << "]: size changed to " << size.first << "x" << size.second << std::endl;
 }
 
+
+int nbFrames = 0;
+double elapsedTime = 0;
+double fps = 0;
+
 void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
 {
-    std::cout << "Logic frame" << std::endl;
+    static unicorn::system::Timer timer(true);
+    nbFrames++;
+    double elapsedTime = timer.ElapsedMilliseconds().count();
+    if( elapsedTime >= 1000) {
+        fps = nbFrames * 1000.0 / double(elapsedTime);
+        nbFrames = 0;
+        timer.Start();
+    }    
 }
 
 void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::Key key, uint32_t scancode, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask modifiers)
@@ -48,7 +61,7 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     std::pair<int32_t, int32_t> position = pWindow->GetPosition();
     bool positionChanged = true;
 
-    int32_t delta = 1;
+    float delta = 0.1;
 
     if (Modifier::Shift & modifiers)
     {
@@ -183,7 +196,7 @@ int main(int argc, char* argv[])
 {
     unicorn::Settings& settings = unicorn::Settings::Instance();
 
-    settings.Init(argc, argv, "SANIC_JYMPER.log");
+    settings.Init(argc, argv, "Sanic_Jymper.log");
     settings.SetApplicationName("SANIC JYMPER");
     
     unicorn::UnicornEngine* unicornEngine = new unicorn::UnicornEngine();
@@ -214,6 +227,14 @@ int main(int argc, char* argv[])
         auto vkRenderer0 = pGraphics->SpawnVulkanRenderer(pWindow0);
         pCamera = vkRenderer0->GetCamera();
         unicorn::video::geometry::Triangle triangle0(vkRenderer0->SpawnMesh());
+        triangle0.SetColor(unicorn::video::Color::Red);
+        triangle0.Move({-1.5f, 0.0, 0.0});
+        unicorn::video::geometry::Triangle triangle2(vkRenderer0->SpawnMesh());
+        triangle2.SetColor(unicorn::video::Color::Green);
+        triangle2.Move({ -1.3f, 0.0, -1.0 });
+        unicorn::video::geometry::Triangle triangle1(vkRenderer0->SpawnMesh());
+        triangle1.SetColor(unicorn::video::Color::Blue);
+        triangle1.Move({ 1.5f, 0.0, 0.0 });
 
         pWindow0->SizeChanged.connect(&onWindowSizeChange);
         pWindow0->Keyboard.connect(&onWindowKeyboard);
