@@ -29,7 +29,7 @@ namespace unicorn
             UNICORN_EXPORT void UpdateAspectRatio(float aspect);
 
             UNICORN_EXPORT void Translate(glm::vec3 delta);
-
+            UNICORN_EXPORT void UpdateMouseView(double posX, double posY);
             UNICORN_EXPORT glm::mat4 GetProjection() const;
 
             UNICORN_EXPORT glm::mat4 GetView() const;

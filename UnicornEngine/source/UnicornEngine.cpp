@@ -58,6 +58,8 @@ bool UnicornEngine::Init()
         return false;
     }
 
+    loguru::g_stderr_verbosity = loguru::Verbosity_ERROR;
+
     unicorn::utility::asset::SimpleStorage::Instance();
     LOG_INFO("Engine initialization started.");
 

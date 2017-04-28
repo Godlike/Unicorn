@@ -14,11 +14,11 @@ namespace unicorn
         {
             if (run)
             {
-                Start();
+                Reset();
             }
         }
 
-        void Timer::Start()
+        void Timer::Reset()
         {
             m_start = HighResolutionClock::now();
         }
