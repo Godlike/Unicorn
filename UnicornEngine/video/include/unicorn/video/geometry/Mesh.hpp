@@ -19,7 +19,7 @@ namespace unicorn
 		namespace geometry
 		{
 			struct Vertex {
-				glm::vec2 pos;
+				glm::vec3 pos;
 				glm::vec3 color;
 			};
 
@@ -31,19 +31,12 @@ namespace unicorn
 			public:
 				UNICORN_EXPORT Mesh();
 				UNICORN_EXPORT ~Mesh();
-				UNICORN_EXPORT std::uint32_t VerticesSize() const;
-                UNICORN_EXPORT std::uint32_t IndicesSize() const;
-                UNICORN_EXPORT glm::mat4 GetModel()
-                {
-                    return m_model;
-                }
-				wink::signal<wink::slot<void()>> DataUpdated;
-				void SetDrawData(const std::vector<Vertex>& newVertices, const std::vector<uint16_t>& indices);
+				void Updated() const;
+                wink::signal<wink::slot<void()>> DataUpdated;
                 
-                std::vector<Vertex> m_vertices;
-                std::vector<uint16_t> m_indices;
-			private:
-				glm::mat4 m_model;
+                std::vector<Vertex> vertices;
+                std::vector<uint16_t> indices;
+                glm::mat4 model;
 			};
 		}
 	}

@@ -12,14 +12,18 @@ namespace unicorn
     {
         namespace geometry
         {
-            Triangle::Triangle(const std::vector<Vertex>& verts, std::shared_ptr<Mesh> mesh) : m_mesh(mesh)
+            Triangle::Triangle(std::shared_ptr<Mesh> mesh) : MeshDescriptor(mesh)
             {
-                const std::vector<uint16_t> indices = {
+                m_mesh->vertices = {
+                    { { 0.0f, -0.5f, 0.0f },{ 1.0f, 1.0f, 1.0f } },
+                    { { 0.5f, 0.5f, 0.0f },{ 1.0f, 1.0f, 1.0f } },
+                    { { -0.5f, 0.5f, 0.0f },{ 1.0f, 1.0f, 1.0f } }
+                };
+                m_mesh->indices = {
                     0, 1, 2
                 };
-                m_mesh->SetDrawData(verts, indices);
+                m_mesh->Updated();
             }
-
         }
     }
 }
