@@ -35,7 +35,6 @@ namespace unicorn
             UNICORN_EXPORT glm::mat4 GetView() const;
         private:
             float m_camSpeed;
-            float m_camYawSpeed;
             float m_camYaw;
             float m_aspect;
             double m_lastX, m_lastY, m_yaw, m_pitch;

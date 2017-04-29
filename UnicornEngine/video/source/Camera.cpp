@@ -11,18 +11,18 @@ namespace unicorn
 {
     namespace video
     {
-        Camera::Camera(glm::vec3 postion, glm::vec3 direction) : m_camSpeed(0),
+        Camera::Camera(glm::vec3 postion, glm::vec3 direction) : m_camSpeed(0.1f),
                            m_camPosition(postion),
                            m_upVector(glm::vec3(0.0f, 1.0f, 0.0f)),
                            m_camDirection(direction),
-                           m_fov(45.0),
-                           m_znear(0.1),
-                           m_zfar(100.0),
-                           m_sensitivity(1.5f),
-                           m_lastX(0.0),
-                           m_lastY(0.0),
-                        m_yaw(0),
-                        m_pitch(0)
+                           m_fov(45.0f),
+                           m_znear(0.1f),
+                           m_zfar(100.0f),
+                           m_sensitivity(0.2f),
+                           m_lastX(0.0f),
+                           m_lastY(0.0f),
+                        m_yaw(0.0f),
+                        m_pitch(0.0f)
 
         {
             UpdateViewMatrix();
@@ -53,7 +53,6 @@ namespace unicorn
 
         void Camera::UpdateMouseView(double posX, double posY)
         {
-            LOG_ERROR("posX %f posY %f", posX, posY);
             double xoffset = posX - m_lastX;
             double yoffset = m_lastY - posY;
             m_lastX = posX;
@@ -63,7 +62,7 @@ namespace unicorn
             yoffset *= m_sensitivity;
 
             m_yaw += xoffset;
-            m_pitch += yoffset;
+            m_pitch += -yoffset;
 
             if (m_pitch > 89.0f)
                 m_pitch = 89.0f;
@@ -74,7 +73,6 @@ namespace unicorn
             front.x = static_cast<float>(cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
             front.y = static_cast<float>(sin(glm::radians(m_pitch)));
             front.z = static_cast<float>(sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
-            LOG_ERROR("x %f y %f z%f ", front.x, front.y, front.z);
             m_camDirection = glm::normalize(front);
             UpdateViewMatrix();
         }

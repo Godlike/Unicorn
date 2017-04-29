@@ -7,15 +7,23 @@
 #ifndef UNICORN_VIDEO_GEOMETRY_QUAD_HPP
 #define UNICORN_VIDEO_GEOMETRY_QUAD_HPP
 
+#include <unicorn/utility/SharedMacros.hpp>
+#include <unicorn/video/geometry/Mesh.hpp>
+#include <unicorn/video/geometry/MeshDescriptor.hpp>
+
+#include <memory>
+
+
 namespace unicorn
 {
     namespace video
     {
         namespace geometry
         {
-            class Quad
+            class Quad : public MeshDescriptor
             {
-
+            public:
+                UNICORN_EXPORT Quad(std::shared_ptr<Mesh> mesh);
             };
         }
     }

@@ -12,8 +12,9 @@ namespace unicorn
     {
         namespace vulkan
         {
-            Image::Image()
-            {}
+            Image::Image(): m_format(), m_width(0), m_height(0)
+            {
+            }
 
             Image::~Image() {}
 
@@ -52,7 +53,7 @@ namespace unicorn
                 m_device.getImageMemoryRequirements(m_image, &req);
                 vk::MemoryAllocateInfo allocInfo;
                 allocInfo.setAllocationSize(req.size);
-                allocInfo.setMemoryTypeIndex(1); //maybe
+                allocInfo.setMemoryTypeIndex(1); 
 
                 result = m_device.allocateMemory(&allocInfo, nullptr, &m_deviceMemory);
 
@@ -86,11 +87,25 @@ namespace unicorn
                 return result;
             }
 
-            void Image::Destroy()
+            void Image::Destroy() const
             {
-                m_device.destroyImageView(m_imageView, nullptr);
-                m_device.freeMemory(m_deviceMemory, nullptr);
-                m_device.destroyImage(m_image, nullptr);
+                if(m_imageView)
+                {
+                    m_device.destroyImageView(m_imageView);                    
+                }
+                if(m_deviceMemory)
+                {
+                    m_device.freeMemory(m_deviceMemory);                    
+                }
+                if(m_image)
+                {
+                    m_device.destroyImage(m_image);
+                }
+            }
+
+            vk::Format Image::GetFormat() const
+            {
+                return m_format;
             }
 
             vk::Image& Image::GetVkImage()
@@ -101,11 +116,11 @@ namespace unicorn
             {
                 return m_imageView;
             }
-            int32_t Image::GetWidth()
+            int32_t Image::GetWidth() const
             {
                 return m_width;
             }
-            int32_t Image::GetHeight()
+            int32_t Image::GetHeight() const
             {
                 return m_height;
             }

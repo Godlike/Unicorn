@@ -13,21 +13,20 @@
 #include <unicorn/system/CustomValue.hpp>
 #include <unicorn/Settings.hpp>
 #include <unicorn/system/input/Action.hpp>
-#include <unicorn/system/input/Gamepad.hpp>
 #include <unicorn/system/input/Key.hpp>
 #include <unicorn/system/input/Modifier.hpp>
 #include <unicorn/video/geometry/Mesh.hpp>
 #include <unicorn/video/geometry/Triangle.hpp>
 #include <unicorn/video/Renderer.hpp>
-#include <cmath>
-#include <iostream>
+#include <unicorn/video/geometry/Quad.hpp>
+#include <unicorn/video/geometry/Cube.hpp>
 
 static unicorn::video::Graphics* pGraphics = nullptr;
 static unicorn::video::Camera* pCamera = nullptr;
 unicorn::system::Window* pWindow0;
 void onWindowSizeChange(unicorn::system::Window* pWindow, std::pair<int32_t, int32_t> size)
 {
-    std::cout << "Window[" << pWindow->GetId() << "]: size changed to " << size.first << "x" << size.second << std::endl;
+    //std::cout << "Window[" << pWindow->GetId() << "]: size changed to " << size.first << "x" << size.second << std::endl;
 }
 
 
@@ -177,7 +176,7 @@ int main(int argc, char* argv[])
 
         auto h = pGraphics->GetMonitors().back()->GetActiveVideoMode().height;
         auto w = pGraphics->GetMonitors().back()->GetActiveVideoMode().width;
-        settings.SetApplicationHeight(h / 2);
+        settings.SetApplicationHeight(h);
         settings.SetApplicationWidth(w);
         unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(
             settings.GetApplicationWidth(),
@@ -190,10 +189,13 @@ int main(int argc, char* argv[])
         pCamera = vkRenderer0->GetCamera();
         unicorn::video::geometry::Triangle triangle0(vkRenderer0->SpawnMesh());
         triangle0.SetColor(unicorn::video::Color::Red);
-        triangle0.Move({-1.5f, 0.0, 0.0});
+        triangle0.Move({-1.5f, 0.0f, 0.0f});
         unicorn::video::geometry::Triangle triangle2(vkRenderer0->SpawnMesh());
         triangle2.SetColor(unicorn::video::Color::Green);
         triangle2.Move({ -1.3f, 0.0, -1.0 });
+        unicorn::video::geometry::Quad quad0(vkRenderer0->SpawnMesh());
+        unicorn::video::geometry::Cube cube0(vkRenderer0->SpawnMesh());
+        cube0.Move({ 10.0, 0.0, -2.0f });
         unicorn::video::geometry::Triangle triangle1(vkRenderer0->SpawnMesh());
         triangle1.SetColor(unicorn::video::Color::Blue);
         triangle1.Move({ 1.5f, 0.0, 0.0 });
