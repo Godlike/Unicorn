@@ -27,11 +27,11 @@ namespace unicorn
                     vk::ImageUsageFlags usage,
                     uint32_t width,
                     uint32_t height);
-                void Destroy();
+                void Destroy() const;
 
-                vk::Format GetFormat();
-                int32_t GetWidth();
-                int32_t GetHeight();
+                vk::Format GetFormat() const;
+                int32_t GetWidth() const;
+                int32_t GetHeight() const;
 
                 vk::Image& GetVkImage();
                 vk::ImageView& GetVkImageView();

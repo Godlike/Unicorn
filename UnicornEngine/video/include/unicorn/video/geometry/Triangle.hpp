@@ -11,7 +11,6 @@
 #include <unicorn/video/geometry/Mesh.hpp>
 #include <unicorn/video/geometry/MeshDescriptor.hpp>
 
-#include <vector>
 #include <memory>
 
 namespace unicorn
