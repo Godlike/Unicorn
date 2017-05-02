@@ -5,38 +5,48 @@
 */
 
 #include <unicorn/video/geometry/MeshDescriptor.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace unicorn
 {
-    namespace video
+namespace video
+{
+namespace geometry
+{
+MeshDescriptor::MeshDescriptor(std::shared_ptr<Mesh> mesh)
+    : m_mesh(mesh)
+{
+}
+
+void MeshDescriptor::Rotate(float angle, glm::vec3 axis)
+{
+    m_mesh->model = glm::rotate(m_mesh->model, angle, axis);
+}
+
+void MeshDescriptor::Move(glm::vec3 diff)
+{
+    auto newVertices = m_mesh->GetVertices();
+    for (auto& vertex : newVertices)
     {
-        namespace geometry
-        {
-            void MeshDescriptor::Rotate(Axis axis, float angle)
-            {
-            }
-
-            void MeshDescriptor::Move(glm::vec3 diff)
-            {
-                for (auto& vertex : m_mesh->vertices)
-                {
-                    vertex.pos += diff;
-                }
-                m_mesh->Updated();
-            }
-
-            void MeshDescriptor::Scale(glm::vec3 diff)
-            {
-            }
-
-            void MeshDescriptor::SetColor(glm::vec3 color)
-            {
-                for(auto& vertex : m_mesh->vertices)
-                {
-                    vertex.color = color;
-                }
-                m_mesh->Updated();
-            }
-        }
+        vertex.pos += diff;
     }
+    m_mesh->SetVertices(newVertices);
+}
+
+void MeshDescriptor::Scale(glm::vec3 diff)
+{
+    m_mesh->model = glm::scale(m_mesh->model, diff);
+}
+
+void MeshDescriptor::SetColor(glm::vec3 color)
+{
+    auto newVertices = m_mesh->GetVertices();
+    for (auto& vertex : newVertices)
+    {
+        vertex.color = color;
+    }
+    m_mesh->SetVertices(newVertices);
+}
+}
+}
 }

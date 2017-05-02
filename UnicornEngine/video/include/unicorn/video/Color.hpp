@@ -12,17 +12,20 @@
 
 namespace unicorn
 {
-    namespace video
-    {
-        struct Color
-        {
-            UNICORN_EXPORT static glm::vec3 Red;
-            UNICORN_EXPORT static glm::vec3 Green;
-            UNICORN_EXPORT static glm::vec3 Blue;
-            UNICORN_EXPORT static glm::vec3 White;
-            UNICORN_EXPORT static glm::vec3 Black;
-        };
-    }
+namespace video
+{
+/**
+ * \brief Class with some predefined colors
+ */
+struct Color
+{
+    UNICORN_EXPORT const static glm::vec3 Red;
+    UNICORN_EXPORT const static glm::vec3 Green;
+    UNICORN_EXPORT const static glm::vec3 Blue;
+    UNICORN_EXPORT const static glm::vec3 White;
+    UNICORN_EXPORT const static glm::vec3 Black;
+};
+}
 }
 
 #endif // UNICORN_VIDEO_COLOR_HPP

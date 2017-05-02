@@ -8,10 +8,8 @@
 #define UNICORN_VIDEO_GRAPHICS_HPP
 
 #include <unicorn/utility/SharedMacros.hpp>
-
 #include <unicorn/system/WindowHint.hpp>
 
-#include <cstdint>
 #include <string>
 #include <unordered_set>
 #include <utility>
@@ -140,14 +138,13 @@ public:
 
     /** @brief  Spawn new Vulkan based Renderer, which contain @sa VulkanDevice
      *  @param  window Which window to render.
-     * @return Pointer to @sa Renderer.
+     *  @return Pointer to @sa Renderer.
      */
     UNICORN_EXPORT Renderer* SpawnVulkanRenderer(system::Window* window);
 
-    /** @brief Binds renderer to window.
-    *
-    */
+    /** @brief Binds renderer to window. */
     UNICORN_EXPORT void BindWindowRenderer(system::Window* pWindow, video::Renderer* pRenderer);
+
 private:
     //! Renderer-Window pair type
     typedef std::pair<Renderer*, system::Window*> RendererWindowPair;

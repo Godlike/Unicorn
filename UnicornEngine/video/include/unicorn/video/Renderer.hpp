@@ -15,12 +15,11 @@
 
 namespace unicorn
 {
-
 namespace system
 {
-	class Manager;
-	class Window;
-    class Timer;
+class Manager;
+class Window;
+class Timer;
 }
 
 namespace video
@@ -29,34 +28,35 @@ class Camera;
 class Renderer
 {
 public:
-	Renderer(system::Manager& manager, system::Window* window);
+    Renderer(system::Manager& manager, system::Window* window);
 
-	virtual ~Renderer() {};
+    virtual ~Renderer();
 
-	Renderer(const Renderer& other) = delete;
-	Renderer(const Renderer&& other) = delete;
-	Renderer& operator=(const Renderer& other) = delete;
-	Renderer& operator=(const Renderer&& other) = delete;
+    Renderer(const Renderer& other) = delete;
+    Renderer(const Renderer&& other) = delete;
+    Renderer& operator=(const Renderer& other) = delete;
+    Renderer& operator=(const Renderer&& other) = delete;
 
-	virtual bool Init() = 0;
-	virtual void Deinit() = 0;
-	virtual bool Render() = 0;
+    virtual bool Init() = 0;
+    virtual void Deinit() = 0;
+    virtual bool Render() = 0;
     UNICORN_EXPORT Camera* GetCamera() const;
-	virtual std::shared_ptr<geometry::Mesh> SpawnMesh() = 0;
-protected:
-	bool m_isInitialized;
+    virtual std::shared_ptr<geometry::Mesh> SpawnMesh() = 0;
 
-	//! Reference to window manager manager
-	system::Manager& m_systemManager;
-	//! Pointer to associated window
-	system::Window* m_pWindow;
-	//! Main view camera
-	Camera* m_pCamera;
-	//! Array of renderer meshes
-	std::vector<std::shared_ptr<geometry::Mesh>> m_meshes;
-	// Callbacks for window events
-	void OnWindowDestroyed(system::Window* pWindow);
-	void OnWindowSizeChanged(system::Window* pWindow, std::pair<std::int32_t, std::int32_t> size);
+protected:
+    bool m_isInitialized;
+
+    //! Reference to window manager manager
+    system::Manager& m_systemManager;
+    //! Pointer to associated window
+    system::Window* m_pWindow;
+    //! Main view camera
+    Camera* m_pCamera;
+    //! Array of renderer meshes
+    std::vector<std::shared_ptr<geometry::Mesh>> m_meshes;
+    // Callbacks for window events
+    void OnWindowDestroyed(system::Window* pWindow);
+    void OnWindowSizeChanged(system::Window* pWindow, std::pair<std::int32_t, std::int32_t> size);
 };
 }
 }

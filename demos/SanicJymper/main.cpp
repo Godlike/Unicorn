@@ -24,11 +24,6 @@
 static unicorn::video::Graphics* pGraphics = nullptr;
 static unicorn::video::Camera* pCamera = nullptr;
 unicorn::system::Window* pWindow0;
-void onWindowSizeChange(unicorn::system::Window* pWindow, std::pair<int32_t, int32_t> size)
-{
-    //std::cout << "Window[" << pWindow->GetId() << "]: size changed to " << size.first << "x" << size.second << std::endl;
-}
-
 
 int nbFrames = 0;
 double elapsedTime = 0;
@@ -39,11 +34,12 @@ void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
     static unicorn::system::Timer timer(true);
     nbFrames++;
     double elapsedTime = timer.ElapsedMilliseconds().count();
-    if( elapsedTime >= 1000) {
+    if (elapsedTime >= 1000)
+    {
         fps = nbFrames * 1000.0 / double(elapsedTime);
         nbFrames = 0;
         timer.Reset();
-    }    
+    }
 }
 
 void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double, double> pos)
@@ -80,35 +76,34 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
 
     switch (key)
     {
-     
         case Key::W:
         {
-            pCamera->Translate({0.0f, 0.0f, -delta });
+            pCamera->Translate({0.0f, 0.0f, -delta});
             break;
         }
         case Key::S:
         {
-            pCamera->Translate({ 0.0f, 0.0f, delta});
+            pCamera->Translate({0.0f, 0.0f, delta});
             break;
         }
         case Key::A:
         {
-            pCamera->Translate({ -delta, 0.0f, 0.0f });
+            pCamera->Translate({-delta, 0.0f, 0.0f});
             break;
         }
         case Key::D:
         {
-            pCamera->Translate({ delta, 0.0f, 0.0f });
+            pCamera->Translate({delta, 0.0f, 0.0f});
             break;
         }
         case Key::Q:
         {
-            pCamera->Translate({ 0.0f, -delta, 0.0f });
+            pCamera->Translate({0.0f, -delta, 0.0f});
             break;
         }
         case Key::E:
         {
-            pCamera->Translate({ 0.0f, delta, 0.0f });
+            pCamera->Translate({0.0f, delta, 0.0f});
             break;
         }
         case Key::Up:
@@ -192,15 +187,14 @@ int main(int argc, char* argv[])
         triangle0.Move({-1.5f, 0.0f, 0.0f});
         unicorn::video::geometry::Triangle triangle2(vkRenderer0->SpawnMesh());
         triangle2.SetColor(unicorn::video::Color::Green);
-        triangle2.Move({ -1.3f, 0.0, -1.0 });
+        triangle2.Move({-1.3f, 0.0, -1.0});
         unicorn::video::geometry::Quad quad0(vkRenderer0->SpawnMesh());
         unicorn::video::geometry::Cube cube0(vkRenderer0->SpawnMesh());
-        cube0.Move({ 10.0, 0.0, -2.0f });
+        cube0.Move({10.0, 0.0, -2.0f});
         unicorn::video::geometry::Triangle triangle1(vkRenderer0->SpawnMesh());
         triangle1.SetColor(unicorn::video::Color::Blue);
-        triangle1.Move({ 1.5f, 0.0, 0.0 });
+        triangle1.Move({1.5f, 0.0, 0.0});
 
-        pWindow0->SizeChanged.connect(&onWindowSizeChange);
         pWindow0->MousePosition.connect(&onCursorPositionChanged);
         pWindow0->Keyboard.connect(&onWindowKeyboard);
         unicornEngine->Run();
