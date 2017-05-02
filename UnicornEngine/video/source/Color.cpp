@@ -8,12 +8,12 @@
 
 namespace unicorn
 {
-    namespace video
-    {
-        glm::vec3 Color::Red = { 1.0f, 0.0f, 0.0f } ;
-        glm::vec3 Color::Green =  { 0.0f, 1.0f, 0.0f } ;
-        glm::vec3 Color::Blue = { 0.0f, 0.0f, 1.0f };
-        glm::vec3 Color::White = { 1.0f, 1.0f, 1.0f };
-        glm::vec3 Color::Black = { 0.0f, 0.0f, 0.0f };
-    }
+namespace video
+{
+const glm::vec3 Color::Red = {1.0f, 0.0f, 0.0f};
+const glm::vec3 Color::Green = {0.0f, 1.0f, 0.0f};
+const glm::vec3 Color::Blue = {0.0f, 0.0f, 1.0f};
+const glm::vec3 Color::White = {1.0f, 1.0f, 1.0f};
+const glm::vec3 Color::Black = {0.0f, 0.0f, 0.0f};
+}
 }

@@ -17,29 +17,25 @@
 
 namespace unicorn
 {
-    namespace video
-    {
-        namespace geometry
-        {
-            enum class Axis
-            {
-                X, Y, Z
-            };
+namespace video
+{
+namespace geometry
+{
+class MeshDescriptor
+{
+public:
+    UNICORN_EXPORT MeshDescriptor(std::shared_ptr<Mesh> mesh);
+    UNICORN_EXPORT ~MeshDescriptor(){};
+    UNICORN_EXPORT void Rotate(float angle, glm::vec3 axis);
+    UNICORN_EXPORT void Move(glm::vec3 diff);
+    UNICORN_EXPORT void Scale(glm::vec3 diff);
+    UNICORN_EXPORT void SetColor(glm::vec3 color);
 
-            class MeshDescriptor
-            {
-            public:
-                UNICORN_EXPORT MeshDescriptor(std::shared_ptr<Mesh> mesh) : m_mesh(mesh) {};
-                UNICORN_EXPORT ~MeshDescriptor() {} ;
-                UNICORN_EXPORT void Rotate(Axis axis, float angle);
-                UNICORN_EXPORT void Move(glm::vec3 diff);
-                UNICORN_EXPORT void Scale(glm::vec3 diff);
-                UNICORN_EXPORT void SetColor(glm::vec3 color);
-            protected:
-                std::shared_ptr<Mesh> m_mesh;
-            };
-        }
-    }
+protected:
+    std::shared_ptr<Mesh> m_mesh;
+};
+}
+}
 }
 
 #endif // UNICORN_VIDEO_GEOMETRY_MESH_DESCRIPTOR_HPP
