@@ -24,6 +24,8 @@ struct Color
     UNICORN_EXPORT const static glm::vec3 Blue;
     UNICORN_EXPORT const static glm::vec3 White;
     UNICORN_EXPORT const static glm::vec3 Black;
+    UNICORN_EXPORT const static glm::vec3 Pink;
+    UNICORN_EXPORT const static glm::vec3 LightPink;
 };
 }
 }
