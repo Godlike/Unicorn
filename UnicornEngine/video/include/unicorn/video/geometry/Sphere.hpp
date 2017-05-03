@@ -7,15 +7,22 @@
 #ifndef UNICORN_VIDEO_GEOMETRY_SPHERE_HPP
 #define UNICORN_VIDEO_GEOMETRY_SPHERE_HPP
 
+#include <unicorn/utility/SharedMacros.hpp>
+#include <unicorn/video/geometry/Mesh.hpp>
+#include <unicorn/video/geometry/MeshDescriptor.hpp>
+
+#include <memory>
+
 namespace unicorn
 {
     namespace video
     {
         namespace geometry
         {
-            class Sphere
+            class Sphere : public MeshDescriptor
             {
-
+            public:
+                UNICORN_EXPORT Sphere(std::shared_ptr<Mesh> mesh, float radius, uint32_t rings, uint32_t sectors);
             };
         }
     }
