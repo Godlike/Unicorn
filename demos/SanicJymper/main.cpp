@@ -20,6 +20,7 @@
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/video/geometry/Quad.hpp>
 #include <unicorn/video/geometry/Cube.hpp>
+#include <unicorn/video/geometry/Sphere.hpp>
 #include <unicorn/video/CameraFPSController.hpp>
 
 static unicorn::video::Graphics* pGraphics = nullptr;
@@ -193,6 +194,8 @@ int main(int argc, char* argv[])
         unicorn::video::geometry::Cube cube0(vkRenderer0->SpawnMesh());
         cube0.Move({10.0, 0.0, -2.0f});
         cube0.SetColor(unicorn::video::Color::Pink);
+        unicorn::video::geometry::Sphere sphere(vkRenderer0->SpawnMesh(), 5, 32, 32);
+        sphere.Move({ -10.0, 0.0, -2.0f });
         unicorn::video::geometry::Triangle triangle1(vkRenderer0->SpawnMesh());
         triangle1.SetColor(unicorn::video::Color::Blue);
         triangle1.Move({1.5f, 0.0, 0.0});
