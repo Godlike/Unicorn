@@ -56,7 +56,7 @@ vk::Buffer VkMesh::GetVertexBuffer()
 
 std::uint32_t VkMesh::VerticesSize()
 {
-    return m_mesh->GetVertices().size();
+    return static_cast<uint32_t>(m_mesh->GetVertices().size());
 }
 
 vk::Buffer VkMesh::GetIndexBuffer()
@@ -66,7 +66,7 @@ vk::Buffer VkMesh::GetIndexBuffer()
 
 std::uint32_t VkMesh::IndicesSize()
 {
-    return m_mesh->GetIndices().size();
+    return static_cast<uint32_t>(m_mesh->GetIndices().size());
 }
 }
 }

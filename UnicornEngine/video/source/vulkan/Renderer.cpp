@@ -700,11 +700,10 @@ bool Renderer::CreateGraphicsPipeline()
     viewportState.pScissors = &scissor;
 
     vk::PipelineRasterizationStateCreateInfo rasterizer;
-    rasterizer.polygonMode = vk::PolygonMode::eFill;
     rasterizer.lineWidth = 1.0f;
     rasterizer.cullMode = vk::CullModeFlagBits::eNone;
     rasterizer.frontFace = vk::FrontFace::eClockwise;
-    rasterizer.polygonMode = vk::PolygonMode::eLine;
+    rasterizer.polygonMode = vk::PolygonMode::eFill;
 
     vk::PipelineMultisampleStateCreateInfo multisampling; // TODO: configure MSAA at global level.
     multisampling.sampleShadingEnable = VK_FALSE;
@@ -858,7 +857,7 @@ bool Renderer::CreateCommandBuffers()
         renderPassInfo.renderArea.setOffset({0, 0});
         renderPassInfo.renderArea.extent = m_swapChainExtent;
 
-        vk::ClearColorValue clearColor(std::array<float, 4>({{0.0f, 0.0f, 0.0f, 1.0f}}));
+        vk::ClearColorValue clearColor(m_backgroundColor);
         vk::ClearValue clearValue(clearColor);
 
         renderPassInfo.clearValueCount = 1;
@@ -868,8 +867,8 @@ bool Renderer::CreateCommandBuffers()
         m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
 
         vk::DeviceSize offsets[] = {0};
-        m_uniformObject.view = m_pCamera->GetView();
-        m_uniformObject.proj = m_pCamera->GetProjection();
+        m_uniformObject.view = m_camera->GetView();
+        m_uniformObject.proj = m_camera->GetProjection();
         for (VkMesh* vkMesh : m_vkMeshes)
         {
             vk::Buffer vertexBuffer[] = {vkMesh->GetVertexBuffer()};

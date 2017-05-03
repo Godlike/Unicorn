@@ -50,7 +50,7 @@ bool UniformObject::CreateSet(vk::DescriptorPool descrPool)
     vk::DeviceSize bufferSize = sizeof(UniformBufferObject);
 
     m_uniformStagingBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, bufferSize);
-    m_uniformBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, bufferSize);
+    m_uniformBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, bufferSize);
 
     vk::DescriptorSetLayout layouts[] = {m_descriptorSetLayout};
     vk::DescriptorSetAllocateInfo allocInfo = {};

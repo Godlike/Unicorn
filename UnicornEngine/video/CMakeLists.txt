@@ -66,6 +66,8 @@ set(VIDEO_HEADERS
     include/unicorn/video/Graphics.hpp
     include/unicorn/video/Renderer.hpp
     include/unicorn/video/Camera.hpp
+    include/unicorn/video/CameraController.hpp
+    include/unicorn/video/CameraFpsController.hpp
     include/unicorn/video/Color.hpp
     ${VULKAN_HEADERS}
     ${GEOMETRY_HEADERS}
@@ -75,6 +77,8 @@ set(VIDEO_SOURCES
     source/Graphics.cpp
     source/Renderer.cpp
     source/Camera.cpp
+    source/CameraController.cpp
+    source/CameraFpsController.cpp
     source/Color.cpp
     ${VULKAN_SOURCES}
     ${GEOMETRY_SOURCES}
