@@ -10,7 +10,6 @@
 #include <vulkan/vulkan.hpp>
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
-#include "UniformObject.hpp"
 
 namespace unicorn
 {
@@ -40,6 +39,17 @@ struct SwapChainSupportDetails
     vk::SurfaceCapabilitiesKHR capabilities;
     std::vector<vk::SurfaceFormatKHR> formats;
     std::vector<vk::PresentModeKHR> presentModes;
+};
+
+struct UniformCameraData
+{
+    glm::mat4 view;
+    glm::mat4 proj;
+};
+
+struct UniformAllMeshesData
+{
+    glm::mat4 *model = nullptr;
 };
 
 class ShaderProgram;
@@ -79,21 +89,27 @@ private:
     vk::Semaphore m_imageAvailableSemaphore;
     vk::Semaphore m_renderFinishedSemaphore;
     vk::DescriptorPool m_descriptorPool;
+    vk::DescriptorSet m_descriptorSet;
+    vk::DescriptorSetLayout m_descriptorSetLayout;
+    vk::PhysicalDeviceProperties m_physicalDeviceProperties;
     std::string m_gpuName;
     std::vector<vk::Image> m_swapChainImages;
     std::vector<vk::ImageView> m_swapChainImageViews;
     std::vector<vk::Framebuffer> m_swapChainFramebuffers;
     std::vector<vk::CommandBuffer> m_commandBuffers;
     std::vector<VkMesh*> m_vkMeshes;
-    UniformObject* m_unifromBufferObject;
-    UniformBufferObject m_uniformObject;
     ShaderProgram* m_shaderProgram;
+    Buffer m_uniformMvp;
+    Buffer m_uniformModel;
+    size_t m_dynamicAlignment;
+    UniformAllMeshesData m_uniformModelsData;
+    UniformCameraData m_uniformCameraData;
 
-#ifdef NDEBUG
+    #ifdef NDEBUG
     static const bool s_enableValidationLayers = false;
-#else
+    #else
     static const bool s_enableValidationLayers = true;
-#endif
+    #endif
     void FreeSurface();
     void FreeLogicalDevice();
     void FreeSwapChain();
@@ -104,13 +120,15 @@ private:
     void FreeCommandPool();
     void FreeCommandBuffers();
     void FreeSemaphores();
-    void FreeUniformObject();
-    void FreeDescriptorPool();
+    bool PrepareUniformBuffers();
+    void ResizeDynamicUniformBuffer();
+    void UpdateUniformBuffer();
+    void UpdateDynamicUniformBuffer();
 
     bool PickPhysicalDevice();
     bool CreateLogicalDevice();
     bool CreateSurface();
-    bool CreateUniformObject();
+    bool CreateDescriptionSetLayout();
     bool CreateSwapChain();
     bool CreateImageViews();
     bool CreateRenderPass();
@@ -119,7 +137,6 @@ private:
     bool CreateCommandPool();
     bool CreateCommandBuffers();
     bool CreateSemaphores();
-    bool CreateDescriptorPool();
 
     bool IsDeviceSuitable(const vk::PhysicalDevice& device);
     bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device);

@@ -11,33 +11,33 @@
 
 namespace unicorn
 {
-    namespace video
-    {
-        namespace vulkan
-        {
-            class Framebuffer
-            {
-            public:
-                Framebuffer();
-                ~Framebuffer();
+namespace video
+{
+namespace vulkan
+{
+class Framebuffer
+{
+public:
+    Framebuffer();
+    ~Framebuffer();
 
-                vk::Result Create(
-                    vk::Device device,
-                    uint32_t width,
-                    uint32_t height,
-                    vk::ImageView colorImageView,
-                    vk::ImageView depthImageView,
-                    vk::RenderPass renderPass);
-                void Destroy();
+    vk::Result Create(
+        vk::Device device,
+        uint32_t width,
+        uint32_t height,
+        vk::ImageView colorImageView,
+        vk::ImageView depthImageView,
+        vk::RenderPass renderPass);
+    void Destroy();
 
-                vk::Framebuffer& GetVkFrameBuffer();
-            private:
-                vk::Device m_device;
-                vk::Framebuffer m_framebuffer;
-            };
+    vk::Framebuffer& GetVkFrameBuffer();
+private:
+    vk::Device m_device;
+    vk::Framebuffer m_framebuffer;
+};
 
-        }
-    }
+}
+}
 }
 
 

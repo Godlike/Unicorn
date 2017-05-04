@@ -21,15 +21,12 @@ Mesh::~Mesh()
 {
 }
 
-void Mesh::SetVertices(const std::vector<Vertex>& vertices)
+void Mesh::SetColor(const glm::vec3& newColor)
 {
-    m_vertices = vertices;
-    DataUpdated.emit();
-}
-
-void Mesh::SetIndices(const std::vector<uint16_t>& indices)
-{
-    m_indices = indices;
+    for ( auto& x : m_vertices )
+    {
+        x.color = newColor;
+    }
     DataUpdated.emit();
 }
 

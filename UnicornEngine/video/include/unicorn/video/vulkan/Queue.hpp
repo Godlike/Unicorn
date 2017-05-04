@@ -11,29 +11,29 @@
 
 namespace unicorn
 {
-    namespace video
-    {
-        namespace vulkan
-        {
-            class Queue
-            {
-            public:
-                Queue();
-                ~Queue();
+namespace video
+{
+namespace vulkan
+{
+class Queue
+{
+public:
+    Queue();
+    ~Queue();
 
-                void Init(vk::Device deivce);
-                vk::Result Submit(vk::CommandBuffer cmdBuffer);
-                vk::Result Submit(vk::CommandBuffer cmdBuffer, vk::Semaphore semaphore);
-                vk::Result Wait();
-                vk::Result Present(vk::SwapchainKHR swapchain, uint32_t index);
+    void Init(vk::Device deivce);
+    vk::Result Submit(vk::CommandBuffer cmdBuffer);
+    vk::Result Submit(vk::CommandBuffer cmdBuffer, vk::Semaphore semaphore);
+    vk::Result Wait();
+    vk::Result Present(vk::SwapchainKHR swapchain, uint32_t index);
 
-                vk::Queue& GetVkQueue();
-            private:
-                vk::Device m_device;
-                vk::Queue m_queue;
-            };
-        }
-    }
+    vk::Queue& GetVkQueue();
+private:
+    vk::Device m_device;
+    vk::Queue m_queue;
+};
+}
+}
 }
 
 #endif // UNICORN_VIDEO_VULKAN_QUEUE_HPP

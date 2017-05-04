@@ -14,24 +14,24 @@ namespace unicorn
 {
 namespace video
 {
-	namespace vulkan
-	{
-        class Device
-        {
-        public:
-            Device();
-            ~Device();
+namespace vulkan
+{
+class Device
+{
+public:
+    Device();
+    ~Device();
 
-            vk::Result Create(vk::Instance instance, bool validate);
-            void Destroy();
+    vk::Result Create(vk::Instance instance, bool validate);
+    void Destroy();
 
-            vk::PhysicalDevice& GetVkPhysicalDevice(size_t index);
-            vk::Device& GetVkDevice(size_t index);
-        private:
-            std::vector<vk::PhysicalDevice> m_physicalDevices;
-            std::vector<vk::Device> m_devices;
-        };
-	}
+    vk::PhysicalDevice& GetVkPhysicalDevice(size_t index);
+    vk::Device& GetVkDevice(size_t index);
+private:
+    std::vector<vk::PhysicalDevice> m_physicalDevices;
+    std::vector<vk::Device> m_devices;
+};
+}
 }
 }
 #endif // UNICORN_VIDEO_VULKAN_DEVICE_HPP

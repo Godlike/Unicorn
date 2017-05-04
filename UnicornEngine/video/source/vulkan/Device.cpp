@@ -23,7 +23,7 @@ vk::Result Device::Create(vk::Instance instance, bool validate)
 {
     uint32_t physDevicesNum = 0;
     vk::Result result = instance.enumeratePhysicalDevices(&physDevicesNum, nullptr);
-    if (result != vk::Result::eSuccess)
+    if ( result != vk::Result::eSuccess )
     {
         return result;
     }
@@ -32,13 +32,13 @@ vk::Result Device::Create(vk::Instance instance, bool validate)
         &physDevicesNum,
         m_physicalDevices.data());
 
-    if (result != vk::Result::eSuccess)
+    if ( result != vk::Result::eSuccess )
     {
         return result;
     }
 
     m_devices.resize(m_physicalDevices.size());
-    for (size_t deviceIndex = 0; deviceIndex < m_devices.size(); ++deviceIndex)
+    for ( size_t deviceIndex = 0; deviceIndex < m_devices.size(); ++deviceIndex )
     {
         uint32_t queueFamilyPropertiesCount;
         m_physicalDevices[deviceIndex].getQueueFamilyProperties(&queueFamilyPropertiesCount, nullptr);
@@ -46,16 +46,16 @@ vk::Result Device::Create(vk::Instance instance, bool validate)
         m_physicalDevices[deviceIndex].getQueueFamilyProperties(&queueFamilyPropertiesCount, queueFamilyProperties.data());
 
         uint32_t familyIndex = 0;
-        for (unsigned int i = 0; i < queueFamilyProperties.size(); ++i)
+        for ( unsigned int i = 0; i < queueFamilyProperties.size(); ++i )
         {
-            if (queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eGraphics)
+            if ( queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eGraphics )
             {
                 familyIndex = i;
                 break;
             }
         }
         vk::DeviceQueueCreateInfo queueInfo;
-        float queueProperties{0.0f};
+        float queueProperties{ 0.0f };
         queueInfo.setQueueFamilyIndex(familyIndex); //TODO: check here not initialized familyIndex
         queueInfo.setQueueCount(1);
         queueInfo.setPQueuePriorities(&queueProperties);
@@ -68,15 +68,15 @@ vk::Result Device::Create(vk::Instance instance, bool validate)
         std::vector<const char*> extensions;
 
         extensions.push_back("VK_KHR_swapchain");
-        deviceInfo.setEnabledExtensionCount(static_cast<uint32_t>(extensions.size()));
+        deviceInfo.setEnabledExtensionCount(static_cast< uint32_t >( extensions.size() ));
         deviceInfo.setPpEnabledExtensionNames(extensions.data());
 
-        if (validate)
+        if ( validate )
         {
             layers.push_back("VK_LAYER_LUNARG_standard_validation");
         }
 
-        deviceInfo.setEnabledLayerCount(static_cast<uint32_t>(layers.size()));
+        deviceInfo.setEnabledLayerCount(static_cast< uint32_t >( layers.size() ));
         deviceInfo.setPpEnabledLayerNames(layers.data());
 
         result = m_physicalDevices[deviceIndex].createDevice(&deviceInfo, nullptr, &m_devices[deviceIndex]);
@@ -86,7 +86,7 @@ vk::Result Device::Create(vk::Instance instance, bool validate)
 
 void Device::Destroy()
 {
-    for (vk::Device& device : m_devices)
+    for ( vk::Device& device : m_devices )
     {
         device.destroy(nullptr);
     }

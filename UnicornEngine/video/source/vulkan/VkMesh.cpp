@@ -16,7 +16,17 @@ namespace vulkan
 VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, std::shared_ptr<geometry::Mesh> mesh)
     : m_device(device), m_physicalDevice(physicalDevice), m_mesh(mesh), m_pool(pool), m_queue(queue)
 {
-    mesh->DataUpdated.connect(this, &VkMesh::AllocateOnGPU);
+    m_mesh->DataUpdated.connect(this, &VkMesh::AllocateOnGPU);
+}
+
+VkMesh::~VkMesh()
+{
+    m_mesh->DataUpdated.disconnect(this, &VkMesh::AllocateOnGPU);
+}
+
+glm::mat4 VkMesh::GetModel() const
+{
+    return m_mesh->model;
 }
 
 void VkMesh::AllocateOnGPU()
@@ -56,7 +66,7 @@ vk::Buffer VkMesh::GetVertexBuffer()
 
 std::uint32_t VkMesh::VerticesSize()
 {
-    return static_cast<uint32_t>(m_mesh->GetVertices().size());
+    return static_cast< uint32_t >( m_mesh->GetVertices().size() );
 }
 
 vk::Buffer VkMesh::GetIndexBuffer()
@@ -66,7 +76,7 @@ vk::Buffer VkMesh::GetIndexBuffer()
 
 std::uint32_t VkMesh::IndicesSize()
 {
-    return static_cast<uint32_t>(m_mesh->GetIndices().size());
+    return static_cast< uint32_t >( m_mesh->GetIndices().size() );
 }
 }
 }

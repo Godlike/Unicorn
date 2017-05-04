@@ -11,30 +11,30 @@
 
 namespace unicorn
 {
-	namespace video
-	{
-		namespace vulkan
-		{
+namespace video
+{
+namespace vulkan
+{
 
-			class CommandBuffers
-			{
-			public:
-				CommandBuffers();
-				~CommandBuffers();
+class CommandBuffers
+{
+public:
+	CommandBuffers();
+	~CommandBuffers();
 
-			    vk::Result Create(vk::Device device, size_t count);
-				void Destroy() const;
+	vk::Result Create(vk::Device device, size_t count);
+	void Destroy() const;
 
-				vk::CommandPool& GetVkCommandPool();
-				vk::CommandBuffer& GetVkCommandBuffer(size_t index);
-				const std::vector<vk::CommandBuffer>& GetVkCommandBuffers();
-			private:
-				vk::Device m_device;
-				vk::CommandPool m_cmdPool;
-				std::vector<vk::CommandBuffer> m_cmdBuffers;
-			};
-		}
-	}
+	vk::CommandPool& GetVkCommandPool();
+	vk::CommandBuffer& GetVkCommandBuffer(size_t index);
+	const std::vector<vk::CommandBuffer>& GetVkCommandBuffers();
+private:
+	vk::Device m_device;
+	vk::CommandPool m_cmdPool;
+	std::vector<vk::CommandBuffer> m_cmdBuffers;
+};
+}
+}
 }
 
 #endif // UNICORN_VIDEO_VULKAN_COMMAND_BUFFERS_HPP

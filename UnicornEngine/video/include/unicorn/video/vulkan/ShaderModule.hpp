@@ -11,26 +11,26 @@
 
 namespace unicorn
 {
-    namespace video
-    {
-        namespace vulkan
-        {
-            class ShaderModule
-            {
-            public:
-                ShaderModule();
-                ~ShaderModule();
+namespace video
+{
+namespace vulkan
+{
+class ShaderModule
+{
+public:
+    ShaderModule();
+    ~ShaderModule();
 
-                vk::Result Create(vk::Device device, size_t size, void* code);
-                void Destroy();
+    vk::Result Create(vk::Device device, size_t size, void* code);
+    void Destroy();
 
-                vk::ShaderModule& GetVkShaderModule();
-            private:
-                vk::Device m_device;
-                vk::ShaderModule m_shaderModule;
-            };
-        }
-    }
+    vk::ShaderModule& GetVkShaderModule();
+private:
+    vk::Device m_device;
+    vk::ShaderModule m_shaderModule;
+};
+}
+}
 }
 
 #endif // UNICORN_VIDEO_VULKAN_SHADER_MODULE_HPP

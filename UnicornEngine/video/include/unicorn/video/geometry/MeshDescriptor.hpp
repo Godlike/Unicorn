@@ -25,7 +25,7 @@ class MeshDescriptor
 {
 public:
     UNICORN_EXPORT MeshDescriptor(std::shared_ptr<Mesh> mesh);
-    UNICORN_EXPORT ~MeshDescriptor(){};
+    UNICORN_EXPORT ~MeshDescriptor();
     UNICORN_EXPORT void Rotate(float angle, glm::vec3 axis);
     UNICORN_EXPORT void Move(glm::vec3 diff);
     UNICORN_EXPORT void Scale(glm::vec3 diff);

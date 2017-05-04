@@ -44,11 +44,11 @@ private:
 
     static vk::Instance m_vkInstance;
     static VkDebugReportCallbackEXT m_vulkanCallback;
-#ifdef NDEBUG
+    #ifdef NDEBUG
     static const bool s_enableValidationLayers = false;
-#else
+    #else
     static const bool s_enableValidationLayers = true;
-#endif
+    #endif
 };
 }
 }

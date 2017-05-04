@@ -8,39 +8,39 @@
 
 namespace unicorn
 {
-    namespace video
-    {
-        namespace vulkan
-        {
-            ShaderModule::ShaderModule()
-            {
-            }
+namespace video
+{
+namespace vulkan
+{
+ShaderModule::ShaderModule()
+{
+}
 
-            ShaderModule::~ShaderModule()
-            {
-            }
+ShaderModule::~ShaderModule()
+{
+}
 
-            vk::Result ShaderModule::Create(vk::Device device, size_t size, void* code)
-            {
-                m_device = device;
+vk::Result ShaderModule::Create(vk::Device device, size_t size, void* code)
+{
+    m_device = device;
 
-                vk::ShaderModuleCreateInfo shaderInfo;
-                shaderInfo.setCodeSize(size);
-                shaderInfo.setPCode(reinterpret_cast<uint32_t*>(code));
+    vk::ShaderModuleCreateInfo shaderInfo;
+    shaderInfo.setCodeSize(size);
+    shaderInfo.setPCode(reinterpret_cast< uint32_t* >( code ));
 
-                vk::Result result = m_device.createShaderModule(&shaderInfo, nullptr, &m_shaderModule);
-                return result;
-            }
+    vk::Result result = m_device.createShaderModule(&shaderInfo, nullptr, &m_shaderModule);
+    return result;
+}
 
-            void ShaderModule::Destroy()
-            {
-                m_device.destroyShaderModule(m_shaderModule, nullptr);
-            }
+void ShaderModule::Destroy()
+{
+    m_device.destroyShaderModule(m_shaderModule, nullptr);
+}
 
-            vk::ShaderModule& ShaderModule::GetVkShaderModule()
-            {
-                return m_shaderModule;
-            }
-        }
-    }
+vk::ShaderModule& ShaderModule::GetVkShaderModule()
+{
+    return m_shaderModule;
+}
+}
+}
 }
