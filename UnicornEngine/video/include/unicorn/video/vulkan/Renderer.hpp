@@ -89,11 +89,11 @@ private:
     UniformBufferObject m_uniformObject;
     ShaderProgram* m_shaderProgram;
 
-#ifdef NDEBUG
+    #ifdef NDEBUG
     static const bool s_enableValidationLayers = false;
-#else
+    #else
     static const bool s_enableValidationLayers = true;
-#endif
+    #endif
     void FreeSurface();
     void FreeLogicalDevice();
     void FreeSwapChain();

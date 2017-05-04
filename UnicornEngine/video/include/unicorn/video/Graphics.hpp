@@ -30,7 +30,7 @@ class Renderer;
 
 enum class DriverType
 {
-    Vulkan
+ Vulkan
 };
 
 /** @brief Abstract graphics renderer
@@ -40,146 +40,146 @@ enum class DriverType
 class Graphics
 {
 public:
-    /** @brief Constructs an empty graphics system */
-    Graphics(system::Manager& manager);
+ /** @brief Constructs an empty graphics system */
+ Graphics(system::Manager& manager);
 
-    /** @brief  Destructs a graphics system
-     *
-     *  Also calls Deinit() to release all resources
-     *
-     *  @sa Deinit()
-     */
-    ~Graphics();
+ /** @brief  Destructs a graphics system
+  *
+  *  Also calls Deinit() to release all resources
+  *
+  *  @sa Deinit()
+  */
+ ~Graphics();
 
-    Graphics(const Graphics& other) = delete;
-    Graphics(const Graphics&& other) = delete;
-    Graphics& operator=(Graphics& other) = delete;
-    Graphics& operator=(Graphics&& other) = delete;
+ Graphics(const Graphics& other) = delete;
+ Graphics(const Graphics&& other) = delete;
+ Graphics& operator=(Graphics& other) = delete;
+ Graphics& operator=(Graphics&& other) = delete;
 
-    /** @brief  Initializes the graphics system
-     *
-     *  Ensures that window management system supports Vulkan
-     *
-     *  @param  whichDriver Driver, which will render our all graphics.
-     *
-     *  @return @c true if initialization was successful, @c false otherwise
-     */
-    bool Init(const DriverType& whichDriver);
+ /** @brief  Initializes the graphics system
+  *
+  *  Ensures that window management system supports Vulkan
+  *
+  *  @param  whichDriver Driver, which will render our all graphics.
+  *
+  *  @return @c true if initialization was successful, @c false otherwise
+  */
+ bool Init(const DriverType& whichDriver);
 
-    /** @brief  Deinitializes the graphics system
-     *
-     *  Deinitializes all Renderer-Window pairs
-     */
-    void Deinit();
+ /** @brief  Deinitializes the graphics system
+  *
+  *  Deinitializes all Renderer-Window pairs
+  */
+ void Deinit();
 
-    /** @brief  Graphics renderer loop */
-    bool Render();
+ /** @brief  Graphics renderer loop */
+ bool Render();
 
-    /** @brief  Spawns new window
-     *
-     *  Also creates renderer context for created window
-     *
-     *  @param  width           desired width
-     *  @param  height          desired height
-     *  @param  name            desired name
-     *  @param  pMonitor        pointer to a monitor where window
-     *                          should be created
-     *  @param  pSharedWindow   pointer to another window that should
-     *                          share all resources with created window
-     *
-     *  @return a pointer to newly created window object
-     */
-    UNICORN_EXPORT system::Window* SpawnWindow(int32_t width,
-        int32_t height,
-        const std::string& name,
-        system::Monitor* pMonitor = nullptr,
-        system::Window* pSharedWindow = nullptr);
+ /** @brief  Spawns new window
+  *
+  *  Also creates renderer context for created window
+  *
+  *  @param  width           desired width
+  *  @param  height          desired height
+  *  @param  name            desired name
+  *  @param  pMonitor        pointer to a monitor where window
+  *                          should be created
+  *  @param  pSharedWindow   pointer to another window that should
+  *                          share all resources with created window
+  *
+  *  @return a pointer to newly created window object
+  */
+ UNICORN_EXPORT system::Window* SpawnWindow(int32_t width,
+                                            int32_t height,
+                                            const std::string& name,
+                                            system::Monitor* pMonitor = nullptr,
+                                            system::Window* pSharedWindow = nullptr);
 
-    /** @brief  Returns a pointer to currently focused window
-     *
-     *  @return pointer to currently focused window or @c nullptr if there is
-     *          no focused window controlled by the program
-     */
-    UNICORN_EXPORT system::Window* GetFocusedWindow() const;
+ /** @brief  Returns a pointer to currently focused window
+  *
+  *  @return pointer to currently focused window or @c nullptr if there is
+  *          no focused window controlled by the program
+  */
+ UNICORN_EXPORT system::Window* GetFocusedWindow() const;
 
-    /** @brief  Returns the list of known monitors */
-    UNICORN_EXPORT const std::vector<system::Monitor*>& GetMonitors() const;
+ /** @brief  Returns the list of known monitors */
+ UNICORN_EXPORT const std::vector<system::Monitor*>& GetMonitors() const;
 
-    /** @brief  Returns monitor associated with given @p window
-     *
-     *  @param  window  window object
-     *
-     *  @return a pointer to monitor object associated with given @p window
-     *          or @c nullptr if something went wrong or the window is not in
-     *          fullscreen mode
-     */
-    UNICORN_EXPORT system::Monitor* GetWindowMonitor(const system::Window& window) const;
+ /** @brief  Returns monitor associated with given @p window
+  *
+  *  @param  window  window object
+  *
+  *  @return a pointer to monitor object associated with given @p window
+  *          or @c nullptr if something went wrong or the window is not in
+  *          fullscreen mode
+  */
+ UNICORN_EXPORT system::Monitor* GetWindowMonitor(const system::Window& window) const;
 
-    /** @brief  Sets monitor to be used by @p window for fullscreen mode
-     *
-     *  @param  window      window object
-     *  @param  pMonitor    monitor object or @c nullptr for windowed mode
-     *  @param  position    desired position as (x, y)
-     *  @param  size        desired size as (width, height)
-     *  @param  refreshRate desired refresh rate
-     */
-    UNICORN_EXPORT void SetWindowMonitor(const system::Window& window,
-        system::Monitor* pMonitor,
-        std::pair<int32_t, int32_t> position,
-        std::pair<int32_t, int32_t> size,
-        int32_t refreshRate) const;
+ /** @brief  Sets monitor to be used by @p  window for fullscreen mode
+  *
+  *  @param  window      window  
+  *  @param  pMonitor    monitor object or @c nullptr for windowed mode
+  *  @param  position    desired position as (x, y)
+  *  @param  size        desired size as (width, height)
+  *  @param  refreshRate desired refresh rate
+  */
+ UNICORN_EXPORT void SetWindowMonitor(const system::Window& window,
+                                      system::Monitor* pMonitor,
+                                      std::pair<int32_t, int32_t> position,
+                                      std::pair<int32_t, int32_t> size,
+                                      int32_t refreshRate) const;
 
-    /** @brief  Sets window creation hints
-     *
-     *  @param  hint    window creation hint
-     *  @param  value   new value
-     */
-    UNICORN_EXPORT void SetWindowCreationHint(system::WindowHint hint, int32_t value) const;
+ /** @brief  Sets window creation hints
+  *
+  *  @param  hint    window creation hint
+  *  @param  value   new value
+  */
+ UNICORN_EXPORT void SetWindowCreationHint(system::WindowHint hint, int32_t value) const;
 
-    /** @brief  Spawn new Vulkan based Renderer, which contain @sa VulkanDevice
-     *  @param  window Which window to render.
-     *  @return Pointer to @sa Renderer.
-     */
-    UNICORN_EXPORT Renderer* SpawnVulkanRenderer(system::Window* window);
+ /** @brief  Spawn new Vulkan based Renderer, which contain @sa VulkanDevice
+  *  @param  window Which window to render.
+  *  @return Pointer to @sa Renderer.
+  */
+ UNICORN_EXPORT Renderer* SpawnVulkanRenderer(system::Window* window);
 
-    /** @brief Binds renderer to window. */
-    UNICORN_EXPORT void BindWindowRenderer(system::Window* pWindow, video::Renderer* pRenderer);
+ /** @brief Binds renderer to window. */
+ UNICORN_EXPORT void BindWindowRenderer(system::Window* pWindow, video::Renderer* pRenderer);
 
 private:
-    //! Renderer-Window pair type
-    typedef std::pair<Renderer*, system::Window*> RendererWindowPair;
+ //! Renderer-Window pair type
+ typedef std::pair<Renderer*, system::Window*> RendererWindowPair;
 
-    /** @brief  Helper class generating hash for Renderer-Window pair */
-    struct RendererWindowPairHash
-    {
-        /** @brief  Calculates hash */
-        std::size_t operator()(const RendererWindowPair& pair) const
-        {
-            return std::hash<Renderer*>()(pair.first) ^
-                std::hash<system::Window*>()(pair.second);
-        }
-    };
+ /** @brief  Helper class generating hash for Renderer-Window pair */
+ struct RendererWindowPairHash
+ {
+  /** @brief  Calculates hash */
+  std::size_t operator()(const RendererWindowPair& pair) const
+  {
+   return std::hash<Renderer*>()( pair.first ) ^
+    std::hash<system::Window*>()( pair.second );
+  }
+ };
 
-    //! Set of Renderer-Window pairs
-    typedef std::unordered_set<RendererWindowPair, RendererWindowPairHash> RendererWindowPairSet;
+ //! Set of Renderer-Window pairs
+ typedef std::unordered_set<RendererWindowPair, RendererWindowPairHash> RendererWindowPairSet;
 
-    /** @brief  Checks if there are expired renderers and destroys them */
-    void ProcessExpiredRenderers();
+ /** @brief  Checks if there are expired renderers and destroys them */
+ void ProcessExpiredRenderers();
 
-    //! Flag describing if graphics were initialized
-    bool m_isInitialized;
+ //! Flag describing if graphics were initialized
+ bool m_isInitialized;
 
-    //! Reference to window and monitor managing manager
-    system::Manager& m_systemManager;
+ //! Reference to window and monitor managing manager
+ system::Manager& m_systemManager;
 
-    //! Set of Renderer-Window pairs
-    RendererWindowPairSet m_renderers;
+ //! Set of Renderer-Window pairs
+ RendererWindowPairSet m_renderers;
 
-    //! Set of expired Renderer-Window pairs that need to be deinitialized
-    RendererWindowPairSet m_expiredRenderers;
+ //! Set of expired Renderer-Window pairs that need to be deinitialized
+ RendererWindowPairSet m_expiredRenderers;
 
-    //! Hold which driver we are using for correct deallocation
-    DriverType m_driver;
+ //! Hold which driver we are using for correct deallocation
+ DriverType m_driver;
 };
 }
 }

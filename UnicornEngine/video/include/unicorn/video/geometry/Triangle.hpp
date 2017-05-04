@@ -15,17 +15,17 @@
 
 namespace unicorn
 {
-    namespace video
-    {
-        namespace geometry
-        {
-            class Triangle : public MeshDescriptor
-            {
-            public:
-                UNICORN_EXPORT Triangle(std::shared_ptr<Mesh> mesh);
-            };
-        }
-    }
+namespace video
+{
+namespace geometry
+{
+class Triangle : public MeshDescriptor
+{
+public:
+    UNICORN_EXPORT Triangle(std::shared_ptr<Mesh> mesh);
+};
+}
+}
 }
 
 #endif // UNICORN_VIDEO_GEOMETRY_TRIANGLE_HPP

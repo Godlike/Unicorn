@@ -15,11 +15,11 @@ namespace geometry
 Quad::Quad(std::shared_ptr<Mesh> mesh)
     : MeshDescriptor(mesh)
 {
-    m_mesh->SetMeshData({{{-1.0f, -1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}},
+    m_mesh->SetMeshData({ {{-1.0f, -1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}},
                             {{1.0f, -1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}},
                             {{1.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}},
-                            {{-1.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}}},
-        {0, 1, 2, 2, 3, 0});
+                            {{-1.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}} },
+                            { 0, 1, 2, 2, 3, 0 });
 }
 }
 }

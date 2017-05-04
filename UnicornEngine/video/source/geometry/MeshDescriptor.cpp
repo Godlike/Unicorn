@@ -25,12 +25,7 @@ void MeshDescriptor::Rotate(float angle, glm::vec3 axis)
 
 void MeshDescriptor::Move(glm::vec3 diff)
 {
-    auto newVertices = m_mesh->GetVertices();
-    for (auto& vertex : newVertices)
-    {
-        vertex.pos += diff;
-    }
-    m_mesh->SetVertices(newVertices);
+    m_mesh->model = glm::translate(m_mesh->model, diff);
 }
 
 void MeshDescriptor::Scale(glm::vec3 diff)
@@ -38,14 +33,13 @@ void MeshDescriptor::Scale(glm::vec3 diff)
     m_mesh->model = glm::scale(m_mesh->model, diff);
 }
 
+MeshDescriptor::~MeshDescriptor()
+{
+}
+
 void MeshDescriptor::SetColor(glm::vec3 color)
 {
-    auto newVertices = m_mesh->GetVertices();
-    for (auto& vertex : newVertices)
-    {
-        vertex.color = color;
-    }
-    m_mesh->SetVertices(newVertices);
+    m_mesh->SetColor(color);
 }
 }
 }

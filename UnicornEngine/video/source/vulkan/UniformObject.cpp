@@ -36,7 +36,7 @@ bool UniformObject::CreateLayout()
     layoutInfo.pBindings = &uboLayoutBinding;
 
     vk::Result result = m_device.createDescriptorSetLayout(&layoutInfo, nullptr, &m_descriptorSetLayout);
-    if (result != vk::Result::eSuccess)
+    if ( result != vk::Result::eSuccess )
     {
         LOG_ERROR("Failed to create descriptor set layout for camera!");
         return false;
@@ -52,7 +52,7 @@ bool UniformObject::CreateSet(vk::DescriptorPool descrPool)
     m_uniformStagingBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, bufferSize);
     m_uniformBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, bufferSize);
 
-    vk::DescriptorSetLayout layouts[] = {m_descriptorSetLayout};
+    vk::DescriptorSetLayout layouts[] = { m_descriptorSetLayout };
     vk::DescriptorSetAllocateInfo allocInfo = {};
     allocInfo.descriptorPool = descrPool;
     allocInfo.descriptorSetCount = 1;
@@ -60,7 +60,7 @@ bool UniformObject::CreateSet(vk::DescriptorPool descrPool)
 
     vk::Result result = m_device.allocateDescriptorSets(&allocInfo, &m_descriptorSet);
 
-    if (result != vk::Result::eSuccess)
+    if ( result != vk::Result::eSuccess )
     {
         LOG_ERROR("Failed to create descriptor set for camera!");
         return false;
@@ -85,7 +85,7 @@ bool UniformObject::CreateSet(vk::DescriptorPool descrPool)
 
 void UniformObject::Destroy() const
 {
-    if (m_descriptorSetLayout)
+    if ( m_descriptorSetLayout )
     {
         m_device.destroyDescriptorSetLayout(m_descriptorSetLayout);
     }

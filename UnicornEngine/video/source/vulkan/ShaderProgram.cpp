@@ -21,7 +21,7 @@ ShaderProgram::ShaderProgram(vk::Device device, const std::string& vertShader, c
     unicorn::utility::asset::Handler simpleVertShaderHandler = storage.Get("data/shaders/shader.vert.spv");
     unicorn::utility::asset::Handler simpleFragShaderHandler = storage.Get("data/shaders/shader.frag.spv");
 
-    if (!simpleVertShaderHandler.IsValid() || !simpleFragShaderHandler.IsValid())
+    if ( !simpleVertShaderHandler.IsValid() || !simpleFragShaderHandler.IsValid() )
     {
         LOG_ERROR("Can't find shaders!");
         m_isCreated = false;
@@ -30,7 +30,7 @@ ShaderProgram::ShaderProgram(vk::Device device, const std::string& vertShader, c
     bool shadersCreatedFailed = !CreateShaderModule(simpleVertShaderHandler.GetContent().GetBuffer(), m_vertShaderModule) ||
         !CreateShaderModule(simpleFragShaderHandler.GetContent().GetBuffer(), m_fragShaderModule);
 
-    if (shadersCreatedFailed)
+    if ( shadersCreatedFailed )
     {
         LOG_ERROR("Can't create shader module!");
         m_isCreated = false;
@@ -46,7 +46,7 @@ ShaderProgram::ShaderProgram(vk::Device device, const std::string& vertShader, c
     fragShaderStageInfo.module = m_fragShaderModule;
     fragShaderStageInfo.pName = "main";
 
-    m_shaderStages = {{vertShaderStageInfo, fragShaderStageInfo}};
+    m_shaderStages = { {vertShaderStageInfo, fragShaderStageInfo} };
 
     CreateBindingDescription();
     CreateAttributeDescription();
@@ -79,7 +79,7 @@ void ShaderProgram::CreateAttributeDescription()
 void ShaderProgram::CreateVertexInputInfo()
 {
     m_vertexInputInfo.vertexBindingDescriptionCount = 1;
-    m_vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(m_attributeDescription.size());
+    m_vertexInputInfo.vertexAttributeDescriptionCount = static_cast< uint32_t >( m_attributeDescription.size() );
     m_vertexInputInfo.pVertexBindingDescriptions = &m_bindingDescription;
     m_vertexInputInfo.pVertexAttributeDescriptions = m_attributeDescription.data();
 }
@@ -103,17 +103,17 @@ bool ShaderProgram::CreateShaderModule(const std::vector<uint8_t>& code, vk::Sha
 {
     vk::Result result;
     vk::ShaderModuleCreateInfo createInfo;
-    if (code.size() % sizeof(uint32_t) != 0)
+    if ( code.size() % sizeof(uint32_t) != 0 )
     {
         LOG_ERROR("Shader code size is not multiple of sizeof(uint32_t), look at VkShaderModuleCreateInfo(3) Manual Page.");
         return false;
     }
     createInfo.codeSize = code.size();
-    createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+    createInfo.pCode = reinterpret_cast< const uint32_t* >( code.data() );
 
     result = m_device.createShaderModule(&createInfo, {}, &shaderModule);
 
-    if (result != vk::Result::eSuccess)
+    if ( result != vk::Result::eSuccess )
     {
         LOG_ERROR("Failed to create shader module!");
         return false;

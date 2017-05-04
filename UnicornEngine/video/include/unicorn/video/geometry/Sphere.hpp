@@ -15,17 +15,17 @@
 
 namespace unicorn
 {
-    namespace video
-    {
-        namespace geometry
-        {
-            class Sphere : public MeshDescriptor
-            {
-            public:
-                UNICORN_EXPORT Sphere(std::shared_ptr<Mesh> mesh, float radius, uint32_t rings, uint32_t sectors);
-            };
-        }
-    }
+namespace video
+{
+namespace geometry
+{
+class Sphere : public MeshDescriptor
+{
+public:
+    UNICORN_EXPORT Sphere(std::shared_ptr<Mesh> mesh, float radius, uint32_t rings, uint32_t sectors);
+};
+}
+}
 }
 
 #endif // UNICORN_VIDEO_GEOMETRY_SPHERE_HPP

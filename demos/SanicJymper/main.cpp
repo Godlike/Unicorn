@@ -5,7 +5,6 @@
 */
 
 #include <unicorn/UnicornEngine.hpp>
-
 #include <unicorn/video/Graphics.hpp>
 #include <unicorn/video/Camera.hpp>
 #include <unicorn/system/Window.hpp>
@@ -50,7 +49,7 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     using unicorn::system::input::Action;
     using unicorn::system::MouseMode;
 
-    if (Action::Release == action)
+    if ( Action::Release == action )
     {
         return;
     }
@@ -58,18 +57,18 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     std::pair<int32_t, int32_t> position = pWindow->GetPosition();
     bool positionChanged = true;
 
-    float delta = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
+    float delta = static_cast< float >( timer->ElapsedMilliseconds().count() ) / 1000;
 
-    if (Modifier::Shift & modifiers)
+    if ( Modifier::Shift & modifiers )
     {
         delta *= 10;
     }
 
-    if (Modifier::Alt & modifiers)
+    if ( Modifier::Alt & modifiers )
     {
         delta *= 5;
     }
-    switch (key)
+    switch ( key )
     {
         case Key::W:
         {
@@ -139,7 +138,7 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
         }
     }
 
-    if (positionChanged)
+    if ( positionChanged )
     {
         pWindow->SetPosition(position);
     }
@@ -153,17 +152,18 @@ int main(int argc, char* argv[])
     settings.SetApplicationName("SANIC JYMPER");
     unicorn::UnicornEngine* unicornEngine = new unicorn::UnicornEngine();
     timer = new unicorn::system::Timer(true);
-    if (unicornEngine->Init())
+    if ( unicornEngine->Init() )
     {
         pGraphics = unicornEngine->GetGraphics();
 
         unicornEngine->LogicFrame.connect(&onLogicFrame);
 
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
-            unicorn::system::CustomValue::True);
+                                         unicorn::system::CustomValue::True);
 
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Resizable,
-            unicorn::system::CustomValue::True);
+                                         unicorn::system::CustomValue::True);
+
 
         auto h = pGraphics->GetMonitors().back()->GetActiveVideoMode().height;
         auto w = pGraphics->GetMonitors().back()->GetActiveVideoMode().width;
@@ -182,23 +182,13 @@ int main(int argc, char* argv[])
         vkRenderer0->SetBackgroundColor(unicorn::video::Color::LightPink);
         pCameraController = new unicorn::video::CameraFpsController(vkRenderer0->GetCamera());
 
-        unicorn::video::geometry::Triangle triangle0(vkRenderer0->SpawnMesh());
-        triangle0.SetColor(unicorn::video::Color::Red);
-        triangle0.Move({-1.5f, 0.0f, 0.0f});
-
         unicorn::video::geometry::Triangle triangle2(vkRenderer0->SpawnMesh());
         triangle2.SetColor(unicorn::video::Color::Green);
-        triangle2.Move({-1.3f, 0.0, -1.0});
+        triangle2.Move({ 3.f, -1.0, -5.0 });
 
-        unicorn::video::geometry::Quad quad0(vkRenderer0->SpawnMesh());
-        unicorn::video::geometry::Cube cube0(vkRenderer0->SpawnMesh());
-        cube0.Move({10.0, 0.0, -2.0f});
-        cube0.SetColor(unicorn::video::Color::Pink);
-        unicorn::video::geometry::Sphere sphere(vkRenderer0->SpawnMesh(), 5, 32, 32);
-        sphere.Move({ -10.0, 0.0, -2.0f });
-        unicorn::video::geometry::Triangle triangle1(vkRenderer0->SpawnMesh());
-        triangle1.SetColor(unicorn::video::Color::Blue);
-        triangle1.Move({1.5f, 0.0, 0.0});
+        unicorn::video::geometry::Triangle triangle0(vkRenderer0->SpawnMesh());
+        triangle0.SetColor(unicorn::video::Color::Red);
+        triangle0.Scale({ 2.0, 1.0, 1.0 });
 
         pWindow0->MousePosition.connect(&onCursorPositionChanged);
         pWindow0->Scroll.connect(&onMouseScrolled);
