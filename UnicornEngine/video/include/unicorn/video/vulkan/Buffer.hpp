@@ -31,6 +31,7 @@ public:
 
     vk::Buffer& GetVkBuffer();
 
+    vk::DescriptorBufferInfo descriptor;
 private:
     vk::Device m_device;
     vk::BufferUsageFlags m_usage;

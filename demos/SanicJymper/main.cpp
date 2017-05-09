@@ -6,7 +6,6 @@
 
 #include <unicorn/UnicornEngine.hpp>
 #include <unicorn/video/Graphics.hpp>
-#include <unicorn/video/Camera.hpp>
 #include <unicorn/system/Window.hpp>
 #include <unicorn/system/WindowHint.hpp>
 #include <unicorn/system/CustomValue.hpp>
@@ -14,12 +13,9 @@
 #include <unicorn/system/input/Action.hpp>
 #include <unicorn/system/input/Key.hpp>
 #include <unicorn/system/input/Modifier.hpp>
-#include <unicorn/video/geometry/Mesh.hpp>
 #include <unicorn/video/geometry/Triangle.hpp>
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/video/geometry/Quad.hpp>
-#include <unicorn/video/geometry/Cube.hpp>
-#include <unicorn/video/geometry/Sphere.hpp>
 #include <unicorn/video/CameraFPSController.hpp>
 
 static unicorn::video::Graphics* pGraphics = nullptr;

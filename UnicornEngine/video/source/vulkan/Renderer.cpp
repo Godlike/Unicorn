@@ -12,7 +12,6 @@
 #include <unicorn/system/Window.hpp>
 #include <unicorn/video/vulkan/Context.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
-#include <unicorn/video/vulkan/UniformObject.hpp>
 #include <unicorn/video/Camera.hpp>
 
 #include <set>
@@ -28,7 +27,7 @@ namespace video
 namespace vulkan
 {
 Renderer::Renderer(system::Manager& manager, system::Window* window)
-    : video::Renderer(manager, window), m_unifromBufferObject(nullptr)
+    : video::Renderer(manager, window), m_vkBuffersResized(false)
 {
     m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
     m_pWindow->SizeChanged.connect(this, &Renderer::OnWindowSizeChanged);
@@ -65,9 +64,9 @@ bool Renderer::Init()
         !CreateSwapChain() ||
         !CreateImageViews() ||
         !CreateRenderPass() ||
+        !PrepareUniformBuffers() ||
+        !CreateDescriptionSetLayout() ||
         !CreateGraphicsPipeline() ||
-        !CreateDescriptorPool() ||
-        !CreateUniformObject() ||
         !CreateFramebuffers() ||
         !CreateCommandPool() ||
         !CreateSemaphores() )
@@ -93,8 +92,6 @@ void Renderer::Deinit()
     FreeCommandBuffers();
     FreeCommandPool();
     FreeFrameBuffers();
-    FreeUniformObject();
-    FreeDescriptorPool();
     FreeGraphicsPipeline();
     FreeRenderPass();
     FreeImageViews();
@@ -298,7 +295,7 @@ bool Renderer::RecreateSwapChain()
 
 void Renderer::OnMeshReallocated(VkMesh*)
 {
-    CreateCommandBuffers();
+    //CreateCommandBuffers();
 }
 
 std::shared_ptr<geometry::Mesh> Renderer::SpawnMesh()
@@ -308,6 +305,7 @@ std::shared_ptr<geometry::Mesh> Renderer::SpawnMesh()
     vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
     m_vkMeshes.push_back(vkmesh);
     m_meshes.push_back(mesh);
+    m_vkBuffersResized = true;
     return mesh;
 }
 
@@ -361,12 +359,6 @@ void Renderer::FreeRenderPass()
 
 void Renderer::FreeGraphicsPipeline()
 {
-    if ( m_pipelineLayout && m_vkLogicalDevice )
-    {
-        m_vkLogicalDevice.destroyPipelineLayout(m_pipelineLayout);
-        m_pipelineLayout = nullptr;
-    }
-
     if ( m_graphicsPipeline && m_vkLogicalDevice )
     {
         m_vkLogicalDevice.destroyPipeline(m_graphicsPipeline);
@@ -418,22 +410,52 @@ void Renderer::FreeSemaphores()
     }
 }
 
-void Renderer::FreeUniformObject()
+bool Renderer::PrepareUniformBuffers()
 {
-    if ( m_unifromBufferObject != nullptr )
-    {
-        m_unifromBufferObject->Destroy();
-        m_unifromBufferObject = nullptr;
-    }
+    size_t uboAlignment = m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment;
+    m_dynamicAlignment = ( sizeof(glm::mat4) / uboAlignment ) * uboAlignment + ( ( sizeof(glm::mat4) % uboAlignment ) > 0 ? uboAlignment : 0 );
+
+    m_uniformMvp.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, sizeof(UniformCameraData));
+
+    m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, sizeof(UniformAllMeshesData));
+
+    return true;
 }
 
-void Renderer::FreeDescriptorPool()
+void Renderer::ResizeDynamicUniformBuffer()
 {
-    if ( m_descriptorPool )
-    {
-        m_vkLogicalDevice.destroyDescriptorPool(m_descriptorPool);
-        m_descriptorPool = nullptr;
-    }
+    std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
+
+    vk::WriteDescriptorSet writeDescriptorSetMVP;
+    writeDescriptorSetMVP.dstSet = m_descriptorSet;
+    writeDescriptorSetMVP.descriptorType = vk::DescriptorType::eUniformBuffer;
+    writeDescriptorSetMVP.dstBinding = 0;
+    writeDescriptorSetMVP.pBufferInfo = &m_uniformMvp.descriptor;
+    writeDescriptorSetMVP.descriptorCount = 1;
+
+    vk::WriteDescriptorSet writeDescriptorSetMODEL;
+    writeDescriptorSetMODEL.dstSet = m_descriptorSet;
+    writeDescriptorSetMODEL.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
+    writeDescriptorSetMODEL.dstBinding = 1;
+    writeDescriptorSetMODEL.pBufferInfo = &m_uniformModel.descriptor;
+    writeDescriptorSetMODEL.descriptorCount = 1;
+
+    writeDescriptorSets.push_back(writeDescriptorSetMVP);
+    writeDescriptorSets.push_back(writeDescriptorSetMODEL);
+
+    m_vkLogicalDevice.updateDescriptorSets(static_cast< uint32_t >( writeDescriptorSets.size() ), writeDescriptorSets.data(), 0, nullptr);
+
+    m_vkBuffersResized = false;
+}
+
+void Renderer::UpdateUniformBuffer()
+{
+
+}
+
+void Renderer::UpdateDynamicUniformBuffer()
+{
+
 }
 
 bool Renderer::PickPhysicalDevice()
@@ -460,7 +482,7 @@ bool Renderer::PickPhysicalDevice()
         LOG_ERROR("Failed to find a suitable GPU!");
         return false;
     }
-
+    m_physicalDeviceProperties = m_vkPhysicalDevice.getProperties();
     return true;
 }
 
@@ -523,10 +545,6 @@ bool Renderer::CreateSurface()
     return true;
 }
 
-bool Renderer::CreateUniformObject()
-{
-    return m_unifromBufferObject->CreateSet(m_descriptorPool);
-}
 
 bool Renderer::CreateSwapChain()
 {
@@ -678,6 +696,90 @@ bool Renderer::CreateRenderPass()
     return true;
 }
 
+bool Renderer::CreateDescriptionSetLayout()
+{
+    std::vector<vk::DescriptorPoolSize> descriptorPoolSizes;
+    vk::DescriptorPoolSize descriptorMVPPoolSize;
+    descriptorMVPPoolSize.type = vk::DescriptorType::eUniformBuffer;
+    descriptorMVPPoolSize.descriptorCount = 1;
+
+    vk::DescriptorPoolSize descriptorModelPoolSize;
+    descriptorModelPoolSize.type = vk::DescriptorType::eUniformBufferDynamic;
+    descriptorModelPoolSize.descriptorCount = 1;
+
+    descriptorPoolSizes.push_back(descriptorMVPPoolSize);
+    descriptorPoolSizes.push_back(descriptorModelPoolSize);
+
+    vk::DescriptorPoolCreateInfo poolCreateInfo;
+    poolCreateInfo.poolSizeCount = static_cast< uint32_t >( descriptorPoolSizes.size() );
+    poolCreateInfo.pPoolSizes = descriptorPoolSizes.data();
+    poolCreateInfo.maxSets = 2;
+
+    vk::Result result = m_vkLogicalDevice.createDescriptorPool(&poolCreateInfo, nullptr, &m_descriptorPool);
+    if ( result != vk::Result::eSuccess )
+    {
+        LOG_ERROR("Can't create descriptor pool!");
+        return false;
+    }
+
+    std::vector<vk::DescriptorSetLayoutBinding> descriptorSetLayoutBindings;
+
+    vk::DescriptorSetLayoutBinding setMVP;
+    setMVP.descriptorType = vk::DescriptorType::eUniformBuffer;
+    setMVP.stageFlags = vk::ShaderStageFlagBits::eVertex;
+    setMVP.binding = 0; //TODO: hardcode description binding
+    setMVP.descriptorCount = 1;
+
+    vk::DescriptorSetLayoutBinding setMODEL;
+    setMVP.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
+    setMVP.stageFlags = vk::ShaderStageFlagBits::eVertex;
+    setMVP.binding = 1; //TODO: hardcode description binding
+    setMVP.descriptorCount = 1;
+
+    descriptorSetLayoutBindings.push_back(setMVP);
+    descriptorSetLayoutBindings.push_back(setMODEL);
+
+    vk::DescriptorSetLayoutCreateInfo descriptorLayout;
+    descriptorLayout.pBindings = descriptorSetLayoutBindings.data();
+    descriptorLayout.bindingCount = static_cast< uint32_t >( descriptorSetLayoutBindings.size() );
+
+    result = m_vkLogicalDevice.createDescriptorSetLayout(&descriptorLayout, nullptr, &m_descriptorSetLayout);
+
+    if ( result != vk::Result::eSuccess )
+    {
+        LOG_ERROR("Can't create descriptor set layout!");
+        return false;
+    }
+
+    vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
+    pipelineLayoutInfo.setLayoutCount = 1;
+    pipelineLayoutInfo.pSetLayouts = &m_descriptorSetLayout;
+
+    result = m_vkLogicalDevice.createPipelineLayout(&pipelineLayoutInfo, nullptr, &m_pipelineLayout);
+    if ( result != vk::Result::eSuccess )
+    {
+        LOG_ERROR("Failed to create pipeline layout!");
+        return false;
+    }
+
+    vk::DescriptorSetAllocateInfo allocInfo;
+    allocInfo.descriptorPool = m_descriptorPool;
+    allocInfo.pSetLayouts = &m_descriptorSetLayout;
+    allocInfo.descriptorSetCount = 1;
+
+    result = m_vkLogicalDevice.allocateDescriptorSets(&allocInfo, &m_descriptorSet);
+
+    if ( result != vk::Result::eSuccess )
+    {
+        LOG_ERROR("Can't allocate descriptor sets!");
+        return false;
+    }
+
+    ResizeDynamicUniformBuffer();
+
+    return true;
+}
+
 bool Renderer::CreateGraphicsPipeline()
 {
     vk::Result result;
@@ -731,20 +833,6 @@ bool Renderer::CreateGraphicsPipeline()
     colorBlending.blendConstants[1] = 0.0f;
     colorBlending.blendConstants[2] = 0.0f;
     colorBlending.blendConstants[3] = 0.0f;
-
-    vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
-    pipelineLayoutInfo.setLayoutCount = 1;
-
-    m_unifromBufferObject = new UniformObject(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue);
-    m_unifromBufferObject->CreateLayout();
-    pipelineLayoutInfo.pSetLayouts = m_unifromBufferObject->GetDescriptorLayout();
-
-    result = m_vkLogicalDevice.createPipelineLayout(&pipelineLayoutInfo, nullptr, &m_pipelineLayout);
-    if ( result != vk::Result::eSuccess )
-    {
-        LOG_ERROR("Failed to create pipeline layout!");
-        return false;
-    }
 
     if ( !m_shaderProgram->IsCreated() )
     {
@@ -824,7 +912,6 @@ bool Renderer::CreateCommandPool()
         LOG_ERROR("Failed to create command pool!");
         return false;
     }
-    m_unifromBufferObject->SetCommandPool(m_commandPool);
 
     return true;
 }
@@ -871,20 +958,17 @@ bool Renderer::CreateCommandBuffers()
         m_commandBuffers[i].beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
         m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
 
-        vk::DeviceSize offsets[] = { 0 };
-        m_uniformObject.view = m_camera->GetView();
-        m_uniformObject.proj = m_camera->GetProjection();
-        for ( VkMesh* vkMesh : m_vkMeshes )
-        {
-            vk::Buffer vertexBuffer[] = { vkMesh->GetVertexBuffer() };
-            m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);
-            m_commandBuffers[i].bindIndexBuffer(vkMesh->GetIndexBuffer(), 0, vk::IndexType::eUint16);
-            m_uniformObject.model = vkMesh->GetModel();
-            m_unifromBufferObject->Update(1.0, m_uniformObject);
-            vk::DescriptorSet set = m_unifromBufferObject->GetDescriptorSet();
-            m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout, 0, 1, &set, 0, nullptr);
-            m_commandBuffers[i].drawIndexed(vkMesh->IndicesSize(), 1, 0, 0, 0);
-        }
+        //vk::DeviceSize offsets[] = { 0 };
+        //for ( int j = 0; i < m_vkMeshes.size(); ++i )
+        //{
+        //    vk::Buffer vertexBuffer[] = { m_vkMeshes.at(j)->GetVertexBuffer() };
+        //    uint32_t dynamicOffset = i * static_cast< uint32_t >( m_dynamicAlignment );
+        //    m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);
+        //    m_commandBuffers[i].bindIndexBuffer(m_vkMeshes.at(j)->GetIndexBuffer(), 0, vk::IndexType::eUint16);
+
+        //    //m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout, 0, 1, &m_descriptorSet, 1, &dynamicOffset);
+        //    //m_commandBuffers[i].drawIndexed(m_vkMeshes.at(j)->IndicesSize(), 1, 0, 0, 0);
+        //}
 
         m_commandBuffers[i].endRenderPass();
 
@@ -905,27 +989,6 @@ bool Renderer::CreateSemaphores()
 
     LOG_ERROR("Failed to create semaphores!");
     return false;
-}
-
-bool Renderer::CreateDescriptorPool()
-{
-    vk::DescriptorPoolSize poolSize;
-    poolSize.type = vk::DescriptorType::eUniformBuffer;
-    poolSize.descriptorCount = 1;
-
-    vk::DescriptorPoolCreateInfo poolInfo;
-    poolInfo.poolSizeCount = 1;
-    poolInfo.pPoolSizes = &poolSize;
-    poolInfo.maxSets = 1;
-
-    vk::Result result = m_vkLogicalDevice.createDescriptorPool(&poolInfo, nullptr, &m_descriptorPool);
-
-    if ( result != vk::Result::eSuccess )
-    {
-        LOG_ERROR("Failed to create descriptor pool!");
-        return false;
-    }
-    return true;
 }
 
 bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
@@ -953,10 +1016,7 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
         m_gpuName = deviceProperties.deviceName;
         return true;
     }
-    else
-    {
-        return false;
-    }
+    return false;
 }
 
 bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device)
@@ -999,13 +1059,20 @@ bool Renderer::Frame()
         }
         return true;
     }
-    else if ( result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR )
+    if ( result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR )
     {
         LOG_ERROR("Failed to acquire swap chain image!");
         return false;
     }
 
-    CreateCommandBuffers(); //TODO: burn my eyes
+    if ( m_vkBuffersResized )
+    {
+        ResizeDynamicUniformBuffer();
+        CreateCommandBuffers();
+    }
+
+    UpdateUniformBuffer();
+    UpdateDynamicUniformBuffer();
 
     vk::SubmitInfo submitInfo;
 
