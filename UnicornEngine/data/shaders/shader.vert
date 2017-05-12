@@ -6,7 +6,7 @@ layout(binding = 0) uniform UniformViewProjection {
     mat4 proj;
 } uvp_buffer;
 
-layout(binding = 0) uniform UniformModel {
+layout(binding = 1) uniform UniformModel {
     mat4 model;
 } um_buffer;
 

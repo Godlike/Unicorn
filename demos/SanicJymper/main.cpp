@@ -178,13 +178,11 @@ int main(int argc, char* argv[])
         vkRenderer0->SetBackgroundColor(unicorn::video::Color::LightPink);
         pCameraController = new unicorn::video::CameraFpsController(vkRenderer0->GetCamera());
 
+        unicorn::video::geometry::Triangle triangle1(vkRenderer0->SpawnMesh());
+        triangle1.SetColor(unicorn::video::Color::Red);
+
         unicorn::video::geometry::Triangle triangle2(vkRenderer0->SpawnMesh());
         triangle2.SetColor(unicorn::video::Color::Green);
-        triangle2.Move({ 3.f, -1.0, -5.0 });
-
-        unicorn::video::geometry::Triangle triangle0(vkRenderer0->SpawnMesh());
-        triangle0.SetColor(unicorn::video::Color::Red);
-        triangle0.Scale({ 2.0, 1.0, 1.0 });
 
         pWindow0->MousePosition.connect(&onCursorPositionChanged);
         pWindow0->Scroll.connect(&onMouseScrolled);

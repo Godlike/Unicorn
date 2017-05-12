@@ -27,7 +27,7 @@ namespace video
 namespace vulkan
 {
 Renderer::Renderer(system::Manager& manager, system::Window* window)
-    : video::Renderer(manager, window), m_vkBuffersResized(false)
+    : video::Renderer(manager, window)
 {
     m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
     m_pWindow->SizeChanged.connect(this, &Renderer::OnWindowSizeChanged);
@@ -69,7 +69,8 @@ bool Renderer::Init()
         !CreateGraphicsPipeline() ||
         !CreateFramebuffers() ||
         !CreateCommandPool() ||
-        !CreateSemaphores() )
+        !CreateSemaphores() ||
+        !CreateCommandBuffers())
     {
         return false;
     }
@@ -293,9 +294,20 @@ bool Renderer::RecreateSwapChain()
     return false;
 }
 
-void Renderer::OnMeshReallocated(VkMesh*)
-{
-    //CreateCommandBuffers();
+void Renderer::OnMeshReallocated(VkMesh* vkmesh)
+{    
+    /*size_t bufferSize = m_vkMeshes.size() * m_dynamicAlignment;
+    m_uniformModel.Destroy();
+    m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, bufferSize);
+    std::vector<glm::mat4> modelMat(m_vkMeshes.size());
+    for(int i = 0; i < m_vkMeshes.size(); ++i  )
+    {
+        modelMat.at(i) = m_vkMeshes.at(i)->GetModel();
+    }
+    m_uniformModelsData.model = modelMat.data();
+    m_uniformModel.Write(&m_uniformModelsData);*/
+    ResizeDynamicUniformBuffer();
+    CreateCommandBuffers();
 }
 
 std::shared_ptr<geometry::Mesh> Renderer::SpawnMesh()
@@ -305,7 +317,6 @@ std::shared_ptr<geometry::Mesh> Renderer::SpawnMesh()
     vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
     m_vkMeshes.push_back(vkmesh);
     m_meshes.push_back(mesh);
-    m_vkBuffersResized = true;
     return mesh;
 }
 
@@ -415,10 +426,15 @@ bool Renderer::PrepareUniformBuffers()
     size_t uboAlignment = m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment;
     m_dynamicAlignment = ( sizeof(glm::mat4) / uboAlignment ) * uboAlignment + ( ( sizeof(glm::mat4) % uboAlignment ) > 0 ? uboAlignment : 0 );
 
+    m_uniformCameraData.proj = m_camera->GetProjection();
+    m_uniformCameraData.view = m_camera->GetView();
+
     m_uniformMvp.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, sizeof(UniformCameraData));
+    m_uniformMvp.Write(&m_uniformCameraData);
 
-    m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, sizeof(UniformAllMeshesData));
-
+    m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, m_dynamicAlignment);
+    glm::mat4 lolkek = glm::mat4();
+    m_uniformModel.Write(&lolkek);
     return true;
 }
 
@@ -444,8 +460,6 @@ void Renderer::ResizeDynamicUniformBuffer()
     writeDescriptorSets.push_back(writeDescriptorSetMODEL);
 
     m_vkLogicalDevice.updateDescriptorSets(static_cast< uint32_t >( writeDescriptorSets.size() ), writeDescriptorSets.data(), 0, nullptr);
-
-    m_vkBuffersResized = false;
 }
 
 void Renderer::UpdateUniformBuffer()
@@ -731,10 +745,10 @@ bool Renderer::CreateDescriptionSetLayout()
     setMVP.descriptorCount = 1;
 
     vk::DescriptorSetLayoutBinding setMODEL;
-    setMVP.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
-    setMVP.stageFlags = vk::ShaderStageFlagBits::eVertex;
-    setMVP.binding = 1; //TODO: hardcode description binding
-    setMVP.descriptorCount = 1;
+    setMODEL.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
+    setMODEL.stageFlags = vk::ShaderStageFlagBits::eVertex;
+    setMODEL.binding = 1; //TODO: hardcode description binding
+    setMODEL.descriptorCount = 1;
 
     descriptorSetLayoutBindings.push_back(setMVP);
     descriptorSetLayoutBindings.push_back(setMODEL);
@@ -958,17 +972,16 @@ bool Renderer::CreateCommandBuffers()
         m_commandBuffers[i].beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
         m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
 
-        //vk::DeviceSize offsets[] = { 0 };
-        //for ( int j = 0; i < m_vkMeshes.size(); ++i )
-        //{
-        //    vk::Buffer vertexBuffer[] = { m_vkMeshes.at(j)->GetVertexBuffer() };
-        //    uint32_t dynamicOffset = i * static_cast< uint32_t >( m_dynamicAlignment );
-        //    m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);
-        //    m_commandBuffers[i].bindIndexBuffer(m_vkMeshes.at(j)->GetIndexBuffer(), 0, vk::IndexType::eUint16);
-
-        //    //m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout, 0, 1, &m_descriptorSet, 1, &dynamicOffset);
-        //    //m_commandBuffers[i].drawIndexed(m_vkMeshes.at(j)->IndicesSize(), 1, 0, 0, 0);
-        //}
+        vk::DeviceSize offsets[] = { 0 };
+        for ( int j = 0; j < m_vkMeshes.size(); ++j )
+        {
+            vk::Buffer vertexBuffer[] = { m_vkMeshes.at(j)->GetVertexBuffer() };
+            uint32_t dynamicOffset = 0 * static_cast< uint32_t >( m_dynamicAlignment );
+            m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);
+            m_commandBuffers[i].bindIndexBuffer(m_vkMeshes.at(j)->GetIndexBuffer(), 0, vk::IndexType::eUint16);
+            m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout, 0, 1, &m_descriptorSet, 1, &dynamicOffset);
+            m_commandBuffers[i].drawIndexed(m_vkMeshes.at(j)->IndicesSize(), 1, 0, 0, 0);
+        }
 
         m_commandBuffers[i].endRenderPass();
 
@@ -1063,12 +1076,6 @@ bool Renderer::Frame()
     {
         LOG_ERROR("Failed to acquire swap chain image!");
         return false;
-    }
-
-    if ( m_vkBuffersResized )
-    {
-        ResizeDynamicUniformBuffer();
-        CreateCommandBuffers();
     }
 
     UpdateUniformBuffer();

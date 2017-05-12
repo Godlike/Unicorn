@@ -102,8 +102,8 @@ private:
     Buffer m_uniformMvp;
     Buffer m_uniformModel;
     size_t m_dynamicAlignment;
-    bool m_vkBuffersResized;
-
+    UniformAllMeshesData m_uniformModelsData;
+    UniformCameraData m_uniformCameraData;
 
     #ifdef NDEBUG
     static const bool s_enableValidationLayers = false;

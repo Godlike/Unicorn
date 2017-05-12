@@ -76,9 +76,9 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
         return false;
     }
 
-    descriptor.offset = VK_WHOLE_SIZE;
+    descriptor.offset = 0;
     descriptor.buffer = m_buffer;
-    descriptor.range = size;
+    descriptor.range = VK_WHOLE_SIZE;
 
     #ifdef VKCPP_ENHANCED_MODE
     m_device.bindBufferMemory(m_buffer, m_memory, 0);
