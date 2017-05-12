@@ -13,6 +13,7 @@
 #include <unicorn/video/vulkan/Context.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
 #include <unicorn/video/Camera.hpp>
+#include <unicorn/utility/Memory.hpp>
 
 #include <set>
 #include <algorithm>
@@ -70,7 +71,7 @@ bool Renderer::Init()
         !CreateFramebuffers() ||
         !CreateCommandPool() ||
         !CreateSemaphores() ||
-        !CreateCommandBuffers())
+        !CreateCommandBuffers() )
     {
         return false;
     }
@@ -296,16 +297,20 @@ bool Renderer::RecreateSwapChain()
 
 void Renderer::OnMeshReallocated(VkMesh* vkmesh)
 {    
-    /*size_t bufferSize = m_vkMeshes.size() * m_dynamicAlignment;
     m_uniformModel.Destroy();
+    size_t bufferSize = m_vkMeshes.size() * m_dynamicAlignment;
     m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, bufferSize);
-    std::vector<glm::mat4> modelMat(m_vkMeshes.size());
-    for(int i = 0; i < m_vkMeshes.size(); ++i  )
+    if ( m_uniformModelsData.model )
     {
-        modelMat.at(i) = m_vkMeshes.at(i)->GetModel();
+        utility::AlignedFree(m_uniformModelsData.model);
     }
-    m_uniformModelsData.model = modelMat.data();
-    m_uniformModel.Write(&m_uniformModelsData);*/
+    m_uniformModelsData.model = static_cast<glm::mat4*>(utility::AlignedAlloc(bufferSize, m_dynamicAlignment));
+    for(int i = 0; i < m_vkMeshes.size(); ++i)
+    {
+        glm::mat4* modelMat = ( glm::mat4* )( ( ( uint64_t ) m_uniformModelsData.model + ( i * m_dynamicAlignment ) ) );	  
+        *modelMat = m_vkMeshes.at(i)->GetModel();
+    }
+    m_uniformModel.Write(m_uniformModelsData.model);
     ResizeDynamicUniformBuffer();
     CreateCommandBuffers();
 }
@@ -433,8 +438,6 @@ bool Renderer::PrepareUniformBuffers()
     m_uniformMvp.Write(&m_uniformCameraData);
 
     m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, m_dynamicAlignment);
-    glm::mat4 lolkek = glm::mat4();
-    m_uniformModel.Write(&lolkek);
     return true;
 }
 
@@ -464,12 +467,24 @@ void Renderer::ResizeDynamicUniformBuffer()
 
 void Renderer::UpdateUniformBuffer()
 {
-
+    m_uniformCameraData.proj = m_camera->GetProjection();
+    m_uniformCameraData.view = m_camera->GetView();
+    m_uniformMvp.Write(&m_uniformCameraData);
 }
 
 void Renderer::UpdateDynamicUniformBuffer()
 {
+    for ( int i = 0; i < m_vkMeshes.size(); ++i )
+    {
+        glm::mat4* modelMat = reinterpret_cast<glm::mat4*>((reinterpret_cast<uint64_t>(m_uniformModelsData.model) + (i * m_dynamicAlignment)));
+        *modelMat = m_vkMeshes.at(i)->GetModel();
+    }
+    m_uniformModel.Write(m_uniformModelsData.model);
 
+    vk::MappedMemoryRange mappedMemoryRange;
+    mappedMemoryRange.memory = m_uniformModel.GetMemory();
+    mappedMemoryRange.size = m_uniformModel.GetSize();
+    m_vkLogicalDevice.flushMappedMemoryRanges(1, &mappedMemoryRange);
 }
 
 bool Renderer::PickPhysicalDevice()
@@ -976,7 +991,7 @@ bool Renderer::CreateCommandBuffers()
         for ( int j = 0; j < m_vkMeshes.size(); ++j )
         {
             vk::Buffer vertexBuffer[] = { m_vkMeshes.at(j)->GetVertexBuffer() };
-            uint32_t dynamicOffset = 0 * static_cast< uint32_t >( m_dynamicAlignment );
+            uint32_t dynamicOffset = j * static_cast< uint32_t >( m_dynamicAlignment );
             m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);
             m_commandBuffers[i].bindIndexBuffer(m_vkMeshes.at(j)->GetIndexBuffer(), 0, vk::IndexType::eUint16);
             m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout, 0, 1, &m_descriptorSet, 1, &dynamicOffset);

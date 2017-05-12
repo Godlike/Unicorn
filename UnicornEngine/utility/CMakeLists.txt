@@ -18,6 +18,7 @@ set(UTILITY_HEADERS
     include/unicorn/utility/SharedMacros.hpp
     include/unicorn/utility/templates/Singleton.hpp
     include/unicorn/utility/templates/Singleton.imp
+    include/unicorn/utility/Memory.hpp
 )
 
 set(UTILITY_SOURCES
@@ -27,6 +28,7 @@ set(UTILITY_SOURCES
     sources/asset/Storage.cpp
     sources/asset/SimpleStorage.cpp
     sources/Logger.cpp
+    sources/Memory.cpp
 )
 
 add_library(utility OBJECT

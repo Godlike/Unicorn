@@ -180,6 +180,7 @@ int main(int argc, char* argv[])
 
         unicorn::video::geometry::Triangle triangle1(vkRenderer0->SpawnMesh());
         triangle1.SetColor(unicorn::video::Color::Red);
+        triangle1.Move({ -2.0f, 0.0f, 0.0f });
 
         unicorn::video::geometry::Triangle triangle2(vkRenderer0->SpawnMesh());
         triangle2.SetColor(unicorn::video::Color::Green);
