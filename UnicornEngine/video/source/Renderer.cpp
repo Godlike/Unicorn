@@ -13,7 +13,7 @@ namespace unicorn
 namespace video
 {
 Renderer::Renderer(system::Manager& manager, system::Window* window)
-    : m_isInitialized(false), m_systemManager(manager), m_pWindow(window), m_camera(new Camera({ 0.0f, 0.0f, 5.0f }, { 0.0f, 0.0f, -1.0f })), m_backgroundColor({ 0.0f, 0.0f, 0.0f, 0.0f })
+    : m_isInitialized(false), m_systemManager(manager), m_pWindow(window), m_camera(new Camera({ 0.0f, 0.0f, -5.0f }, { 0.0f, 0.0f, 1.0f })), m_backgroundColor({ 0.0f, 0.0f, 0.0f, 0.0f })
 {
     m_camera->SetPerspective(45.0f, static_cast< float >( window->GetSize().first ) / window->GetSize().second, 0.1f, 100.0f);
 }

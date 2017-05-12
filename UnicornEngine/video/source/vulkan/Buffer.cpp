@@ -161,6 +161,11 @@ vk::BufferUsageFlags Buffer::GetUsage() const
     return m_usage;
 }
 
+vk::DeviceMemory Buffer::GetMemory() const
+{
+    return m_memory;
+}
+
 vk::Buffer& Buffer::GetVkBuffer()
 {
     return m_buffer;

@@ -28,6 +28,7 @@ public:
     vk::Buffer GetVkBuffer() const;
     size_t GetSize() const;
     vk::BufferUsageFlags GetUsage() const;
+    vk::DeviceMemory GetMemory() const;
 
     vk::Buffer& GetVkBuffer();
 
