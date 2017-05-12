@@ -21,19 +21,18 @@ public:
     Buffer();
     ~Buffer();
 
-    vk::Result Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags memoryPropertyFlags, size_t size);
+    bool Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags memoryPropertyFlags, size_t size);
     void Destroy() const;
     void Write(const void* pData) const;
     void CopyToBuffer(vk::CommandPool pool, vk::Queue queue, const vulkan::Buffer& dstBuffer, vk::DeviceSize size);
-    vk::Buffer GetVkBuffer() const
-    {
-        return m_buffer;
-    }
+    vk::Buffer GetVkBuffer() const;
     size_t GetSize() const;
-    vk::BufferUsageFlags GetUsage();
+    vk::BufferUsageFlags GetUsage() const;
+    vk::DeviceMemory GetMemory() const;
 
     vk::Buffer& GetVkBuffer();
 
+    vk::DescriptorBufferInfo descriptor;
 private:
     vk::Device m_device;
     vk::BufferUsageFlags m_usage;

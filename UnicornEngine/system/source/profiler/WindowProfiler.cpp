@@ -56,6 +56,10 @@ void WindowProfiler::OnWindowCreated(Window* pWindow)
     pWindow->Focused.connect(this, &WindowProfiler::OnWindowFocused);
     pWindow->Minimized.connect(this, &WindowProfiler::OnWindowMinimized);
     pWindow->Maximized.connect(this, &WindowProfiler::OnWindowMaximized);
+    pWindow->CursorShapeChanged.connect(this, &WindowProfiler::OnCursorShapeChanged);
+    pWindow->MouseModeChanged.connect(this, &WindowProfiler::OnMouseModeChanged);
+    pWindow->StickyMouseChanged.connect(this, &WindowProfiler::OnStickyMouseChanged);
+    pWindow->StickyKeysChanged.connect(this, &WindowProfiler::OnStickyKeysChanged);
     pWindow->FramebufferResized.connect(this, &WindowProfiler::OnWindowFramebufferResized);
 }
 
@@ -97,6 +101,26 @@ void WindowProfiler::OnWindowMinimized(Window* pWindow, bool flag)
 void WindowProfiler::OnWindowMaximized(Window* pWindow, bool flag)
 {
     LOG_DEBUG("Window[%d]: maximize event: %s", pWindow->GetId(), flag ? "maximize" : "restore");
+}
+
+void WindowProfiler::OnCursorShapeChanged(Window* pWindow, CursorShape shape)
+{
+    LOG_DEBUG("Window[%d]: cursor shape is changed to %s", pWindow->GetId(), Stringify(shape));
+}
+
+void WindowProfiler::OnMouseModeChanged(Window* pWindow, MouseMode mode)
+{
+    LOG_DEBUG("Window[%d]: mouse mode is changed to %s", pWindow->GetId(), Stringify(mode));
+}
+
+void WindowProfiler::OnStickyMouseChanged(Window* pWindow, bool flag)
+{
+    LOG_DEBUG("Window[%d]: sticky mouse is changed to %s", pWindow->GetId(), flag ? "true" : "false");
+}
+
+void WindowProfiler::OnStickyKeysChanged(Window* pWindow, bool flag)
+{
+    LOG_DEBUG("Window[%d]: sticky keys is changed to %s", pWindow->GetId(), flag ? "true" : "false");
 }
 
 void WindowProfiler::OnWindowFramebufferResized(Window* pWindow, std::pair<int32_t, int32_t> size)

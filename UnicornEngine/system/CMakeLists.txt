@@ -11,11 +11,13 @@ include_directories(
 )
 
 set(SYSTEM_HEADERS
+    include/unicorn/system/Input.hpp
     include/unicorn/system/Manager.hpp
     include/unicorn/system/Timer.hpp
 )
 
 set(SYSTEM_SOURCES
+    source/Input.cpp
     source/Manager.cpp
     source/Timer.cpp
 )
@@ -49,6 +51,9 @@ set(WINDOW_MANAGER_SOURCES
 )
 
 set(INPUT_HEADERS
+    include/unicorn/system/CursorShape.hpp
+    include/unicorn/system/MouseMode.hpp
+
     include/unicorn/system/input/Action.hpp
     include/unicorn/system/input/Gamepad.hpp
     include/unicorn/system/input/GamepadState.hpp

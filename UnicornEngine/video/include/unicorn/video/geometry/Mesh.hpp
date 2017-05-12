@@ -14,35 +14,66 @@
 
 namespace unicorn
 {
-	namespace video
-	{
-		namespace geometry
-		{
-			struct Vertex {
-				glm::vec2 pos;
-				glm::vec3 color;
-			};
+namespace video
+{
+namespace geometry
+{
+/**
+ * @brief Each vertex information
+ */
+struct Vertex
+{
+ /**
+  * @brief Position of vertex
+  */
+ glm::vec3 pos;
+ /**
+  * @brief Color of vertex
+  */
+ glm::vec3 color;
+};
 
-			/**
-			 * \brief 
-			 */
-			class Mesh
-			{
-			public:
-				UNICORN_EXPORT Mesh();
-				UNICORN_EXPORT ~Mesh();
-				UNICORN_EXPORT std::uint32_t VerticesSize() const;
-                UNICORN_EXPORT std::uint32_t IndicesSize() const;
-				wink::signal<wink::slot<void()>> DataUpdated;
-				void SetDrawData(const std::vector<Vertex>& newVertices, const std::vector<uint16_t>& indices);
-                
-                std::vector<Vertex> m_vertices;
-                std::vector<uint16_t> m_indices;
-			private:
-				glm::mat4 m_model;
-			};
-		}
-	}
+/**
+* @brief Class for geometry holding.
+*/
+class Mesh
+{
+public:
+ UNICORN_EXPORT Mesh();
+ UNICORN_EXPORT ~Mesh();
+
+ /**
+ * @brief Updating vertices and indices geometry
+ * @param vertices vertexes data
+ * @param indices indices data
+ */
+ UNICORN_EXPORT void SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices);
+ /**
+  * @brief Returns mesh vertices
+  * @return Mesh vertices
+  */
+ UNICORN_EXPORT std::vector<Vertex> GetVertices() const;
+ /**
+ * @brief Returns mesh indices
+ * @return Mesh indices
+ */
+ UNICORN_EXPORT std::vector<uint16_t> GetIndices() const;
+
+ UNICORN_EXPORT void SetColor(const glm::vec3& newColor);
+
+ wink::signal<wink::slot<void()>> DataUpdated;
+
+ /**
+  * @brief Model matrix of this mesh for MVP transformations
+  */
+ glm::mat4 model;
+
+private:
+ std::vector<Vertex> m_vertices;
+ std::vector<uint16_t> m_indices;
+};
+}
+}
 }
 
 #endif // UNICORN_VIDEO_GEOMETRY_MESH_HPP

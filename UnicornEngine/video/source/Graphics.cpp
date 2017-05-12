@@ -20,7 +20,7 @@ namespace video
 {
 Graphics::Graphics(system::Manager& manager)
     : m_isInitialized(false)
-    , m_systemManager(manager)
+    , m_systemManager(manager), m_driver()
 {
 }
 
@@ -29,22 +29,32 @@ Graphics::~Graphics()
     Deinit();
 }
 
-bool Graphics::Init()
+bool Graphics::Init(const DriverType& whichDriver)
 {
-    if (m_isInitialized)
+    m_driver = whichDriver;
+
+    if ( m_isInitialized )
     {
         return false;
     }
 
     LOG_INFO("Graphics initialization started.");
 
-    if (!m_systemManager.IsVulkanSupported())
+    switch ( m_driver )
     {
-        LOG_ERROR("Vulkan not supported!");
-
-        return false;
+        case DriverType::Vulkan:
+            if ( !m_systemManager.IsVulkanSupported() )
+            {
+                LOG_ERROR("Vulkan not supported!");
+                return false;
+            }
+            if ( !vulkan::Context::Initialize(m_systemManager) )
+            {
+                LOG_ERROR("Vulkan context not initialized!");
+                return false;
+            }
+            break;
     }
-
     m_isInitialized = true;
 
     LOG_INFO("Graphics initialized correctly.");
@@ -60,7 +70,14 @@ void Graphics::Deinit()
 
     ProcessExpiredRenderers();
 
-    if (m_isInitialized)
+    switch ( m_driver )
+    {
+        case DriverType::Vulkan:
+            vulkan::Context::Deinitialize();
+            break;
+    }
+
+    if ( m_isInitialized )
     {
         LOG_INFO("Graphics shutdown correctly.");
     }
@@ -70,13 +87,12 @@ void Graphics::Deinit()
 
 bool Graphics::Render()
 {
-    if (m_isInitialized)
+    if ( m_isInitialized )
     {
-        for (RendererWindowPairSet::const_iterator cit = m_renderers.cbegin(); cit != m_renderers.cend();)
+        for ( RendererWindowPairSet::const_iterator cit = m_renderers.cbegin(); cit != m_renderers.cend();)
         {
-            if (!cit->second->ShouldClose() && cit->first->Render())
+            if ( !cit->second->ShouldClose() && cit->first->Render() )
             {
-                m_systemManager.PollEvents();
                 ++cit;
             }
             else
@@ -95,12 +111,12 @@ bool Graphics::Render()
 }
 
 system::Window* Graphics::SpawnWindow(int32_t width,
-    int32_t height,
-    const std::string& name,
-    system::Monitor* pMonitor,
-    system::Window* pSharedWindow)
+                                      int32_t height,
+                                      const std::string& name,
+                                      system::Monitor* pMonitor,
+                                      system::Window* pSharedWindow)
 {
-    
+
     //LOG_WARNING("Failed to initialize new renderer for window %s", name.c_str());
     //if (!m_systemManager.DestroyWindow(pWindow))    
 
@@ -128,16 +144,16 @@ system::Monitor* Graphics::GetWindowMonitor(const system::Window& window) const
 }
 
 void Graphics::SetWindowMonitor(const system::Window& window,
-    system::Monitor* pMonitor,
-    std::pair<int32_t, int32_t> position,
-    std::pair<int32_t, int32_t> size,
-    int32_t refreshRate) const
+                                system::Monitor* pMonitor,
+                                std::pair<int32_t, int32_t> position,
+                                std::pair<int32_t, int32_t> size,
+                                int32_t refreshRate) const
 {
     m_systemManager.SetWindowMonitor(window,
-        pMonitor,
-        position,
-        size,
-        refreshRate);
+                                     pMonitor,
+                                     position,
+                                     size,
+                                     refreshRate);
 }
 
 void Graphics::SetWindowCreationHint(system::WindowHint hint, int32_t value) const
@@ -147,13 +163,13 @@ void Graphics::SetWindowCreationHint(system::WindowHint hint, int32_t value) con
 
 void Graphics::ProcessExpiredRenderers()
 {
-    if (!m_expiredRenderers.empty())
+    if ( !m_expiredRenderers.empty() )
     {
-        for (RendererWindowPairSet::const_iterator cit = m_expiredRenderers.cbegin(); cit != m_expiredRenderers.cend(); ++cit)
+        for ( RendererWindowPairSet::const_iterator cit = m_expiredRenderers.cbegin(); cit != m_expiredRenderers.cend(); ++cit )
         {
             delete cit->first;
 
-            if (!m_systemManager.DestroyWindow(cit->second))
+            if ( !m_systemManager.DestroyWindow(cit->second) )
             {
                 LOG_WARNING("Failed to destroy window %s", cit->second->GetName().c_str());
 
@@ -165,16 +181,12 @@ void Graphics::ProcessExpiredRenderers()
     }
 }
 
-Renderer* Graphics::SpawnVulkanRenderer(system::Window* window) const
+Renderer* Graphics::SpawnVulkanRenderer(system::Window* window)
 {
     auto* renderer = new vulkan::Renderer(m_systemManager, window);
     renderer->Init();
+    BindWindowRenderer(window, renderer);
     return renderer;
-}
-
-bool Graphics::CreateVulkanContext() const
-{
-    return vulkan::Context::Initialize(m_systemManager);
 }
 }
 }

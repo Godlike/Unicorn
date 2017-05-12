@@ -9,25 +9,23 @@
 
 #include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/video/geometry/Mesh.hpp>
+#include <unicorn/video/geometry/MeshDescriptor.hpp>
 
-#include <vector>
 #include <memory>
 
 namespace unicorn
 {
-    namespace video
-    {
-        namespace geometry
-        {
-            class Triangle
-            {
-            public:
-                UNICORN_EXPORT Triangle(const std::vector<Vertex>& verts,  std::shared_ptr<Mesh> mesh);
-            private:
-                std::shared_ptr<Mesh> m_mesh;
-            };
-        }
-    }
+namespace video
+{
+namespace geometry
+{
+class Triangle : public MeshDescriptor
+{
+public:
+    UNICORN_EXPORT Triangle(std::shared_ptr<Mesh> mesh);
+};
+}
+}
 }
 
 #endif // UNICORN_VIDEO_GEOMETRY_TRIANGLE_HPP

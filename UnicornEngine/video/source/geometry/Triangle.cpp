@@ -8,19 +8,18 @@
 
 namespace unicorn
 {
-    namespace video
-    {
-        namespace geometry
-        {
-            Triangle::Triangle(const std::vector<Vertex>& verts, std::shared_ptr<Mesh> mesh) : m_mesh(mesh)
-            {
-                const std::vector<uint16_t> indices = {
-                    0, 1, 2
-                };
-                m_mesh->SetDrawData(verts, indices);
-            }
-
-        }
-    }
+namespace video
+{
+namespace geometry
+{
+Triangle::Triangle(std::shared_ptr<Mesh> mesh)
+    : MeshDescriptor(mesh)
+{
+    m_mesh->SetMeshData({ {{0.0f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}},
+                            {{0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}},
+                            {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}} },
+                            { 0, 1, 2 });
 }
-
+}
+}
+}

@@ -8,32 +8,44 @@
 
 namespace unicorn
 {
-	namespace video
-	{
-		namespace geometry
-		{
-			Mesh::Mesh()
-			{
-			}
+namespace video
+{
+namespace geometry
+{
+Mesh::Mesh()
+    : model(glm::mat4())
+{
+}
 
-			Mesh::~Mesh() {}
+Mesh::~Mesh()
+{
+}
 
-			std::uint32_t Mesh::VerticesSize() const
-			{
-				return static_cast<uint32_t>(m_vertices.size());
-			}
+void Mesh::SetColor(const glm::vec3& newColor)
+{
+    for ( auto& x : m_vertices )
+    {
+        x.color = newColor;
+    }
+    DataUpdated.emit();
+}
 
-			std::uint32_t Mesh::IndicesSize() const
-			{
-				return static_cast<uint32_t>(m_indices.size());
-			}
+void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices)
+{
+    m_vertices = vertices;
+    m_indices = indices;
+    DataUpdated.emit();
+}
 
-			void Mesh::SetDrawData(const std::vector<Vertex>& newVertices, const std::vector<uint16_t>& indices)
-			{				
-				m_vertices = newVertices;
-				m_indices = indices;
-				DataUpdated.emit();
-			}
-		}
-	}
+std::vector<Vertex> Mesh::GetVertices() const
+{
+    return m_vertices;
+}
+
+std::vector<uint16_t> Mesh::GetIndices() const
+{
+    return m_indices;
+}
+}
+}
 }

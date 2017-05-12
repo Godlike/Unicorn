@@ -22,11 +22,9 @@ class Context
 {
 public:
     static bool IsInitialized();
-    static Device* GetNewDevice();
-    static bool DestroyDevice(Device* device);
-    static void Destroy();
 
     static bool Initialize(system::Manager& manager);
+    static void Deinitialize();
     static vk::Instance GetVkInstance();
     static std::vector<const char*> validationLayers, deviceExtensions, instanceExtensions;
 
@@ -46,11 +44,11 @@ private:
 
     static vk::Instance m_vkInstance;
     static VkDebugReportCallbackEXT m_vulkanCallback;
-#ifdef NDEBUG
+    #ifdef NDEBUG
     static const bool s_enableValidationLayers = false;
-#else
+    #else
     static const bool s_enableValidationLayers = true;
-#endif
+    #endif
 };
 }
 }
