@@ -21,5 +21,6 @@ out gl_PerVertex {
 
 void main() {
     gl_Position = uvp_buffer.proj * uvp_buffer.view * um_buffer.model * vec4(pos, 1.0);
+    gl_Position.y = -gl_Position.y;
     fragColor = color;
 }

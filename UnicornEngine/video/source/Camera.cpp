@@ -12,7 +12,7 @@ namespace unicorn
 namespace video
 {
 Camera::Camera(glm::vec3 postion, glm::vec3 direction)
-    : m_aspect(0), m_camPosition(postion), m_upVector(glm::vec3(0.0f, 1.0f, 0.0f)), m_camDirection(direction), m_fov(45.0f), m_znear(0.1f), m_zfar(1000.0f)
+    : m_aspect(0), m_camPosition(postion), m_upVector(glm::vec3(0.0f, -1.0f, 0.0f)), m_camDirection(direction), m_fov(45.0f), m_znear(0.1f), m_zfar(1000.0f)
 {
     UpdateViewMatrix();
     UpdateProjectionMatrix();

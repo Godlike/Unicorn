@@ -11,7 +11,7 @@ namespace unicorn
 namespace video
 {
 CameraFpsController::CameraFpsController(std::shared_ptr<Camera> camera)
-    : CameraController(camera), m_lastX(0.0), m_lastY(0.0), m_yaw(0.0), m_pitch(0.0), sensitivity(0.1f), speed(10.0f), m_firstMouse(true)
+    : CameraController(camera), m_lastX(0.0), m_lastY(0.0), m_yaw(90.0), m_pitch(0.0), sensitivity(0.1f), speed(10.0f), m_firstMouse(true)
 {
 }
 
@@ -54,8 +54,8 @@ void CameraFpsController::UpdateMouseView(double posX, double posY)
         m_firstMouse = false;
     }
 
-    double xoffset = posX - m_lastX;
-    double yoffset = m_lastY - posY;
+    double xoffset = m_lastX - posX;
+    double yoffset = posY - m_lastY;
     m_lastX = posX;
     m_lastY = posY;
 
@@ -63,7 +63,7 @@ void CameraFpsController::UpdateMouseView(double posX, double posY)
     yoffset *= sensitivity;
 
     m_yaw += xoffset;
-    m_pitch += -yoffset;
+    m_pitch += yoffset;
 
     if ( m_pitch > 89.0f )
         m_pitch = 89.0f;
@@ -91,6 +91,10 @@ void CameraFpsController::Scroll(double yoffset)
     {
         m_camera->SetFov(45.0f);
     }
+}
+void CameraFpsController::SetCenterPosition(double posX, double posY)
+{
+    
 }
 }
 }
