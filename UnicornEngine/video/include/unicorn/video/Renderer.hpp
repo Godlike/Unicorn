@@ -60,8 +60,8 @@ protected:
     //! Background filling color
     std::array<float, 4> m_backgroundColor;
     // Callbacks for window events
-    void OnWindowDestroyed(system::Window* pWindow);
-    void OnWindowSizeChanged(system::Window* pWindow, std::pair<std::int32_t, std::int32_t> size);
+    void OnWindowDestroyed(system::Window* pWindow) = delete;
+    void OnWindowSizeChanged(system::Window* pWindow, std::pair<std::int32_t, std::int32_t> size) = delete;
 };
 }
 }

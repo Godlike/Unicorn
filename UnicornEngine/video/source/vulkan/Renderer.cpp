@@ -17,7 +17,6 @@
 
 #include <set>
 #include <algorithm>
-#include <array>
 #include <tuple>
 #include <chrono>
 
@@ -47,7 +46,7 @@ Renderer::~Renderer()
         mesh->ReallocatedOnGpu.disconnect(this, &vulkan::Renderer::OnMeshReallocated);
     }
 
-    Deinit();
+    Renderer::Deinit();
 }
 
 bool Renderer::Init()
@@ -95,6 +94,8 @@ void Renderer::Deinit()
     FreeCommandPool();
     FreeFrameBuffers();
     FreeGraphicsPipeline();
+    FreeDescriptorPoolAndLayouts();
+    FreeUniforms();
     FreeRenderPass();
     FreeImageViews();
     FreeSwapChain();
@@ -109,7 +110,7 @@ void Renderer::Deinit()
     m_isInitialized = false;
 }
 
-QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
+QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device) const
 {
     QueueFamilyIndices indices;
     std::vector<vk::QueueFamilyProperties> queueFamilies = device.getQueueFamilyProperties();
@@ -140,7 +141,7 @@ QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
     return indices;
 }
 
-bool Renderer::FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features, vk::Format& returnFormat)
+bool Renderer::FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features, vk::Format& returnFormat) const
 {
     for ( auto format : candidates )
     {
@@ -288,7 +289,8 @@ bool Renderer::RecreateSwapChain()
         CreateImageViews() &&
         CreateRenderPass() &&
         CreateGraphicsPipeline() &&
-        CreateFramebuffers() )
+        CreateFramebuffers() &&
+        CreateCommandBuffers())
     {
         return true;
     }
@@ -297,9 +299,11 @@ bool Renderer::RecreateSwapChain()
 
 void Renderer::OnMeshReallocated(VkMesh* vkmesh)
 {    
+    m_uniformModel.Unmap();
     m_uniformModel.Destroy();
     size_t bufferSize = m_vkMeshes.size() * m_dynamicAlignment;
     m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, bufferSize);
+    m_uniformModel.Map();
     if ( m_uniformModelsData.model )
     {
         utility::AlignedFree(m_uniformModelsData.model);
@@ -426,6 +430,28 @@ void Renderer::FreeSemaphores()
     }
 }
 
+void Renderer::FreeUniforms()
+{
+    m_uniformMvp.Destroy();
+    m_uniformModel.Destroy();
+}
+
+void Renderer::FreeDescriptorPoolAndLayouts()
+{
+    if(m_descriptorPool)
+    {
+        m_vkLogicalDevice.destroyDescriptorPool(m_descriptorPool);
+    }
+    if( m_descriptorSetLayout )
+    {
+        m_vkLogicalDevice.destroyDescriptorSetLayout(m_descriptorSetLayout);
+    }
+    if( m_pipelineLayout )
+    {
+        m_vkLogicalDevice.destroyPipelineLayout(m_pipelineLayout);
+    }
+}
+
 bool Renderer::PrepareUniformBuffers()
 {
     size_t uboAlignment = m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment;
@@ -435,7 +461,8 @@ bool Renderer::PrepareUniformBuffers()
     m_uniformCameraData.view = m_camera->GetView();
 
     m_uniformMvp.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, sizeof(UniformCameraData));
-    m_uniformMvp.Write(&m_uniformCameraData);
+    m_uniformMvp.Map();
+    m_uniformMvp.MappedWrite(&m_uniformCameraData);
 
     m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, m_dynamicAlignment);
     return true;
@@ -469,7 +496,7 @@ void Renderer::UpdateUniformBuffer()
 {
     m_uniformCameraData.proj = m_camera->GetProjection();
     m_uniformCameraData.view = m_camera->GetView();
-    m_uniformMvp.Write(&m_uniformCameraData);
+    m_uniformMvp.MappedWrite(&m_uniformCameraData);
 }
 
 void Renderer::UpdateDynamicUniformBuffer()
@@ -479,12 +506,12 @@ void Renderer::UpdateDynamicUniformBuffer()
         glm::mat4* modelMat = reinterpret_cast<glm::mat4*>((reinterpret_cast<uint64_t>(m_uniformModelsData.model) + (i * m_dynamicAlignment)));
         *modelMat = m_vkMeshes.at(i)->GetModel();
     }
-    m_uniformModel.Write(m_uniformModelsData.model);
+    m_uniformModel.MappedWrite(m_uniformModelsData.model);
 
-    vk::MappedMemoryRange mappedMemoryRange;
+    /*vk::MappedMemoryRange mappedMemoryRange;
     mappedMemoryRange.memory = m_uniformModel.GetMemory();
     mappedMemoryRange.size = m_uniformModel.GetSize();
-    m_vkLogicalDevice.flushMappedMemoryRanges(1, &mappedMemoryRange);
+    m_vkLogicalDevice.flushMappedMemoryRanges(1, &mappedMemoryRange);*/
 }
 
 bool Renderer::PickPhysicalDevice()

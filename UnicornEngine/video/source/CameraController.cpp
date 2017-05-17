@@ -14,5 +14,10 @@ CameraController::CameraController(std::shared_ptr<Camera> camera)
     : m_camera(camera)
 {
 }
+
+void CameraController::SetCameraProjection(ProjectionType newType)
+{
+    m_camera->SetProjection(newType);
+}
 }
 }

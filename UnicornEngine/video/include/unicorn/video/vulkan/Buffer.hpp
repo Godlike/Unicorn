@@ -22,8 +22,11 @@ public:
     ~Buffer();
 
     bool Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags memoryPropertyFlags, size_t size);
-    void Destroy() const;
+    void Destroy();
     void Write(const void* pData) const;
+    void MappedWrite(const void* pData) const;
+    void Map();
+    void Unmap();
     void CopyToBuffer(vk::CommandPool pool, vk::Queue queue, const vulkan::Buffer& dstBuffer, vk::DeviceSize size);
     vk::Buffer GetVkBuffer() const;
     size_t GetSize() const;
@@ -39,6 +42,7 @@ private:
     size_t m_size;
     vk::Buffer m_buffer;
     vk::DeviceMemory m_memory;
+    void* m_mappedMemory;
 };
 }
 }

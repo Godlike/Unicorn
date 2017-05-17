@@ -29,30 +29,31 @@ std::vector<unicorn::video::geometry::Cube*> cubes;
 
 void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
 {
+    float delta = static_cast< float >( timer->ElapsedMilliseconds().count() ) / 1000;
+    for ( auto & mesh : cubes )
+    {
+        mesh->Rotate(10 * delta, { 1, 1, 0 });
+    }
     timer->Reset();
 }
 
 void onMouseButton(unicorn::system::Window* pWindow, unicorn::system::input::MouseButton button, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask)
 {
-    if(button == unicorn::system::input::MouseButton::MouseLeft)
+    if ( button == unicorn::system::input::MouseButton::MouseLeft )
     {
-		auto kek = new unicorn::video::geometry::Cube(vkRenderer0->SpawnMesh());
-		kek->Move({ std::rand() % 20 - 10, std::rand() % 20 - 10, std::rand() % 20 - 10});
-		kek->SetColor({ (float)(std::rand() % 255) / 255, (float)(std::rand() % 255) / 255, (float)(std::rand() % 255) / 255 });
-		cubes.push_back(kek);
+        auto kek = new unicorn::video::geometry::Cube(vkRenderer0->SpawnMesh());
+        kek->Move({ std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 });
+        kek->SetColor({ ( float ) ( std::rand() % 255 ) / 255, ( float ) ( std::rand() % 255 ) / 255, ( float ) ( std::rand() % 255 ) / 255 });
+        cubes.push_back(kek);
+    }
+    if ( button == unicorn::system::input::MouseButton::MouseRight )
+    {
+        pCameraController->SetCameraProjection(unicorn::video::ProjectionType::Orthographic);
     }
 }
 
 void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double, double> pos)
 {
-    static bool herpderp = true;
-    
-    if (herpderp)
-    {
-        pCameraController->SetCenterPosition(pos.first, pos.second);
-        herpderp = false;
-    }
-
     pCameraController->UpdateMouseView(pos.first, pos.second);
 }
 
@@ -124,7 +125,6 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
             position.second -= delta;
             break;
         }
-
         case Key::Down:
         {
             position.second += delta;
@@ -204,6 +204,7 @@ int main(int argc, char* argv[])
         unicorn::video::geometry::Triangle triangle1(vkRenderer0->SpawnMesh());
         triangle1.SetColor(unicorn::video::Color::Red);
         triangle1.Move({ -2.0f, 0.0f, 0.0f });
+        triangle1.Scale({ 0.5, 0.5, 0.5 });
 
         unicorn::video::geometry::Triangle triangle2(vkRenderer0->SpawnMesh());
         triangle2.SetColor(unicorn::video::Color::Green);
