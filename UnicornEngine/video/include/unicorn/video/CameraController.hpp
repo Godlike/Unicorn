@@ -22,7 +22,7 @@ class CameraController
 {
 public:
     UNICORN_EXPORT CameraController(std::shared_ptr<Camera> camera);
-
+    UNICORN_EXPORT void SetCameraProjection(ProjectionType newType);
 protected:
     std::shared_ptr<Camera> m_camera;
 };

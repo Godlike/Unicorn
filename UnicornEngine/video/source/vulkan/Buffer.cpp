@@ -14,7 +14,7 @@ namespace video
 namespace vulkan
 {
 Buffer::Buffer()
-    : m_size(0)
+    : m_size(0), m_mappedMemory(nullptr)
 {
 }
 
@@ -88,8 +88,9 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
     return true;
 }
 
-void Buffer::Destroy() const
+void Buffer::Destroy()
 {
+    Unmap();
     if ( m_memory )
     {
         m_device.freeMemory(m_memory);
@@ -97,6 +98,25 @@ void Buffer::Destroy() const
     if ( m_buffer )
     {
         m_device.destroyBuffer(m_buffer);
+    }
+}
+
+void Buffer::MappedWrite(const void* pData) const
+{
+    memcpy(m_mappedMemory, pData, m_size);
+}
+
+void Buffer::Map()
+{
+    m_device.mapMemory(m_memory, 0, m_size, vk::MemoryMapFlagBits(), &m_mappedMemory);
+}
+
+void Buffer::Unmap()
+{
+    if ( m_mappedMemory )
+    {
+        m_device.unmapMemory(m_memory);
+        m_mappedMemory = nullptr;
     }
 }
 

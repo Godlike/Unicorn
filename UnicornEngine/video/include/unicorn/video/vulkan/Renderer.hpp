@@ -120,11 +120,14 @@ private:
     void FreeCommandPool();
     void FreeCommandBuffers();
     void FreeSemaphores();
+    void FreeUniforms();
+    void FreeDescriptorPoolAndLayouts();
+
+
     bool PrepareUniformBuffers();
     void ResizeDynamicUniformBuffer();
     void UpdateUniformBuffer();
     void UpdateDynamicUniformBuffer();
-
     bool PickPhysicalDevice();
     bool CreateLogicalDevice();
     bool CreateSurface();
@@ -142,8 +145,8 @@ private:
     bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device);
     bool Frame();
     void OnMeshReallocated(VkMesh*);
-    QueueFamilyIndices FindQueueFamilies(const vk::PhysicalDevice& device);
-    bool FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features, vk::Format& returnFormat);
+    QueueFamilyIndices FindQueueFamilies(const vk::PhysicalDevice& device) const;
+    bool FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features, vk::Format& returnFormat) const;
     bool FindDepthFormat(vk::Format& desiredFormat);
     bool HasStencilComponent(vk::Format format) const;
     bool QuerySwapChainSupport(SwapChainSupportDetails& details, const vk::PhysicalDevice& device);
