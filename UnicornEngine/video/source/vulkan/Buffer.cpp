@@ -20,11 +20,12 @@ Buffer::Buffer()
 
 Buffer::~Buffer()
 {
+    Destroy();
 }
 
 bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags memoryPropertyFlags, size_t size)
 {
-    if ( size == 0 )
+    if (size == 0)
     {
         LOG_ERROR("Can't allocate zero Vulkan buffer on gpu!");
         return false;
@@ -41,7 +42,7 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
     bufferInfo.setSharingMode(vk::SharingMode::eExclusive);
 
     vk::Result result = m_device.createBuffer(&bufferInfo, nullptr, &m_buffer);
-    if ( result != vk::Result::eSuccess )
+    if (result != vk::Result::eSuccess)
     {
         return false;
     }
@@ -54,9 +55,9 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
 
     uint32_t memoryTypeBits = req.memoryTypeBits;
     uint32_t memoryTypeIndex = 0;
-    for ( unsigned int i = 0; i < ( sizeof(memoryTypeBits) * 8 ); ++i )
+    for (unsigned int i = 0; i < (sizeof(memoryTypeBits) * 8); ++i)
     {
-        if ( ( memoryTypeBits >> i ) & 1 )
+        if ((memoryTypeBits >> i) & 1)
         {
             if ( memoryProperties.memoryTypes[i].propertyFlags & vk::MemoryPropertyFlagBits::eHostVisible )
             {
@@ -71,7 +72,7 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
     memoryInfo.setAllocationSize(req.size);
 
     result = m_device.allocateMemory(&memoryInfo, nullptr, &m_memory);
-    if ( result != vk::Result::eSuccess )
+    if (result != vk::Result::eSuccess)
     {
         return false;
     }
@@ -83,24 +84,23 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
     #ifdef VKCPP_ENHANCED_MODE
     m_device.bindBufferMemory(m_buffer, m_memory, 0);
     #else
-    result = m_device.bindBufferMemory(m_buffer, m_memory, 0);
+    m_device.bindBufferMemory(m_buffer, m_memory, 0);
     #endif
     return true;
 }
 
 void Buffer::Destroy()
 {
-    if(m_mappedMemory)
-    {
-        Unmap();        
-    }
-    if ( m_memory )
+    Unmap();
+    if (m_memory)
     {
         m_device.freeMemory(m_memory);
+        m_memory = nullptr;
     }
-    if ( m_buffer )
+    if (m_buffer)
     {
         m_device.destroyBuffer(m_buffer);
+        m_buffer = nullptr;
     }
 }
 
@@ -116,25 +116,11 @@ void Buffer::Map()
 
 void Buffer::Unmap()
 {
-    if ( m_mappedMemory )
+    if (m_mappedMemory)
     {
         m_device.unmapMemory(m_memory);
         m_mappedMemory = nullptr;
     }
-}
-
-void Buffer::MapWriteUnmap(const void* pData) const
-{    
-    void* mappedMemory = nullptr;
-
-    #ifdef VKCPP_ENHANCED_MODE
-    mappedMemory = m_device.mapMemory(m_memory, 0, m_size, vk::MemoryMapFlagBits());
-    #else
-    m_device.mapMemory(m_memory, 0, m_size, vk::MemoryMapFlagBits(), &mappedMemory);
-    #endif
-    memcpy(mappedMemory, pData, m_size);
-
-    m_device.unmapMemory(m_memory);
 }
 
 void Buffer::CopyToBuffer(vk::CommandPool pool, vk::Queue queue, const vulkan::Buffer& dstBuffer, vk::DeviceSize size)
@@ -164,14 +150,9 @@ void Buffer::CopyToBuffer(vk::CommandPool pool, vk::Queue queue, const vulkan::B
     submitInfo.commandBufferCount = 1;
     submitInfo.pCommandBuffers = &commandBuffer;
 
-    queue.submit(1, &submitInfo, nullptr); // TODO: paralelize this, move to another queue
+    queue.submit(1, &submitInfo, nullptr); // TODO: parallelize this, move to another queue
     queue.waitIdle();
     m_device.freeCommandBuffers(pool, 1, &commandBuffer);
-}
-
-vk::Buffer Buffer::GetVkBuffer() const
-{
-    return m_buffer;
 }
 
 size_t Buffer::GetSize() const
@@ -190,6 +171,11 @@ vk::DeviceMemory Buffer::GetMemory() const
 }
 
 vk::Buffer& Buffer::GetVkBuffer()
+{
+    return m_buffer;
+}
+
+vk::Buffer Buffer::GetVkBuffer() const
 {
     return m_buffer;
 }

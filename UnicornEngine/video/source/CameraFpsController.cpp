@@ -11,18 +11,18 @@ namespace unicorn
 namespace video
 {
 CameraFpsController::CameraFpsController(std::shared_ptr<Camera> camera)
-    : CameraController(camera), m_lastX(0.0), m_lastY(0.0), m_yaw(90.0), m_pitch(0.0), sensitivity(0.1f), speed(10.0f), m_firstMouse(true)
+    : CameraController(camera), sensitivity(0.1f), speed(100.0f), m_lastX(0.0), m_lastY(0.0), m_yaw(90.0), m_pitch(0.0), m_firstMouse(true)
 {
 }
 
 void CameraFpsController::MoveUp(float deltaTime)
 {
-    m_camera->Translate({ 0.0f, -deltaTime * speed, 0.0f });
+    m_camera->Translate({0.0f, -deltaTime * speed, 0.0f});
 }
 
 void CameraFpsController::MoveDown(float deltaTime)
 {
-    m_camera->Translate({ 0.0f, speed * deltaTime, 0.0 });
+    m_camera->Translate({0.0f, speed * deltaTime, 0.0});
 }
 
 void CameraFpsController::MoveLeft(float deltaTime)
@@ -47,7 +47,7 @@ void CameraFpsController::MoveBackward(float deltaTime)
 
 void CameraFpsController::UpdateMouseView(double posX, double posY)
 {
-    if ( m_firstMouse )
+    if (m_firstMouse)
     {
         m_lastX = posX;
         m_lastY = posY;
@@ -65,36 +65,36 @@ void CameraFpsController::UpdateMouseView(double posX, double posY)
     m_yaw += xoffset;
     m_pitch += yoffset;
 
-    if ( m_pitch > 89.0f )
+    if (m_pitch > 89.0f)
         m_pitch = 89.0f;
-    if ( m_pitch < -89.0f )
+    if (m_pitch < -89.0f)
         m_pitch = -89.0f;
 
     glm::vec3 front;
-    front.x = static_cast< float >( cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)) );
-    front.y = static_cast< float >( sin(glm::radians(m_pitch)) );
-    front.z = static_cast< float >( sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)) );
+    front.x = static_cast<float>(cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
+    front.y = static_cast<float>(sin(glm::radians(m_pitch)));
+    front.z = static_cast<float>(sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
     m_camera->SetDirection(glm::normalize(front));
 }
 
 void CameraFpsController::Scroll(double yoffset)
 {
-    if ( m_camera->GetFov() >= 44.0f && m_camera->GetFov() <= 45.0f )
+    if (m_camera->GetFov() >= 44.0f && m_camera->GetFov() <= 45.0f)
     {
         m_camera->ChangeFov(-yoffset);
     }
-    if ( m_camera->GetFov() <= 44.0f )
+    if (m_camera->GetFov() <= 44.0f)
     {
         m_camera->SetFov(44.0f);
     }
-    if ( m_camera->GetFov() >= 45.0f )
+    if (m_camera->GetFov() >= 45.0f)
     {
         m_camera->SetFov(45.0f);
     }
 }
+
 void CameraFpsController::SetCenterPosition(double posX, double posY)
 {
-    
 }
 }
 }

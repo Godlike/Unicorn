@@ -15,23 +15,54 @@ namespace video
 {
 namespace vulkan
 {
-
+/**
+ * @brief Wrapper for raw command buffers of Vulkan API
+ */
 class CommandBuffers
 {
 public:
-	CommandBuffers();
-	~CommandBuffers();
+    /**
+     * @brief Default constructor
+     * 
+     */
+    CommandBuffers();
+    /**
+     * @brief Default destructor which calls @sa Destroy()
+     */
+    ~CommandBuffers();
 
-	vk::Result Create(vk::Device device, size_t count);
-	void Destroy() const;
+    /**
+     * @brief Creating new command buffers
+     * @param device Which device you want use to allocation process
+     * @param count Command buffer size
+     * @return true if was allocated successfully and false if not
+     */
+    vk::Result Create(vk::Device device, size_t count);
+    /**
+     * @brief Destroys all data
+     */
+    void Destroy() const;
 
-	vk::CommandPool& GetVkCommandPool();
-	vk::CommandBuffer& GetVkCommandBuffer(size_t index);
-	const std::vector<vk::CommandBuffer>& GetVkCommandBuffers();
+    /**
+     * @brief Getter for passed command pool
+     * @return reference to vk::CommandPool
+     */
+    vk::CommandPool& GetVkCommandPool();
+    /**
+     * @brief Getter for command buffer
+     * @param index Index of needed command buffer
+     * @return Reference for needed command buffer
+     */
+    vk::CommandBuffer& GetVkCommandBuffer(size_t index);
+    /**
+     * @brief Getter for all command buffers
+     * @return vector of all command buffer
+     */
+    const std::vector<vk::CommandBuffer>& GetVkCommandBuffers();
 private:
-	vk::Device m_device;
-	vk::CommandPool m_cmdPool;
-	std::vector<vk::CommandBuffer> m_cmdBuffers;
+    vk::Device m_device;
+    vk::CommandPool m_cmdPool;
+    std::vector<vk::CommandBuffer> m_cmdBuffers;
 };
 }
 }

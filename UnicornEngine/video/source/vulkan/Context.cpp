@@ -16,215 +16,210 @@ namespace vulkan
 {
 vk::Instance Context::m_vkInstance = nullptr;
 VkDebugReportCallbackEXT Context::m_vulkanCallback = NULL;
-std::vector<const char*> Context::validationLayers = { "VK_LAYER_LUNARG_standard_validation" };
-std::vector<const char*> Context::deviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
-std::vector<const char*> Context::instanceExtensions = { };
+std::vector<const char*> Context::validationLayers = {"VK_LAYER_LUNARG_standard_validation"};
+std::vector<const char*> Context::deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+std::vector<const char*> Context::instanceExtensions = {};
 
 static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
-													  VkDebugReportObjectTypeEXT objType,
-													  uint64_t obj,
-													  size_t location,
-													  int32_t code,
-													  const char* layerPrefix,
-													  const char* msg,
-													  void* userData)
+                                                      VkDebugReportObjectTypeEXT /*objType*/,
+                                                      uint64_t /*obj*/,
+                                                      size_t /*location*/,
+                                                      int32_t /*code*/,
+                                                      const char* /*layerPrefix*/,
+                                                      const char* msg,
+                                                      void* /*userData*/)
 {
-	if ( flags & VK_DEBUG_REPORT_ERROR_BIT_EXT )
-	{
-		LOG_ERROR("VULKAN LAYER ERROR: %s", msg);
-	}
-	if ( flags & VK_DEBUG_REPORT_WARNING_BIT_EXT )
-	{
-		LOG_WARNING("VULKAN LAYER WARNING: %s", msg);
-	}
-	if ( flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT )
-	{
-		LOG_INFO("VULKAN LAYER PERFORMANCE: %s", msg);
-	}
-	if ( flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT )
-	{
-		LOG_INFO("VULKAN LAYER INFO: %s", msg);
-	}
-	if ( flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT )
-	{
-		LOG_INFO("VULKAN LAYER DEBUG: %s", msg);
-	}
-	return VK_FALSE;
+    if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
+    {
+        LOG_ERROR("VULKAN LAYER ERROR: %s", msg);
+    }
+    if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
+    {
+        LOG_WARNING("VULKAN LAYER WARNING: %s", msg);
+    }
+    if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
+    {
+        LOG_INFO("VULKAN LAYER PERFORMANCE: %s", msg);
+    }
+    if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
+    {
+        LOG_INFO("VULKAN LAYER INFO: %s", msg);
+    }
+    if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
+    {
+        LOG_INFO("VULKAN LAYER DEBUG: %s", msg);
+    }
+    return VK_FALSE;
 }
 
 bool Context::Initialize(system::Manager& manager)
 {
-	if ( s_enableValidationLayers && !CheckValidationLayerSupport() )
-	{
-		LOG_ERROR("Vulkan validation layers requested, but not available!");
-		return false;
-	}
+    if (s_enableValidationLayers && !CheckValidationLayerSupport())
+    {
+        LOG_ERROR("Vulkan validation layers requested, but not available!");
+        return false;
+    }
 
-	const Settings& settings = Settings::Instance();
+    const Settings& settings = Settings::Instance();
 
-	vk::ApplicationInfo appInfo(settings.GetApplicationName().c_str(),
-								VK_MAKE_VERSION(1, 0, 0),
-								settings.GetUnicornEngineName().c_str(),
-								VK_MAKE_VERSION(0, 1, 0),
-								VK_API_VERSION_1_0);
-	vk::InstanceCreateInfo createInfo = {};
-	createInfo.pApplicationInfo = &appInfo;
+    vk::ApplicationInfo appInfo(settings.GetApplicationName().c_str(),
+                                VK_MAKE_VERSION(1, 0, 0),
+                                settings.GetUnicornEngineName().c_str(),
+                                VK_MAKE_VERSION(0, 1, 0),
+                                VK_API_VERSION_1_0);
+    vk::InstanceCreateInfo createInfo = {};
+    createInfo.pApplicationInfo = &appInfo;
 
-	//TODO: Extensions not working.
-	instanceExtensions = FillRequiredExtensions(manager);
-	//m_deviceExtensions.insert( m_deviceExtensions.end(), requiredExtensions.begin(), requiredExtensions.end() );
+    instanceExtensions = FillRequiredExtensions(manager);
 
-	createInfo.enabledExtensionCount = static_cast< uint32_t >( instanceExtensions.size() );
-	createInfo.ppEnabledExtensionNames = instanceExtensions.data();
+    createInfo.enabledExtensionCount = static_cast<uint32_t>(instanceExtensions.size());
+    createInfo.ppEnabledExtensionNames = instanceExtensions.data();
 
-	if ( s_enableValidationLayers )
-	{
-		createInfo.enabledLayerCount = static_cast< uint32_t >( validationLayers.size() );
-		createInfo.ppEnabledLayerNames = validationLayers.data();
-	}
-	else
-	{
-		createInfo.enabledLayerCount = 0;
-	}
+    if (s_enableValidationLayers)
+    {
+        createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+        createInfo.ppEnabledLayerNames = validationLayers.data();
+    }
+    else
+    {
+        createInfo.enabledLayerCount = 0;
+    }
 
-	if ( vk::createInstance(&createInfo, nullptr, &m_vkInstance) != vk::Result::eSuccess )
-	{
-		LOG_ERROR("Failed to create instance!");
-		return false;
-	}
-	SetupDebugCallback();
-	return true;
+    if (vk::createInstance(&createInfo, nullptr, &m_vkInstance) != vk::Result::eSuccess)
+    {
+        LOG_ERROR("Failed to create instance!");
+        return false;
+    }
+    SetupDebugCallback();
+    return true;
 }
 
 bool Context::CheckValidationLayerSupport()
 {
-	vk::Result result;
-	std::vector<vk::LayerProperties> availableLayers;
-	std::tie(result, availableLayers) = vk::enumerateInstanceLayerProperties();
-	if ( result != vk::Result::eSuccess )
-	{
-		LOG_ERROR("Can't enumerate instance layer properties!");
-		return false;
-	}
-	for ( const char* layerName : validationLayers )
-	{
-		bool layerFound = false;
+    vk::Result result;
+    std::vector<vk::LayerProperties> availableLayers;
+    std::tie(result, availableLayers) = vk::enumerateInstanceLayerProperties();
+    if (result != vk::Result::eSuccess)
+    {
+        LOG_ERROR("Can't enumerate instance layer properties!");
+        return false;
+    }
+    for (const char* layerName : validationLayers)
+    {
+        bool layerFound = false;
 
-		for ( const auto& layerProperties : availableLayers )
-		{
-			if ( strcmp(layerName, layerProperties.layerName) == 0 )
-			{
-				layerFound = true;
-				break;
-			}
-		}
+        for (const auto& layerProperties : availableLayers)
+        {
+            if (strcmp(layerName, layerProperties.layerName) == 0)
+            {
+                layerFound = true;
+                break;
+            }
+        }
 
-		if ( !layerFound )
-		{
-			LOG_ERROR("Can't find required Vulkan layers: ");
+        if (!layerFound)
+        {
+            LOG_ERROR("Can't find required Vulkan layers: ");
 
-			for ( auto& requiredLayer : validationLayers )
-			{
-				LOG_ERROR("%s", requiredLayer);
-			}
+            for (auto& requiredLayer : validationLayers)
+            {
+                LOG_ERROR("%s", requiredLayer);
+            }
 
-			return false;
-		}
-	}
+            return false;
+        }
+    }
 
-	LOG_INFO("Picked next Vulkan layers :");
+    LOG_INFO("Picked next Vulkan layers :");
 
-	for ( auto& layer : validationLayers )
-	{
-		LOG_INFO("%s", layer);
-	}
+    for (auto& layer : validationLayers)
+    {
+        LOG_INFO("%s", layer);
+    }
 
-	return true;
+    return true;
 }
 
 void Context::Deinitialize()
 {
-	FreeDebugCallback();
-	if ( IsInitialized() )
-	{
-		m_vkInstance.destroy();
-		m_vkInstance = nullptr;
-	}
+    FreeDebugCallback();
+    if (IsInitialized())
+    {
+        m_vkInstance.destroy();
+        m_vkInstance = nullptr;
+    }
 }
 
 std::vector<const char*> Context::FillRequiredExtensions(system::Manager& manager)
 {
-	std::vector<const char*> extensions(manager.GetRequiredVulkanExtensions());
+    std::vector<const char*> extensions(manager.GetRequiredVulkanExtensions());
 
-	if ( s_enableValidationLayers )
-	{
-		extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
-	}
+    if (s_enableValidationLayers)
+    {
+        extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+    }
 
-	return extensions;
+    return extensions;
 }
 
 vk::Instance Context::GetVkInstance()
 {
-	return m_vkInstance;
+    return m_vkInstance;
 }
 
 void Context::SetupDebugCallback()
 {
-	if ( !s_enableValidationLayers )
-	{
-		return;
-	}
+    if (!s_enableValidationLayers)
+    {
+        return;
+    }
 
-	VkDebugReportCallbackCreateInfoEXT createInfo = {};
-	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
-	createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_INFORMATION_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
-	createInfo.pfnCallback = DebugCallback;
-	CreateDebugReportCallbackEXT(&createInfo);
+    VkDebugReportCallbackCreateInfoEXT createInfo = {};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT;
+    createInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_INFORMATION_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
+    createInfo.pfnCallback = DebugCallback;
+    CreateDebugReportCallbackEXT(&createInfo);
 }
 
 void Context::DestroyDebugReportCallbackEXT()
 {
-	auto func = reinterpret_cast< PFN_vkDestroyDebugReportCallbackEXT >(
-		vkGetInstanceProcAddr(m_vkInstance, "vkDestroyDebugReportCallbackEXT") );
+    auto func = reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(
+        vkGetInstanceProcAddr(m_vkInstance, "vkDestroyDebugReportCallbackEXT"));
 
-	if ( func != nullptr )
-	{
-		func(m_vkInstance, m_vulkanCallback, nullptr);
-	}
+    if (func != nullptr)
+    {
+        func(m_vkInstance, m_vulkanCallback, nullptr);
+    }
 }
 
-VkResult Context::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT *pCreateInfo)
+VkResult Context::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo)
 {
-	auto func = reinterpret_cast< PFN_vkCreateDebugReportCallbackEXT >(
-		vkGetInstanceProcAddr(m_vkInstance, "vkCreateDebugReportCallbackEXT") );
+    auto func = reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(
+        vkGetInstanceProcAddr(m_vkInstance, "vkCreateDebugReportCallbackEXT"));
 
-	if ( func != nullptr )
-	{
-		return func(m_vkInstance, pCreateInfo, nullptr, &m_vulkanCallback);
-	}
-	else
-	{
-		LOG_ERROR("Can't setup debug callback'");
-		return VK_ERROR_EXTENSION_NOT_PRESENT;
-	}
+    if (func != nullptr)
+    {
+        return func(m_vkInstance, pCreateInfo, nullptr, &m_vulkanCallback);
+    }
+    else
+    {
+        LOG_ERROR("Can't setup debug callback'");
+        return VK_ERROR_EXTENSION_NOT_PRESENT;
+    }
 }
-
-
 
 bool Context::IsInitialized()
 {
-	return m_vkInstance;
+    return m_vkInstance;
 }
 
 void Context::FreeDebugCallback()
 {
-	if ( m_vulkanCallback != NULL )
-	{
-		DestroyDebugReportCallbackEXT();
-	}
+    if (m_vulkanCallback != NULL)
+    {
+        DestroyDebugReportCallbackEXT();
+    }
 }
-
 }
 }
 }

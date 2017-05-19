@@ -14,6 +14,9 @@ namespace unicorn
 {
 namespace video
 {
+/**
+ * @brief Simple template for quick prototyping game - FPS controller.
+ */
 class CameraFpsController : public CameraController
 {
 public:

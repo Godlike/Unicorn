@@ -15,7 +15,7 @@ namespace unicorn
 namespace video
 {
 /**
- * \brief Class with some predefined colors
+ * @brief Class with some predefined colors
  */
 struct Color
 {

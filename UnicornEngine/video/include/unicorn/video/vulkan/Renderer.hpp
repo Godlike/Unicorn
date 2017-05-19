@@ -23,17 +23,24 @@ namespace video
 {
 namespace vulkan
 {
+/**
+ * @brief Struct for easy check of required queue family indices
+ */
 struct QueueFamilyIndices
 {
-    int graphicsFamily = -1;
-    int presentFamily = -1;
+    int32_t graphicsFamily = -1;
+    int32_t presentFamily = -1;
 
-    bool IsComplete() const
-    {
-        return graphicsFamily >= 0 && presentFamily >= 0;
-    }
+    /**
+     * @brief Check if all needed family indices are exists.
+     * @return true if graphics and present families exists and false if not
+     */
+    bool IsComplete() const;
 };
 
+/**
+ * @brief Details of swapchain for creating it.
+ */
 struct SwapChainSupportDetails
 {
     vk::SurfaceCapabilitiesKHR capabilities;
@@ -41,25 +48,43 @@ struct SwapChainSupportDetails
     std::vector<vk::PresentModeKHR> presentModes;
 };
 
+/**
+ * @brief Struct for easy filling and sending to shader
+ */
 struct UniformCameraData
 {
     glm::mat4 view;
     glm::mat4 proj;
 };
 
+/**
+ * @brief Struct which holds all models uniform data for sending to shader
+ */
 struct UniformAllMeshesData
 {
-    glm::mat4 *model = nullptr;
+    glm::mat4* model = nullptr;
 };
 
 class ShaderProgram;
 class UniformObject;
 class Image;
+
+/**
+ * @brief Vulkan renderer backend
+ */
 class Renderer : public video::Renderer
 {
 public:
+    /**
+     * @brief Basic constructor
+     * @param manager To get Vulkan OS depend extensions
+     * @param window Which we will render to
+     */
     Renderer(system::Manager& manager, system::Window* window);
 
+    /**
+     * @brief Destructor which calls @sa Deinit
+     */
     ~Renderer() override;
 
     Renderer(const Renderer& other) = delete;
@@ -72,7 +97,6 @@ public:
     bool Render() override;
     bool RecreateSwapChain();
     std::shared_ptr<geometry::Mesh> SpawnMesh() override;
-
 private:
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;
@@ -122,7 +146,6 @@ private:
     void FreeSemaphores();
     void FreeUniforms();
     void FreeDescriptorPoolAndLayouts();
-
 
     bool PrepareUniformBuffers();
     void ResizeDynamicUniformBuffer();

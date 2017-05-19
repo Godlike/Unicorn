@@ -19,6 +19,9 @@ namespace video
 {
 namespace geometry
 {
+/**
+* @brief Mesh controller, which fill mesh with Triangle data.
+*/
 class Triangle : public MeshDescriptor
 {
 public:
