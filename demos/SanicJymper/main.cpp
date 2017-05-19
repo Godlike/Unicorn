@@ -29,26 +29,22 @@ std::vector<unicorn::video::geometry::Cube*> cubes;
 
 void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
 {
-    float delta = static_cast< float >( timer->ElapsedMilliseconds().count() ) / 1000;
-    for ( auto & mesh : cubes )
+    float delta = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
+    for (auto& mesh : cubes)
     {
-        mesh->Rotate(10 * delta, { 1, 1, 0 });
+        mesh->Rotate(100 * delta, {1, 1, 0});
     }
     timer->Reset();
 }
 
 void onMouseButton(unicorn::system::Window* pWindow, unicorn::system::input::MouseButton button, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask)
 {
-    if ( button == unicorn::system::input::MouseButton::MouseLeft )
+    if (button == unicorn::system::input::MouseButton::MouseLeft)
     {
         auto kek = new unicorn::video::geometry::Cube(vkRenderer0->SpawnMesh());
-        kek->Move({ std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 });
-        kek->SetColor({ ( float ) ( std::rand() % 255 ) / 255, ( float ) ( std::rand() % 255 ) / 255, ( float ) ( std::rand() % 255 ) / 255 });
+        kek->Move({std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20});
+        kek->SetColor({static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255});
         cubes.push_back(kek);
-    }
-    if ( button == unicorn::system::input::MouseButton::MouseRight )
-    {
-        pCameraController->SetCameraProjection(unicorn::video::ProjectionType::Orthographic);
     }
 }
 
@@ -69,7 +65,7 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     using unicorn::system::input::Action;
     using unicorn::system::MouseMode;
 
-    if ( Action::Release == action )
+    if (Action::Release == action)
     {
         return;
     }
@@ -77,87 +73,87 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     std::pair<int32_t, int32_t> position = pWindow->GetPosition();
     bool positionChanged = true;
 
-    float delta = static_cast< float >( timer->ElapsedMilliseconds().count() ) / 1000;
+    float delta = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
 
-    if ( Modifier::Shift & modifiers )
+    if (Modifier::Shift & modifiers)
     {
         delta *= 10;
     }
 
-    if ( Modifier::Alt & modifiers )
+    if (Modifier::Alt & modifiers)
     {
         delta *= 5;
     }
-    switch ( key )
+    switch (key)
     {
-        case Key::W:
+    case Key::W:
         {
             pCameraController->MoveForward(delta);
             break;
         }
-        case Key::S:
+    case Key::S:
         {
             pCameraController->MoveBackward(delta);
             break;
         }
-        case Key::A:
+    case Key::A:
         {
             pCameraController->MoveLeft(delta);
             break;
         }
-        case Key::D:
+    case Key::D:
         {
             pCameraController->MoveRight(delta);
             break;
         }
-        case Key::Q:
+    case Key::Q:
         {
             pCameraController->MoveUp(delta);
             break;
         }
-        case Key::E:
+    case Key::E:
         {
             pCameraController->MoveDown(delta);
             break;
         }
-        case Key::Up:
+    case Key::Up:
         {
             position.second -= delta;
             break;
         }
-        case Key::Down:
+    case Key::Down:
         {
             position.second += delta;
             break;
         }
-        case Key::Left:
+    case Key::Left:
         {
             position.first -= delta;
             break;
         }
-        case Key::Right:
+    case Key::Right:
         {
             position.first += delta;
             break;
         }
-        case Key::C:
+    case Key::C:
         {
             pWindow->SetMouseMode(MouseMode::Captured);
             break;
         }
-        case Key::Escape:
+    case Key::Escape:
         {
             pWindow->SetMouseMode(MouseMode::Normal);
             break;
         }
-        default:
+    default:
         {
             positionChanged = false;
             break;
         }
     }
 
-    if ( positionChanged )
+    if (positionChanged)
     {
         pWindow->SetPosition(position);
     }
@@ -171,7 +167,7 @@ int main(int argc, char* argv[])
     settings.SetApplicationName("SANIC JYMPER");
     unicorn::UnicornEngine* unicornEngine = new unicorn::UnicornEngine();
     timer = new unicorn::system::Timer(true);
-    if ( unicornEngine->Init() )
+    if (unicornEngine->Init())
     {
         pGraphics = unicornEngine->GetGraphics();
 
@@ -183,18 +179,17 @@ int main(int argc, char* argv[])
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Resizable,
                                          unicorn::system::CustomValue::True);
 
-
         auto h = pGraphics->GetMonitors().back()->GetActiveVideoMode().height;
         auto w = pGraphics->GetMonitors().back()->GetActiveVideoMode().width;
         settings.SetApplicationHeight(h);
         settings.SetApplicationWidth(w);
 
         unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(
-            settings.GetApplicationWidth(),
-            settings.GetApplicationHeight(),
-            settings.GetApplicationName(),
-            nullptr,
-            nullptr);
+                                                                   settings.GetApplicationWidth(),
+                                                                   settings.GetApplicationHeight(),
+                                                                   settings.GetApplicationName(),
+                                                                   nullptr,
+                                                                   nullptr);
         pWindow0->SetMouseMode(unicorn::system::MouseMode::Captured);
 
         vkRenderer0 = pGraphics->SpawnVulkanRenderer(pWindow0);
@@ -203,15 +198,14 @@ int main(int argc, char* argv[])
 
         unicorn::video::geometry::Triangle triangle1(vkRenderer0->SpawnMesh());
         triangle1.SetColor(unicorn::video::Color::Red);
-        triangle1.Move({ -2.0f, 0.0f, 0.0f });
-        triangle1.Scale({ 0.5, 0.5, 0.5 });
+        triangle1.Move({-2.0f, 0.0f, 0.0f});
+        triangle1.Scale({0.5, 0.5, 0.5});
 
         unicorn::video::geometry::Triangle triangle2(vkRenderer0->SpawnMesh());
         triangle2.SetColor(unicorn::video::Color::Green);
 
         unicorn::video::geometry::Cube cube(vkRenderer0->SpawnMesh());
-        cube.Move({ 5.0, 0.0f, 5.0f });
-
+        cube.Move({5.0, 0.0f, 5.0f});
         pWindow0->MousePosition.connect(&onCursorPositionChanged);
         pWindow0->Scroll.connect(&onMouseScrolled);
         pWindow0->Keyboard.connect(&onWindowKeyboard);
