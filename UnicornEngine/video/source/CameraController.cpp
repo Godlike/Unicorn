@@ -17,7 +17,7 @@ CameraController::CameraController(std::shared_ptr<Camera> camera)
 
 void CameraController::SetCameraProjection(ProjectionType newType)
 {
-    m_camera->SetProjection(newType);
+    m_camera->SetProjectionType(newType);
 }
 }
 }

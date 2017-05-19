@@ -90,7 +90,10 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
 
 void Buffer::Destroy()
 {
-    Unmap();
+    if(m_mappedMemory)
+    {
+        Unmap();        
+    }
     if ( m_memory )
     {
         m_device.freeMemory(m_memory);
@@ -101,7 +104,7 @@ void Buffer::Destroy()
     }
 }
 
-void Buffer::MappedWrite(const void* pData) const
+void Buffer::Write(const void* pData) const
 {
     memcpy(m_mappedMemory, pData, m_size);
 }
@@ -120,8 +123,8 @@ void Buffer::Unmap()
     }
 }
 
-void Buffer::Write(const void* pData) const
-{
+void Buffer::MapWriteUnmap(const void* pData) const
+{    
     void* mappedMemory = nullptr;
 
     #ifdef VKCPP_ENHANCED_MODE

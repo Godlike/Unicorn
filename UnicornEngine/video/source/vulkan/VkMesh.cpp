@@ -39,7 +39,7 @@ void VkMesh::AllocateOnGPU()
     stagingBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, size);
     m_vertexBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, size);
 
-    stagingBuffer.Write(m_mesh->GetVertices().data());
+    stagingBuffer.MapWriteUnmap(m_mesh->GetVertices().data());
     stagingBuffer.CopyToBuffer(m_pool, m_queue, m_vertexBuffer, m_vertexBuffer.GetSize());
     stagingBuffer.Destroy();
     //Indexes filling
@@ -47,7 +47,7 @@ void VkMesh::AllocateOnGPU()
 
     stagingBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, size);
     m_indexBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, size);
-    stagingBuffer.Write(m_mesh->GetIndices().data());
+    stagingBuffer.MapWriteUnmap(m_mesh->GetIndices().data());
     stagingBuffer.CopyToBuffer(m_pool, m_queue, m_indexBuffer, m_indexBuffer.GetSize());
     stagingBuffer.Destroy();
     ReallocatedOnGpu.emit(this);

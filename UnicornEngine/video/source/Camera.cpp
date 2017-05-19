@@ -5,7 +5,6 @@
 */
 
 #include <unicorn/video/Camera.hpp>
-#include "unicorn/utility/Logger.hpp"
 
 namespace unicorn
 {
@@ -57,7 +56,7 @@ void Camera::SetPosition(const glm::vec3& position)
     UpdateViewMatrix();
 }
 
-void Camera::SetProjection(ProjectionType newType)
+void Camera::SetProjectionType(ProjectionType newType)
 {
     m_projectionType = newType;
     UpdateProjectionMatrix();
@@ -75,7 +74,7 @@ glm::vec3 Camera::GetUpVector() const
 
 glm::mat4 Camera::GetProjection() const
 {
-    return m_matrices.m_perspective;
+    return m_matrices.m_projection;
 }
 
 glm::mat4 Camera::GetView() const
@@ -83,30 +82,36 @@ glm::mat4 Camera::GetView() const
     return m_matrices.m_view;
 }
 
+float Camera::GetFov() const
+{
+    return m_fov;
+}
+
+void Camera::SetFov(float newFov)
+{
+    m_fov = newFov;
+    UpdateProjectionMatrix();
+}
+
+void Camera::ChangeFov(float deltaFov)
+{
+    m_fov += deltaFov;
+    UpdateProjectionMatrix();
+}
+
 void Camera::UpdateViewMatrix()
 {
-    m_matrices.m_view = glm::lookAt(
-        m_camPosition,
-        m_camPosition + m_camDirection,
-        m_upVector);
+    m_matrices.m_view = glm::lookAt(m_camPosition,
+                                    m_camPosition + m_camDirection,
+                                    m_upVector);
 }
 
 void Camera::UpdateProjectionMatrix()
 {
-    switch ( m_projectionType )
-    {
-        case ProjectionType::Perspective:
-            m_matrices.m_perspective = glm::perspective(
-                m_fov,
-                m_aspect,
-                m_znear,
-                m_zfar);
-            break;
-        case ProjectionType::Orthographic:
-            m_matrices.m_perspective = glm::ortho(0.0f, 2.0f, 0.0f, 2.0f, 0.0f, 1000.0f);
-            break;
-    }
-
+    m_matrices.m_projection = glm::perspective(m_fov,
+                                               m_aspect,
+                                               m_znear,
+                                               m_zfar);
 }
 }
 }
