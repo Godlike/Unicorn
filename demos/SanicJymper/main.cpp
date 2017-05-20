@@ -17,7 +17,7 @@
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/video/geometry/Quad.hpp>
 #include <unicorn/video/geometry/Cube.hpp>
-#include <unicorn/video/CameraFPSController.hpp>
+#include <unicorn/video/CameraFpsController.hpp>
 #include <cstdlib>
 
 static unicorn::video::Graphics* pGraphics = nullptr;
