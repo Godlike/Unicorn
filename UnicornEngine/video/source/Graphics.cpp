@@ -20,7 +20,7 @@ namespace video
 {
 Graphics::Graphics(system::Manager& manager)
     : m_isInitialized(false)
-    , m_systemManager(manager), m_driver()
+      , m_systemManager(manager), m_driver()
 {
 }
 
@@ -33,27 +33,27 @@ bool Graphics::Init(const DriverType& whichDriver)
 {
     m_driver = whichDriver;
 
-    if ( m_isInitialized )
+    if (m_isInitialized)
     {
         return false;
     }
 
     LOG_INFO("Graphics initialization started.");
 
-    switch ( m_driver )
+    switch (m_driver)
     {
-        case DriverType::Vulkan:
-            if ( !m_systemManager.IsVulkanSupported() )
-            {
-                LOG_ERROR("Vulkan not supported!");
-                return false;
-            }
-            if ( !vulkan::Context::Initialize(m_systemManager) )
-            {
-                LOG_ERROR("Vulkan context not initialized!");
-                return false;
-            }
-            break;
+    case DriverType::Vulkan:
+        if (!m_systemManager.IsVulkanSupported())
+        {
+            LOG_ERROR("Vulkan not supported!");
+            return false;
+        }
+        if (!vulkan::Context::Initialize(m_systemManager))
+        {
+            LOG_ERROR("Vulkan context not initialized!");
+            return false;
+        }
+        break;
     }
     m_isInitialized = true;
 
@@ -70,14 +70,14 @@ void Graphics::Deinit()
 
     ProcessExpiredRenderers();
 
-    switch ( m_driver )
+    switch (m_driver)
     {
-        case DriverType::Vulkan:
-            vulkan::Context::Deinitialize();
-            break;
+    case DriverType::Vulkan:
+        vulkan::Context::Deinitialize();
+        break;
     }
 
-    if ( m_isInitialized )
+    if (m_isInitialized)
     {
         LOG_INFO("Graphics shutdown correctly.");
     }
@@ -87,11 +87,11 @@ void Graphics::Deinit()
 
 bool Graphics::Render()
 {
-    if ( m_isInitialized )
+    if (m_isInitialized)
     {
-        for ( RendererWindowPairSet::const_iterator cit = m_renderers.cbegin(); cit != m_renderers.cend();)
+        for (RendererWindowPairSet::const_iterator cit = m_renderers.cbegin(); cit != m_renderers.cend();)
         {
-            if ( !cit->second->ShouldClose() && cit->first->Render() )
+            if (!cit->second->ShouldClose() && cit->first->Render())
             {
                 ++cit;
             }
@@ -116,7 +116,6 @@ system::Window* Graphics::SpawnWindow(int32_t width,
                                       system::Monitor* pMonitor,
                                       system::Window* pSharedWindow)
 {
-
     //LOG_WARNING("Failed to initialize new renderer for window %s", name.c_str());
     //if (!m_systemManager.DestroyWindow(pWindow))    
 
@@ -163,13 +162,13 @@ void Graphics::SetWindowCreationHint(system::WindowHint hint, int32_t value) con
 
 void Graphics::ProcessExpiredRenderers()
 {
-    if ( !m_expiredRenderers.empty() )
+    if (!m_expiredRenderers.empty())
     {
-        for ( RendererWindowPairSet::const_iterator cit = m_expiredRenderers.cbegin(); cit != m_expiredRenderers.cend(); ++cit )
+        for (RendererWindowPairSet::const_iterator cit = m_expiredRenderers.cbegin(); cit != m_expiredRenderers.cend(); ++cit)
         {
             delete cit->first;
 
-            if ( !m_systemManager.DestroyWindow(cit->second) )
+            if (!m_systemManager.DestroyWindow(cit->second))
             {
                 LOG_WARNING("Failed to destroy window %s", cit->second->GetName().c_str());
 

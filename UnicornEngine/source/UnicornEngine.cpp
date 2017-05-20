@@ -63,11 +63,11 @@ bool UnicornEngine::Init()
 
     m_pSystemManager = new system::Manager();
 
-    s_pWindowProfiler = new system::WindowProfiler(*m_pSystemManager);
+    /*s_pWindowProfiler = new system::WindowProfiler(*m_pSystemManager);
     s_pMonitorProfiler = new system::MonitorProfiler(*m_pSystemManager);
     s_pMouseProfiler = new system::MouseProfiler(*m_pSystemManager);
     s_pKeyProfiler = new system::KeyProfiler(*m_pSystemManager);
-    s_pGamepadProfiler = new system::GamepadProfiler(*m_pSystemManager);
+    s_pGamepadProfiler = new system::GamepadProfiler(*m_pSystemManager);*/
 
     m_pSystemManager->Init();
 

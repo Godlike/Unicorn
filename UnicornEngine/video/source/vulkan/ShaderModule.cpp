@@ -26,7 +26,7 @@ vk::Result ShaderModule::Create(vk::Device device, size_t size, void* code)
 
     vk::ShaderModuleCreateInfo shaderInfo;
     shaderInfo.setCodeSize(size);
-    shaderInfo.setPCode(reinterpret_cast< uint32_t* >( code ));
+    shaderInfo.setPCode(reinterpret_cast<uint32_t*>(code));
 
     vk::Result result = m_device.createShaderModule(&shaderInfo, nullptr, &m_shaderModule);
     return result;

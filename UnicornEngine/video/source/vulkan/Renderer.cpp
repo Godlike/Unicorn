@@ -26,6 +26,11 @@ namespace video
 {
 namespace vulkan
 {
+bool QueueFamilyIndices::IsComplete() const
+{
+    return graphicsFamily >= 0 && presentFamily >= 0;
+}
+
 Renderer::Renderer(system::Manager& manager, system::Window* window)
     : video::Renderer(manager, window)
 {
@@ -296,17 +301,17 @@ void Renderer::OnMeshReallocated(VkMesh* vkmesh)
     m_uniformModel.Destroy();
     size_t bufferSize = m_vkMeshes.size() * m_dynamicAlignment;
     m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, bufferSize);
-    m_uniformModel.Map();
     if (m_uniformModelsData.model)
     {
         utility::AlignedFree(m_uniformModelsData.model);
     }
     m_uniformModelsData.model = static_cast<glm::mat4*>(utility::AlignedAlloc(bufferSize, m_dynamicAlignment));
-    for (int i = 0; i < m_vkMeshes.size(); ++i)
+    for (uint32_t i = 0; i < m_vkMeshes.size(); ++i)
     {
         glm::mat4* modelMat = reinterpret_cast<glm::mat4*>((reinterpret_cast<uint64_t>(m_uniformModelsData.model) + (i * m_dynamicAlignment)));
         *modelMat = m_vkMeshes.at(i)->GetModel();
     }
+    m_uniformModel.Map();
     m_uniformModel.Write(m_uniformModelsData.model);
     ResizeDynamicUniformBuffer();
     CreateCommandBuffers();
@@ -494,7 +499,7 @@ void Renderer::UpdateUniformBuffer()
 
 void Renderer::UpdateDynamicUniformBuffer()
 {
-    for (int i = 0; i < m_vkMeshes.size(); ++i)
+    for (uint32_t i = 0; i < m_vkMeshes.size(); ++i)
     {
         glm::mat4* modelMat = reinterpret_cast<glm::mat4*>((reinterpret_cast<uint64_t>(m_uniformModelsData.model) + (i * m_dynamicAlignment)));
         *modelMat = m_vkMeshes.at(i)->GetModel();
@@ -1005,7 +1010,7 @@ bool Renderer::CreateCommandBuffers()
         m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
 
         vk::DeviceSize offsets[] = {0};
-        for (int j = 0; j < m_vkMeshes.size(); ++j)
+        for (uint32_t j = 0; j < m_vkMeshes.size(); ++j)
         {
             vk::Buffer vertexBuffer[] = {m_vkMeshes.at(j)->GetVertexBuffer()};
             uint32_t dynamicOffset = j * static_cast<uint32_t>(m_dynamicAlignment);

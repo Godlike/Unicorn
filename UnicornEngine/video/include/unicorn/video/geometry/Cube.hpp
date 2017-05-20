@@ -19,6 +19,9 @@ namespace video
 {
 namespace geometry
 {
+/**
+* @brief Mesh controller, which fill mesh with Cube data.
+*/
 class Cube : public MeshDescriptor
 {
 public:

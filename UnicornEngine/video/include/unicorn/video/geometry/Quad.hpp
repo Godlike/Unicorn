@@ -13,20 +13,22 @@
 
 #include <memory>
 
-
 namespace unicorn
 {
-    namespace video
-    {
-        namespace geometry
-        {
-            class Quad : public MeshDescriptor
-            {
-            public:
-                UNICORN_EXPORT Quad(std::shared_ptr<Mesh> mesh);
-            };
-        }
-    }
+namespace video
+{
+namespace geometry
+{
+/**
+* @brief Mesh controller, which fill mesh with Quad data.
+*/
+class Quad : public MeshDescriptor
+{
+public:
+    UNICORN_EXPORT Quad(std::shared_ptr<Mesh> mesh);
+};
+}
+}
 }
 
 #endif // UNICORN_VIDEO_GEOMETRY_QUAD_HPP

@@ -18,6 +18,7 @@ CommandBuffers::CommandBuffers()
 
 CommandBuffers::~CommandBuffers()
 {
+    Destroy();
 }
 
 vk::Result CommandBuffers::Create(vk::Device device, size_t count)
@@ -28,7 +29,7 @@ vk::Result CommandBuffers::Create(vk::Device device, size_t count)
     cmdPoolInfo.setFlags(vk::CommandPoolCreateFlagBits::eResetCommandBuffer);
 
     vk::Result result = m_device.createCommandPool(&cmdPoolInfo, nullptr, &m_cmdPool);
-    if ( result != vk::Result::eSuccess )
+    if (result != vk::Result::eSuccess)
     {
         return result;
     }
@@ -52,10 +53,12 @@ vk::CommandPool& CommandBuffers::GetVkCommandPool()
 {
     return m_cmdPool;
 }
+
 vk::CommandBuffer& CommandBuffers::GetVkCommandBuffer(size_t index)
 {
     return m_cmdBuffers.at(index);
 }
+
 const std::vector<vk::CommandBuffer>& CommandBuffers::GetVkCommandBuffers()
 {
     return m_cmdBuffers;

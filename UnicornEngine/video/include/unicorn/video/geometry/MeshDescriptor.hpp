@@ -9,10 +9,8 @@
 
 #include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/video/geometry/Mesh.hpp>
-#include <unicorn/video/Color.hpp>
 
 #include <glm/glm.hpp>
-#include <vector>
 #include <memory>
 
 namespace unicorn
@@ -49,11 +47,14 @@ public:
     UNICORN_EXPORT void Move(glm::vec3 diff);
     /**
      * @brief Scale mesh
-     * @param diff 
+     * @param diff vector of scales by each axis
      */
     UNICORN_EXPORT void Scale(glm::vec3 diff);
+    /**
+     * @brief Set new color for mesh
+     * @param color New color value from 0.0 to 1.0
+     */
     UNICORN_EXPORT void SetColor(glm::vec3 color);
-
 protected:
     std::shared_ptr<Mesh> m_mesh;
 };
