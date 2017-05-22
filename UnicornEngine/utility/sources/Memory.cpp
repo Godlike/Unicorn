@@ -4,7 +4,6 @@
 */
 
 #include <unicorn/utility/Memory.hpp>
-#include <stdlib.h>
 
 namespace unicorn
 {
