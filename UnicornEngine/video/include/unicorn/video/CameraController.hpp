@@ -29,9 +29,9 @@ public:
     UNICORN_EXPORT CameraController() = delete;
     /**
      * @brief Setter for new projection type
-     * @param newType New projection type
+     * @param type New projection type
      */
-    UNICORN_EXPORT void SetCameraProjection(ProjectionType newType);
+    UNICORN_EXPORT void SetCameraProjection(ProjectionType type) const;
 protected:
     std::shared_ptr<Camera> m_camera;
 };

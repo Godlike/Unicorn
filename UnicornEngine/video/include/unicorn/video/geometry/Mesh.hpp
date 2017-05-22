@@ -34,7 +34,7 @@ struct Vertex
 };
 
 /**
-* @brief Class for geometry holding.
+* @brief Mesh data
 */
 class Mesh
 {
@@ -43,7 +43,7 @@ public:
     UNICORN_EXPORT ~Mesh();
 
     /**
-    * @brief Updating vertices and indices geometry
+    * @brief Updates vertices and indices geometry
     * @param vertices vertexes data
     * @param indices indices data
     */
@@ -52,12 +52,12 @@ public:
      * @brief Returns mesh vertices
      * @return Mesh vertices
      */
-    UNICORN_EXPORT std::vector<Vertex> GetVertices() const;
+    UNICORN_EXPORT const std::vector<Vertex>& GetVertices() const;
     /**
     * @brief Returns mesh indices
     * @return Mesh indices
     */
-    UNICORN_EXPORT std::vector<uint16_t> GetIndices() const;
+    UNICORN_EXPORT const std::vector<uint16_t>& GetIndices() const;
     /**
      * @brief Setting new color mesh
      * @param newColor color data from 0.0 to 1.0
@@ -65,7 +65,7 @@ public:
     UNICORN_EXPORT void SetColor(const glm::vec3& newColor);
 
     /**
-     * @brief Signal if something update for updating data on GPU
+     * @brief Signal for GPU data update
      */
     wink::signal<wink::slot<void()>> DataUpdated;
 

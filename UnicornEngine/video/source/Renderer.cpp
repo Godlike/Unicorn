@@ -29,10 +29,10 @@ std::shared_ptr<Camera> Renderer::GetCamera() const
 
 void Renderer::SetBackgroundColor(const glm::vec3& backgroundColor)
 {
-    m_backgroundColor.at(0) = backgroundColor.r;
-    m_backgroundColor.at(1) = backgroundColor.g;
-    m_backgroundColor.at(2) = backgroundColor.b;
-    m_backgroundColor.at(3) = 1.0f;
+    m_backgroundColor[0] = backgroundColor.r;
+    m_backgroundColor[1] = backgroundColor.g;
+    m_backgroundColor[2] = backgroundColor.b;
+    m_backgroundColor[3] = 1.0f;
 }
 }
 }

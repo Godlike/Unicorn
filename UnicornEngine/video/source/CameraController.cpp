@@ -10,14 +10,13 @@ namespace unicorn
 {
 namespace video
 {
-CameraController::CameraController(std::shared_ptr<Camera> camera)
-    : m_camera(camera)
+CameraController::CameraController(std::shared_ptr<Camera> camera) : m_camera(camera)
 {
 }
 
-void CameraController::SetCameraProjection(ProjectionType newType)
+void CameraController::SetCameraProjection(ProjectionType type) const
 {
-    m_camera->SetProjectionType(newType);
+    m_camera->SetProjectionType(type);
 }
 }
 }

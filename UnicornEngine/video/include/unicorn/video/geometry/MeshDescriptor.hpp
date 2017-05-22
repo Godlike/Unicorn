@@ -39,22 +39,22 @@ public:
      * @param angle Angle in degrees
      * @param axis vector of normalized axises, which you need to rotate, for example {1.f, 1.f, 0.f} will rotate by x and y only
      */
-    UNICORN_EXPORT void Rotate(float angle, glm::vec3 axis);
+    UNICORN_EXPORT void Rotate(float angle, const glm::vec3& axis);
     /**
-     * @brief Move mesh
-     * @param diff vector of "deltas" by axises
+     * @brief Moves mesh
+     * @param translateVector vector of "deltas" by axises
      */
-    UNICORN_EXPORT void Move(glm::vec3 diff);
+    UNICORN_EXPORT void Move( const glm::vec3& translateVector);
     /**
-     * @brief Scale mesh
-     * @param diff vector of scales by each axis
+     * @brief Scales mesh
+     * @param scaleVector vector of scales by each axis
      */
-    UNICORN_EXPORT void Scale(glm::vec3 diff);
+    UNICORN_EXPORT void Scale(const glm::vec3& scaleVector);
     /**
-     * @brief Set new color for mesh
-     * @param color New color value from 0.0 to 1.0
+     * @brief Sets new color for mesh
+     * @param color Color value
      */
-    UNICORN_EXPORT void SetColor(glm::vec3 color);
+    UNICORN_EXPORT void SetColor(const glm::vec3& color);
 protected:
     std::shared_ptr<Mesh> m_mesh;
 };

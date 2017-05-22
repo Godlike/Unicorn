@@ -18,26 +18,26 @@ MeshDescriptor::MeshDescriptor(std::shared_ptr<Mesh> mesh)
 {
 }
 
-void MeshDescriptor::Rotate(float angle, glm::vec3 axis)
+void MeshDescriptor::Rotate(float angle, const glm::vec3& axis)
 {
     m_mesh->model = glm::rotate(m_mesh->model, angle, axis);
 }
 
-void MeshDescriptor::Move(glm::vec3 diff)
+void MeshDescriptor::Move(const glm::vec3& translateVector)
 {
-    m_mesh->model = glm::translate(m_mesh->model, diff);
+    m_mesh->model = glm::translate(m_mesh->model, translateVector);
 }
 
-void MeshDescriptor::Scale(glm::vec3 diff)
+void MeshDescriptor::Scale(const glm::vec3& scaleVector)
 {
-    m_mesh->model = glm::scale(m_mesh->model, diff);
+    m_mesh->model = glm::scale(m_mesh->model, scaleVector);
 }
 
 MeshDescriptor::~MeshDescriptor()
 {
 }
 
-void MeshDescriptor::SetColor(glm::vec3 color)
+void MeshDescriptor::SetColor(const glm::vec3& color)
 {
     m_mesh->SetColor(color);
 }

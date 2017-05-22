@@ -13,6 +13,7 @@
 #include <atomic>
 #include <chrono>
 #include <string>
+#include <cstdint>
 
 namespace unicorn
 {

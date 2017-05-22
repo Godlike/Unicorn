@@ -55,7 +55,8 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
 
     uint32_t memoryTypeBits = req.memoryTypeBits;
     uint32_t memoryTypeIndex = 0;
-    for (unsigned int i = 0; i < (sizeof(memoryTypeBits) * 8); ++i)
+    const uint32_t memTypeBits = (sizeof(memoryTypeBits) * 8);
+    for (uint32_t i = 0; i < memTypeBits; ++i)
     {
         if ((memoryTypeBits >> i) & 1)
         {
@@ -77,15 +78,11 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
         return false;
     }
 
-    descriptor.offset = 0;
-    descriptor.buffer = m_buffer;
-    descriptor.range = VK_WHOLE_SIZE;
+    m_descriptor.offset = 0;
+    m_descriptor.buffer = m_buffer;
+    m_descriptor.range = VK_WHOLE_SIZE;
 
-    #ifdef VKCPP_ENHANCED_MODE
     m_device.bindBufferMemory(m_buffer, m_memory, 0);
-    #else
-    m_device.bindBufferMemory(m_buffer, m_memory, 0);
-    #endif
     return true;
 }
 
@@ -106,12 +103,22 @@ void Buffer::Destroy()
 
 void Buffer::Write(const void* pData) const
 {
-    memcpy(m_mappedMemory, pData, m_size);
+    if(m_mappedMemory)
+    {
+        memcpy(m_mappedMemory, pData, m_size);
+    }
+    else
+    {
+        LOG_WARNING("Can't write buffer, because it's not maped!");        
+    }
 }
 
 void Buffer::Map()
 {
-    m_device.mapMemory(m_memory, 0, m_size, vk::MemoryMapFlagBits(), &m_mappedMemory);
+    if(!m_mappedMemory)
+    {
+        m_device.mapMemory(m_memory, 0, m_size, vk::MemoryMapFlagBits(), &m_mappedMemory);        
+    }
 }
 
 void Buffer::Unmap()
@@ -170,7 +177,7 @@ vk::DeviceMemory Buffer::GetMemory() const
     return m_memory;
 }
 
-vk::Buffer& Buffer::GetVkBuffer()
+const vk::Buffer& Buffer::GetVkBuffer()
 {
     return m_buffer;
 }
@@ -178,6 +185,11 @@ vk::Buffer& Buffer::GetVkBuffer()
 vk::Buffer Buffer::GetVkBuffer() const
 {
     return m_buffer;
+}
+
+const vk::DescriptorBufferInfo& Buffer::GetDescriptorInfo() const
+{
+    return m_descriptor;
 }
 }
 }

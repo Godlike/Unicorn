@@ -29,9 +29,9 @@ Graphics::~Graphics()
     Deinit();
 }
 
-bool Graphics::Init(const DriverType& whichDriver)
+bool Graphics::Init(const DriverType& driver)
 {
-    m_driver = whichDriver;
+    m_driver = driver;
 
     if (m_isInitialized)
     {
@@ -48,12 +48,14 @@ bool Graphics::Init(const DriverType& whichDriver)
             LOG_ERROR("Vulkan not supported!");
             return false;
         }
-        if (!vulkan::Context::Initialize(m_systemManager))
+        if (!vulkan::Context::Instance().Initialize(m_systemManager))
         {
             LOG_ERROR("Vulkan context not initialized!");
             return false;
         }
         break;
+    default:
+        return false;
     }
     m_isInitialized = true;
 
@@ -73,7 +75,7 @@ void Graphics::Deinit()
     switch (m_driver)
     {
     case DriverType::Vulkan:
-        vulkan::Context::Deinitialize();
+        vulkan::Context::Instance().Deinitialize();
         break;
     }
 
@@ -116,9 +118,6 @@ system::Window* Graphics::SpawnWindow(int32_t width,
                                       system::Monitor* pMonitor,
                                       system::Window* pSharedWindow)
 {
-    //LOG_WARNING("Failed to initialize new renderer for window %s", name.c_str());
-    //if (!m_systemManager.DestroyWindow(pWindow))    
-
     return m_systemManager.CreateWindow(width, height, name, pMonitor, pSharedWindow);
 }
 

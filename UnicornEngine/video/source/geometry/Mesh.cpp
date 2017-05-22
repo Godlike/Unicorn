@@ -12,8 +12,7 @@ namespace video
 {
 namespace geometry
 {
-Mesh::Mesh()
-    : model(glm::mat4())
+Mesh::Mesh() : model(glm::mat4())
 {
 }
 
@@ -23,7 +22,7 @@ Mesh::~Mesh()
 
 void Mesh::SetColor(const glm::vec3& newColor)
 {
-    for ( auto& x : m_vertices )
+    for (auto& x : m_vertices)
     {
         x.color = newColor;
     }
@@ -37,12 +36,12 @@ void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<ui
     DataUpdated.emit();
 }
 
-std::vector<Vertex> Mesh::GetVertices() const
+const std::vector<Vertex>& Mesh::GetVertices() const
 {
     return m_vertices;
 }
 
-std::vector<uint16_t> Mesh::GetIndices() const
+const std::vector<uint16_t>& Mesh::GetIndices() const
 {
     return m_indices;
 }

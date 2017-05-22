@@ -21,7 +21,7 @@ CommandBuffers::~CommandBuffers()
     Destroy();
 }
 
-vk::Result CommandBuffers::Create(vk::Device device, size_t count)
+vk::Result CommandBuffers::Create(vk::Device device, uint32_t count)
 {
     m_device = device;
     vk::CommandPoolCreateInfo cmdPoolInfo;
@@ -54,7 +54,7 @@ vk::CommandPool& CommandBuffers::GetVkCommandPool()
     return m_cmdPool;
 }
 
-vk::CommandBuffer& CommandBuffers::GetVkCommandBuffer(size_t index)
+vk::CommandBuffer& CommandBuffers::GetVkCommandBuffer(uint32_t index)
 {
     return m_cmdBuffers.at(index);
 }

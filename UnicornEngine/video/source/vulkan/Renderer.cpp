@@ -147,7 +147,7 @@ QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
 
 bool Renderer::FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features, vk::Format& returnFormat) const
 {
-    for (auto format : candidates)
+    for (const auto& format : candidates)
     {
         vk::FormatProperties props;
         m_vkPhysicalDevice.getFormatProperties(format, &props);
@@ -165,7 +165,7 @@ bool Renderer::FindSupportedFormat(const std::vector<vk::Format>& candidates, vk
     return false;
 }
 
-bool Renderer::FindDepthFormat(vk::Format& desiredFormat)
+bool Renderer::FindDepthFormat(vk::Format& desiredFormat) const
 {
     return FindSupportedFormat({vk::Format::eD32Sfloat, vk::Format::eD32SfloatS8Uint, vk::Format::eD24UnormS8Uint},
                                vk::ImageTiling::eOptimal,
@@ -178,7 +178,7 @@ bool Renderer::HasStencilComponent(vk::Format format) const
     return format == vk::Format::eD32SfloatS8Uint || format == vk::Format::eD24UnormS8Uint;
 }
 
-bool Renderer::QuerySwapChainSupport(SwapChainSupportDetails& details, const vk::PhysicalDevice& device)
+bool Renderer::QuerySwapChainSupport(SwapChainSupportDetails& details, const vk::PhysicalDevice& device) const
 {
     vk::Result result = device.getSurfaceCapabilitiesKHR(m_vkWindowSurface, &details.capabilities);
     std::tie(result, details.formats) = device.getSurfaceFormatsKHR(m_vkWindowSurface);
@@ -196,7 +196,7 @@ bool Renderer::QuerySwapChainSupport(SwapChainSupportDetails& details, const vk:
     return true;
 }
 
-vk::SurfaceFormatKHR Renderer::ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats)
+vk::SurfaceFormatKHR Renderer::ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats) const
 {
     if (availableFormats.size() == 1 && availableFormats[0].format == vk::Format::eUndefined)
     {
@@ -214,7 +214,7 @@ vk::SurfaceFormatKHR Renderer::ChooseSwapSurfaceFormat(const std::vector<vk::Sur
     return availableFormats[0];
 }
 
-vk::PresentModeKHR Renderer::ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes)
+vk::PresentModeKHR Renderer::ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes) const
 {
     for (const auto& availablePresentMode : availablePresentModes)
     {
@@ -226,7 +226,7 @@ vk::PresentModeKHR Renderer::ChooseSwapPresentMode(const std::vector<vk::Present
     return vk::PresentModeKHR::eFifo;
 }
 
-vk::Extent2D Renderer::ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities)
+vk::Extent2D Renderer::ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities) const
 {
     const Settings& settings = Settings::Instance();
 
@@ -331,7 +331,7 @@ void Renderer::FreeSurface()
 {
     if (m_vkWindowSurface && m_vkLogicalDevice)
     {
-        Context::GetVkInstance().destroySurfaceKHR(m_vkWindowSurface);
+        Context::Instance().GetVkInstance().destroySurfaceKHR(m_vkWindowSurface);
         m_vkWindowSurface = nullptr;
     }
 }
@@ -434,7 +434,7 @@ void Renderer::FreeUniforms()
     m_uniformModel.Destroy();
 }
 
-void Renderer::FreeDescriptorPoolAndLayouts()
+void Renderer::FreeDescriptorPoolAndLayouts() const
 {
     if (m_descriptorPool)
     {
@@ -466,7 +466,7 @@ bool Renderer::PrepareUniformBuffers()
     return true;
 }
 
-void Renderer::ResizeDynamicUniformBuffer()
+void Renderer::ResizeDynamicUniformBuffer() const
 {
     std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
 
@@ -474,27 +474,30 @@ void Renderer::ResizeDynamicUniformBuffer()
     writeDescriptorSetMVP.dstSet = m_descriptorSet;
     writeDescriptorSetMVP.descriptorType = vk::DescriptorType::eUniformBuffer;
     writeDescriptorSetMVP.dstBinding = 0;
-    writeDescriptorSetMVP.pBufferInfo = &m_uniformMvp.descriptor;
+    writeDescriptorSetMVP.pBufferInfo = &m_uniformMvp.GetDescriptorInfo();
     writeDescriptorSetMVP.descriptorCount = 1;
 
-    vk::WriteDescriptorSet writeDescriptorSetMODEL;
-    writeDescriptorSetMODEL.dstSet = m_descriptorSet;
-    writeDescriptorSetMODEL.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
-    writeDescriptorSetMODEL.dstBinding = 1;
-    writeDescriptorSetMODEL.pBufferInfo = &m_uniformModel.descriptor;
-    writeDescriptorSetMODEL.descriptorCount = 1;
+    vk::WriteDescriptorSet writeDescriptorSetModel;
+    writeDescriptorSetModel.dstSet = m_descriptorSet;
+    writeDescriptorSetModel.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
+    writeDescriptorSetModel.dstBinding = 1;
+    writeDescriptorSetModel.pBufferInfo = &m_uniformModel.GetDescriptorInfo();
+    writeDescriptorSetModel.descriptorCount = 1;
 
     writeDescriptorSets.push_back(writeDescriptorSetMVP);
-    writeDescriptorSets.push_back(writeDescriptorSetMODEL);
+    writeDescriptorSets.push_back(writeDescriptorSetModel);
 
     m_vkLogicalDevice.updateDescriptorSets(static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
 }
 
 void Renderer::UpdateUniformBuffer()
 {
-    m_uniformCameraData.proj = m_camera->GetProjection();
-    m_uniformCameraData.view = m_camera->GetView();
-    m_uniformMvp.Write(&m_uniformCameraData);
+    if(m_uniformCameraData.view != m_camera->GetView() || m_uniformCameraData.proj != m_camera->GetProjection())
+    {
+        m_uniformCameraData.proj = m_camera->GetProjection();
+        m_uniformCameraData.view = m_camera->GetView();
+        m_uniformMvp.Write(&m_uniformCameraData);        
+    }
 }
 
 void Renderer::UpdateDynamicUniformBuffer()
@@ -516,7 +519,7 @@ bool Renderer::PickPhysicalDevice()
 {
     vk::Result result;
     std::vector<vk::PhysicalDevice> devices;
-    std::tie(result, devices) = Context::GetVkInstance().enumeratePhysicalDevices();
+    std::tie(result, devices) = Context::Instance().GetVkInstance().enumeratePhysicalDevices();
     if (result != vk::Result::eSuccess)
     {
         LOG_ERROR("Failed to enumerate physical devices.");
@@ -560,13 +563,13 @@ bool Renderer::CreateLogicalDevice()
     createInfo.setPQueueCreateInfos(queueCreateInfos.data());
     createInfo.setQueueCreateInfoCount(static_cast<uint32_t>(queueCreateInfos.size()));
     createInfo.setPEnabledFeatures(&deviceFeatures);
-    createInfo.setEnabledExtensionCount(static_cast<uint32_t>(Context::deviceExtensions.size()));
-    createInfo.setPpEnabledExtensionNames(Context::deviceExtensions.data());
+    createInfo.setEnabledExtensionCount(static_cast<uint32_t>(Context::Instance().GetDeviceExtensions().size()));
+    createInfo.setPpEnabledExtensionNames(Context::Instance().GetDeviceExtensions().data());
 
     if (s_enableValidationLayers)
     {
-        createInfo.setEnabledLayerCount(static_cast<uint32_t>(Context::validationLayers.size()));
-        createInfo.setPpEnabledLayerNames(Context::validationLayers.data());
+        createInfo.setEnabledLayerCount(static_cast<uint32_t>(Context::Instance().GetValidationLayers().size()));
+        createInfo.setPpEnabledLayerNames(Context::Instance().GetValidationLayers().data());
     }
     else
     {
@@ -588,7 +591,7 @@ bool Renderer::CreateLogicalDevice()
 
 bool Renderer::CreateSurface()
 {
-    if (!m_pWindow || m_systemManager.CreateVulkanSurfaceForWindow(*m_pWindow, Context::GetVkInstance(), nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
+    if (!m_pWindow || m_systemManager.CreateVulkanSurfaceForWindow(*m_pWindow, Context::Instance().GetVkInstance(), nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
     {
         LOG_ERROR("Failed to create window surface!");
 
@@ -625,7 +628,7 @@ bool Renderer::CreateSwapChain()
     createInfo.imageUsage = vk::ImageUsageFlagBits::eColorAttachment; // VK_IMAGE_USAGE_TRANSFER_DST_BIT for post processing.
 
     QueueFamilyIndices indices = FindQueueFamilies(m_vkPhysicalDevice);
-    uint32_t queueFamilyIndices[] = {(uint32_t)indices.graphicsFamily, (uint32_t)indices.presentFamily};
+    uint32_t queueFamilyIndices[] = {static_cast<uint32_t>(indices.graphicsFamily), static_cast<uint32_t>(indices.presentFamily)};
 
     if (indices.graphicsFamily != indices.presentFamily)
     {
@@ -969,7 +972,6 @@ bool Renderer::CreateCommandPool()
 
 bool Renderer::CreateCommandBuffers()
 {
-    vk::Result result;
     FreeCommandBuffers();
 
     m_commandBuffers.resize(m_swapChainFramebuffers.size());
@@ -979,7 +981,7 @@ bool Renderer::CreateCommandBuffers()
     allocInfo.level = vk::CommandBufferLevel::ePrimary;
     allocInfo.commandBufferCount = static_cast<uint32_t>(m_commandBuffers.size());
 
-    result = m_vkLogicalDevice.allocateCommandBuffers(&allocInfo, m_commandBuffers.data());
+    vk::Result result = m_vkLogicalDevice.allocateCommandBuffers(&allocInfo, m_commandBuffers.data());
 
     if (result != vk::Result::eSuccess)
     {
@@ -1069,7 +1071,7 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
     return false;
 }
 
-bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device)
+bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device) const
 {
     vk::Result result;
     std::vector<vk::ExtensionProperties> availableExtensions;
@@ -1079,7 +1081,7 @@ bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device)
         LOG_ERROR("Can't enumerate device extension properties.");
         return false;
     }
-    auto deviceExtensions = Context::deviceExtensions;
+    auto deviceExtensions = Context::Instance().GetDeviceExtensions();
     std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
 
     for (const auto& extension : availableExtensions)
@@ -1128,6 +1130,7 @@ bool Renderer::Frame()
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
+    m_camera->Frame();
     UpdateUniformBuffer();
     UpdateDynamicUniformBuffer();
 

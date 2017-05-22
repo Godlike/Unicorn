@@ -9,7 +9,6 @@
 #include <unicorn/utility/Logger.hpp>
 #include <unicorn/video/geometry/Mesh.hpp>
 
-
 namespace unicorn
 {
 namespace video
@@ -20,8 +19,8 @@ ShaderProgram::ShaderProgram(vk::Device device, const std::string& vertShader, c
     : m_isCreated(false), m_device(device)
 {
     unicorn::utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
-    unicorn::utility::asset::Handler simpleVertShaderHandler = storage.Get("data/shaders/shader.vert.spv");
-    unicorn::utility::asset::Handler simpleFragShaderHandler = storage.Get("data/shaders/shader.frag.spv");
+    unicorn::utility::asset::Handler simpleVertShaderHandler = storage.Get(vertShader);
+    unicorn::utility::asset::Handler simpleFragShaderHandler = storage.Get(fragShader);
 
     if (!simpleVertShaderHandler.IsValid() || !simpleFragShaderHandler.IsValid())
     {
@@ -30,7 +29,7 @@ ShaderProgram::ShaderProgram(vk::Device device, const std::string& vertShader, c
     }
 
     bool shadersCreatedFailed = !CreateShaderModule(simpleVertShaderHandler.GetContent().GetBuffer(), m_vertShaderModule) ||
-        !CreateShaderModule(simpleFragShaderHandler.GetContent().GetBuffer(), m_fragShaderModule);
+                                !CreateShaderModule(simpleFragShaderHandler.GetContent().GetBuffer(), m_fragShaderModule);
 
     if (shadersCreatedFailed)
     {

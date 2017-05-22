@@ -40,7 +40,6 @@ void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
         return;
     }
     deltaTime = newDeltatime;
-    std::cout << "LOGIC " << deltaTime << "\n";
     for (auto& mesh : cubes)
     {
         mesh->Rotate(deltaTime, {1, 1, 0});
@@ -62,12 +61,12 @@ void onMouseButton(unicorn::system::Window* /*pWindow*/, unicorn::system::input:
 
 void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double, double> pos)
 {
-    pCameraController->UpdateMouseView(pos.first, pos.second);
+    pCameraController->UpdateView(pos.first, pos.second);
 }
 
 void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double> pos)
 {
-    pCameraController->Scroll(pos.second / 50);
+    pCameraController->Scroll(static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
 }
 
 void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::Key key, uint32_t scancode, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask modifiers)
@@ -86,8 +85,6 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     bool positionChanged = true;
 
     float delta = deltaTime;
-
-    std::cout << "KEYS " << delta << "\n";
 
     if (Modifier::Shift & modifiers)
     {
@@ -132,22 +129,22 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
         }
     case Key::Up:
         {
-            position.second -= delta;
+            position.second -= static_cast<uint32_t>(delta);
             break;
         }
     case Key::Down:
         {
-            position.second += delta;
+            position.second += static_cast<uint32_t>(delta);
             break;
         }
     case Key::Left:
         {
-            position.first -= delta;
+            position.first -= static_cast<uint32_t>(delta);
             break;
         }
     case Key::Right:
         {
-            position.first += delta;
+            position.first += static_cast<uint32_t>(delta);
             break;
         }
     case Key::C:

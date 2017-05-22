@@ -12,10 +12,8 @@ namespace unicorn
 {
 namespace utility
 {
-
 void* AlignedAlloc(size_t size, size_t alignment);
 void AlignedFree(void* data);
-
 }
 }
 

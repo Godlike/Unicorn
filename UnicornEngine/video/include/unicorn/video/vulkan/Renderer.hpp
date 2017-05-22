@@ -4,8 +4,8 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#ifndef UNICORN_VIDEO_VULKAN_VULKAN_RENDERER_HPP
-#define UNICORN_VIDEO_VULKAN_VULKAN_RENDERER_HPP
+#ifndef UNICORN_VIDEO_VULKAN_RENDERER_HPP
+#define UNICORN_VIDEO_VULKAN_RENDERER_HPP
 
 #include <vulkan/vulkan.hpp>
 #include <unicorn/video/Renderer.hpp>
@@ -32,14 +32,14 @@ struct QueueFamilyIndices
     int32_t presentFamily = -1;
 
     /**
-     * @brief Check if all needed family indices are exists.
-     * @return true if graphics and present families exists and false if not
+     * @brief Checks if all needed family indices are exists.
+     * @return true if all required features are available and false if not
      */
     bool IsComplete() const;
 };
 
 /**
- * @brief Details of swapchain for creating it.
+ * @brief Swapchain creation details
  */
 struct SwapChainSupportDetails
 {
@@ -49,7 +49,7 @@ struct SwapChainSupportDetails
 };
 
 /**
- * @brief Struct for easy filling and sending to shader
+ * @brief Camera data
  */
 struct UniformCameraData
 {
@@ -77,15 +77,15 @@ class Renderer : public video::Renderer
 public:
     /**
      * @brief Basic constructor
-     * @param manager To get Vulkan OS depend extensions
-     * @param window Which we will render to
+     * @param manager Describes required extensions
+     * @param window Render into
      */
     Renderer(system::Manager& manager, system::Window* window);
 
     /**
-     * @brief Destructor which calls @sa Deinit
+     * @brief Destructor which calls Deinit()
      */
-    ~Renderer() override;
+    ~Renderer();
 
     Renderer(const Renderer& other) = delete;
     Renderer(const Renderer&& other) = delete;
@@ -145,10 +145,10 @@ private:
     void FreeCommandBuffers();
     void FreeSemaphores();
     void FreeUniforms();
-    void FreeDescriptorPoolAndLayouts();
+    void FreeDescriptorPoolAndLayouts() const;
 
     bool PrepareUniformBuffers();
-    void ResizeDynamicUniformBuffer();
+    void ResizeDynamicUniformBuffer() const;
     void UpdateUniformBuffer();
     void UpdateDynamicUniformBuffer();
     bool PickPhysicalDevice();
@@ -165,17 +165,17 @@ private:
     bool CreateSemaphores();
 
     bool IsDeviceSuitable(const vk::PhysicalDevice& device);
-    bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device);
+    bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device) const;
     bool Frame();
     void OnMeshReallocated(VkMesh*);
     QueueFamilyIndices FindQueueFamilies(const vk::PhysicalDevice& device) const;
     bool FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features, vk::Format& returnFormat) const;
-    bool FindDepthFormat(vk::Format& desiredFormat);
+    bool FindDepthFormat(vk::Format& desiredFormat) const;
     bool HasStencilComponent(vk::Format format) const;
-    bool QuerySwapChainSupport(SwapChainSupportDetails& details, const vk::PhysicalDevice& device);
-    vk::SurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats);
-    vk::PresentModeKHR ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes);
-    vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities);
+    bool QuerySwapChainSupport(SwapChainSupportDetails& details, const vk::PhysicalDevice& device) const;
+    vk::SurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats) const;
+    vk::PresentModeKHR ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes) const;
+    vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities) const;
     // Callbacks for window events
     void OnWindowDestroyed(system::Window* pWindow);
     void OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, int32_t> size);
@@ -183,4 +183,4 @@ private:
 }
 }
 }
-#endif // UNICORN_VIDEO_VULKAN_VULKAN_RENDERER_HPP
+#endif // UNICORN_VIDEO_VULKAN_RENDERER_HPP

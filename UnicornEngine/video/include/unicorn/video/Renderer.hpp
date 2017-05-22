@@ -27,6 +27,7 @@ class Timer;
 namespace video
 {
 class Camera;
+
 class Renderer
 {
 public:
@@ -49,7 +50,7 @@ public:
 protected:
     bool m_isInitialized;
 
-    //! Reference to window manager manager
+    //! Reference to window manager
     system::Manager& m_systemManager;
     //! Pointer to associated window
     system::Window* m_pWindow;
@@ -60,8 +61,8 @@ protected:
     //! Background filling color
     std::array<float, 4> m_backgroundColor;
     // Callbacks for window events
-    void OnWindowDestroyed(system::Window* pWindow) = delete;
-    void OnWindowSizeChanged(system::Window* pWindow, std::pair<std::int32_t, std::int32_t> size) = delete;
+    void OnWindowDestroyed(system::Window* pWindow);
+    void OnWindowSizeChanged(system::Window* pWindow, std::pair<std::int32_t, std::int32_t> size);
 };
 }
 }

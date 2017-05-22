@@ -11,7 +11,7 @@ namespace unicorn
 namespace video
 {
 CameraFpsController::CameraFpsController(std::shared_ptr<Camera> camera)
-    : CameraController(camera), sensitivity(0.1f), speed(100.0f), m_lastX(0.0), m_lastY(0.0), m_yaw(90.0), m_pitch(0.0), m_firstMouse(true)
+    : CameraController(camera), sensitivity(0.1f), speed(100.0f), m_lastX(0.0), m_lastY(0.0), m_yaw(90.0), m_pitch(0.0), m_dirty(false)
 {
 }
 
@@ -45,13 +45,13 @@ void CameraFpsController::MoveBackward(float deltaTime)
     m_camera->Translate(-m_camera->GetDirection() * speed * deltaTime);
 }
 
-void CameraFpsController::UpdateMouseView(double posX, double posY)
+void CameraFpsController::UpdateView(double posX, double posY)
 {
-    if (m_firstMouse)
+    if (!m_dirty)
     {
         m_lastX = posX;
         m_lastY = posY;
-        m_firstMouse = false;
+        m_dirty = true;
     }
 
     double xoffset = m_lastX - posX;
@@ -77,11 +77,11 @@ void CameraFpsController::UpdateMouseView(double posX, double posY)
     m_camera->SetDirection(glm::normalize(front));
 }
 
-void CameraFpsController::Scroll(double yoffset)
+void CameraFpsController::Scroll(float yoffset)
 {
     if (m_camera->GetFov() >= 44.0f && m_camera->GetFov() <= 45.0f)
     {
-        m_camera->ChangeFov(-yoffset);
+        m_camera->SetFov(m_camera ->GetFov() - yoffset);
     }
     if (m_camera->GetFov() <= 44.0f)
     {

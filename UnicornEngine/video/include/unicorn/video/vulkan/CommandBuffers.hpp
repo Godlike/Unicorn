@@ -23,7 +23,6 @@ class CommandBuffers
 public:
     /**
      * @brief Default constructor
-     * 
      */
     CommandBuffers();
     /**
@@ -32,30 +31,30 @@ public:
     ~CommandBuffers();
 
     /**
-     * @brief Creating new command buffers
-     * @param device Which device you want use to allocation process
+     * @brief Creates new command buffers
+     * @param device Which device you want use for allocation process
      * @param count Command buffer size
      * @return true if was allocated successfully and false if not
      */
-    vk::Result Create(vk::Device device, size_t count);
+    vk::Result Create(vk::Device device, uint32_t count);
     /**
      * @brief Destroys all data
      */
     void Destroy() const;
 
     /**
-     * @brief Getter for passed command pool
+     * @brief Returns command pool
      * @return reference to vk::CommandPool
      */
     vk::CommandPool& GetVkCommandPool();
     /**
-     * @brief Getter for command buffer
+     * @brief Returns command buffer
      * @param index Index of needed command buffer
      * @return Reference for needed command buffer
      */
-    vk::CommandBuffer& GetVkCommandBuffer(size_t index);
+    vk::CommandBuffer& GetVkCommandBuffer(uint32_t index);
     /**
-     * @brief Getter for all command buffers
+     * @brief Returns all command buffers
      * @return vector of all command buffer
      */
     const std::vector<vk::CommandBuffer>& GetVkCommandBuffers();

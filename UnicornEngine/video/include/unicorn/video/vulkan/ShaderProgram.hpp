@@ -24,15 +24,14 @@ class ShaderProgram
 public:
     /**
      * @brief Constructor
-     * @param m_device Which device we will you to allocate memory
+     * @param device Which device we will you to allocate memory
      * @param vertShaderPath Path to vertex shader path
      * @param fragShaderPath Path to fragment shader 
      */
-    ShaderProgram(vk::Device m_device, const std::string& vertShaderPath, const std::string& fragShaderPath);
-    ShaderProgram() = delete;
+    ShaderProgram(vk::Device device, const std::string& vertShaderPath, const std::string& fragShaderPath);
     /**
      * @brief Function to check is shader was successfully loaded and created
-     * @return true if shader created and false if not
+     * @return true if shader was created and false if not
      */
     bool IsCreated();
     /**

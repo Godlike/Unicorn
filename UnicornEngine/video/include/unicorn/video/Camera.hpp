@@ -19,7 +19,7 @@ namespace unicorn
 namespace video
 {
 /**
- * @brief Type of projection, which we can use in Camera
+ * @brief Type of camera projection
  */
 enum class ProjectionType
 {
@@ -27,97 +27,95 @@ enum class ProjectionType
 };
 
 /**
- * @brief Camera class, which create View and Projection matrices.
+ * @brief Camera class, holds view and projection matrices.
  */
 class Camera
 {
 public:
     /**
      * @brief Camera constuctor
-     * @param postion Default position of camera
-     * @param direction Default view direction of camera
+     * @param position Default position
+     * @param direction Default view direction
      */
-    UNICORN_EXPORT Camera(glm::vec3 postion, glm::vec3 direction);
+    UNICORN_EXPORT Camera(const glm::vec3& position, const glm::vec3& direction);
 
     /**
-     * @brief 
+     * @brief Sets perspective projection mode from given frustum description
      * @param fov Field of view
-     * @param aspect Aspect ratio - 4/3, 16/9 and so on.
-     * @param znear Near camera's frustrum plane
-     * @param zfar Far camera's frustrum plane
+     * @param aspect Aspect ratio
+     * @param znear Near frustrum plane
+     * @param zfar Far frustrum plane
      */
     UNICORN_EXPORT void SetPerspective(float fov, float aspect, float znear, float zfar);
     /**
-     * @brief Setting new aspect ratio
-     * @param aspect New aspect value
+     * @brief Sets aspect ratio
+     * @param aspect Aspect value
      */
-    UNICORN_EXPORT void UpdateAspectRatio(float aspect);
+    UNICORN_EXPORT void SetAspectRatio(float aspect);
     /**
-     * @brief Translate camera in space
-     * @param delta vector of translation, for example {15.f, 3.f, 0.f} will translate x by 15m, y by 3 and z by 0
+     * @brief Changes camera position by given vector
+     * @param delta Vector of translation
      */
     UNICORN_EXPORT void Translate(const glm::vec3& delta);
     /**
-     * @brief Setting new direction of camera
+     * @brief Sets direction
      * @param direction New direction value
      */
     UNICORN_EXPORT void SetDirection(const glm::vec3& direction);
     /**
-     * @brief Setting new up vector for camera
+     * @brief Sets up vector
      * @param upVector New up vector value
      */
     UNICORN_EXPORT void SetUpVector(const glm::vec3& upVector);
     /**
-     * @brief Setting new position for camera
+     * @brief Sets position
      * @param position New position value
      */
     UNICORN_EXPORT void SetPosition(const glm::vec3& position);
     /**
-     * @brief Setting new projection type for camera
-     * @param newType New type value
+     * @brief Sets projection type
+     * @param type New type value
      */
-    UNICORN_EXPORT void SetProjectionType(ProjectionType newType);
+    UNICORN_EXPORT void SetProjectionType(ProjectionType type);
     /**
-     * @brief Set new field of view value
-     * @param newFov New field of view
+     * @brief Sets field of view value
+     * @param fov New horizontal field of view
      */
-    UNICORN_EXPORT void SetFov(float newFov);
+    UNICORN_EXPORT void SetFov(float fov);
     /**
-     * @brief Getter for direction
+     * @brief Returns direction
      * @return Direction vector
      */
-    UNICORN_EXPORT glm::vec3 GetDirection() const;
+    UNICORN_EXPORT const glm::vec3& GetDirection() const;
     /**
-     * @brief Getter for up vector
+     * @brief Returns up vector
      * @return Up vector value
      */
-    UNICORN_EXPORT glm::vec3 GetUpVector() const;
+    UNICORN_EXPORT const glm::vec3& GetUpVector() const;
     /**
-     * @brief Getter for projection matrix
+     * @brief Returns projection matrix
      * @return Projection matrix value
      */
-    UNICORN_EXPORT glm::mat4 GetProjection() const;
+    UNICORN_EXPORT const glm::mat4& GetProjection() const;
     /**
-     * @brief Getter for view matrix
+     * @brief Returns view matrix
      * @return View matrix value
      */
-    UNICORN_EXPORT glm::mat4 GetView() const;
+    UNICORN_EXPORT const glm::mat4& GetView() const;
     /**
-     * @brief Getter for field of view value
+     * @brief Returns field of view value
      * @return Field of view value
      */
     UNICORN_EXPORT float GetFov() const;
     /**
-     * @brief Update field of view with new delta value. Useful for zooming effect.
-     * @param deltaFov Adding this value to old one.
-     */
-    UNICORN_EXPORT void ChangeFov(float deltaFov);
-
+    * @brief Checks if view or projection need to be updated and update it, if needed
+    */
+    UNICORN_EXPORT void Frame();
 private:
     float m_aspect;
-    glm::vec3 m_camPosition;
+    glm::vec3 m_position;
     glm::vec3 m_upVector;
-    glm::vec3 m_camDirection;
+    glm::vec3 m_direction;
 
     struct
     {
@@ -127,13 +125,15 @@ private:
 
     float m_fov;
     float m_znear, m_zfar;
+    bool m_dirtyView;
+    bool m_dirtyProjection;
     ProjectionType m_projectionType;
     /**
-     * @brief Recalculating view matrix
+     * @brief Calculates view matrix
      */
     void UpdateViewMatrix();
     /**
-     * @brief Recalculating projection matrix
+     * @brief Calculates projection matrix
      */
     void UpdateProjectionMatrix();
 };
