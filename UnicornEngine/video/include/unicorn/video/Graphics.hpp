@@ -155,8 +155,8 @@ private:
         /** @brief  Calculates hash */
         std::size_t operator()(const RendererWindowPair& pair) const
         {
-            return std::hash<Renderer*>()( pair.first ) ^
-                std::hash<system::Window*>()( pair.second );
+            return std::hash<Renderer*>()(pair.first) ^
+                std::hash<system::Window*>()(pair.second);
         }
     };
 

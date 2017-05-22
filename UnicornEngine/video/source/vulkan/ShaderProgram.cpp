@@ -9,7 +9,6 @@
 #include <unicorn/utility/Logger.hpp>
 #include <unicorn/video/geometry/Mesh.hpp>
 
-
 namespace unicorn
 {
 namespace video
@@ -30,7 +29,7 @@ ShaderProgram::ShaderProgram(vk::Device device, const std::string& vertShader, c
     }
 
     bool shadersCreatedFailed = !CreateShaderModule(simpleVertShaderHandler.GetContent().GetBuffer(), m_vertShaderModule) ||
-        !CreateShaderModule(simpleFragShaderHandler.GetContent().GetBuffer(), m_fragShaderModule);
+                                !CreateShaderModule(simpleFragShaderHandler.GetContent().GetBuffer(), m_fragShaderModule);
 
     if (shadersCreatedFailed)
     {

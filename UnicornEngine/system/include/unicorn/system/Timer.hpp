@@ -26,27 +26,27 @@ class Timer
 
 public:
     /**
-     * \brief Constructs Timer object.
-     * \param run If true, timer will reset in constuctor.
+     * @brief Constructs Timer object.
+     * @param run If true, timer will reset in constuctor.
      */
     UNICORN_EXPORT Timer(bool run = false);
     /**
-     * \brief Reset timer.
+     * @brief Reset timer.
      */
     UNICORN_EXPORT void Reset();
     /**
-     * \brief Return time in milliseconds
-     * \return Time in milliseconds
+     * @brief Return time in milliseconds
+     * @return Time in milliseconds
      */
     UNICORN_EXPORT Milliseconds ElapsedMilliseconds() const;
     /**
-    * \brief Return time in seconds
-    * \return Time in seconds
+    * @brief Return time in seconds
+    * @return Time in seconds
     */
     UNICORN_EXPORT Seconds ElapsedSeconds() const;
     /**
-    * \brief Return time in minutes
-    * \return Time in minutes
+    * @brief Return time in minutes
+    * @return Time in minutes
     */
     UNICORN_EXPORT Minutes ElapsedMinutes() const;
 

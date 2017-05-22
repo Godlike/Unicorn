@@ -89,7 +89,7 @@ public:
     * @brief Getter for raw vk::Buffer
     * @return copy of vk::Buffer
     */
-    vk::Buffer  GetVkBuffer() const;
+    vk::Buffer GetVkBuffer() const;
 
     vk::DescriptorBufferInfo descriptor;
 private:

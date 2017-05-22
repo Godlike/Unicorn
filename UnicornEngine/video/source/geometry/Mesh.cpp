@@ -23,7 +23,7 @@ Mesh::~Mesh()
 
 void Mesh::SetColor(const glm::vec3& newColor)
 {
-    for ( auto& x : m_vertices )
+    for (auto& x : m_vertices)
     {
         x.color = newColor;
     }

@@ -37,7 +37,7 @@ public:
      * @param count Command buffer size
      * @return true if was allocated successfully and false if not
      */
-    vk::Result Create(vk::Device device, size_t count);
+    vk::Result Create(vk::Device device, uint32_t count);
     /**
      * @brief Destroys all data
      */
@@ -53,7 +53,7 @@ public:
      * @param index Index of needed command buffer
      * @return Reference for needed command buffer
      */
-    vk::CommandBuffer& GetVkCommandBuffer(size_t index);
+    vk::CommandBuffer& GetVkCommandBuffer(uint32_t index);
     /**
      * @brief Getter for all command buffers
      * @return vector of all command buffer

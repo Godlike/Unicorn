@@ -34,7 +34,7 @@ vk::Result ShaderModule::Create(vk::Device device, size_t size, void* code)
 
 void ShaderModule::Destroy()
 {
-    if(m_shaderModule)
+    if (m_shaderModule)
     {
         m_device.destroyShaderModule(m_shaderModule, nullptr);
         m_shaderModule = nullptr;

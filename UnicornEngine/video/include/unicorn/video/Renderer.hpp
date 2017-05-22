@@ -27,6 +27,7 @@ class Timer;
 namespace video
 {
 class Camera;
+
 class Renderer
 {
 public:
