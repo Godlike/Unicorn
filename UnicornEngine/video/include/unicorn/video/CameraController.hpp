@@ -16,12 +16,21 @@ namespace unicorn
 namespace video
 {
 /**
- * @brief Wrapper for camera, handle shared pointer to it.
+ * @brief Wrapper for camera, handle shared pointer to it
  */
 class CameraController
 {
 public:
+    /**
+     * @brief Constructor
+     * @param camera Which camera to control
+     */
     UNICORN_EXPORT CameraController(std::shared_ptr<Camera> camera);
+    UNICORN_EXPORT CameraController() = delete;
+    /**
+     * @brief Setter for new projection type
+     * @param newType New projection type
+     */
     UNICORN_EXPORT void SetCameraProjection(ProjectionType newType);
 protected:
     std::shared_ptr<Camera> m_camera;

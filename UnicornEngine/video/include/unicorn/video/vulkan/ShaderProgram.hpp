@@ -7,11 +7,8 @@
 #ifndef UNICORN_VIDEO_SHADER_PROGRAM_HPP
 #define UNICORN_VIDEO_SHADER_PROGRAM_HPP
 
-#include <unicorn/video/geometry/Mesh.hpp>
-
 #include <vulkan/vulkan.hpp>
 #include <array>
-#include <string>
 
 namespace unicorn
 {
@@ -19,13 +16,38 @@ namespace video
 {
 namespace vulkan
 {
+/**
+ * @brief Abstraction for shader program, which renderer will use for rendering meshes
+ */
 class ShaderProgram
 {
 public:
-    ShaderProgram(vk::Device m_device, const std::string& vertShader, const std::string& fragShader);
+    /**
+     * @brief Constructor
+     * @param m_device Which device we will you to allocate memory
+     * @param vertShaderPath Path to vertex shader path
+     * @param fragShaderPath Path to fragment shader 
+     */
+    ShaderProgram(vk::Device m_device, const std::string& vertShaderPath, const std::string& fragShaderPath);
+    ShaderProgram() = delete;
+    /**
+     * @brief Function to check is shader was successfully loaded and created
+     * @return true if shader created and false if not
+     */
     bool IsCreated();
+    /**
+     * @brief Getter for shader stage info data
+     * @return pointer to all shader stage info data
+     */
     vk::PipelineShaderStageCreateInfo* GetShaderStageInfoData();
+    /**
+     * @brief Getter for vertex input info
+     * @return vk::PipelineVertexInputStateCreateInfo
+     */
     vk::PipelineVertexInputStateCreateInfo GetVertexInputInfo();
+    /**
+     * @brief Destroys shader modules
+     */
     void DestroyShaderModules();
 private:
     bool m_isCreated;
@@ -38,7 +60,7 @@ private:
     vk::VertexInputBindingDescription m_bindingDescription;
     std::array<vk::VertexInputAttributeDescription, 2> m_attributeDescription;
     std::array<vk::PipelineShaderStageCreateInfo, 2> m_shaderStages;
-    vk::ShaderModule m_vertShaderModule, m_fragShaderModule; //TODO: use vulkan::Shader here
+    vk::ShaderModule m_vertShaderModule, m_fragShaderModule;
     vk::PipelineVertexInputStateCreateInfo m_vertexInputInfo;
 };
 }

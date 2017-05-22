@@ -11,7 +11,7 @@ namespace unicorn
 namespace video
 {
 CameraFpsController::CameraFpsController(std::shared_ptr<Camera> camera)
-    : CameraController(camera), sensitivity(0.1f), speed(10.0f), m_lastX(0.0), m_lastY(0.0), m_yaw(90.0), m_pitch(0.0), m_firstMouse(true)
+    : CameraController(camera), sensitivity(0.1f), speed(100.0f), m_lastX(0.0), m_lastY(0.0), m_yaw(90.0), m_pitch(0.0), m_firstMouse(true)
 {
 }
 

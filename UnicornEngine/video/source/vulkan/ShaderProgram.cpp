@@ -7,6 +7,8 @@
 #include <unicorn/video/vulkan/ShaderProgram.hpp>
 #include <unicorn/utility/asset/SimpleStorage.hpp>
 #include <unicorn/utility/Logger.hpp>
+#include <unicorn/video/geometry/Mesh.hpp>
+
 
 namespace unicorn
 {

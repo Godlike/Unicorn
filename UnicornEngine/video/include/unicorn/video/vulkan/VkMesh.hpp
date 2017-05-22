@@ -18,20 +18,60 @@ namespace video
 {
 namespace vulkan
 {
+/**
+ * @brief Mesh info for Vulkan backend
+ */
 class VkMesh
 {
 public:
+    /**
+     * @brief Constructor
+     * @param device Which device to use
+     * @param physicalDevice Where to allocate mesh
+     * @param pool Which pool to allocate commands from
+     * @param queue Which queue to use to buffer copying
+     * @param mesh Geometry data
+     */
     VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, std::shared_ptr<geometry::Mesh> mesh);
     ~VkMesh();
+    /**
+     * @brief Allocation on GPU
+     */
     void AllocateOnGPU();
+    /**
+     * @brief Deallocation on GPU
+     */
     void DeallocateOnGPU();
 
+    /**
+     * @brief Getter for vertex buffer
+     * @return vk::Buffer
+     */
     vk::Buffer GetVertexBuffer();
+    /**
+     * @brief Getter for index buffer
+     * @return vk::Buffer
+     */
     vk::Buffer GetIndexBuffer();
+    /**
+     * @brief Matrix of transformations
+     * @return Model matrix
+     */
     glm::mat4 GetModel() const;
 
+    /**
+     * @brief Getter for vertices size
+     * @return size of vertices
+     */
     std::uint32_t VerticesSize();
+    /**
+    * @brief Getter for indices size
+    * @return size of indices
+    */
     std::uint32_t IndicesSize();
+    /**
+     * @brief Signal for command buffer reallocation
+     */
     wink::signal<wink::slot<void(VkMesh*)>> ReallocatedOnGpu;
 private:
     vk::Device m_device;

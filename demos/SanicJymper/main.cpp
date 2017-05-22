@@ -19,27 +19,39 @@
 #include <unicorn/video/geometry/Cube.hpp>
 #include <unicorn/video/CameraFpsController.hpp>
 #include <cstdlib>
+#include <iostream>
 
 static unicorn::video::Graphics* pGraphics = nullptr;
 static unicorn::video::CameraFpsController* pCameraController = nullptr;
 static unicorn::system::Timer* timer = nullptr;
 static unicorn::video::Renderer* vkRenderer0 = nullptr;
-unicorn::system::Window* pWindow0;
+unicorn::system::Window* pWindow0 = nullptr;
 std::vector<unicorn::video::geometry::Cube*> cubes;
+
+float deltaTime = 0.0f;	// Time between current frame and last frame
+float lastFrame = 0.0f;  	// Time of last frame
 
 void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
 {
-    float delta = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
+    float currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
+    float newDeltatime = currentFrame - lastFrame;
+    if(newDeltatime <= 0.0)
+    {
+        return;
+    }
+    deltaTime = newDeltatime;
+    std::cout << "LOGIC " << deltaTime << "\n";
     for (auto& mesh : cubes)
     {
-        mesh->Rotate(100 * delta, {1, 1, 0});
+        mesh->Rotate(deltaTime, {1, 1, 0});
     }
-    timer->Reset();
+    lastFrame = currentFrame;
 }
 
-void onMouseButton(unicorn::system::Window* pWindow, unicorn::system::input::MouseButton button, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask)
+void onMouseButton(unicorn::system::Window* /*pWindow*/, unicorn::system::input::MouseButton button, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask)
 {
-    if (button == unicorn::system::input::MouseButton::MouseLeft)
+    
+    if (button == unicorn::system::input::MouseButton::MouseLeft && action == unicorn::system::input::Action::Press)
     {
         auto kek = new unicorn::video::geometry::Cube(vkRenderer0->SpawnMesh());
         kek->Move({std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20});
@@ -73,7 +85,9 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     std::pair<int32_t, int32_t> position = pWindow->GetPosition();
     bool positionChanged = true;
 
-    float delta = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
+    float delta = deltaTime;
+
+    std::cout << "KEYS " << delta << "\n";
 
     if (Modifier::Shift & modifiers)
     {

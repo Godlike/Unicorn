@@ -18,6 +18,7 @@ ShaderModule::ShaderModule()
 
 ShaderModule::~ShaderModule()
 {
+    Destroy();
 }
 
 vk::Result ShaderModule::Create(vk::Device device, size_t size, void* code)
@@ -28,13 +29,16 @@ vk::Result ShaderModule::Create(vk::Device device, size_t size, void* code)
     shaderInfo.setCodeSize(size);
     shaderInfo.setPCode(reinterpret_cast<uint32_t*>(code));
 
-    vk::Result result = m_device.createShaderModule(&shaderInfo, nullptr, &m_shaderModule);
-    return result;
+    return m_device.createShaderModule(&shaderInfo, nullptr, &m_shaderModule);
 }
 
 void ShaderModule::Destroy()
 {
-    m_device.destroyShaderModule(m_shaderModule, nullptr);
+    if(m_shaderModule)
+    {
+        m_device.destroyShaderModule(m_shaderModule, nullptr);
+        m_shaderModule = nullptr;
+    }
 }
 
 vk::ShaderModule& ShaderModule::GetVkShaderModule()

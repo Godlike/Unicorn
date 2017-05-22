@@ -70,13 +70,21 @@ class UniformObject;
 class Image;
 
 /**
- * @brief Vulkan renderer
+ * @brief Vulkan renderer backend
  */
 class Renderer : public video::Renderer
 {
 public:
+    /**
+     * @brief Basic constructor
+     * @param manager To get Vulkan OS depend extensions
+     * @param window Which we will render to
+     */
     Renderer(system::Manager& manager, system::Window* window);
 
+    /**
+     * @brief Destructor which calls @sa Deinit
+     */
     ~Renderer() override;
 
     Renderer(const Renderer& other) = delete;

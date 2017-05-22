@@ -18,7 +18,6 @@ namespace unicorn
 {
 namespace video
 {
-
 /**
  * @brief Type of projection, which we can use in Camera
  */
@@ -119,11 +118,13 @@ private:
     glm::vec3 m_camPosition;
     glm::vec3 m_upVector;
     glm::vec3 m_camDirection;
+
     struct
     {
         glm::mat4 m_projection;
         glm::mat4 m_view;
     } m_matrices;
+
     float m_fov;
     float m_znear, m_zfar;
     ProjectionType m_projectionType;
