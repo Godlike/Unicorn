@@ -23,7 +23,6 @@ class CommandBuffers
 public:
     /**
      * @brief Default constructor
-     * 
      */
     CommandBuffers();
     /**
@@ -33,7 +32,7 @@ public:
 
     /**
      * @brief Creating new command buffers
-     * @param device Which device you want use to allocation process
+     * @param device Which device you want use for allocation process
      * @param count Command buffer size
      * @return true if was allocated successfully and false if not
      */
@@ -44,7 +43,7 @@ public:
     void Destroy() const;
 
     /**
-     * @brief Getter for passed command pool
+     * @brief Getter for command pool
      * @return reference to vk::CommandPool
      */
     vk::CommandPool& GetVkCommandPool();

@@ -52,7 +52,7 @@ public:
     ~Graphics();
 
     Graphics(const Graphics& other) = delete;
-    Graphics(const Graphics&& other) = delete;
+    Graphics(Graphics&& other) = delete;
     Graphics& operator=(Graphics& other) = delete;
     Graphics& operator=(Graphics&& other) = delete;
 
@@ -60,11 +60,11 @@ public:
     *
     *  Ensures that window management system supports Vulkan
     *
-    *  @param  whichDriver Driver, which will render our all graphics.
+    *  @param  driver Driver, which will render our all graphics.
     *
     *  @return @c true if initialization was successful, @c false otherwise
     */
-    bool Init(const DriverType& whichDriver);
+    bool Init(const DriverType& driver);
 
     /** @brief  Deinitializes the graphics system
     *
@@ -136,9 +136,9 @@ public:
     */
     UNICORN_EXPORT void SetWindowCreationHint(system::WindowHint hint, int32_t value) const;
 
-    /** @brief  Spawn new Vulkan based Renderer, which contain @sa VulkanDevice
-    *  @param  window Which window to render.
-    *  @return Pointer to @sa Renderer.
+    /** @brief  Spawn new Vulkan based Renderer, which contain VulkanDevice
+    *  @param  window Output window.
+    *  @return Pointer to newly created Renderer.
     */
     UNICORN_EXPORT Renderer* SpawnVulkanRenderer(system::Window* window);
 
@@ -169,7 +169,7 @@ private:
     //! Flag describing if graphics were initialized
     bool m_isInitialized;
 
-    //! Reference to window and monitor managing manager
+    //! Reference to window and monitor manager
     system::Manager& m_systemManager;
 
     //! Set of Renderer-Window pairs
@@ -178,7 +178,7 @@ private:
     //! Set of expired Renderer-Window pairs that need to be deinitialized
     RendererWindowPairSet m_expiredRenderers;
 
-    //! Hold which driver we are using for correct deallocation
+    //! Current in use driver type
     DriverType m_driver;
 };
 }

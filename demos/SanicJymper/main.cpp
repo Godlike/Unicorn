@@ -61,12 +61,12 @@ void onMouseButton(unicorn::system::Window* /*pWindow*/, unicorn::system::input:
 
 void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double, double> pos)
 {
-    pCameraController->UpdateMouseView(pos.first, pos.second);
+    pCameraController->UpdateView(pos.first, pos.second);
 }
 
 void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double> pos)
 {
-    pCameraController->Scroll(pos.second / 50); // 50 is zoom coefficient
+    pCameraController->Scroll(static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
 }
 
 void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::Key key, uint32_t scancode, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask modifiers)

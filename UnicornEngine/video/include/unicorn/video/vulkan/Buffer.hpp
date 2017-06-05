@@ -22,47 +22,47 @@ class Buffer
 {
 public:
     /**
-     * @brief Basic constructor for buffer
+     * @brief Constructor for buffer
      */
     Buffer();
     /**
-     * @brief Desctructor which calls @sa Destroy
+     * @brief Desctructor which calls Destroy
      */
     ~Buffer();
 
     /**
-     * @brief Create new buffer
-     * @param physicalDevice vk::PhysicalDevice, which you want allocate on
-     * @param device vk::Device which you want you for allocations
-     * @param usage vk::BufferUsageFlags How you want to use this buffer
+     * @brief Creates new buffer
+     * @param physicalDevice GPU for memory allocation
+     * @param device Device which will allocate memory on GPU
+     * @param usage Buffer specific usage
      * @param memoryPropertyFlags Flags for memory usage
      * @param size Size of buffer
      * @return true if buffer was allocated correctly, false if some error occured
      */
     bool Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags memoryPropertyFlags, size_t size);
     /**
-     * @brief Destroy all buffer data
+     * @brief Destroys all buffer data
      */
     void Destroy();
     /**
-     * @brief Writing data to buffer. You need to map it first.
+     * @brief Writes data to buffer. You need to map it first.
      * @param pData Data which you want to fill buffer
      */
     void Write(const void* pData) const;
     /**
-     * @brief Mapping buffer
+     * @brief Maps buffer
      */
     void Map();
     /**
-     * @brief Unmapping buffer
+     * @brief Unmaps buffer
      */
     void Unmap();
     /**
-     * @brief Copying buffer to another buffer. Useful for staging buffering
-     * @param pool Which pool you want to allocate commands from
-     * @param queue Which queue you want to use 
+     * @brief Copies buffer to another buffer. Useful for staging buffering
+     * @param pool Pool for allocating commands from
+     * @param queue Queue for processing
      * @param dstBuffer Destination buffer
-     * @param size Size of data, which you want to copy
+     * @param size Size of copyable data
      */
     void CopyToBuffer(vk::CommandPool pool, vk::Queue queue, const vulkan::Buffer& dstBuffer, vk::DeviceSize size);
     /**
@@ -84,14 +84,14 @@ public:
     * @brief Getter for raw vk::Buffer
     * @return reference to vk::Buffer
     */
-    vk::Buffer& GetVkBuffer();
+    const vk::Buffer& GetVkBuffer();
     /**
     * @brief Getter for raw vk::Buffer
     * @return copy of vk::Buffer
     */
     vk::Buffer GetVkBuffer() const;
 
-    vk::DescriptorBufferInfo descriptor;
+    const vk::DescriptorBufferInfo& GetDescriptorInfo() const;
 private:
     vk::Device m_device;
     vk::BufferUsageFlags m_usage;
@@ -99,6 +99,7 @@ private:
     vk::Buffer m_buffer;
     vk::DeviceMemory m_memory;
     void* m_mappedMemory;
+    vk::DescriptorBufferInfo m_descriptor;
 };
 }
 }

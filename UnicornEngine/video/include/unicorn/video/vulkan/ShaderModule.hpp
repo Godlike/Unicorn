@@ -25,15 +25,15 @@ public:
     ~ShaderModule();
 
     /**
-     * @brief Creating and allocating shader module
+     * @brief Creates and allocating shader module
      * @param device Which device to use
      * @param size Size of shader
      * @param code SPIR-V compiled code
      * @return true if created successful and false if not
      */
-    vk::Result Create(vk::Device device, size_t size, void* code);
+    vk::Result Create(vk::Device device, void* code, size_t size);
     /**
-     * @brief Free GPU acquired memory
+     * @brief Frees GPU acquired memory
      */
     void Destroy();
 

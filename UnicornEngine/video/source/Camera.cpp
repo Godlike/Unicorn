@@ -10,8 +10,14 @@ namespace unicorn
 {
 namespace video
 {
-Camera::Camera(glm::vec3 postion, glm::vec3 direction)
-    : m_aspect(0), m_camPosition(postion), m_upVector(glm::vec3(0.0f, -1.0f, 0.0f)), m_camDirection(direction), m_fov(45.0f), m_znear(0.1f), m_zfar(1000.0f), m_projectionType(ProjectionType::Perspective)
+Camera::Camera(const glm::vec3& position, const glm::vec3& direction) : m_aspect(0)
+                                                                      , m_position(position)
+                                                                      , m_upVector(0.0f, -1.0f, 0.0f)
+                                                                      , m_direction(direction)
+                                                                      , m_fov(45.0f)
+                                                                      , m_znear(0.1f)
+                                                                      , m_zfar(1000.0f)
+                                                                      , m_projectionType(ProjectionType::Perspective)
 {
     UpdateViewMatrix();
     UpdateProjectionMatrix();
@@ -26,7 +32,7 @@ void Camera::SetPerspective(float fov, float aspect, float znear, float zfar)
     UpdateProjectionMatrix();
 }
 
-void Camera::UpdateAspectRatio(float aspect)
+void Camera::SetAspectRatio(float aspect)
 {
     m_aspect = aspect;
     UpdateProjectionMatrix();
@@ -34,13 +40,13 @@ void Camera::UpdateAspectRatio(float aspect)
 
 void Camera::Translate(const glm::vec3& delta)
 {
-    m_camPosition += delta;
+    m_position += delta;
     UpdateViewMatrix();
 }
 
 void Camera::SetDirection(const glm::vec3& direction)
 {
-    m_camDirection = direction;
+    m_direction = direction;
     UpdateViewMatrix();
 }
 
@@ -52,32 +58,32 @@ void Camera::SetUpVector(const glm::vec3& upVector)
 
 void Camera::SetPosition(const glm::vec3& position)
 {
-    m_camPosition = position;
+    m_position = position;
     UpdateViewMatrix();
 }
 
-void Camera::SetProjectionType(ProjectionType newType)
+void Camera::SetProjectionType(ProjectionType type)
 {
-    m_projectionType = newType;
+    m_projectionType = type;
     UpdateProjectionMatrix();
 }
 
-glm::vec3 Camera::GetDirection() const
+const glm::vec3& Camera::GetDirection() const
 {
-    return m_camDirection;
+    return m_direction;
 }
 
-glm::vec3 Camera::GetUpVector() const
+const glm::vec3& Camera::GetUpVector() const
 {
     return m_upVector;
 }
 
-glm::mat4 Camera::GetProjection() const
+const glm::mat4& Camera::GetProjection() const
 {
     return m_matrices.m_projection;
 }
 
-glm::mat4 Camera::GetView() const
+const glm::mat4& Camera::GetView() const
 {
     return m_matrices.m_view;
 }
@@ -93,16 +99,10 @@ void Camera::SetFov(float newFov)
     UpdateProjectionMatrix();
 }
 
-void Camera::ChangeFov(float deltaFov)
-{
-    m_fov += deltaFov;
-    UpdateProjectionMatrix();
-}
-
 void Camera::UpdateViewMatrix()
 {
-    m_matrices.m_view = glm::lookAt(m_camPosition,
-                                    m_camPosition + m_camDirection,
+    m_matrices.m_view = glm::lookAt(m_position,
+                                    m_position + m_direction,
                                     m_upVector);
 }
 

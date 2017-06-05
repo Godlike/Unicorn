@@ -12,6 +12,8 @@
 #include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/utility/templates/Singleton.hpp>
 
+#include <condition_variable>
+#include <cstdint>
 #include <future>
 #include <mutex>
 #include <queue>

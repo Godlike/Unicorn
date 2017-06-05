@@ -147,7 +147,7 @@ QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
 
 bool Renderer::FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features, vk::Format& returnFormat) const
 {
-    for (auto format : candidates)
+    for (const auto& format : candidates)
     {
         vk::FormatProperties props;
         m_vkPhysicalDevice.getFormatProperties(format, &props);
@@ -474,27 +474,30 @@ void Renderer::ResizeDynamicUniformBuffer()
     writeDescriptorSetMVP.dstSet = m_descriptorSet;
     writeDescriptorSetMVP.descriptorType = vk::DescriptorType::eUniformBuffer;
     writeDescriptorSetMVP.dstBinding = 0;
-    writeDescriptorSetMVP.pBufferInfo = &m_uniformMvp.descriptor;
+    writeDescriptorSetMVP.pBufferInfo = &m_uniformMvp.GetDescriptorInfo();
     writeDescriptorSetMVP.descriptorCount = 1;
 
-    vk::WriteDescriptorSet writeDescriptorSetMODEL;
-    writeDescriptorSetMODEL.dstSet = m_descriptorSet;
-    writeDescriptorSetMODEL.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
-    writeDescriptorSetMODEL.dstBinding = 1;
-    writeDescriptorSetMODEL.pBufferInfo = &m_uniformModel.descriptor;
-    writeDescriptorSetMODEL.descriptorCount = 1;
+    vk::WriteDescriptorSet writeDescriptorSetModel;
+    writeDescriptorSetModel.dstSet = m_descriptorSet;
+    writeDescriptorSetModel.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
+    writeDescriptorSetModel.dstBinding = 1;
+    writeDescriptorSetModel.pBufferInfo = &m_uniformModel.GetDescriptorInfo();
+    writeDescriptorSetModel.descriptorCount = 1;
 
     writeDescriptorSets.push_back(writeDescriptorSetMVP);
-    writeDescriptorSets.push_back(writeDescriptorSetMODEL);
+    writeDescriptorSets.push_back(writeDescriptorSetModel);
 
     m_vkLogicalDevice.updateDescriptorSets(static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
 }
 
 void Renderer::UpdateUniformBuffer()
 {
-    m_uniformCameraData.proj = m_camera->GetProjection();
-    m_uniformCameraData.view = m_camera->GetView();
-    m_uniformMvp.Write(&m_uniformCameraData);
+    if(m_uniformCameraData.view != m_camera->GetView() || m_uniformCameraData.proj != m_camera->GetProjection())
+    {
+        m_uniformCameraData.proj = m_camera->GetProjection();
+        m_uniformCameraData.view = m_camera->GetView();
+        m_uniformMvp.Write(&m_uniformCameraData);        
+    }
 }
 
 void Renderer::UpdateDynamicUniformBuffer()
@@ -560,13 +563,13 @@ bool Renderer::CreateLogicalDevice()
     createInfo.setPQueueCreateInfos(queueCreateInfos.data());
     createInfo.setQueueCreateInfoCount(static_cast<uint32_t>(queueCreateInfos.size()));
     createInfo.setPEnabledFeatures(&deviceFeatures);
-    createInfo.setEnabledExtensionCount(static_cast<uint32_t>(Context::deviceExtensions.size()));
-    createInfo.setPpEnabledExtensionNames(Context::deviceExtensions.data());
+    createInfo.setEnabledExtensionCount(static_cast<uint32_t>(Context::GetDeviceExtensions().size()));
+    createInfo.setPpEnabledExtensionNames(Context::GetDeviceExtensions().data());
 
     if (s_enableValidationLayers)
     {
-        createInfo.setEnabledLayerCount(static_cast<uint32_t>(Context::validationLayers.size()));
-        createInfo.setPpEnabledLayerNames(Context::validationLayers.data());
+        createInfo.setEnabledLayerCount(static_cast<uint32_t>(Context::GetValidationLayers().size()));
+        createInfo.setPpEnabledLayerNames(Context::GetValidationLayers().data());
     }
     else
     {
@@ -1079,7 +1082,7 @@ bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device)
         LOG_ERROR("Can't enumerate device extension properties.");
         return false;
     }
-    auto deviceExtensions = Context::deviceExtensions;
+    auto deviceExtensions = Context::GetDeviceExtensions();
     std::set<std::string> requiredExtensions(deviceExtensions.begin(), deviceExtensions.end());
 
     for (const auto& extension : availableExtensions)

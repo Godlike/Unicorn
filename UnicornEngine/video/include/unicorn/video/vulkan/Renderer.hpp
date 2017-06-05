@@ -4,8 +4,8 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#ifndef UNICORN_VIDEO_VULKAN_VULKAN_RENDERER_HPP
-#define UNICORN_VIDEO_VULKAN_VULKAN_RENDERER_HPP
+#ifndef UNICORN_VIDEO_VULKAN_RENDERER_HPP
+#define UNICORN_VIDEO_VULKAN_RENDERER_HPP
 
 #include <vulkan/vulkan.hpp>
 #include <unicorn/video/Renderer.hpp>
@@ -32,14 +32,14 @@ struct QueueFamilyIndices
     int32_t presentFamily = -1;
 
     /**
-     * @brief Check if all needed family indices are exists.
-     * @return true if graphics and present families exists and false if not
+     * @brief Checks if all needed family indices are exists.
+     * @return true if all required features are available and false if not
      */
     bool IsComplete() const;
 };
 
 /**
- * @brief Details of swapchain for creating it.
+ * @brief Swapchain creation details
  */
 struct SwapChainSupportDetails
 {
@@ -49,7 +49,7 @@ struct SwapChainSupportDetails
 };
 
 /**
- * @brief Struct for easy filling and sending to shader
+ * @brief Camera data
  */
 struct UniformCameraData
 {
@@ -77,15 +77,15 @@ class Renderer : public video::Renderer
 public:
     /**
      * @brief Basic constructor
-     * @param manager To get Vulkan OS depend extensions
-     * @param window Which we will render to
+     * @param manager Describes required extensions
+     * @param window Render into
      */
     Renderer(system::Manager& manager, system::Window* window);
 
     /**
-     * @brief Destructor which calls @sa Deinit
+     * @brief Destructor which calls Deinit()
      */
-    ~Renderer() override;
+    ~Renderer();
 
     Renderer(const Renderer& other) = delete;
     Renderer(const Renderer&& other) = delete;
@@ -183,4 +183,4 @@ private:
 }
 }
 }
-#endif // UNICORN_VIDEO_VULKAN_VULKAN_RENDERER_HPP
+#endif // UNICORN_VIDEO_VULKAN_RENDERER_HPP

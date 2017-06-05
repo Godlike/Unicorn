@@ -9,6 +9,7 @@
 
 #include <vulkan/vulkan.hpp>
 #include <unicorn/system/Manager.hpp>
+#include <unicorn/utility/templates/Singleton.hpp>
 
 namespace unicorn
 {
@@ -19,9 +20,9 @@ namespace vulkan
 class Device;
 
 /**
- * @brief Vulkan API context which create vk::Instance once.
+ * @brief Vulkan API context which creates vk::Instance once
  */
-class Context
+class Context    
 {
 public:
     /**
@@ -31,13 +32,13 @@ public:
     static bool IsInitialized();
 
     /**
-     * @brief Create Vulkan Context
+     * @brief Creates Vulkan Context
      * @param manager System Manager which Vulkan can obtain needed extensions
      * @return true if initialized correctly and false if not
      */
     static bool Initialize(system::Manager& manager);
     /**
-     * @brief Destruct context data
+     * @brief Destructs context data
      */
     static void Deinitialize();
     /**
@@ -45,19 +46,18 @@ public:
      * @return copy of vk::Instance
      */
     static vk::Instance GetVkInstance();
-    /**
-     * @brief Validation layers for Vulkan API
+    /*
+     * @brief Getter for validation layers
      */
-    static std::vector<const char*> validationLayers;
-    /**
-     * @brief Extensions for Vulkan logical device
-     */
-    static std::vector<const char*> deviceExtensions;
-    /**
-     * @brief Extensions for Vulkan Instance
-     */
-    static std::vector<const char*> instanceExtensions;
-
+    static const std::vector<const char*>& GetValidationLayers();
+    /*
+    * @brief Getter for device extensions
+    */
+    static const std::vector<const char*>& GetDeviceExtensions();
+    /*
+    * @brief Getter for instance extensions
+    */
+    static const std::vector<const char*>& GetInstanceExtensions();
 private:
     Context(const Context& other) = delete;
     Context& operator=(const Context& other) = delete;
@@ -66,34 +66,46 @@ private:
     ~Context() = delete;
 
     /**
-     * @brief Check all required validation layers support in operation system. Needed only for debug.
-     * @return true if them all found and available, false if not
+     * @brief Checks for validation layers support
+     * @return true if they all are found, false if not
      */
     static bool CheckValidationLayerSupport();
     /**
-     * @brief Obtain all required extensions
-     * @param manager System manager which will give it to us
+     * @brief Obtains all required extensions
+     * @param manager System manager which produce it
      * @return All required extensions
      */
     static std::vector<const char*> FillRequiredExtensions(system::Manager& manager);
     /**
-     * @brief Creating debug report callback for address in driver DLL
+     * @brief Creates debug report callback
      * @param pCreateInfo filled create info
      * @return VkResult true if was created successfully and false if not
      */
     static VkResult CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo);
     /**
-     * @brief Destroy callback
+     * @brief Destroys callback
      */
     static void DestroyDebugReportCallbackEXT();
     /**
-     * @brief Fill all needed create info and calls @sa CreateDebugReportCallbackEXT
+     * @brief Fills all needed create info and calls CreateDebugReportCallbackEXT()
      */
     static void SetupDebugCallback();
     /**
-     * @brief Destroy callback preliminarily check if it exists, calls @sa DestroyDebugReportCallbackEXT
+     * @brief Destroys callback preliminarily check if it exists, calls DestroyDebugReportCallbackEXT()
      */
     static void FreeDebugCallback();
+    /**
+    * @brief Validation layers for Vulkan API
+    */
+    static std::vector<const char*> m_validationLayers;
+    /**
+    * @brief Extensions for Vulkan logical device
+    */
+    static std::vector<const char*> m_deviceExtensions;
+    /**
+    * @brief Extensions for Vulkan Instance
+    */
+    static std::vector<const char*> m_instanceExtensions;
 
     static vk::Instance m_vkInstance;
     static VkDebugReportCallbackEXT m_vulkanCallback;

@@ -20,7 +20,7 @@ namespace video
 namespace geometry
 {
 /**
-* @brief Mesh controller, which fill mesh with Quad data.
+* @brief Mesh controller, which fills mesh with Quad data.
 */
 class Quad : public MeshDescriptor
 {

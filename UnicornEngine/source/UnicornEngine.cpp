@@ -38,11 +38,10 @@ static unicorn::system::GamepadProfiler* s_pGamepadProfiler = nullptr;
 
 namespace unicorn
 {
-UnicornEngine::UnicornEngine()
-    : m_isInitialized(false)
-      , m_pSystemManager(nullptr)
-      , m_pGraphics(nullptr)
-      , m_pInput(nullptr)
+UnicornEngine::UnicornEngine() : m_isInitialized(false)
+                               , m_pSystemManager(nullptr)
+                               , m_pGraphics(nullptr)
+                               , m_pInput(nullptr)
 {
 }
 
