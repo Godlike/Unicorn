@@ -36,12 +36,12 @@ void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<ui
     DataUpdated.emit();
 }
 
-const const std::vector<Vertex>& Mesh::GetVertices() const
+const std::vector<Vertex>& Mesh::GetVertices() const
 {
     return m_vertices;
 }
 
-const const std::vector<uint16_t>& Mesh::GetIndices() const
+const std::vector<uint16_t>& Mesh::GetIndices() const
 {
     return m_indices;
 }
