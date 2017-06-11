@@ -73,11 +73,6 @@ public:
      */
     UNICORN_EXPORT void SetPosition(const glm::vec3& position);
     /**
-     * @brief Sets projection type
-     * @param type New type value
-     */
-    UNICORN_EXPORT void SetProjectionType(ProjectionType type);
-    /**
      * @brief Sets field of view value
      * @param fov New horizontal field of view
      */
@@ -127,7 +122,6 @@ private:
     float m_znear, m_zfar;
     bool m_dirtyView;
     bool m_dirtyProjection;
-    ProjectionType m_projectionType;
     /**
      * @brief Calculates view matrix
      */

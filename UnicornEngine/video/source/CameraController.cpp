@@ -13,10 +13,5 @@ namespace video
 CameraController::CameraController(std::shared_ptr<Camera> camera) : m_camera(camera)
 {
 }
-
-void CameraController::SetCameraProjection(ProjectionType type) const
-{
-    m_camera->SetProjectionType(type);
-}
 }
 }

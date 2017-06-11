@@ -19,7 +19,6 @@ Camera::Camera(const glm::vec3& position, const glm::vec3& direction) : m_aspect
                                                                       , m_zfar(1000.0f)
                                                                       , m_dirtyView(false)
                                                                       , m_dirtyProjection(false)
-                                                                      , m_projectionType(ProjectionType::Perspective)
 {
     UpdateViewMatrix();
     UpdateProjectionMatrix();
@@ -62,12 +61,6 @@ void Camera::SetPosition(const glm::vec3& position)
 {
     m_position = position;
     m_dirtyView = true;
-}
-
-void Camera::SetProjectionType(ProjectionType type)
-{
-    m_projectionType = type;
-    m_dirtyProjection = true;
 }
 
 const glm::vec3& Camera::GetDirection() const
