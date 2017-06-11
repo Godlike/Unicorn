@@ -122,7 +122,6 @@ private:
     float m_znear, m_zfar;
     bool m_dirtyView;
     bool m_dirtyProjection;
-    ProjectionType m_projectionType;
     /**
      * @brief Calculates view matrix
      */
