@@ -31,21 +31,21 @@ public:
      */
     UNICORN_EXPORT Timer(bool run = false);
     /**
-     * @brief Reset timer.
+     * @brief Resets timer.
      */
     UNICORN_EXPORT void Reset();
     /**
-     * @brief Return time in milliseconds
+     * @brief Returns time in milliseconds
      * @return Time in milliseconds
      */
     UNICORN_EXPORT Milliseconds ElapsedMilliseconds() const;
     /**
-    * @brief Return time in seconds
+    * @brief Returns time in seconds
     * @return Time in seconds
     */
     UNICORN_EXPORT Seconds ElapsedSeconds() const;
     /**
-    * @brief Return time in minutes
+    * @brief Returns time in minutes
     * @return Time in minutes
     */
     UNICORN_EXPORT Minutes ElapsedMinutes() const;

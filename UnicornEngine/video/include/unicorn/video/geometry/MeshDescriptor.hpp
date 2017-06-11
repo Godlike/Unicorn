@@ -41,17 +41,17 @@ public:
      */
     UNICORN_EXPORT void Rotate(float angle, const glm::vec3& axis);
     /**
-     * @brief Move mesh
+     * @brief Moves mesh
      * @param translateVector vector of "deltas" by axises
      */
     UNICORN_EXPORT void Move( const glm::vec3& translateVector);
     /**
-     * @brief Scale mesh
+     * @brief Scales mesh
      * @param scaleVector vector of scales by each axis
      */
     UNICORN_EXPORT void Scale(const glm::vec3& scaleVector);
     /**
-     * @brief Set new color for mesh
+     * @brief Sets new color for mesh
      * @param color Color value
      */
     UNICORN_EXPORT void SetColor(const glm::vec3& color);

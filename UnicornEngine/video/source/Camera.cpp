@@ -17,6 +17,8 @@ Camera::Camera(const glm::vec3& position, const glm::vec3& direction) : m_aspect
                                                                       , m_fov(45.0f)
                                                                       , m_znear(0.1f)
                                                                       , m_zfar(1000.0f)
+                                                                      , m_dirtyView(false)
+                                                                      , m_dirtyProjection(false)
                                                                       , m_projectionType(ProjectionType::Perspective)
 {
     UpdateViewMatrix();
@@ -29,37 +31,37 @@ void Camera::SetPerspective(float fov, float aspect, float znear, float zfar)
     m_znear = znear;
     m_zfar = zfar;
     m_aspect = aspect;
-    UpdateProjectionMatrix();
+    m_dirtyProjection = true;
 }
 
 void Camera::SetAspectRatio(float aspect)
 {
     m_aspect = aspect;
-    UpdateProjectionMatrix();
+    m_dirtyProjection = true;
 }
 
 void Camera::Translate(const glm::vec3& delta)
 {
     m_position += delta;
-    UpdateViewMatrix();
+    m_dirtyView = true;
 }
 
 void Camera::SetDirection(const glm::vec3& direction)
 {
     m_direction = direction;
-    UpdateViewMatrix();
+    m_dirtyView = true;
 }
 
 void Camera::SetUpVector(const glm::vec3& upVector)
 {
     m_upVector = upVector;
-    UpdateViewMatrix();
+    m_dirtyView = true;
 }
 
 void Camera::SetPosition(const glm::vec3& position)
 {
     m_position = position;
-    UpdateViewMatrix();
+    m_dirtyView = true;
 }
 
 void Camera::SetProjectionType(ProjectionType type)
@@ -93,10 +95,24 @@ float Camera::GetFov() const
     return m_fov;
 }
 
-void Camera::SetFov(float newFov)
+void Camera::Frame()
 {
-    m_fov = newFov;
-    UpdateProjectionMatrix();
+    if (m_dirtyView)
+    {
+        UpdateViewMatrix();
+        m_dirtyView = false;
+    }
+    if (m_dirtyProjection)
+    {
+        UpdateProjectionMatrix();
+        m_dirtyProjection = false;
+    }
+}
+
+void Camera::SetFov(float fov)
+{
+    m_fov = fov;
+    m_dirtyProjection = true;
 }
 
 void Camera::UpdateViewMatrix()

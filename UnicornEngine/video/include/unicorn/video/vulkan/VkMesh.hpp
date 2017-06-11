@@ -42,14 +42,13 @@ public:
      * @brief Deallocation on GPU
      */
     void DeallocateOnGPU();
-
     /**
-     * @brief Getter for vertex buffer
+     * @brief Returns vertex buffer
      * @return vk::Buffer
      */
     vk::Buffer GetVertexBuffer();
     /**
-     * @brief Getter for index buffer
+     * @brief Returns index buffer
      * @return vk::Buffer
      */
     vk::Buffer GetIndexBuffer();
@@ -58,14 +57,13 @@ public:
      * @return Model matrix
      */
     glm::mat4 GetModel() const;
-
     /**
-     * @brief Getter for vertices size
+     * @brief Returns vertices size
      * @return size of vertices
      */
     std::uint32_t VerticesSize();
     /**
-    * @brief Getter for indices size
+    * @briefReturns indices size
     * @return size of indices
     */
     std::uint32_t IndicesSize();

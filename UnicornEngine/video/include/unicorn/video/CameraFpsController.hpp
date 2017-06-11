@@ -33,7 +33,7 @@ public:
     float sensitivity, speed;
 private:
     double m_lastX, m_lastY, m_yaw, m_pitch;
-    bool m_viewEverChanged;
+    bool m_dirty;
 };
 }
 }

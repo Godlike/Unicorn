@@ -22,43 +22,46 @@ class Device;
 /**
  * @brief Vulkan API context which creates vk::Instance once
  */
-class Context    
+class Context : public utility::templates::Singleton<Context>
 {
 public:
+    Context();
     /**
      * @brief Check if context was initialized
      * @return true if initialized and false if not
      */
-    static bool IsInitialized();
+    bool IsInitialized();
 
     /**
      * @brief Creates Vulkan Context
      * @param manager System Manager which Vulkan can obtain needed extensions
      * @return true if initialized correctly and false if not
      */
-    static bool Initialize(system::Manager& manager);
+    bool Initialize(system::Manager& manager);
     /**
      * @brief Destructs context data
      */
-    static void Deinitialize();
+    void Deinitialize();
     /**
-     * @brief Getter for raw Vulkan Instance
+     * @brief Returns raw Vulkan Instance
      * @return copy of vk::Instance
      */
-    static vk::Instance GetVkInstance();
+    vk::Instance GetVkInstance();
     /*
-     * @brief Getter for validation layers
+     * @brief Returns validation layers
      */
-    static const std::vector<const char*>& GetValidationLayers();
+    const std::vector<const char*>& GetValidationLayers();
     /*
-    * @brief Getter for device extensions
+    * @brief Returns device extensions
     */
-    static const std::vector<const char*>& GetDeviceExtensions();
+    const std::vector<const char*>& GetDeviceExtensions();
     /*
-    * @brief Getter for instance extensions
+    * @brief Returns instance extensions
     */
-    static const std::vector<const char*>& GetInstanceExtensions();
+    const std::vector<const char*>& GetInstanceExtensions();
 private:
+    friend class utility::templates::Singleton<Context>;
+
     Context(const Context& other) = delete;
     Context& operator=(const Context& other) = delete;
     Context(Context&& other) = delete;
@@ -69,50 +72,50 @@ private:
      * @brief Checks for validation layers support
      * @return true if they all are found, false if not
      */
-    static bool CheckValidationLayerSupport();
+    bool CheckValidationLayerSupport();
     /**
      * @brief Obtains all required extensions
      * @param manager System manager which produce it
      * @return All required extensions
      */
-    static std::vector<const char*> FillRequiredExtensions(system::Manager& manager);
+    std::vector<const char*> FillRequiredExtensions(system::Manager& manager);
     /**
      * @brief Creates debug report callback
      * @param pCreateInfo filled create info
      * @return VkResult true if was created successfully and false if not
      */
-    static VkResult CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo);
+    VkResult CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo);
     /**
      * @brief Destroys callback
      */
-    static void DestroyDebugReportCallbackEXT();
+    void DestroyDebugReportCallbackEXT();
     /**
      * @brief Fills all needed create info and calls CreateDebugReportCallbackEXT()
      */
-    static void SetupDebugCallback();
+    void SetupDebugCallback();
     /**
      * @brief Destroys callback preliminarily check if it exists, calls DestroyDebugReportCallbackEXT()
      */
-    static void FreeDebugCallback();
+    void FreeDebugCallback();
     /**
     * @brief Validation layers for Vulkan API
     */
-    static std::vector<const char*> m_validationLayers;
+    std::vector<const char*> m_validationLayers;
     /**
     * @brief Extensions for Vulkan logical device
     */
-    static std::vector<const char*> m_deviceExtensions;
+    std::vector<const char*> m_deviceExtensions;
     /**
     * @brief Extensions for Vulkan Instance
     */
-    static std::vector<const char*> m_instanceExtensions;
+    std::vector<const char*> m_instanceExtensions;
 
-    static vk::Instance m_vkInstance;
-    static VkDebugReportCallbackEXT m_vulkanCallback;
+    vk::Instance m_vkInstance;
+    VkDebugReportCallbackEXT m_vulkanCallback;
     #ifdef NDEBUG
-    static const bool s_enableValidationLayers = false;
+    const bool s_enableValidationLayers = false;
     #else
-    static const bool s_enableValidationLayers = true;
+    const bool s_enableValidationLayers = true;
     #endif
 };
 }

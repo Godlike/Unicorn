@@ -145,10 +145,10 @@ private:
     void FreeCommandBuffers();
     void FreeSemaphores();
     void FreeUniforms();
-    void FreeDescriptorPoolAndLayouts();
+    void FreeDescriptorPoolAndLayouts() const;
 
     bool PrepareUniformBuffers();
-    void ResizeDynamicUniformBuffer();
+    void ResizeDynamicUniformBuffer() const;
     void UpdateUniformBuffer();
     void UpdateDynamicUniformBuffer();
     bool PickPhysicalDevice();
@@ -165,17 +165,17 @@ private:
     bool CreateSemaphores();
 
     bool IsDeviceSuitable(const vk::PhysicalDevice& device);
-    bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device);
+    bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device) const;
     bool Frame();
     void OnMeshReallocated(VkMesh*);
     QueueFamilyIndices FindQueueFamilies(const vk::PhysicalDevice& device) const;
     bool FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features, vk::Format& returnFormat) const;
-    bool FindDepthFormat(vk::Format& desiredFormat);
+    bool FindDepthFormat(vk::Format& desiredFormat) const;
     bool HasStencilComponent(vk::Format format) const;
-    bool QuerySwapChainSupport(SwapChainSupportDetails& details, const vk::PhysicalDevice& device);
-    vk::SurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats);
-    vk::PresentModeKHR ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes);
-    vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities);
+    bool QuerySwapChainSupport(SwapChainSupportDetails& details, const vk::PhysicalDevice& device) const;
+    vk::SurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats) const;
+    vk::PresentModeKHR ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes) const;
+    vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities) const;
     // Callbacks for window events
     void OnWindowDestroyed(system::Window* pWindow);
     void OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, int32_t> size);

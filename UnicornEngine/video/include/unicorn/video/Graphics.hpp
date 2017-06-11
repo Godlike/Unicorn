@@ -156,7 +156,7 @@ private:
         std::size_t operator()(const RendererWindowPair& pair) const
         {
             return std::hash<Renderer*>()(pair.first) ^
-                std::hash<system::Window*>()(pair.second);
+                    std::hash<system::Window*>()(pair.second);
         }
     };
 
@@ -178,7 +178,7 @@ private:
     //! Set of expired Renderer-Window pairs that need to be deinitialized
     RendererWindowPairSet m_expiredRenderers;
 
-    //! Current in use driver type
+    //! Current driver
     DriverType m_driver;
 };
 }

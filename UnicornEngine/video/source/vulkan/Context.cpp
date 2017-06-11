@@ -14,11 +14,12 @@ namespace video
 {
 namespace vulkan
 {
-vk::Instance Context::m_vkInstance = nullptr;
-VkDebugReportCallbackEXT Context::m_vulkanCallback = NULL;
-std::vector<const char*> Context::m_validationLayers = {"VK_LAYER_LUNARG_standard_validation"};
-std::vector<const char*> Context::m_deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
-std::vector<const char*> Context::m_instanceExtensions = {};
+Context::Context() : m_validationLayers({"VK_LAYER_LUNARG_standard_validation"})
+                   , m_deviceExtensions({VK_KHR_SWAPCHAIN_EXTENSION_NAME})
+                   , m_vkInstance(nullptr)
+                   , m_vulkanCallback(NULL)
+{
+}
 
 static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
                                                       VkDebugReportObjectTypeEXT /*objType*/,

@@ -11,7 +11,7 @@ namespace unicorn
 namespace video
 {
 CameraFpsController::CameraFpsController(std::shared_ptr<Camera> camera)
-    : CameraController(camera), sensitivity(0.1f), speed(100.0f), m_lastX(0.0), m_lastY(0.0), m_yaw(90.0), m_pitch(0.0), m_viewEverChanged(false)
+    : CameraController(camera), sensitivity(0.1f), speed(100.0f), m_lastX(0.0), m_lastY(0.0), m_yaw(90.0), m_pitch(0.0), m_dirty(false)
 {
 }
 
@@ -47,11 +47,11 @@ void CameraFpsController::MoveBackward(float deltaTime)
 
 void CameraFpsController::UpdateView(double posX, double posY)
 {
-    if (!m_viewEverChanged)
+    if (!m_dirty)
     {
         m_lastX = posX;
         m_lastY = posY;
-        m_viewEverChanged = true;
+        m_dirty = true;
     }
 
     double xoffset = m_lastX - posX;

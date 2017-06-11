@@ -48,7 +48,7 @@ bool Graphics::Init(const DriverType& driver)
             LOG_ERROR("Vulkan not supported!");
             return false;
         }
-        if (!vulkan::Context::Initialize(m_systemManager))
+        if (!vulkan::Context::Instance().Initialize(m_systemManager))
         {
             LOG_ERROR("Vulkan context not initialized!");
             return false;
@@ -75,7 +75,7 @@ void Graphics::Deinit()
     switch (m_driver)
     {
     case DriverType::Vulkan:
-        vulkan::Context::Deinitialize();
+        vulkan::Context::Instance().Deinitialize();
         break;
     }
 

@@ -27,24 +27,24 @@ enum class ProjectionType
 };
 
 /**
- * @brief Camera class, hold view and projection matrices.
+ * @brief Camera class, holds view and projection matrices.
  */
 class Camera
 {
 public:
     /**
      * @brief Camera constuctor
-     * @param position Default position of camera
-     * @param direction Default view direction of camera
+     * @param position Default position
+     * @param direction Default view direction
      */
     UNICORN_EXPORT Camera(const glm::vec3& position, const glm::vec3& direction);
 
     /**
-     * @brief Sets perspective
+     * @brief Sets perspective projection mode from given frustum description
      * @param fov Field of view
      * @param aspect Aspect ratio
-     * @param znear Camera's near frustrum plane
-     * @param zfar Ñamera's far frustrum plane
+     * @param znear Near frustrum plane
+     * @param zfar Far frustrum plane
      */
     UNICORN_EXPORT void SetPerspective(float fov, float aspect, float znear, float zfar);
     /**
@@ -53,35 +53,35 @@ public:
      */
     UNICORN_EXPORT void SetAspectRatio(float aspect);
     /**
-     * @brief Translate camera in space
-     * @param delta vector of translation
+     * @brief Changes camera position by given vector
+     * @param delta Vector of translation
      */
     UNICORN_EXPORT void Translate(const glm::vec3& delta);
     /**
-     * @brief Sets direction of camera
+     * @brief Sets direction
      * @param direction New direction value
      */
     UNICORN_EXPORT void SetDirection(const glm::vec3& direction);
     /**
-     * @brief Sets up vector for camera
+     * @brief Sets up vector
      * @param upVector New up vector value
      */
     UNICORN_EXPORT void SetUpVector(const glm::vec3& upVector);
     /**
-     * @brief Sets position for camera
+     * @brief Sets position
      * @param position New position value
      */
     UNICORN_EXPORT void SetPosition(const glm::vec3& position);
     /**
-     * @brief Sets projection type for camera
+     * @brief Sets projection type
      * @param type New type value
      */
     UNICORN_EXPORT void SetProjectionType(ProjectionType type);
     /**
-     * @brief Sets new field of view value
-     * @param newFov New field of view
+     * @brief Sets field of view value
+     * @param fov New horizontal field of view
      */
-    UNICORN_EXPORT void SetFov(float newFov);
+    UNICORN_EXPORT void SetFov(float fov);
     /**
      * @brief Returns direction
      * @return Direction vector
@@ -107,7 +107,10 @@ public:
      * @return Field of view value
      */
     UNICORN_EXPORT float GetFov() const;
-
+    /**
+    * @brief Checks if view or projection need to be updated and update it, if needed
+    */
+    UNICORN_EXPORT void Frame();
 private:
     float m_aspect;
     glm::vec3 m_position;
@@ -122,6 +125,8 @@ private:
 
     float m_fov;
     float m_znear, m_zfar;
+    bool m_dirtyView;
+    bool m_dirtyProjection;
     ProjectionType m_projectionType;
     /**
      * @brief Calculates view matrix

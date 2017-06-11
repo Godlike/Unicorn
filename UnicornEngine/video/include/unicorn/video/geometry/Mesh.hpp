@@ -43,7 +43,7 @@ public:
     UNICORN_EXPORT ~Mesh();
 
     /**
-    * @brief Updating vertices and indices geometry
+    * @brief Updates vertices and indices geometry
     * @param vertices vertexes data
     * @param indices indices data
     */

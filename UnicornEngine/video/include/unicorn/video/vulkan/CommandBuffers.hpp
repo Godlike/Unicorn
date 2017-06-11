@@ -31,7 +31,7 @@ public:
     ~CommandBuffers();
 
     /**
-     * @brief Creating new command buffers
+     * @brief Creates new command buffers
      * @param device Which device you want use for allocation process
      * @param count Command buffer size
      * @return true if was allocated successfully and false if not
@@ -43,18 +43,18 @@ public:
     void Destroy() const;
 
     /**
-     * @brief Getter for command pool
+     * @brief Returns command pool
      * @return reference to vk::CommandPool
      */
     vk::CommandPool& GetVkCommandPool();
     /**
-     * @brief Getter for command buffer
+     * @brief Returns command buffer
      * @param index Index of needed command buffer
      * @return Reference for needed command buffer
      */
     vk::CommandBuffer& GetVkCommandBuffer(uint32_t index);
     /**
-     * @brief Getter for all command buffers
+     * @brief Returns all command buffers
      * @return vector of all command buffer
      */
     const std::vector<vk::CommandBuffer>& GetVkCommandBuffers();
