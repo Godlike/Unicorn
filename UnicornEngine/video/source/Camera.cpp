@@ -67,7 +67,7 @@ void Camera::SetPosition(const glm::vec3& position)
 void Camera::SetProjectionType(ProjectionType type)
 {
     m_projectionType = type;
-    UpdateProjectionMatrix();
+    m_dirtyProjection = true;
 }
 
 const glm::vec3& Camera::GetDirection() const
