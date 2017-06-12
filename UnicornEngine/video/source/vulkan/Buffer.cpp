@@ -130,7 +130,7 @@ void Buffer::Unmap()
     }
 }
 
-void Buffer::CopyToBuffer(vk::CommandPool pool, vk::Queue queue, const vulkan::Buffer& dstBuffer, vk::DeviceSize size)
+void Buffer::CopyToBuffer(vk::CommandPool pool, vk::Queue queue, vulkan::Buffer& dstBuffer, vk::DeviceSize size) const
 {
     vk::CommandBufferAllocateInfo allocInfo;
     allocInfo.level = vk::CommandBufferLevel::ePrimary;
@@ -178,11 +178,6 @@ vk::DeviceMemory Buffer::GetMemory() const
 }
 
 const vk::Buffer& Buffer::GetVkBuffer()
-{
-    return m_buffer;
-}
-
-vk::Buffer Buffer::GetVkBuffer() const
 {
     return m_buffer;
 }

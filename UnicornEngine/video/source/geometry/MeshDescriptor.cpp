@@ -13,33 +13,32 @@ namespace video
 {
 namespace geometry
 {
-MeshDescriptor::MeshDescriptor(std::shared_ptr<Mesh> mesh)
-    : m_mesh(mesh)
+MeshDescriptor::MeshDescriptor(Mesh& mesh) : m_mesh(mesh)
 {
 }
 
-void MeshDescriptor::Rotate(float angle, const glm::vec3& axis)
+void MeshDescriptor::Rotate(float angle, const glm::vec3& axis) const
 {
-    m_mesh->model = glm::rotate(m_mesh->model, angle, axis);
+    m_mesh.model = glm::rotate(m_mesh.model, angle, axis);
 }
 
-void MeshDescriptor::Move(const glm::vec3& translateVector)
+void MeshDescriptor::Translate(const glm::vec3& translateVector) const
 {
-    m_mesh->model = glm::translate(m_mesh->model, translateVector);
+    m_mesh.model = glm::translate(m_mesh.model, translateVector);
 }
 
-void MeshDescriptor::Scale(const glm::vec3& scaleVector)
+void MeshDescriptor::Scale(const glm::vec3& scaleVector) const
 {
-    m_mesh->model = glm::scale(m_mesh->model, scaleVector);
+    m_mesh.model = glm::scale(m_mesh.model, scaleVector);
 }
 
 MeshDescriptor::~MeshDescriptor()
 {
 }
 
-void MeshDescriptor::SetColor(const glm::vec3& color)
+void MeshDescriptor::SetColor(const glm::vec3& color) const
 {
-    m_mesh->SetColor(color);
+    m_mesh.SetColor(color);
 }
 }
 }

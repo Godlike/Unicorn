@@ -26,14 +26,14 @@ public:
      */
     CommandBuffers();
     /**
-     * @brief Default destructor which calls @sa Destroy()
+     * @brief Destructor which calls Destroy()
      */
     ~CommandBuffers();
 
     /**
      * @brief Creates new command buffers
-     * @param device Which device you want use for allocation process
-     * @param count Command buffer size
+     * @param device device to allocate from
+     * @param count command buffer size
      * @return true if was allocated successfully and false if not
      */
     vk::Result Create(vk::Device device, uint32_t count);
@@ -50,7 +50,7 @@ public:
     /**
      * @brief Returns command buffer
      * @param index Index of needed command buffer
-     * @return Reference for needed command buffer
+     * @return reference for needed command buffer
      */
     vk::CommandBuffer& GetVkCommandBuffer(uint32_t index);
     /**

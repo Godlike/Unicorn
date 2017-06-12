@@ -9,9 +9,6 @@
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 #include <unicorn/utility/SharedMacros.hpp>
 
 namespace unicorn
@@ -121,6 +118,8 @@ private:
     float m_fov;
     float m_znear, m_zfar;
     bool m_dirtyView;
+    float m_fovLowerBound;
+    float m_fovUpperBound;
     bool m_dirtyProjection;
     /**
      * @brief Calculates view matrix

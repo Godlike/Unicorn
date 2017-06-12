@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <memory>
 
+#include <glm/glm.hpp>
 #include <unicorn/video/geometry/Mesh.hpp>
 #include <unicorn/video/Color.hpp>
 #include <array>
@@ -43,8 +44,8 @@ public:
     virtual bool Init() = 0;
     virtual void Deinit() = 0;
     virtual bool Render() = 0;
-    UNICORN_EXPORT std::shared_ptr<Camera> GetCamera() const;
-    virtual std::shared_ptr<geometry::Mesh> SpawnMesh() = 0;
+    UNICORN_EXPORT Camera& GetCamera() const;
+    virtual geometry::Mesh& SpawnMesh() = 0;
     UNICORN_EXPORT void SetBackgroundColor(const glm::vec3& backgroundColor);
 
 protected:
@@ -55,14 +56,11 @@ protected:
     //! Pointer to associated window
     system::Window* m_pWindow;
     //! Main view camera
-    std::shared_ptr<Camera> m_camera;
+    Camera* m_camera;
     //! Array of renderer meshes
-    std::vector<std::shared_ptr<geometry::Mesh>> m_meshes;
+    std::vector<geometry::Mesh*> m_meshes;
     //! Background filling color
     std::array<float, 4> m_backgroundColor;
-    // Callbacks for window events
-    void OnWindowDestroyed(system::Window* pWindow);
-    void OnWindowSizeChanged(system::Window* pWindow, std::pair<std::int32_t, std::int32_t> size);
 };
 }
 }

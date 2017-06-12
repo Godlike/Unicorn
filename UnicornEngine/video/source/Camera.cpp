@@ -5,6 +5,7 @@
 */
 
 #include <unicorn/video/Camera.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace unicorn
 {
@@ -18,6 +19,8 @@ Camera::Camera(const glm::vec3& position, const glm::vec3& direction) : m_aspect
                                                                       , m_znear(0.1f)
                                                                       , m_zfar(1000.0f)
                                                                       , m_dirtyView(false)
+                                                                      , m_fovLowerBound(44.0f)
+                                                                      , m_fovUpperBound(45.0f)
                                                                       , m_dirtyProjection(false)
 {
     UpdateViewMatrix();
@@ -104,7 +107,18 @@ void Camera::Frame()
 
 void Camera::SetFov(float fov)
 {
-    m_fov = fov;
+    if (m_fov >= m_fovLowerBound && m_fov <= m_fovUpperBound)
+    {
+        m_fov = fov;
+    }
+    if (m_fov <= m_fovLowerBound)
+    {
+        m_fov = m_fovLowerBound;
+    }
+    if (m_fov >= m_fovUpperBound)
+    {
+        m_fov = m_fovUpperBound;
+    }
     m_dirtyProjection = true;
 }
 

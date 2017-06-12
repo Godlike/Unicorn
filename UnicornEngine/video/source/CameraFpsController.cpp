@@ -10,39 +10,39 @@ namespace unicorn
 {
 namespace video
 {
-CameraFpsController::CameraFpsController(std::shared_ptr<Camera> camera)
-    : CameraController(camera), sensitivity(0.1f), speed(100.0f), m_lastX(0.0), m_lastY(0.0), m_yaw(90.0), m_pitch(0.0), m_dirty(false)
+CameraFpsController::CameraFpsController(unicorn::video::Camera& camera)
+    : sensitivity(0.1f), speed(100.0f), m_lastX(0.0), m_lastY(0.0), m_yaw(90.0), m_pitch(0.0), m_dirty(false), m_camera(camera)
 {
 }
 
-void CameraFpsController::MoveUp(float deltaTime)
+void CameraFpsController::MoveUp(float deltaTime) const
 {
-    m_camera->Translate({0.0f, -deltaTime * speed, 0.0f});
+    m_camera.Translate({0.0f, -deltaTime * speed, 0.0f});
 }
 
-void CameraFpsController::MoveDown(float deltaTime)
+void CameraFpsController::MoveDown(float deltaTime) const
 {
-    m_camera->Translate({0.0f, speed * deltaTime, 0.0});
+    m_camera.Translate({0.0f, speed * deltaTime, 0.0});
 }
 
-void CameraFpsController::MoveLeft(float deltaTime)
+void CameraFpsController::MoveLeft(float deltaTime) const
 {
-    m_camera->Translate(-glm::normalize(glm::cross(m_camera->GetDirection(), m_camera->GetUpVector())) * speed * deltaTime);
+    m_camera.Translate(-glm::normalize(glm::cross(m_camera.GetDirection(), m_camera.GetUpVector())) * speed * deltaTime);
 }
 
-void CameraFpsController::MoveRight(float deltaTime)
+void CameraFpsController::MoveRight(float deltaTime) const
 {
-    m_camera->Translate(glm::normalize(glm::cross(m_camera->GetDirection(), m_camera->GetUpVector())) * speed * deltaTime);
+    m_camera.Translate(glm::normalize(glm::cross(m_camera.GetDirection(), m_camera.GetUpVector())) * speed * deltaTime);
 }
 
-void CameraFpsController::MoveForward(float deltaTime)
+void CameraFpsController::MoveForward(float deltaTime) const
 {
-    m_camera->Translate(m_camera->GetDirection() * speed * deltaTime);
+    m_camera.Translate(m_camera.GetDirection() * speed * deltaTime);
 }
 
-void CameraFpsController::MoveBackward(float deltaTime)
+void CameraFpsController::MoveBackward(float deltaTime) const
 {
-    m_camera->Translate(-m_camera->GetDirection() * speed * deltaTime);
+    m_camera.Translate(-m_camera.GetDirection() * speed * deltaTime);
 }
 
 void CameraFpsController::UpdateView(double posX, double posY)
@@ -74,27 +74,13 @@ void CameraFpsController::UpdateView(double posX, double posY)
     front.x = static_cast<float>(cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
     front.y = static_cast<float>(sin(glm::radians(m_pitch)));
     front.z = static_cast<float>(sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
-    m_camera->SetDirection(glm::normalize(front));
+    m_camera.SetDirection(glm::normalize(front));
 }
 
 void CameraFpsController::Scroll(float yoffset)
 {
-    if (m_camera->GetFov() >= 44.0f && m_camera->GetFov() <= 45.0f)
-    {
-        m_camera->SetFov(m_camera ->GetFov() - yoffset);
-    }
-    if (m_camera->GetFov() <= 44.0f)
-    {
-        m_camera->SetFov(44.0f);
-    }
-    if (m_camera->GetFov() >= 45.0f)
-    {
-        m_camera->SetFov(45.0f);
-    }
+    m_camera.SetFov(m_camera.GetFov() - yoffset);
 }
 
-void CameraFpsController::SetCenterPosition(double posX, double posY)
-{
-}
 }
 }

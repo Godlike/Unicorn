@@ -12,8 +12,11 @@ namespace unicorn
 {
 namespace video
 {
-Renderer::Renderer(system::Manager& manager, system::Window* window)
-    : m_isInitialized(false), m_systemManager(manager), m_pWindow(window), m_camera(new Camera({0.0f, 0.0f, -5.0f}, {0.0f, 0.0f, 1.0f})), m_backgroundColor({{0.0f, 0.0f, 0.0f, 0.0f}})
+Renderer::Renderer(system::Manager& manager, system::Window* window) : m_isInitialized(false)
+                                                                     , m_systemManager(manager)
+                                                                     , m_pWindow(window)
+                                                                     , m_camera(new Camera({0.0f, 0.0f, -5.0f}, {0.0f, 0.0f, 1.0f}))
+                                                                     , m_backgroundColor({{0.0f, 0.0f, 0.0f, 0.0f}})
 {
     m_camera->SetPerspective(45.0f, static_cast<float>(window->GetSize().first) / window->GetSize().second, 0.1f, 100.0f);
 }
@@ -22,9 +25,9 @@ Renderer::~Renderer()
 {
 }
 
-std::shared_ptr<Camera> Renderer::GetCamera() const
+Camera& Renderer::GetCamera() const
 {
-    return m_camera;
+    return *m_camera;
 }
 
 void Renderer::SetBackgroundColor(const glm::vec3& backgroundColor)

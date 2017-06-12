@@ -25,7 +25,7 @@ namespace geometry
 class Triangle : public MeshDescriptor
 {
 public:
-    UNICORN_EXPORT Triangle(std::shared_ptr<Mesh> mesh);
+    UNICORN_EXPORT Triangle(Mesh& mesh);
 };
 }
 }
