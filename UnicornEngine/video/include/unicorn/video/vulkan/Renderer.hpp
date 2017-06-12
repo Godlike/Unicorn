@@ -96,7 +96,7 @@ public:
     void Deinit() override;
     bool Render() override;
     bool RecreateSwapChain();
-    std::shared_ptr<geometry::Mesh> SpawnMesh() override;
+    geometry::Mesh& SpawnMesh() override;
 private:
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;

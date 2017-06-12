@@ -32,7 +32,7 @@ public:
      * @param queue Which queue to use to buffer copying
      * @param mesh Geometry data
      */
-    VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, std::shared_ptr<geometry::Mesh> mesh);
+    VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, geometry::Mesh& mesh);
     ~VkMesh();
     /**
      * @brief Allocation on GPU
@@ -44,29 +44,29 @@ public:
     void DeallocateOnGPU();
     /**
      * @brief Returns vertex buffer
-     * @return vk::Buffer
+     * @return vulkan buffer
      */
     vk::Buffer GetVertexBuffer();
     /**
      * @brief Returns index buffer
-     * @return vk::Buffer
+     * @return vulkan buffer
      */
     vk::Buffer GetIndexBuffer();
     /**
      * @brief Matrix of transformations
-     * @return Model matrix
+     * @return model matrix
      */
-    glm::mat4 GetModel() const;
+    const glm::mat4& GetModel() const;
     /**
      * @brief Returns vertices size
      * @return size of vertices
      */
-    std::uint32_t VerticesSize();
+    uint32_t VerticesSize();
     /**
     * @briefReturns indices size
     * @return size of indices
     */
-    std::uint32_t IndicesSize();
+    uint32_t IndicesSize();
     /**
      * @brief Signal for command buffer reallocation
      */
@@ -75,7 +75,7 @@ private:
     vk::Device m_device;
     vk::PhysicalDevice m_physicalDevice;
     vulkan::Buffer m_vertexBuffer, m_indexBuffer;
-    std::shared_ptr<geometry::Mesh> m_mesh;
+    geometry::Mesh& m_mesh;
     vk::CommandPool m_pool;
     vk::Queue m_queue;
 };

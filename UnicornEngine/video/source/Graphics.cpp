@@ -18,9 +18,9 @@ namespace unicorn
 {
 namespace video
 {
-Graphics::Graphics(system::Manager& manager)
-    : m_isInitialized(false)
-      , m_systemManager(manager), m_driver()
+Graphics::Graphics(system::Manager& manager) : m_isInitialized(false)
+                                             , m_systemManager(manager)
+                                             , m_driver(DriverType::Vulkan)
 {
 }
 
@@ -31,12 +31,12 @@ Graphics::~Graphics()
 
 bool Graphics::Init(const DriverType& driver)
 {
-    m_driver = driver;
-
     if (m_isInitialized)
     {
         return false;
     }
+
+    m_driver = driver;
 
     LOG_INFO("Graphics initialization started.");
 
@@ -143,8 +143,8 @@ system::Monitor* Graphics::GetWindowMonitor(const system::Window& window) const
 
 void Graphics::SetWindowMonitor(const system::Window& window,
                                 system::Monitor* pMonitor,
-                                std::pair<int32_t, int32_t> position,
-                                std::pair<int32_t, int32_t> size,
+                                const std::pair<int32_t, int32_t>& position,
+                                const std::pair<int32_t, int32_t>& size,
                                 int32_t refreshRate) const
 {
     m_systemManager.SetWindowMonitor(window,
@@ -179,11 +179,17 @@ void Graphics::ProcessExpiredRenderers()
     }
 }
 
-Renderer* Graphics::SpawnVulkanRenderer(system::Window* window)
+Renderer* Graphics::SpawnRenderer(system::Window* window)
 {
-    auto* renderer = new vulkan::Renderer(m_systemManager, window);
-    renderer->Init();
-    BindWindowRenderer(window, renderer);
+    vulkan::Renderer* renderer = nullptr;
+    switch (m_driver)
+    {
+    case DriverType::Vulkan:
+        renderer = new vulkan::Renderer(m_systemManager, window);
+        renderer->Init();
+        BindWindowRenderer(window, renderer);
+        break;
+    }
     return renderer;
 }
 }

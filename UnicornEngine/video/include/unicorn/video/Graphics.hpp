@@ -60,7 +60,7 @@ public:
     *
     *  Ensures that window management system supports Vulkan
     *
-    *  @param  driver Driver, which will render our all graphics.
+    *  @param  driver Driver type
     *
     *  @return @c true if initialization was successful, @c false otherwise
     */
@@ -125,8 +125,8 @@ public:
     */
     UNICORN_EXPORT void SetWindowMonitor(const system::Window& window,
                                          system::Monitor* pMonitor,
-                                         std::pair<int32_t, int32_t> position,
-                                         std::pair<int32_t, int32_t> size,
+                                         const std::pair<int32_t, int32_t>& position,
+                                         const std::pair<int32_t, int32_t>& size,
                                          int32_t refreshRate) const;
 
     /** @brief  Sets window creation hints
@@ -140,10 +140,10 @@ public:
     *  @param  window Output window.
     *  @return Pointer to newly created Renderer.
     */
-    UNICORN_EXPORT Renderer* SpawnVulkanRenderer(system::Window* window);
+    UNICORN_EXPORT Renderer* SpawnRenderer(system::Window* window);
 
     /** @brief Binds renderer to window. */
-    UNICORN_EXPORT void BindWindowRenderer(system::Window* pWindow, video::Renderer* pRenderer);
+    UNICORN_EXPORT void BindWindowRenderer(system::Window* pWindow, Renderer* pRenderer);
 
 private:
     //! Renderer-Window pair type

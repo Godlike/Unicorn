@@ -33,10 +33,10 @@ public:
     /**
      * @brief Creates new buffer
      * @param physicalDevice GPU for memory allocation
-     * @param device Device which will allocate memory on GPU
-     * @param usage Buffer specific usage
-     * @param memoryPropertyFlags Flags for memory usage
-     * @param size Size of buffer
+     * @param device device for allocation
+     * @param usage buffer specific usage
+     * @param memoryPropertyFlags flags for memory usage
+     * @param size size of buffer
      * @return true if buffer was allocated correctly, false if some error occured
      */
     bool Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags memoryPropertyFlags, size_t size);
@@ -46,7 +46,7 @@ public:
     void Destroy();
     /**
      * @brief Writes data to buffer. You need to map it first.
-     * @param pData Data which you want to fill buffer
+     * @param pData pointer to data content
      */
     void Write(const void* pData) const;
     /**
@@ -59,12 +59,12 @@ public:
     void Unmap();
     /**
      * @brief Copies buffer to another buffer. Useful for staging buffering
-     * @param pool Pool for allocating commands from
-     * @param queue Queue for processing
-     * @param dstBuffer Destination buffer
-     * @param size Size of copyable data
+     * @param pool pool for allocating commands from
+     * @param queue queue for processing
+     * @param dstBuffer destination buffer
+     * @param size size of copyable data
      */
-    void CopyToBuffer(vk::CommandPool pool, vk::Queue queue, const vulkan::Buffer& dstBuffer, vk::DeviceSize size);
+    void CopyToBuffer(vk::CommandPool pool, vk::Queue queue, vulkan::Buffer& dstBuffer, vk::DeviceSize size) const;
     /**
      * @brief Getter for size of buffer
      * @return size of buffer
@@ -72,7 +72,7 @@ public:
     size_t GetSize() const;
     /**
      * @brief Getter for usage of this buffer
-     * @return Buffer usage flags
+     * @return buffer usage flags
      */
     vk::BufferUsageFlags GetUsage() const;
     /**
@@ -85,11 +85,6 @@ public:
     * @return reference to vk::Buffer
     */
     const vk::Buffer& GetVkBuffer();
-    /**
-    * @brief Getter for raw vk::Buffer
-    * @return copy of vk::Buffer
-    */
-    vk::Buffer GetVkBuffer() const;
 
     const vk::DescriptorBufferInfo& GetDescriptorInfo() const;
 private:

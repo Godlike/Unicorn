@@ -18,6 +18,7 @@
 #include <mutex>
 #include <queue>
 #include <set>
+#include <string>
 #include <thread>
 #include <vector>
 

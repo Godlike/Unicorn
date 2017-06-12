@@ -25,7 +25,7 @@ namespace geometry
 class Quad : public MeshDescriptor
 {
 public:
-    UNICORN_EXPORT Quad(std::shared_ptr<Mesh> mesh);
+    UNICORN_EXPORT Quad(Mesh& mesh);
 };
 }
 }

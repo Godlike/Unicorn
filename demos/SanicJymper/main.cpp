@@ -28,14 +28,14 @@ static unicorn::video::Renderer* vkRenderer0 = nullptr;
 unicorn::system::Window* pWindow0 = nullptr;
 std::vector<unicorn::video::geometry::Cube*> cubes;
 
-float deltaTime = 0.0f;	// Time between current frame and last frame
-float lastFrame = 0.0f;  	// Time of last frame
+float deltaTime = 0.0f; // Time between current frame and last frame
+float lastFrame = 0.0f; // Time of last frame
 
 void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
 {
     float currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
     float newDeltatime = currentFrame - lastFrame;
-    if(newDeltatime <= 0.0)
+    if (newDeltatime <= 0.0)
     {
         return;
     }
@@ -49,11 +49,10 @@ void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
 
 void onMouseButton(unicorn::system::Window* /*pWindow*/, unicorn::system::input::MouseButton button, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask)
 {
-    
     if (button == unicorn::system::input::MouseButton::MouseLeft && action == unicorn::system::input::Action::Press)
     {
         auto kek = new unicorn::video::geometry::Cube(vkRenderer0->SpawnMesh());
-        kek->Move({std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20});
+        kek->Translate({std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20});
         kek->SetColor({static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255});
         cubes.push_back(kek);
     }
@@ -64,8 +63,8 @@ void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double,
     pCameraController->UpdateView(pos.first, pos.second);
 }
 
-void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double> pos)
-{
+    void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double> pos)
+    {
     pCameraController->Scroll(static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
 }
 
@@ -195,28 +194,27 @@ int main(int argc, char* argv[])
         settings.SetApplicationHeight(h);
         settings.SetApplicationWidth(w);
 
-        unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(
-                                                                   settings.GetApplicationWidth(),
+        unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(settings.GetApplicationWidth(),
                                                                    settings.GetApplicationHeight(),
                                                                    settings.GetApplicationName(),
                                                                    nullptr,
                                                                    nullptr);
         pWindow0->SetMouseMode(unicorn::system::MouseMode::Captured);
 
-        vkRenderer0 = pGraphics->SpawnVulkanRenderer(pWindow0);
+        vkRenderer0 = pGraphics->SpawnRenderer(pWindow0);
         vkRenderer0->SetBackgroundColor(unicorn::video::Color::LightPink);
         pCameraController = new unicorn::video::CameraFpsController(vkRenderer0->GetCamera());
 
         unicorn::video::geometry::Triangle triangle1(vkRenderer0->SpawnMesh());
         triangle1.SetColor(unicorn::video::Color::Red);
-        triangle1.Move({-2.0f, 0.0f, 0.0f});
+        triangle1.Translate({-2.0f, 0.0f, 0.0f});
         triangle1.Scale({0.5, 0.5, 0.5});
 
         unicorn::video::geometry::Triangle triangle2(vkRenderer0->SpawnMesh());
         triangle2.SetColor(unicorn::video::Color::Green);
 
         unicorn::video::geometry::Cube cube(vkRenderer0->SpawnMesh());
-        cube.Move({5.0, 0.0f, 5.0f});
+        cube.Translate({5.0, 0.0f, 5.0f});
         pWindow0->MousePosition.connect(&onCursorPositionChanged);
         pWindow0->Scroll.connect(&onMouseScrolled);
         pWindow0->Keyboard.connect(&onWindowKeyboard);

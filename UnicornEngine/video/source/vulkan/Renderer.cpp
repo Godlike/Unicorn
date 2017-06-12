@@ -317,14 +317,14 @@ void Renderer::OnMeshReallocated(VkMesh* vkmesh)
     CreateCommandBuffers();
 }
 
-std::shared_ptr<geometry::Mesh> Renderer::SpawnMesh()
+geometry::Mesh& Renderer::SpawnMesh()
 {
-    auto mesh = std::make_shared<geometry::Mesh>();
-    auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, mesh);
+    auto mesh = new geometry::Mesh();
+    auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
     vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
     m_vkMeshes.push_back(vkmesh);
     m_meshes.push_back(mesh);
-    return mesh;
+    return *mesh;
 }
 
 void Renderer::FreeSurface()

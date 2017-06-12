@@ -23,6 +23,7 @@ namespace geometry
  */
 struct Vertex
 {
+    Vertex(glm::vec3 pos, glm::vec3 color);
     /**
      * @brief Position of vertex
      */
@@ -59,18 +60,17 @@ public:
     */
     UNICORN_EXPORT const std::vector<uint16_t>& GetIndices() const;
     /**
-     * @brief Setting new color mesh
-     * @param newColor color data from 0.0 to 1.0
+     * @brief Apply given color to each vertex
+     * @param ñolor color that will be applied to each vertex; each color component shall be in range [0.0, 1.0]
      */
-    UNICORN_EXPORT void SetColor(const glm::vec3& newColor);
-
+    UNICORN_EXPORT void SetColor(const glm::vec3& ñolor);
     /**
      * @brief Signal for GPU data update
      */
-    wink::signal<wink::slot<void()>> DataUpdated;
-
+    wink::signal<wink::slot<void()>> VerticesUpdated;
     /**
      * @brief Model matrix of this mesh for MVP transformations
+     * Model matrix update uniform buffer every frame and don't need to emit VerticesUpdated
      */
     glm::mat4 model;
 private:

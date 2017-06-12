@@ -17,16 +17,17 @@ namespace video
 namespace vulkan
 {
 /**
- * @brief Abstraction for shader program, which renderer will use for rendering meshes
+ * @brief Abstraction for shader program, which renderer uses for rendering meshes
  */
 class ShaderProgram
 {
 public:
     /**
      * @brief Constructor
-     * @param device Which device we will you to allocate memory
-     * @param vertShaderPath Path to vertex shader path
-     * @param fragShaderPath Path to fragment shader 
+     * @param device device to allocate from
+     * @param vertShaderPath pth to vertex shader path
+     * @param fragShaderPath path to fragment shader 
+     * Always use 'main' as entry point
      */
     ShaderProgram(vk::Device device, const std::string& vertShaderPath, const std::string& fragShaderPath);
     /**
@@ -41,7 +42,7 @@ public:
     vk::PipelineShaderStageCreateInfo* GetShaderStageInfoData();
     /**
      * @brief Getter for vertex input info
-     * @return vk::PipelineVertexInputStateCreateInfo
+     * @return pipeline vertex input state create info
      */
     vk::PipelineVertexInputStateCreateInfo GetVertexInputInfo();
     /**

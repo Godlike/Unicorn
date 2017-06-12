@@ -25,7 +25,7 @@ namespace geometry
 class Cube : public MeshDescriptor
 {
 public:
-    UNICORN_EXPORT Cube(std::shared_ptr<Mesh> mesh);
+    UNICORN_EXPORT Cube(Mesh& mesh);
 };
 }
 }

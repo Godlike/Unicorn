@@ -34,7 +34,7 @@ public:
 
     /**
      * @brief Creates Vulkan Context
-     * @param manager System Manager which Vulkan can obtain needed extensions
+     * @param manager system manager which Vulkan can obtain needed extensions
      * @return true if initialized correctly and false if not
      */
     bool Initialize(system::Manager& manager);
@@ -75,7 +75,7 @@ private:
     bool CheckValidationLayerSupport();
     /**
      * @brief Obtains all required extensions
-     * @param manager System manager which produce it
+     * @param manager system manager which produce it
      * @return All required extensions
      */
     std::vector<const char*> FillRequiredExtensions(system::Manager& manager);

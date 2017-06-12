@@ -27,36 +27,36 @@ class MeshDescriptor
 public:
     /**
      * @brief Mesh Descriptor constructor
-     * @param mesh Pointer to Renderer mesh
+     * @param mesh pointer to Renderer mesh
      */
-    UNICORN_EXPORT MeshDescriptor(std::shared_ptr<Mesh> mesh);
+    UNICORN_EXPORT MeshDescriptor(Mesh& mesh);
     /**
      * @brief Mesh Descriptor destructor
      */
     UNICORN_EXPORT ~MeshDescriptor();
     /**
      * @brief Rotate mesh
-     * @param angle Angle in degrees
-     * @param axis vector of normalized axises, which you need to rotate, for example {1.f, 1.f, 0.f} will rotate by x and y only
+     * @param angle angle in degrees
+     * @param axis vector of normalized axes, which you need to rotate, for example {1.f, 1.f, 0.f} will rotate by x and y only
      */
-    UNICORN_EXPORT void Rotate(float angle, const glm::vec3& axis);
+    UNICORN_EXPORT void Rotate(float angle, const glm::vec3& axis) const;
     /**
      * @brief Moves mesh
-     * @param translateVector vector of "deltas" by axises
+     * @param translateVector vector of deltas by axes
      */
-    UNICORN_EXPORT void Move( const glm::vec3& translateVector);
+    UNICORN_EXPORT void Translate( const glm::vec3& translateVector) const;
     /**
      * @brief Scales mesh
-     * @param scaleVector vector of scales by each axis
+     * @param scaleVector vector of scale factors
      */
-    UNICORN_EXPORT void Scale(const glm::vec3& scaleVector);
+    UNICORN_EXPORT void Scale(const glm::vec3& scaleVector) const;
     /**
      * @brief Sets new color for mesh
-     * @param color Color value
+     * @param color color value
      */
-    UNICORN_EXPORT void SetColor(const glm::vec3& color);
+    UNICORN_EXPORT void SetColor(const glm::vec3& color) const;
 protected:
-    std::shared_ptr<Mesh> m_mesh;
+    Mesh& m_mesh;
 };
 }
 }

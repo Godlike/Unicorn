@@ -20,20 +20,20 @@ Mesh::~Mesh()
 {
 }
 
-void Mesh::SetColor(const glm::vec3& newColor)
+void Mesh::SetColor(const glm::vec3& ñolor)
 {
     for (auto& x : m_vertices)
     {
-        x.color = newColor;
+        x.color = ñolor;
     }
-    DataUpdated.emit();
+    VerticesUpdated.emit();
 }
 
 void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices)
 {
     m_vertices = vertices;
     m_indices = indices;
-    DataUpdated.emit();
+    VerticesUpdated.emit();
 }
 
 const std::vector<Vertex>& Mesh::GetVertices() const
@@ -44,6 +44,11 @@ const std::vector<Vertex>& Mesh::GetVertices() const
 const std::vector<uint16_t>& Mesh::GetIndices() const
 {
     return m_indices;
+}
+
+Vertex::Vertex(glm::vec3 pos, glm::vec3 color): pos(pos)
+                                              , color(color)
+{
 }
 }
 }
