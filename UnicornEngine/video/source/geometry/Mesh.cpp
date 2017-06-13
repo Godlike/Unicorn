@@ -20,11 +20,11 @@ Mesh::~Mesh()
 {
 }
 
-void Mesh::SetColor(const glm::vec3& ñolor)
+void Mesh::SetColor(const glm::vec3& color)
 {
     for (auto& x : m_vertices)
     {
-        x.color = ñolor;
+        x.color = color;
     }
     VerticesUpdated.emit();
 }

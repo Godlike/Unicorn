@@ -61,9 +61,9 @@ public:
     UNICORN_EXPORT const std::vector<uint16_t>& GetIndices() const;
     /**
      * @brief Apply given color to each vertex
-     * @param ñolor color that will be applied to each vertex; each color component shall be in range [0.0, 1.0]
+     * @param color color that will be applied to each vertex; each color component shall be in range [0.0, 1.0]
      */
-    UNICORN_EXPORT void SetColor(const glm::vec3& ñolor);
+    UNICORN_EXPORT void SetColor(const glm::vec3& color);
     /**
      * @brief Signal for GPU data update
      */
