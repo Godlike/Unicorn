@@ -19,8 +19,10 @@
 #include <unicorn/utility/SharedMacros.hpp>
 
 #include <wink/signal.hpp>
+#include <wink/event_queue.hpp>
 
 #include <cstdint>
+#include <set>
 #include <string>
 #include <utility>
 
@@ -184,8 +186,29 @@ public:
      */
     UNICORN_EXPORT void SetStickyKeys(bool flag);
 
+    /** @brief  Returns a set of pressed keys */
+    UNICORN_EXPORT const std::set<input::MouseButton>& GetPressedMouseButtons() const { return m_pressedMouseButtons; }
+
+    /** @brief  Returns a set of pressed keys */
+    UNICORN_EXPORT const std::set<input::Key>& GetPressedKeys() const { return m_pressedKeys; }
+
     /** @brief  Returns a handle provided by window manager adapter */
     UNICORN_EXPORT void* GetHandle() const { return m_handle; }
+
+    /** @brief  Clears @ref MouseButton and @ref Keyboard event queues
+     *
+     *  Also clears @p m_skipMouseButtons and @p m_skipKeys
+     */
+    void ClearInputEvents();
+
+    /** @brief  Updates input modifier keys */
+    void UpdateInputModifiers();
+
+    /** @brief  Emits @ref MouseButton signal for all processed mouse buttons events */
+    void TriggerMouseButtonEvents();
+
+    /** @brief  Emits @ref Keyboard signal for all processed keyboard events */
+    void TriggerKeyboardEvents();
 
     /** @brief  Event triggered from destructor before the window is destroyed
      *
@@ -291,15 +314,17 @@ public:
     /** @name   Input events */
     //! @{
 
-    /** @brief  Event triggered when window receives mouse button input
-     *
-     *  Event is emitted with the following signature:
-     *  -# window pointer
-     *  -# mouse button input
-     *  -# button action type
-     *  -# modifiers mask
-     */
-    wink::signal< wink::slot<void(Window*, input::MouseButton, input::Action, input::Modifier::Mask)> > MouseButton;
+    /** @brief  Mouse button event information */
+    struct MouseButtonEvent
+    {
+        Window* const pWindow;
+        input::MouseButton button;
+        input::Action action;
+        input::Modifier::Mask modifiers;
+    };
+
+    /** @brief  Event triggered when window receives mouse button input */
+    wink::event_queue<MouseButtonEvent> MouseButton;
 
     /** @brief  Event triggered when window receives mouse position update
      *
@@ -325,16 +350,18 @@ public:
      */
     wink::signal< wink::slot<void(Window*, std::pair<double, double>)> > Scroll;
 
-    /** @brief  Event triggered when window receives keyboard input
-     *
-     *  Event is emitted with the following signature:
-     *  -# window pointer
-     *  -# key indicator
-     *  -# raw scancode value
-     *  -# key action type
-     *  -# modifiers mask
-     */
-    wink::signal< wink::slot<void(Window*, input::Key, uint32_t, input::Action, input::Modifier::Mask)> > Keyboard;
+    /** @brief  Keyboard event information */
+    struct KeyboardEvent
+    {
+        Window * const pWindow;
+        input::Key key;
+        uint32_t scancode;
+        input::Action action;
+        input::Modifier::Mask modifiers;
+    };
+
+    /** @brief  Event triggered when window receives keyboard input */
+    wink::event_queue<KeyboardEvent> Keyboard;
 
     /** @brief  Event triggered when window receives unicode input with modifiers
      *
@@ -515,6 +542,21 @@ private:
 
     //! Flag describing if window is focused
     bool m_focus;
+
+    //! A set of pressed buttons
+    std::set<input::Key> m_pressedKeys;
+
+    //! A set of keys pressed between two triggers
+    std::set<input::Key> m_skipKeys;
+
+    //! A set of pressed buttons
+    std::set<input::MouseButton> m_pressedMouseButtons;
+
+    //! A set of mouse buttons pressed between two triggers
+    std::set<input::MouseButton> m_skipMouseButtons;
+
+    //! Last reported set of input modifiers
+    input::Modifier::Mask m_modifiers;
 
     //! Handle provided by window manager adapter
     void* m_handle;

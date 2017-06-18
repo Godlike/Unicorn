@@ -7,6 +7,7 @@
 #include <unicorn/system/Window.hpp>
 
 #include <unicorn/system/adapter/Helper.hpp>
+#include <unicorn/utility/Logger.hpp>
 
 namespace unicorn
 {
@@ -22,6 +23,7 @@ Window::Window(uint32_t id, int32_t width, int32_t height,
     , m_pMonitor( pMonitor )
     , m_pSharedWindow( pSharedWindow )
     , m_focus( false )
+    , m_modifiers( input::Modifier::None )
     , m_handle( nullptr )
 {
     m_handle = WINDOW_MANAGER_ADAPTER::CreateWindow(m_size.first
@@ -188,6 +190,70 @@ void Window::SetStickyKeys(bool flag)
     StickyKeysChanged.emit(this, flag);
 }
 
+void Window::ClearInputEvents()
+{
+    m_skipMouseButtons.clear();
+    m_skipKeys.clear();
+
+    MouseButton.clear();
+    Keyboard.clear();
+}
+
+void Window::UpdateInputModifiers()
+{
+    m_modifiers = input::Modifier::None;
+
+    if (input::Action::Release != WINDOW_MANAGER_ADAPTER::GetWindowKey(m_handle, input::Key::LeftControl) ||
+        input::Action::Release != WINDOW_MANAGER_ADAPTER::GetWindowKey(m_handle, input::Key::RightControl))
+    {
+        m_modifiers |= input::Modifier::Ctrl;
+    }
+
+    if (input::Action::Release != WINDOW_MANAGER_ADAPTER::GetWindowKey(m_handle, input::Key::LeftAlt) ||
+        input::Action::Release != WINDOW_MANAGER_ADAPTER::GetWindowKey(m_handle, input::Key::RightAlt))
+    {
+        m_modifiers |= input::Modifier::Alt;
+    }
+
+    if (input::Action::Release != WINDOW_MANAGER_ADAPTER::GetWindowKey(m_handle, input::Key::LeftShift) ||
+        input::Action::Release != WINDOW_MANAGER_ADAPTER::GetWindowKey(m_handle, input::Key::RightShift))
+    {
+        m_modifiers |= input::Modifier::Shift;
+    }
+
+    if (input::Action::Release != WINDOW_MANAGER_ADAPTER::GetWindowKey(m_handle, input::Key::LeftSuper) ||
+        input::Action::Release != WINDOW_MANAGER_ADAPTER::GetWindowKey(m_handle, input::Key::RightSuper))
+    {
+        m_modifiers |= input::Modifier::Super;
+    }
+}
+
+void Window::TriggerMouseButtonEvents()
+{
+    for (auto const& button : m_pressedMouseButtons)
+    {
+        if (!m_skipMouseButtons.count(button))
+        {
+            MouseButton.push({this, button, input::Action::Repeat, m_modifiers});
+        }
+    }
+
+    MouseButton.emit();
+}
+
+void Window::TriggerKeyboardEvents()
+{
+    for (auto const& key : m_pressedKeys)
+    {
+        if (!m_skipKeys.count(key))
+        {
+            Keyboard.push({this, key, WINDOW_MANAGER_ADAPTER::GetKeyScancode(key), input::Action::Repeat, m_modifiers});
+        }
+    }
+
+    Keyboard.emit();
+}
+
 void Window::OnWindowPositionChanged(void* handle, std::pair<int32_t, int32_t> position)
 {
     if (handle == m_handle)
@@ -230,6 +296,12 @@ void Window::OnWindowFocused(void* handle, bool flag)
     {
         m_focus = flag;
 
+        if (!m_focus)
+        {
+            m_pressedKeys.clear();
+            m_pressedMouseButtons.clear();
+        }
+
         Focused.emit(this, flag);
     }
 }
@@ -262,7 +334,27 @@ void Window::OnWindowMouseButton(void* handle, input::MouseButton button, input:
 {
     if (handle == m_handle)
     {
-        MouseButton.emit(this, button, action, modifiers);
+        m_skipMouseButtons.insert(button);
+
+        switch (action)
+        {
+            case input::Action::Press:
+            {
+                m_pressedMouseButtons.insert(button);
+                break;
+            }
+            case input::Action::Release:
+            {
+                m_pressedMouseButtons.erase(button);
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+
+        MouseButton.push({this, button, action, modifiers});
     }
 }
 
@@ -294,7 +386,28 @@ void Window::OnWindowKeyboard(void* handle, input::Key key, uint32_t scancode, i
 {
     if (handle == m_handle)
     {
-        Keyboard.emit(this, key, scancode, action, modifiers);
+        m_skipKeys.insert(key);
+
+        switch (action)
+        {
+            case input::Action::Press:
+            {
+                m_pressedKeys.insert(key);
+                break;
+            }
+            case input::Action::Release:
+            {
+                m_pressedKeys.erase(key);
+
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+
+        Keyboard.push({this, key, scancode, action, modifiers});
     }
 }
 

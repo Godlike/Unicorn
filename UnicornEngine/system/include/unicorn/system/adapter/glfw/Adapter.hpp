@@ -295,6 +295,28 @@ public:
      */
     static void SetWindowStickyKeys(void* handle, bool flag);
 
+    /** @brief  Returns mouse button state
+     *
+     *  @param  handle  window handle
+     *  @param  button  mouse button
+     */
+    static input::Action GetWindowMouseButton(void* handle, input::MouseButton button);
+
+    /** @brief  Returns key state
+     *
+     *  @param  handle  window handle
+     *  @param  key     key
+     */
+    static input::Action GetWindowKey(void* handle, input::Key key);
+
+    /** @brief  Returns key scancode
+     *
+     *  @param  key unicorn key code
+     *
+     *  @return scancode value
+     */
+    static uint32_t GetKeyScancode(input::Key key);
+
     /** @brief  Processes events that are in event queue */
     static void PollEvents();
 
@@ -555,6 +577,9 @@ public:
     /** @brief  Converts mouse button from glfw to unicorn */
     static input::MouseButton ConvertToUnicornMouseButton(int32_t button);
 
+    /** @brief  Converts mouse button from unicorn to glfw */
+    static int32_t ConvertToGlfwMouseButton(input::MouseButton button);
+
     /** @brief  Converts action type from glfw to unicorn */
     static input::Action ConvertToUnicornActionType(int32_t action);
 
@@ -563,6 +588,9 @@ public:
 
     /** @brief  Converts key code from glfw to unicorn */
     static input::Key ConvertToUnicornKey(int32_t key);
+
+    /** @brief  Converts key code from unicorn to glfw */
+    static int32_t ConvertToGlfwKey(input::Key key);
 
     //!@}
 

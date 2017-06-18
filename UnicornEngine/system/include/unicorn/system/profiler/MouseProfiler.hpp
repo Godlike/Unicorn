@@ -8,8 +8,10 @@
 #define UNICORN_SYSTEM_PROFILER_MOUSE_PROFILER_HPP
 
 #include <unicorn/system/input/Action.hpp>
-#include <unicorn/system/input/MouseButton.hpp>
 #include <unicorn/system/input/Modifier.hpp>
+#include <unicorn/system/input/MouseButton.hpp>
+
+#include <unicorn/system/Window.hpp>
 
 #include <cstdint>
 #include <utility>
@@ -20,7 +22,6 @@ namespace system
 {
 
 class Manager;
-class Window;
 
 /** @brief  Class that reports all window events */
 class MouseProfiler
@@ -45,7 +46,7 @@ private:
     void OnWindowCreated(Window* pWindow);
 
     /** @brief  Slot invoked when window receives mouse button input */
-    void OnWindowMouseButton(Window* pWindow, input::MouseButton button, input::Action action, input::Modifier::Mask modifiers);
+    void OnWindowMouseButton(Window::MouseButtonEvent const& mouseButtonEvent);
 
     /** @brief  Slot invoked when mouse position is changed within a window */
     void OnWindowMousePosition(Window* pWindow, std::pair<double, double> coords);
