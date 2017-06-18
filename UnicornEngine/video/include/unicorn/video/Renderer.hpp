@@ -7,13 +7,13 @@
 #ifndef UNICORN_VIDEO_RENDERER_HPP
 #define UNICORN_VIDEO_RENDERER_HPP
 
-#include <vector>
-#include <cstdint>
-#include <memory>
-
-#include <glm/glm.hpp>
 #include <unicorn/video/geometry/Mesh.hpp>
 #include <unicorn/video/Color.hpp>
+
+#include <glm/glm.hpp>
+
+#include <cstdint>
+#include <memory>
 #include <array>
 
 namespace unicorn
@@ -45,7 +45,8 @@ public:
     virtual void Deinit() = 0;
     virtual bool Render() = 0;
     UNICORN_EXPORT Camera& GetCamera() const;
-    virtual geometry::Mesh& SpawnMesh() = 0;
+    virtual geometry::Mesh* SpawnMesh() = 0;
+    virtual void DeleteMesh(const geometry::Mesh* pMesh) = 0;
     UNICORN_EXPORT void SetBackgroundColor(const glm::vec3& backgroundColor);
 
 protected:
@@ -57,8 +58,6 @@ protected:
     system::Window* m_pWindow;
     //! Main view camera
     Camera* m_camera;
-    //! Array of renderer meshes
-    std::vector<geometry::Mesh*> m_meshes;
     //! Background filling color
     std::array<float, 4> m_backgroundColor;
 };

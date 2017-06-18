@@ -18,15 +18,19 @@
 #include <unicorn/video/geometry/Quad.hpp>
 #include <unicorn/video/geometry/Cube.hpp>
 #include <unicorn/video/CameraFpsController.hpp>
+
+#include <array>
 #include <cstdlib>
 #include <iostream>
+#include <list>
 
 static unicorn::video::Graphics* pGraphics = nullptr;
 static unicorn::video::CameraFpsController* pCameraController = nullptr;
 static unicorn::system::Timer* timer = nullptr;
 static unicorn::video::Renderer* vkRenderer0 = nullptr;
+
 unicorn::system::Window* pWindow0 = nullptr;
-std::vector<unicorn::video::geometry::Cube*> cubes;
+std::list<unicorn::video::geometry::Cube*> cubes;
 
 float deltaTime = 0.0f; // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -49,12 +53,48 @@ void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
 
 void onMouseButton(unicorn::system::Window* /*pWindow*/, unicorn::system::input::MouseButton button, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask)
 {
-    if (button == unicorn::system::input::MouseButton::MouseLeft && action == unicorn::system::input::Action::Press)
+    using unicorn::system::input::MouseButton;
+    using unicorn::system::input::Action;
+
+    if (action == Action::Press)
     {
-        auto kek = new unicorn::video::geometry::Cube(vkRenderer0->SpawnMesh());
-        kek->Translate({std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20});
-        kek->SetColor({static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255});
-        cubes.push_back(kek);
+        switch (button)
+        {
+            case MouseButton::MouseLeft:
+            {
+                auto obj = new unicorn::video::geometry::Cube(*(vkRenderer0->SpawnMesh()));
+                obj->Translate({std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20});
+                obj->SetColor({static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255});
+                cubes.push_back(obj);
+
+                break;
+            }
+            case MouseButton::MouseRight:
+            {
+                if (cubes.size())
+                {
+                    // Get random cube
+                    auto meshIt = cubes.begin();
+
+                    std::advance(meshIt, std::rand() % cubes.size());
+
+                    // Fetch cube's mesh
+                    auto const& mesh = (*meshIt)->GetMesh();
+
+                    // Erase cube
+                    cubes.erase(meshIt);
+
+                    // Release cube's mesh
+                    vkRenderer0->DeleteMesh(&mesh);
+                }
+
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
     }
 }
 
@@ -205,21 +245,40 @@ int main(int argc, char* argv[])
         vkRenderer0->SetBackgroundColor(unicorn::video::Color::LightPink);
         pCameraController = new unicorn::video::CameraFpsController(vkRenderer0->GetCamera());
 
-        unicorn::video::geometry::Triangle triangle1(vkRenderer0->SpawnMesh());
-        triangle1.SetColor(unicorn::video::Color::Red);
-        triangle1.Translate({-2.0f, 0.0f, 0.0f});
-        triangle1.Scale({0.5, 0.5, 0.5});
+        using unicorn::video::geometry::Cube;
+        using unicorn::video::geometry::Mesh;
+        using unicorn::video::geometry::Triangle;
 
-        unicorn::video::geometry::Triangle triangle2(vkRenderer0->SpawnMesh());
-        triangle2.SetColor(unicorn::video::Color::Green);
+        std::array<Mesh*, 3> meshes = {
+            vkRenderer0->SpawnMesh(),
+            vkRenderer0->SpawnMesh(),
+            vkRenderer0->SpawnMesh()
+        };
 
-        unicorn::video::geometry::Cube cube(vkRenderer0->SpawnMesh());
-        cube.Translate({5.0, 0.0f, 5.0f});
-        pWindow0->MousePosition.connect(&onCursorPositionChanged);
-        pWindow0->Scroll.connect(&onMouseScrolled);
-        pWindow0->Keyboard.connect(&onWindowKeyboard);
-        pWindow0->MouseButton.connect(&onMouseButton);
-        unicornEngine->Run();
+        {
+            Triangle triangle1(*meshes[0]);
+            triangle1.SetColor(unicorn::video::Color::Red);
+            triangle1.Translate({-2.0f, 0.0f, 0.0f});
+            triangle1.Scale({0.5, 0.5, 0.5});
+
+            Triangle triangle2(*meshes[1]);
+            triangle2.SetColor(unicorn::video::Color::Green);
+
+            Cube cube(*meshes[2]);
+            cube.Translate({5.0, 0.0f, 5.0f});
+
+            pWindow0->MousePosition.connect(&onCursorPositionChanged);
+            pWindow0->Scroll.connect(&onMouseScrolled);
+            pWindow0->Keyboard.connect(&onWindowKeyboard);
+            pWindow0->MouseButton.connect(&onMouseButton);
+
+            unicornEngine->Run();
+        }
+
+        for (auto pMesh : meshes)
+        {
+            vkRenderer0->DeleteMesh(pMesh);
+        }
     }
 
     unicornEngine->Deinit();

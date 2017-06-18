@@ -20,41 +20,52 @@ namespace video
 namespace geometry
 {
 /**
- * @brief This class is needed for wrapping raw mesh and manipulating it
+ * @brief This class is used for manipulating geometry meshes
  */
 class MeshDescriptor
 {
 public:
     /**
      * @brief Mesh Descriptor constructor
-     * @param mesh pointer to Renderer mesh
+     * @param mesh reference to a mesh to operate on
      */
     UNICORN_EXPORT MeshDescriptor(Mesh& mesh);
+
     /**
      * @brief Mesh Descriptor destructor
      */
     UNICORN_EXPORT ~MeshDescriptor();
+
     /**
      * @brief Rotate mesh
      * @param angle angle in degrees
      * @param axis vector of normalized axes, which you need to rotate, for example {1.f, 1.f, 0.f} will rotate by x and y only
      */
     UNICORN_EXPORT void Rotate(float angle, const glm::vec3& axis) const;
+
     /**
      * @brief Moves mesh
      * @param translateVector vector of deltas by axes
      */
     UNICORN_EXPORT void Translate( const glm::vec3& translateVector) const;
+
     /**
      * @brief Scales mesh
      * @param scaleVector vector of scale factors
      */
     UNICORN_EXPORT void Scale(const glm::vec3& scaleVector) const;
+
     /**
      * @brief Sets new color for mesh
      * @param color color value
      */
     UNICORN_EXPORT void SetColor(const glm::vec3& color) const;
+
+    /**
+     * @brief   Returns bound mesh reference
+     */
+    UNICORN_EXPORT const Mesh& GetMesh() const { return m_mesh; }
+
 protected:
     Mesh& m_mesh;
 };
