@@ -49,6 +49,7 @@ matrix:
         - llvm-toolchain-precise-3.9
         packages:
         - clang-3.9
+        - g++-6
     env: COMPILER=clang++-3.9
 
 git:
