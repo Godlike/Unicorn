@@ -34,6 +34,23 @@ public:
      */
     VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, geometry::Mesh& mesh);
     ~VkMesh();
+
+    /**
+     *  @brief  Checks if VkMesh is operating on given mesh
+     *
+     *  @param  mesh    reference to geometry mesh
+     *
+     *  @return @c true if object operates on given mesh, @c false otherwise
+     */
+    bool operator==(const geometry::Mesh& mesh) const;
+
+    /**
+     *  @brief  Returns if VkMesh is valid to use
+     *
+     *  Generally VkMesh shall be used only if it is allocated on GPU
+     */
+    bool IsValid() const { return m_valid; }
+
     /**
      * @brief Allocation on GPU
      */
@@ -72,6 +89,7 @@ public:
      */
     wink::signal<wink::slot<void(VkMesh*)>> ReallocatedOnGpu;
 private:
+    bool m_valid;
     vk::Device m_device;
     vk::PhysicalDevice m_physicalDevice;
     vulkan::Buffer m_vertexBuffer, m_indexBuffer;

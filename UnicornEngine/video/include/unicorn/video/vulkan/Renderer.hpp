@@ -11,6 +11,8 @@
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
 
+#include <list>
+
 namespace unicorn
 {
 namespace system
@@ -96,7 +98,8 @@ public:
     void Deinit() override;
     bool Render() override;
     bool RecreateSwapChain();
-    geometry::Mesh& SpawnMesh() override;
+    geometry::Mesh* SpawnMesh() override;
+    void DeleteMesh(const geometry::Mesh* pMesh) override;
 private:
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;
@@ -121,7 +124,13 @@ private:
     std::vector<vk::ImageView> m_swapChainImageViews;
     std::vector<vk::Framebuffer> m_swapChainFramebuffers;
     std::vector<vk::CommandBuffer> m_commandBuffers;
-    std::vector<VkMesh*> m_vkMeshes;
+
+    //! Array of geometry meshes
+    std::list<geometry::Mesh*> m_meshes;
+
+    //! Array of renderer meshes
+    std::list<VkMesh*> m_vkMeshes;
+
     ShaderProgram* m_shaderProgram;
     Buffer m_uniformMvp;
     Buffer m_uniformModel;
@@ -151,7 +160,9 @@ private:
     void ResizeDynamicUniformBuffer() const;
     void UpdateUniformBuffer();
     void UpdateDynamicUniformBuffer();
+    void UpdateVkMeshMatrices();
     bool PickPhysicalDevice();
+
     bool CreateLogicalDevice();
     bool CreateSurface();
     bool CreateDescriptionSetLayout();

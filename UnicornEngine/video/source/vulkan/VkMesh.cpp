@@ -13,11 +13,13 @@ namespace video
 {
 namespace vulkan
 {
-VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, geometry::Mesh& mesh) : m_device(device)
-                                                                                                                                                  , m_physicalDevice(physicalDevice)
-                                                                                                                                                  , m_mesh(mesh)
-                                                                                                                                                  , m_pool(pool)
-                                                                                                                                                  , m_queue(queue)
+VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, geometry::Mesh& mesh)
+    : m_valid(false)
+    , m_device(device)
+    , m_physicalDevice(physicalDevice)
+    , m_mesh(mesh)
+    , m_pool(pool)
+    , m_queue(queue)
 {
     m_mesh.VerticesUpdated.connect(this, &VkMesh::AllocateOnGPU);
 }
@@ -25,6 +27,11 @@ VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::Command
 VkMesh::~VkMesh()
 {
     m_mesh.VerticesUpdated.disconnect(this, &VkMesh::AllocateOnGPU);
+}
+
+bool VkMesh::operator==(const geometry::Mesh& mesh) const
+{
+    return &mesh == &m_mesh;
 }
 
 const glm::mat4& VkMesh::GetModel() const
@@ -55,6 +62,8 @@ void VkMesh::AllocateOnGPU()
     stagingBuffer.Write(m_mesh.GetIndices().data());
     stagingBuffer.CopyToBuffer(m_pool, m_queue, m_indexBuffer, m_indexBuffer.GetSize());
     stagingBuffer.Destroy();
+
+    m_valid = true;
     ReallocatedOnGpu.emit(this);
 }
 

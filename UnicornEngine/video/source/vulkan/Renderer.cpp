@@ -296,35 +296,56 @@ bool Renderer::RecreateSwapChain()
     return false;
 }
 
-void Renderer::OnMeshReallocated(VkMesh* vkmesh)
+void Renderer::OnMeshReallocated(VkMesh* /*vkmesh*/)
 {
     m_uniformModel.Destroy();
+
     size_t bufferSize = m_vkMeshes.size() * m_dynamicAlignment;
     m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, bufferSize);
+
     if (m_uniformModelsData.model)
     {
         utility::AlignedFree(m_uniformModelsData.model);
     }
+
     m_uniformModelsData.model = static_cast<glm::mat4*>(utility::AlignedAlloc(bufferSize, m_dynamicAlignment));
-    for (uint32_t i = 0; i < m_vkMeshes.size(); ++i)
-    {
-        glm::mat4* modelMat = reinterpret_cast<glm::mat4*>((reinterpret_cast<uint64_t>(m_uniformModelsData.model) + (i * m_dynamicAlignment)));
-        *modelMat = m_vkMeshes.at(i)->GetModel();
-    }
+
+    UpdateVkMeshMatrices();
+
     m_uniformModel.Map();
     m_uniformModel.Write(m_uniformModelsData.model);
+
     ResizeDynamicUniformBuffer();
     CreateCommandBuffers();
 }
 
-geometry::Mesh& Renderer::SpawnMesh()
+geometry::Mesh* Renderer::SpawnMesh()
 {
     auto mesh = new geometry::Mesh();
     auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
     vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
     m_vkMeshes.push_back(vkmesh);
     m_meshes.push_back(mesh);
-    return *mesh;
+    return mesh;
+}
+
+void Renderer::DeleteMesh(const geometry::Mesh* pMesh)
+{
+    auto vkMeshIt = std::find_if(m_vkMeshes.begin(), m_vkMeshes.end(), [=](VkMesh* p) -> bool { return *p == *pMesh; });
+
+    if (vkMeshIt != m_vkMeshes.end())
+    {
+        (*vkMeshIt)->DeallocateOnGPU();
+        delete *vkMeshIt;
+        m_vkMeshes.erase(vkMeshIt);
+
+        // Update all related data
+        OnMeshReallocated(nullptr);
+    }
+
+    std::remove(m_meshes.begin(), m_meshes.end(), pMesh);
+
+    delete pMesh;
 }
 
 void Renderer::FreeSurface()
@@ -496,23 +517,39 @@ void Renderer::UpdateUniformBuffer()
     {
         m_uniformCameraData.proj = m_camera->GetProjection();
         m_uniformCameraData.view = m_camera->GetView();
-        m_uniformMvp.Write(&m_uniformCameraData);        
+        m_uniformMvp.Write(&m_uniformCameraData);
     }
 }
 
 void Renderer::UpdateDynamicUniformBuffer()
 {
-    for (uint32_t i = 0; i < m_vkMeshes.size(); ++i)
-    {
-        glm::mat4* modelMat = reinterpret_cast<glm::mat4*>((reinterpret_cast<uint64_t>(m_uniformModelsData.model) + (i * m_dynamicAlignment)));
-        *modelMat = m_vkMeshes.at(i)->GetModel();
-    }
+    UpdateVkMeshMatrices();
+
     m_uniformModel.Write(m_uniformModelsData.model);
 
     vk::MappedMemoryRange mappedMemoryRange;
     mappedMemoryRange.memory = m_uniformModel.GetMemory();
     mappedMemoryRange.size = m_uniformModel.GetSize();
     m_vkLogicalDevice.flushMappedMemoryRanges(1, &mappedMemoryRange);
+}
+
+void Renderer::UpdateVkMeshMatrices()
+{
+    glm::mat4* pModelMat = nullptr;
+    uint32_t i = 0;
+
+    for (auto pVkMesh : m_vkMeshes)
+    {
+        // Get model matrix location
+        pModelMat = reinterpret_cast<glm::mat4*>(
+            (reinterpret_cast<uint64_t>(m_uniformModelsData.model) + (i * m_dynamicAlignment))
+        );
+
+        // Fill model matrix
+        *pModelMat = pVkMesh->GetModel();
+
+        ++i;
+    }
 }
 
 bool Renderer::PickPhysicalDevice()
@@ -1012,14 +1049,24 @@ bool Renderer::CreateCommandBuffers()
         m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
 
         vk::DeviceSize offsets[] = {0};
-        for (uint32_t j = 0; j < m_vkMeshes.size(); ++j)
+
         {
-            vk::Buffer vertexBuffer[] = {m_vkMeshes.at(j)->GetVertexBuffer()};
-            uint32_t dynamicOffset = j * static_cast<uint32_t>(m_dynamicAlignment);
-            m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);
-            m_commandBuffers[i].bindIndexBuffer(m_vkMeshes.at(j)->GetIndexBuffer(), 0, vk::IndexType::eUint16);
-            m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout, 0, 1, &m_descriptorSet, 1, &dynamicOffset);
-            m_commandBuffers[i].drawIndexed(m_vkMeshes.at(j)->IndicesSize(), 1, 0, 0, 0);
+            uint32_t j = 0;
+
+            for (auto pVkMesh : m_vkMeshes)
+            {
+                if (pVkMesh->IsValid())
+                {
+                    vk::Buffer vertexBuffer[] = {pVkMesh->GetVertexBuffer()};
+                    uint32_t dynamicOffset = j * static_cast<uint32_t>(m_dynamicAlignment);
+                    m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);
+                    m_commandBuffers[i].bindIndexBuffer(pVkMesh->GetIndexBuffer(), 0, vk::IndexType::eUint16);
+                    m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout, 0, 1, &m_descriptorSet, 1, &dynamicOffset);
+                    m_commandBuffers[i].drawIndexed(pVkMesh->IndicesSize(), 1, 0, 0, 0);
+
+                    ++j;
+                }
+            }
         }
 
         m_commandBuffers[i].endRenderPass();
