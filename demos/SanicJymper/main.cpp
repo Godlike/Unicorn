@@ -13,10 +13,8 @@
 #include <unicorn/system/input/Action.hpp>
 #include <unicorn/system/input/Key.hpp>
 #include <unicorn/system/input/Modifier.hpp>
-#include <unicorn/video/geometry/Triangle.hpp>
 #include <unicorn/video/Renderer.hpp>
-#include <unicorn/video/geometry/Quad.hpp>
-#include <unicorn/video/geometry/Cube.hpp>
+#include <unicorn/video/geometry/Primitives.hpp>
 #include <unicorn/video/CameraFpsController.hpp>
 
 #include <array>
@@ -30,7 +28,7 @@ static unicorn::system::Timer* timer = nullptr;
 static unicorn::video::Renderer* vkRenderer = nullptr;
 
 unicorn::system::Window* pWindow0 = nullptr;
-std::list<unicorn::video::geometry::Cube*> cubes;
+std::list<unicorn::video::geometry::MeshDescriptor*> cubes;
 
 float deltaTime = 0.0f; // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -55,6 +53,8 @@ void onMouseButton(unicorn::system::Window* /*pWindow*/, unicorn::system::input:
 {
     using unicorn::system::input::MouseButton;
     using unicorn::system::input::Action;
+    using unicorn::video::geometry::MeshDescriptor;
+    using unicorn::video::geometry::Primitives;
 
     if (action == Action::Press)
     {
@@ -62,7 +62,7 @@ void onMouseButton(unicorn::system::Window* /*pWindow*/, unicorn::system::input:
         {
             case MouseButton::MouseLeft:
             {
-                auto obj = new unicorn::video::geometry::Cube(*(vkRenderer->SpawnMesh()));
+                auto obj = new MeshDescriptor(Primitives::Cube(*(vkRenderer->SpawnMesh())));
                 obj->Translate({std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20});
                 obj->SetColor({static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255});
                 cubes.push_back(obj);
@@ -103,8 +103,8 @@ void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double,
     pCameraController->UpdateView(pos.first, pos.second);
 }
 
-    void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double> pos)
-    {
+void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double> pos)
+{
     pCameraController->Scroll(static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
 }
 
@@ -255,9 +255,9 @@ int main(int argc, char* argv[])
         vkRenderer->SetBackgroundColor(unicorn::video::Color::LightPink);
         pCameraController = new unicorn::video::CameraFpsController(vkRenderer->GetCamera());
 
-        using unicorn::video::geometry::Cube;
         using unicorn::video::geometry::Mesh;
-        using unicorn::video::geometry::Triangle;
+        using unicorn::video::geometry::MeshDescriptor;
+        using unicorn::video::geometry::Primitives;
 
         std::array<Mesh*, 3> meshes = {
             vkRenderer->SpawnMesh(),
@@ -266,15 +266,15 @@ int main(int argc, char* argv[])
         };
 
         {
-            Triangle triangle1(*meshes[0]);
+            MeshDescriptor triangle1 = Primitives::Triangle(*meshes[0]);
             triangle1.SetColor(unicorn::video::Color::Red);
             triangle1.Translate({-2.0f, 0.0f, 0.0f});
             triangle1.Scale({0.5, 0.5, 0.5});
 
-            Triangle triangle2(*meshes[1]);
+            MeshDescriptor triangle2 = Primitives::Triangle(*meshes[1]);
             triangle2.SetColor(unicorn::video::Color::Green);
 
-            Cube cube(*meshes[2]);
+            MeshDescriptor cube = Primitives::Cube(*meshes[2]);
             cube.Translate({5.0, 0.0f, 5.0f});
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
