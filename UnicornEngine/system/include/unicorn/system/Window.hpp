@@ -160,32 +160,6 @@ public:
      */
     UNICORN_EXPORT void SetMouseMode(MouseMode mode);
 
-    /** @brief  Checks if window has sticky mouse buttons
-     *
-     *  @return @c true if window has sticky mouse buttons enabled,
-     *          @c false otherwise
-     */
-    UNICORN_EXPORT bool GetStickyMouse() const;
-
-    /** @brief  Sets mouse button sticky mode for a window
-     *
-     *  @param  flag    new value
-     */
-    UNICORN_EXPORT void SetStickyMouse(bool flag);
-
-    /** @brief  Checks if window has sticky keys
-     *
-     *  @return @c true if window has sticky keys enabled,
-     *          @c false otherwise
-     */
-    UNICORN_EXPORT bool GetStickyKeys() const;
-
-    /** @brief  Sets sticky keys mode for a window
-     *
-     *  @param  flag    new value
-     */
-    UNICORN_EXPORT void SetStickyKeys(bool flag);
-
     /** @brief  Returns a set of pressed keys */
     UNICORN_EXPORT const std::set<input::MouseButton>& GetPressedMouseButtons() const { return m_pressedMouseButtons; }
 
@@ -286,22 +260,6 @@ public:
      *  -# mouse interaction mode
      */
     wink::signal< wink::slot<void(Window*, MouseMode)> > MouseModeChanged;
-
-    /** @brief  Event triggered when sticky mouse mode of window is changed
-     *
-     *  Event is emitted with the following signature:
-     *  -# window pointer
-     *  -# boolean flag
-     */
-    wink::signal< wink::slot<void(Window*, bool)> > StickyMouseChanged;
-
-    /** @brief  Event triggered when sticky keys mode of window is changed
-     *
-     *  Event is emitted with the following signature:
-     *  -# window pointer
-     *  -# boolean flag
-     */
-    wink::signal< wink::slot<void(Window*, bool)> > StickyKeysChanged;
 
     /** @brief  Event triggered when window framebuffer size is changed
      *
@@ -546,14 +504,14 @@ private:
     //! A set of pressed buttons
     std::set<input::Key> m_pressedKeys;
 
-    //! A set of keys pressed between two triggers
-    std::set<input::Key> m_skipKeys;
+    //! A set of polled keys
+    std::set<input::Key> m_pollKeys;
 
     //! A set of pressed buttons
     std::set<input::MouseButton> m_pressedMouseButtons;
 
-    //! A set of mouse buttons pressed between two triggers
-    std::set<input::MouseButton> m_skipMouseButtons;
+    //! A set of polled mouse buttons
+    std::set<input::MouseButton> m_pollMouseButtons;
 
     //! Last reported set of input modifiers
     input::Modifier::Mask m_modifiers;

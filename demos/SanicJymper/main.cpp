@@ -69,7 +69,7 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
     {
         case MouseButton::MouseLeft:
         {
-            auto obj = new unicorn::video::geometry::Cube(*(vkRenderer->SpawnMesh()));
+            MeshDescriptor* obj = new MeshDescriptor(Primitives::Cube(*(vkRenderer->SpawnMesh())));
             obj->Translate({std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20});
             obj->SetColor({static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255});
             cubes.push_back(obj);
@@ -134,7 +134,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
     unicorn::system::input::Modifier::Mask const& modifiers = keyboardEvent.modifiers;
 
     std::pair<int32_t, int32_t> position = pWindow->GetPosition();
-    bool positionChanged = true;
+    bool positionChanged = false;
 
     float delta = deltaTime * 0.1f;
 
@@ -182,21 +182,25 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
     case Key::Up:
         {
             position.second -= static_cast<uint32_t>(delta);
+            positionChanged = true;
             break;
         }
     case Key::Down:
         {
             position.second += static_cast<uint32_t>(delta);
+            positionChanged = true;
             break;
         }
     case Key::Left:
         {
             position.first -= static_cast<uint32_t>(delta);
+            positionChanged = true;
             break;
         }
     case Key::Right:
         {
             position.first += static_cast<uint32_t>(delta);
+            positionChanged = true;
             break;
         }
     case Key::C:
@@ -211,7 +215,6 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         }
     default:
         {
-            positionChanged = false;
             break;
         }
     }

@@ -33,6 +33,9 @@ Window::Window(uint32_t id, int32_t width, int32_t height,
         , m_pSharedWindow ? m_pSharedWindow->GetHandle() : nullptr
     );
 
+    WINDOW_MANAGER_ADAPTER::SetWindowStickyKeys(m_handle, false);
+    WINDOW_MANAGER_ADAPTER::SetWindowStickyMouse(m_handle, false);
+
     WINDOW_MANAGER_ADAPTER::GetWindowPosition(m_handle, &m_position.first, &m_position.second);
 
     WINDOW_MANAGER_ADAPTER::WindowPositionChanged.connect(this, &Window::OnWindowPositionChanged);
@@ -67,8 +70,6 @@ Window::~Window()
     Maximized.clear();
     CursorShapeChanged.clear();
     MouseModeChanged.clear();
-    StickyMouseChanged.clear();
-    StickyKeysChanged.clear();
     FramebufferResized.clear();
 
     MouseButton.clear();
@@ -166,35 +167,8 @@ void Window::SetMouseMode(MouseMode mode)
     MouseModeChanged.emit(this, mode);
 }
 
-bool Window::GetStickyMouse() const
-{
-    return WINDOW_MANAGER_ADAPTER::GetWindowStickyMouse(m_handle);
-}
-
-void Window::SetStickyMouse(bool flag)
-{
-    WINDOW_MANAGER_ADAPTER::SetWindowStickyMouse(m_handle, flag);
-
-    StickyMouseChanged.emit(this, flag);
-}
-
-bool Window::GetStickyKeys() const
-{
-    return WINDOW_MANAGER_ADAPTER::GetWindowStickyKeys(m_handle);
-}
-
-void Window::SetStickyKeys(bool flag)
-{
-    WINDOW_MANAGER_ADAPTER::SetWindowStickyKeys(m_handle, flag);
-
-    StickyKeysChanged.emit(this, flag);
-}
-
 void Window::ClearInputEvents()
 {
-    m_skipMouseButtons.clear();
-    m_skipKeys.clear();
-
     MouseButton.clear();
     Keyboard.clear();
 }
@@ -230,12 +204,55 @@ void Window::UpdateInputModifiers()
 
 void Window::TriggerMouseButtonEvents()
 {
-    for (auto const& button : m_pressedMouseButtons)
+    std::set<input::MouseButton> releasedMouseButtons;
+
+    for (auto const& button : m_pollMouseButtons)
     {
-        if (!m_skipMouseButtons.count(button))
+        input::Action action = WINDOW_MANAGER_ADAPTER::GetWindowMouseButton(m_handle, button);
+
+        switch (action)
         {
-            MouseButton.push({this, button, input::Action::Repeat, m_modifiers});
+            case input::Action::Press:
+            case input::Action::Repeat:
+            {
+                if (m_pressedMouseButtons.count(button))   // If it was pressed before signal `repeat`
+                {
+                    action = input::Action::Repeat;
+                }
+                else    // If it wasn't pressed - mark as pressed and fire `press`
+                {
+                    action = input::Action::Press;
+                    m_pressedMouseButtons.insert(button);
+                }
+
+                break;
+            }
+            case input::Action::Release:
+            {
+                if (!m_pressedMouseButtons.count(button))
+                {
+                    continue;   // If it wasn't pressed before, nothing to signal about
+                }
+
+                releasedMouseButtons.insert(button);
+
+                break;
+            }
+            default:
+            {
+                continue;   // Unexpected action
+
+                break;
+            }
         }
+
+        MouseButton.push({this, button, action, m_modifiers});
+    }
+
+    for (auto const& button : releasedMouseButtons)
+    {
+        m_pressedMouseButtons.erase(button);
+        m_pollMouseButtons.erase(button);
     }
 
     MouseButton.emit();
@@ -243,12 +260,55 @@ void Window::TriggerMouseButtonEvents()
 
 void Window::TriggerKeyboardEvents()
 {
-    for (auto const& key : m_pressedKeys)
+    std::set<input::Key> releasedKeys;
+
+    for (auto const& key : m_pollKeys)
     {
-        if (!m_skipKeys.count(key))
+        input::Action action = WINDOW_MANAGER_ADAPTER::GetWindowKey(m_handle, key);
+
+        switch (action)
         {
-            Keyboard.push({this, key, WINDOW_MANAGER_ADAPTER::GetKeyScancode(key), input::Action::Repeat, m_modifiers});
+            case input::Action::Press:
+            case input::Action::Repeat:
+            {
+                if (m_pressedKeys.count(key))   // If it was pressed before signal `repeat`
+                {
+                    action = input::Action::Repeat;
+                }
+                else    // If it wasn't pressed - mark as pressed and fire `press`
+                {
+                    action = input::Action::Press;
+                    m_pressedKeys.insert(key);
+                }
+
+                break;
+            }
+            case input::Action::Release:
+            {
+                if (!m_pressedKeys.count(key))
+                {
+                    continue;   // If it wasn't pressed before, nothing to signal about
+                }
+
+                releasedKeys.insert(key);
+
+                break;
+            }
+            default:
+            {
+                continue;   // Unexpected action
+
+                break;
+            }
         }
+
+        Keyboard.push({this, key, WINDOW_MANAGER_ADAPTER::GetKeyScancode(key), action, m_modifiers});
+    }
+
+    for (auto const& key : releasedKeys)
+    {
+        m_pressedKeys.erase(key);
+        m_pollKeys.erase(key);
     }
 
     Keyboard.emit();
@@ -330,31 +390,11 @@ void Window::OnWindowFramebufferResized(void* handle, std::pair<int32_t, int32_t
     }
 }
 
-void Window::OnWindowMouseButton(void* handle, input::MouseButton button, input::Action action, input::Modifier::Mask modifiers)
+void Window::OnWindowMouseButton(void* handle, input::MouseButton button, input::Action /*action*/, input::Modifier::Mask /*modifiers*/)
 {
     if (handle == m_handle)
     {
-        m_skipMouseButtons.insert(button);
-
-        switch (action)
-        {
-            case input::Action::Press:
-            {
-                m_pressedMouseButtons.insert(button);
-                break;
-            }
-            case input::Action::Release:
-            {
-                m_pressedMouseButtons.erase(button);
-                break;
-            }
-            default:
-            {
-                break;
-            }
-        }
-
-        MouseButton.push({this, button, action, modifiers});
+        m_pollMouseButtons.insert(button);
     }
 }
 
@@ -382,32 +422,11 @@ void Window::OnWindowScroll(void* handle, std::pair<double, double> coords)
     }
 }
 
-void Window::OnWindowKeyboard(void* handle, input::Key key, uint32_t scancode, input::Action action, input::Modifier::Mask modifiers)
+void Window::OnWindowKeyboard(void* handle, input::Key key, uint32_t /*scancode*/, input::Action /*action*/, input::Modifier::Mask /*modifiers*/)
 {
     if (handle == m_handle)
     {
-        m_skipKeys.insert(key);
-
-        switch (action)
-        {
-            case input::Action::Press:
-            {
-                m_pressedKeys.insert(key);
-                break;
-            }
-            case input::Action::Release:
-            {
-                m_pressedKeys.erase(key);
-
-                break;
-            }
-            default:
-            {
-                break;
-            }
-        }
-
-        Keyboard.push({this, key, scancode, action, modifiers});
+        m_pollKeys.insert(key);
     }
 }
 
