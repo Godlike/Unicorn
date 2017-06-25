@@ -23,6 +23,8 @@ Renderer::Renderer(system::Manager& manager, system::Window* window) : m_isIniti
 
 Renderer::~Renderer()
 {
+    Destroyed.emit(this);
+    Destroyed.clear();
 }
 
 Camera& Renderer::GetCamera() const

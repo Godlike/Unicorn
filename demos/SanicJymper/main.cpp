@@ -27,7 +27,7 @@
 static unicorn::video::Graphics* pGraphics = nullptr;
 static unicorn::video::CameraFpsController* pCameraController = nullptr;
 static unicorn::system::Timer* timer = nullptr;
-static unicorn::video::Renderer* vkRenderer0 = nullptr;
+static unicorn::video::Renderer* vkRenderer = nullptr;
 
 unicorn::system::Window* pWindow0 = nullptr;
 std::list<unicorn::video::geometry::Cube*> cubes;
@@ -62,7 +62,7 @@ void onMouseButton(unicorn::system::Window* /*pWindow*/, unicorn::system::input:
         {
             case MouseButton::MouseLeft:
             {
-                auto obj = new unicorn::video::geometry::Cube(*(vkRenderer0->SpawnMesh()));
+                auto obj = new unicorn::video::geometry::Cube(*(vkRenderer->SpawnMesh()));
                 obj->Translate({std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20});
                 obj->SetColor({static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255});
                 cubes.push_back(obj);
@@ -85,7 +85,7 @@ void onMouseButton(unicorn::system::Window* /*pWindow*/, unicorn::system::input:
                     cubes.erase(meshIt);
 
                     // Release cube's mesh
-                    vkRenderer0->DeleteMesh(&mesh);
+                    vkRenderer->DeleteMesh(&mesh);
                 }
 
                 break;
@@ -209,6 +209,14 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     }
 }
 
+void onRendererDestroyed(unicorn::video::Renderer* pRenderer)
+{
+    if (vkRenderer == pRenderer)
+    {
+        vkRenderer = nullptr;
+    }
+}
+
 int main(int argc, char* argv[])
 {
     unicorn::Settings& settings = unicorn::Settings::Instance();
@@ -241,18 +249,20 @@ int main(int argc, char* argv[])
                                                                    nullptr);
         pWindow0->SetMouseMode(unicorn::system::MouseMode::Captured);
 
-        vkRenderer0 = pGraphics->SpawnRenderer(pWindow0);
-        vkRenderer0->SetBackgroundColor(unicorn::video::Color::LightPink);
-        pCameraController = new unicorn::video::CameraFpsController(vkRenderer0->GetCamera());
+        vkRenderer = pGraphics->SpawnRenderer(pWindow0);
+        vkRenderer->Destroyed.connect(&onRendererDestroyed);
+
+        vkRenderer->SetBackgroundColor(unicorn::video::Color::LightPink);
+        pCameraController = new unicorn::video::CameraFpsController(vkRenderer->GetCamera());
 
         using unicorn::video::geometry::Cube;
         using unicorn::video::geometry::Mesh;
         using unicorn::video::geometry::Triangle;
 
         std::array<Mesh*, 3> meshes = {
-            vkRenderer0->SpawnMesh(),
-            vkRenderer0->SpawnMesh(),
-            vkRenderer0->SpawnMesh()
+            vkRenderer->SpawnMesh(),
+            vkRenderer->SpawnMesh(),
+            vkRenderer->SpawnMesh()
         };
 
         {
@@ -275,9 +285,12 @@ int main(int argc, char* argv[])
             unicornEngine->Run();
         }
 
-        for (auto pMesh : meshes)
+        if (vkRenderer)
         {
-            vkRenderer0->DeleteMesh(pMesh);
+            for (auto& pMesh : meshes)
+            {
+                vkRenderer->DeleteMesh(pMesh);
+            }
         }
     }
 
