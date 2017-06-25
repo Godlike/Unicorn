@@ -86,7 +86,7 @@ add_subdirectory(system)
 add_subdirectory(utility)
 add_subdirectory(video)
 
-set(UNICORN_ENGINE_HEADERS 
+set(UNICORN_ENGINE_HEADERS
     include/unicorn/UnicornEngine.hpp
     include/unicorn/Settings.hpp)
 
@@ -97,7 +97,7 @@ set(UNICORN_ENGINE_SOURCES
 add_library(${UNICORN_ENGINE_LIB}
     ${UNICORN_ENGINE_HEADERS}
     ${UNICORN_ENGINE_SOURCES}
-    
+
     $<TARGET_OBJECTS:${UNICORN_ENGINE_UTILITY_LIB}>
     $<TARGET_OBJECTS:${UNICORN_ENGINE_VIDEO_LIB}>
     $<TARGET_OBJECTS:${UNICORN_ENGINE_SYSTEM_LIB}>
@@ -123,8 +123,7 @@ if (UNICORN_BUILD_DOCUMENTATION)
 
     if (DOXYGEN_FOUND)
         set(DOXYGEN_INPUT_DIRS
-            ${UNICORN_ENGINE_INCLUDE_DIR}
-            ${UNICORN_ENGINE_SYSTEM_INCLUDE_DIR}
+            ${UNICORN_ENGINE_INCLUDE_DIRS}
         )
         set(DOXYGEN_PROJECT_NAME ${PROJECT_NAME})
         string(REPLACE ";" " " DOXYGEN_INPUT "${DOXYGEN_INPUT_DIRS}")

@@ -7,18 +7,14 @@ cmake_policy(VERSION 3.0)
 
 
 set(GEOMETRY_HEADERS
-    include/unicorn/video/geometry/Cube.hpp
     include/unicorn/video/geometry/Mesh.hpp
-    include/unicorn/video/geometry/Quad.hpp
-    include/unicorn/video/geometry/Triangle.hpp    
+    include/unicorn/video/geometry/Primitives.hpp
     include/unicorn/video/geometry/MeshDescriptor.hpp
 )
 
 set(GEOMETRY_SOURCES
-    source/geometry/Cube.cpp
     source/geometry/Mesh.cpp
-    source/geometry/Quad.cpp
-    source/geometry/Triangle.cpp
+    source/geometry/Primitives.cpp
     source/geometry/MeshDescriptor.cpp
 )
 
