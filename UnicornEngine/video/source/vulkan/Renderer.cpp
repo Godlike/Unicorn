@@ -33,24 +33,23 @@ bool QueueFamilyIndices::IsComplete() const
 
 Renderer::Renderer(system::Manager& manager, system::Window* window)
     : video::Renderer(manager, window)
+    , m_hasDirtyMeshes(false)
 {
     m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
 }
 
 Renderer::~Renderer()
 {
+    Destroyed.emit(this);
+    Destroyed.clear();
+
     if (m_pWindow)
     {
         m_pWindow->Destroyed.disconnect(this, &Renderer::OnWindowDestroyed);
         m_pWindow->SizeChanged.disconnect(this, &Renderer::OnWindowSizeChanged);
     }
 
-    for (const auto& mesh : m_vkMeshes)
-    {
-        mesh->ReallocatedOnGpu.disconnect(this, &vulkan::Renderer::OnMeshReallocated);
-    }
-
-    Renderer::Deinit();
+    Deinit();
 }
 
 bool Renderer::Init()
@@ -88,26 +87,46 @@ bool Renderer::Init()
 
 void Renderer::Deinit()
 {
-    for (auto& vkmesh : m_vkMeshes)
-    {
-        vkmesh->DeallocateOnGPU();
-    }
-
-    FreeSemaphores();
-    FreeCommandBuffers();
-    FreeCommandPool();
-    FreeFrameBuffers();
-    FreeGraphicsPipeline();
-    FreeDescriptorPoolAndLayouts();
-    FreeUniforms();
-    FreeRenderPass();
-    FreeImageViews();
-    FreeSwapChain();
-    FreeSurface();
-    FreeLogicalDevice();
-
     if (m_isInitialized)
     {
+        {
+            // Create a copy of mesh list to delete all meshes
+            std::list<geometry::Mesh*> meshes(m_meshes);
+
+            for (auto& pMesh : meshes)
+            {
+                DeleteMesh(pMesh);
+            }
+
+            LOG_DEBUG("Deleted %u meshes", static_cast<uint32_t>(meshes.size()));
+
+            if (!m_vkMeshes.empty())
+            {
+                // Also free up all remaining vk meshes
+                for (auto& pVkMesh : m_vkMeshes)
+                {
+                    DeleteVkMesh(pVkMesh);
+                }
+
+                LOG_DEBUG("Deleted %u stray vk meshes", static_cast<uint32_t>(m_vkMeshes.size()));
+
+                m_vkMeshes.clear();
+            }
+        }
+
+        FreeSemaphores();
+        FreeCommandBuffers();
+        FreeCommandPool();
+        FreeFrameBuffers();
+        FreeGraphicsPipeline();
+        FreeDescriptorPoolAndLayouts();
+        FreeUniforms();
+        FreeRenderPass();
+        FreeImageViews();
+        FreeSwapChain();
+        FreeSurface();
+        FreeLogicalDevice();
+
         LOG_INFO("Render shutdown correctly.");
     }
 
@@ -248,6 +267,14 @@ bool Renderer::Render()
 {
     if (m_isInitialized && m_pWindow)
     {
+        if (m_hasDirtyMeshes)
+        {
+            // Update all related data
+            OnMeshReallocated(nullptr);
+
+            m_hasDirtyMeshes = false;
+        }
+
         Frame();
 
         m_vkLogicalDevice.waitIdle();
@@ -329,23 +356,38 @@ geometry::Mesh* Renderer::SpawnMesh()
     return mesh;
 }
 
-void Renderer::DeleteMesh(const geometry::Mesh* pMesh)
+bool Renderer::DeleteMesh(const geometry::Mesh* pMesh)
 {
     auto vkMeshIt = std::find_if(m_vkMeshes.begin(), m_vkMeshes.end(), [=](VkMesh* p) -> bool { return *p == *pMesh; });
 
     if (vkMeshIt != m_vkMeshes.end())
     {
-        (*vkMeshIt)->DeallocateOnGPU();
-        delete *vkMeshIt;
+        DeleteVkMesh(*vkMeshIt);
+
         m_vkMeshes.erase(vkMeshIt);
 
-        // Update all related data
-        OnMeshReallocated(nullptr);
+        m_hasDirtyMeshes = true;
     }
 
-    std::remove(m_meshes.begin(), m_meshes.end(), pMesh);
+    auto meshIt = std::find(m_meshes.begin(), m_meshes.end(), pMesh);
 
-    delete pMesh;
+    if (meshIt != m_meshes.end())
+    {
+        delete *meshIt;
+        m_meshes.erase(meshIt);
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void Renderer::DeleteVkMesh(VkMesh* pVkMesh)
+{
+    pVkMesh->DeallocateOnGPU();
+    delete pVkMesh;
 }
 
 void Renderer::FreeSurface()

@@ -99,7 +99,7 @@ public:
     bool Render() override;
     bool RecreateSwapChain();
     geometry::Mesh* SpawnMesh() override;
-    void DeleteMesh(const geometry::Mesh* pMesh) override;
+    bool DeleteMesh(const geometry::Mesh* pMesh) override;
 private:
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;
@@ -138,11 +138,16 @@ private:
     UniformAllMeshesData m_uniformModelsData;
     UniformCameraData m_uniformCameraData;
 
+    bool m_hasDirtyMeshes;
+
     #ifdef NDEBUG
     static const bool s_enableValidationLayers = false;
     #else
     static const bool s_enableValidationLayers = true;
     #endif
+
+    static void DeleteVkMesh(VkMesh* pVkMesh);
+
     void FreeSurface();
     void FreeLogicalDevice();
     void FreeSwapChain();
