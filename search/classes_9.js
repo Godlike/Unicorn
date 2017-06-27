@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['primitives',['Primitives',['../classunicorn_1_1video_1_1geometry_1_1Primitives.html',1,'unicorn::video::geometry']]]
+  ['renderer',['Renderer',['../classunicorn_1_1video_1_1Renderer.html',1,'unicorn::video']]],
+  ['rendererwindowpairhash',['RendererWindowPairHash',['../structunicorn_1_1video_1_1Graphics_1_1RendererWindowPairHash.html',1,'unicorn::video::Graphics']]]
 ];

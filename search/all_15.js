@@ -23,6 +23,5 @@ var searchData=
   ['windowshouldclose',['WindowShouldClose',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a135617e8c976e1320a38a9fea46443b7',1,'unicorn::system::glfw::Adapter']]],
   ['windowsizechanged',['WindowSizeChanged',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a16dd13168c7501148a87b6509daf2ded',1,'unicorn::system::glfw::Adapter']]],
   ['windowunicode',['WindowUnicode',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a13c173e4d5e7df12eea2ce24c13dafee',1,'unicorn::system::glfw::Adapter']]],
-  ['workerthread',['WorkerThread',['../classunicorn_1_1utility_1_1asset_1_1Storage.html#af6a7003b5880817e71c7b8457d8780db',1,'unicorn::utility::asset::Storage']]],
-  ['write',['Write',['../classunicorn_1_1video_1_1vulkan_1_1Buffer.html#ac3f48d0ebd3850bafcd9b829256fb33c',1,'unicorn::video::vulkan::Buffer']]]
+  ['workerthread',['WorkerThread',['../classunicorn_1_1utility_1_1asset_1_1Storage.html#af6a7003b5880817e71c7b8457d8780db',1,'unicorn::utility::asset::Storage']]]
 ];

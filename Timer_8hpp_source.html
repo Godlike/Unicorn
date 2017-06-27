@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>UnicornEngine: /home/travis/build/Godlike/Unicorn/UnicornEngine/system/include/unicorn/system/Timer.hpp Source File</title>
+<title>UnicornEngine: /home/travis/build/Godlike/Unicorn/UnicornEngine/include/unicorn/core/Timer.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -79,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_f0cd6335bbe500d1e3068ea0962be968.html">UnicornEngine</a></li><li class="navelem"><a class="el" href="dir_adc1aef1c31a834b5d6fa89044e4c341.html">system</a></li><li class="navelem"><a class="el" href="dir_dad30ce838dc6bea282e4da28ba91b3c.html">include</a></li><li class="navelem"><a class="el" href="dir_b839a3352959a7ddefb5c6c9f10f2604.html">unicorn</a></li><li class="navelem"><a class="el" href="dir_a1f186a862de2188e1fb17d87d8eb790.html">system</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_f0cd6335bbe500d1e3068ea0962be968.html">UnicornEngine</a></li><li class="navelem"><a class="el" href="dir_7e6d8d7354cc4985d99d58053a7e4889.html">include</a></li><li class="navelem"><a class="el" href="dir_327d8a0b9c1a2f8cb950b88fa8a0ed29.html">unicorn</a></li><li class="navelem"><a class="el" href="dir_8cb4eb5821f4adffb2b093064b9fa888.html">core</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -93,43 +93,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment">* (http://opensource.org/licenses/MIT)</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">*/</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#ifndef UNICORN_SYSTEM_TIMER_HPP</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define UNICORN_SYSTEM_TIMER_HPP</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#ifndef UNICORN_CORE_TIMER_HPP</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define UNICORN_CORE_TIMER_HPP</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;chrono&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;unicorn/utility/SharedMacros.hpp&gt;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span>unicorn</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;{</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span>system</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;{</div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classunicorn_1_1system_1_1Timer.html">   20</a></span>&#160;<span class="keyword">class </span><a class="code" href="classunicorn_1_1system_1_1Timer.html">Timer</a></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">using</span> HighResolutionClock = std::chrono::high_resolution_clock;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="keyword">using</span> Milliseconds = std::chrono::milliseconds;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keyword">using</span> Seconds = std::chrono::seconds;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">using</span> Minutes = std::chrono::minutes;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    UNICORN_EXPORT <a class="code" href="classunicorn_1_1system_1_1Timer.html#a594bf640d8e50cc53523f0ffeb494d11">Timer</a>(<span class="keywordtype">bool</span> run = <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    UNICORN_EXPORT <span class="keywordtype">void</span> <a class="code" href="classunicorn_1_1system_1_1Timer.html#a456288868f9b03e23c5de295cc41de49">Reset</a>();</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    UNICORN_EXPORT Milliseconds <a class="code" href="classunicorn_1_1system_1_1Timer.html#a1214ac75176193643b721aa4ae15d6a8">ElapsedMilliseconds</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    UNICORN_EXPORT Seconds <a class="code" href="classunicorn_1_1system_1_1Timer.html#a58cd341c134a5282a96df2ce2a0e2717">ElapsedSeconds</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    UNICORN_EXPORT Minutes <a class="code" href="classunicorn_1_1system_1_1Timer.html#a2f3553b7531fce73f7089e7168ecf2bc">ElapsedMinutes</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    HighResolutionClock::time_point m_start;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;};</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#endif // UNICORN_SYSTEM_TIMER_HPP</span></div>
-<div class="ttc" id="classunicorn_1_1system_1_1Timer_html_a594bf640d8e50cc53523f0ffeb494d11"><div class="ttname"><a href="classunicorn_1_1system_1_1Timer.html#a594bf640d8e50cc53523f0ffeb494d11">unicorn::system::Timer::Timer</a></div><div class="ttdeci">UNICORN_EXPORT Timer(bool run=false)</div><div class="ttdoc">Constructs Timer object. </div></div>
-<div class="ttc" id="classunicorn_1_1system_1_1Timer_html_a456288868f9b03e23c5de295cc41de49"><div class="ttname"><a href="classunicorn_1_1system_1_1Timer.html#a456288868f9b03e23c5de295cc41de49">unicorn::system::Timer::Reset</a></div><div class="ttdeci">UNICORN_EXPORT void Reset()</div><div class="ttdoc">Resets timer. </div></div>
-<div class="ttc" id="classunicorn_1_1system_1_1Timer_html_a1214ac75176193643b721aa4ae15d6a8"><div class="ttname"><a href="classunicorn_1_1system_1_1Timer.html#a1214ac75176193643b721aa4ae15d6a8">unicorn::system::Timer::ElapsedMilliseconds</a></div><div class="ttdeci">UNICORN_EXPORT Milliseconds ElapsedMilliseconds() const </div><div class="ttdoc">Returns time in milliseconds. </div></div>
-<div class="ttc" id="classunicorn_1_1system_1_1Timer_html"><div class="ttname"><a href="classunicorn_1_1system_1_1Timer.html">unicorn::system::Timer</a></div><div class="ttdoc">Timer class for time-related tasks. </div><div class="ttdef"><b>Definition:</b> Timer.hpp:20</div></div>
-<div class="ttc" id="classunicorn_1_1system_1_1Timer_html_a58cd341c134a5282a96df2ce2a0e2717"><div class="ttname"><a href="classunicorn_1_1system_1_1Timer.html#a58cd341c134a5282a96df2ce2a0e2717">unicorn::system::Timer::ElapsedSeconds</a></div><div class="ttdeci">UNICORN_EXPORT Seconds ElapsedSeconds() const </div><div class="ttdoc">Returns time in seconds. </div></div>
-<div class="ttc" id="classunicorn_1_1system_1_1Timer_html_a2f3553b7531fce73f7089e7168ecf2bc"><div class="ttname"><a href="classunicorn_1_1system_1_1Timer.html#a2f3553b7531fce73f7089e7168ecf2bc">unicorn::system::Timer::ElapsedMinutes</a></div><div class="ttdeci">UNICORN_EXPORT Minutes ElapsedMinutes() const </div><div class="ttdoc">Returns time in minutes. </div></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>unicorn</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">namespace </span>core</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;{</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classunicorn_1_1core_1_1Timer.html">   16</a></span>&#160;<span class="keyword">class </span><a class="code" href="classunicorn_1_1core_1_1Timer.html">Timer</a></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;};</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;}</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;}</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#endif // UNICORN_CORE_TIMER_HPP</span></div>
+<div class="ttc" id="classunicorn_1_1core_1_1Timer_html"><div class="ttname"><a href="classunicorn_1_1core_1_1Timer.html">unicorn::core::Timer</a></div><div class="ttdef"><b>Definition:</b> Timer.hpp:16</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

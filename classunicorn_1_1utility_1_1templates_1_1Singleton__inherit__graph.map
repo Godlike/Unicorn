@@ -1,5 +1,5 @@
 <map id="unicorn::utility::templates::Singleton&lt; C &gt;" name="unicorn::utility::templates::Singleton&lt; C &gt;">
-<area shape="rect" id="node2" href="$classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html" title="Controls non&#45;thread safe asset access. " alt="" coords="221,5,445,46"/>
-<area shape="rect" id="node3" href="$classunicorn_1_1utility_1_1asset_1_1Storage.html" title="Controls thread safe asset access. " alt="" coords="261,70,405,111"/>
-<area shape="rect" id="node4" href="$classunicorn_1_1video_1_1vulkan_1_1Context.html" title="Vulkan API context which creates vk::Instance once. " alt="" coords="259,135,408,177"/>
+<area shape="rect" id="node2" href="$classunicorn_1_1core_1_1Settings.html" title="Provides an access to application settings. " alt="" coords="257,5,410,46"/>
+<area shape="rect" id="node3" href="$classunicorn_1_1utility_1_1asset_1_1SimpleStorage.html" title="Controls non&#45;thread safe asset access. " alt="" coords="221,70,445,111"/>
+<area shape="rect" id="node4" href="$classunicorn_1_1utility_1_1asset_1_1Storage.html" title="Controls thread safe asset access. " alt="" coords="261,135,405,177"/>
 </map>
