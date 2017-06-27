@@ -8,19 +8,20 @@ if (NOT DEFINED UNICORN_ENGINE_ROOT)
     set(UNICORN_ENGINE_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/UnicornEngine" CACHE STRING "Path to UnicornEngine root directory")
 endif()
 
-set(UNICORN_ENGINE_INCLUDE_DIRS
+set(UNICORN_ENGINE_INCLUDE_DIR
     "${UNICORN_ENGINE_ROOT}/include"
+    CACHE STRING "Path to UnicornEngine include directory")
+
+set(UNICORN_ENGINE_INCLUDE_DIRS
+    "${UNICORN_ENGINE_INCLUDE_DIR}"
     "${UNICORN_ENGINE_ROOT}/system/include"
-    "${UNICORN_ENGINE_ROOT}/video/include"
-    "${UNICORN_ENGINE_ROOT}/utility/include"
+    "${UNICORN_ENGINE_ROOT}/system/WindowManager/include"
     CACHE LIST "List of UnicornEngine include directories")
 
 include(${UNICORN_ENGINE_ROOT}/cmake/WinkSignals.cmake)
-include(${UNICORN_ENGINE_ROOT}/cmake/GlmConfig.cmake)
 
 set(UNICORN_ENGINE_EXTERNAL_INCLUDE_DEPENDENCIES
     ${WINK_SIGNALS_INCLUDE_DIR}
-    ${GLM_INCLUDE_DIR}
     CACHE LIST "List of UnicornEngine external include dependencies")
 
 set(UNICORN_ENGINE_LIB ${UNICORN_ENGINE_NAME} CACHE STRING "Name of UnicornEngine library")

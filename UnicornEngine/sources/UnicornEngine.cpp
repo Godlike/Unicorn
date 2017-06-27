@@ -20,28 +20,29 @@
 
 namespace
 {
-//! Pointer to the window profiler
-static unicorn::system::WindowProfiler* s_pWindowProfiler = nullptr;
+    //! Pointer to the window profiler
+    static unicorn::system::WindowProfiler* s_pWindowProfiler = nullptr;
 
-//! Pointer to the monitor profiler
-static unicorn::system::MonitorProfiler* s_pMonitorProfiler = nullptr;
+    //! Pointer to the monitor profiler
+    static unicorn::system::MonitorProfiler* s_pMonitorProfiler = nullptr;
 
-//! Pointer to the mouse profiler
-static unicorn::system::MouseProfiler* s_pMouseProfiler = nullptr;
+    //! Pointer to the mouse profiler
+    static unicorn::system::MouseProfiler* s_pMouseProfiler = nullptr;
 
-//! Pointer to the key profiler
-static unicorn::system::KeyProfiler* s_pKeyProfiler = nullptr;
+    //! Pointer to the key profiler
+    static unicorn::system::KeyProfiler* s_pKeyProfiler = nullptr;
 
-//! Pointer to the gamepad profiler
-static unicorn::system::GamepadProfiler* s_pGamepadProfiler = nullptr;
+    //! Pointer to the gamepad profiler
+    static unicorn::system::GamepadProfiler* s_pGamepadProfiler = nullptr;
 }
 
 namespace unicorn
 {
-UnicornEngine::UnicornEngine() : m_isInitialized(false)
-                               , m_pSystemManager(nullptr)
-                               , m_pGraphics(nullptr)
-                               , m_pInput(nullptr)
+UnicornEngine::UnicornEngine()
+    : m_isInitialized(false)
+    , m_pSystemManager(nullptr)
+    , m_pGraphics(nullptr)
+    , m_pInput(nullptr)
 {
 }
 
@@ -73,7 +74,7 @@ bool UnicornEngine::Init()
     m_pGraphics = new video::Graphics(*m_pSystemManager);
     m_pInput = new system::Input(*m_pSystemManager);
 
-    if (!m_pGraphics->Init(video::DriverType::Vulkan))
+    if (!m_pGraphics->Init())
     {
         Deinit();
 
@@ -161,7 +162,9 @@ void UnicornEngine::Run()
             m_pInput->Process();
 
             LogicFrame.emit(this);
-        } while (m_pGraphics->Render());
+        }
+        while (m_pGraphics->Render());
     }
 }
+
 }

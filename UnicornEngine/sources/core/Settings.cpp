@@ -4,11 +4,13 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#include <unicorn/Settings.hpp>
+#include <unicorn/core/Settings.hpp>
 
 #include <unicorn/utility/Logger.hpp>
 
 namespace unicorn
+{
+namespace core
 {
 Settings::Settings()
     : m_width(640)
@@ -26,5 +28,6 @@ void Settings::Init(int argc, char** argv, const std::string& logFileName)
     {
         loguru::add_file(logFileName.c_str(), loguru::Append, loguru::Verbosity_INFO);
     }
+}
 }
 }

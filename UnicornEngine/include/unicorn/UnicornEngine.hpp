@@ -8,7 +8,6 @@
 #define UNICORN_ENGINE_HPP
 
 #include <unicorn/utility/SharedMacros.hpp>
-#include <unicorn/system/Timer.hpp>
 
 #include <wink/signal.hpp>
 #include <map>
@@ -23,6 +22,7 @@ class Graphics;
 
 namespace system
 {
+
 namespace input
 {
 class Gamepad;
@@ -33,11 +33,11 @@ class Manager;
 }
 
 /** @brief  Engine main class */
-class UnicornEngine
+class UNICORN_EXPORT UnicornEngine
 {
 public:
     /** @brief  Constructs an empty engine */
-    UNICORN_EXPORT UnicornEngine();
+    UnicornEngine();
 
     /** @brief  Destructs an engine
      *
@@ -45,7 +45,7 @@ public:
      *
      *  @sa Deinit()
      */
-    UNICORN_EXPORT ~UnicornEngine();
+    ~UnicornEngine();
 
     UnicornEngine(const UnicornEngine& other) = delete;
     UnicornEngine& operator=(const UnicornEngine& other) = delete;
@@ -59,19 +59,19 @@ public:
      *
      *  @return @c true if initialization was successful, @c false otherwise
      */
-    UNICORN_EXPORT bool Init();
+    bool Init();
 
     /** @brief  Engine's main loop */
-    UNICORN_EXPORT void Run();
+    void Run();
 
     /** @brief  Deinitializes the engine
      *
      *  Deinitializes @ref m_pGraphics
      */
-    UNICORN_EXPORT void Deinit();
+    void Deinit();
 
     /** @brief  Returns pointer to the graphics system */
-    UNICORN_EXPORT video::Graphics* GetGraphics() const { return m_pGraphics; }
+    video::Graphics* GetGraphics() const { return m_pGraphics; }
 
     /** @brief  Returns pointer to the input system */
     system::Input* GetInput() const { return m_pInput; }
