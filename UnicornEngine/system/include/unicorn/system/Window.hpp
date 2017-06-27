@@ -7,7 +7,9 @@
 #ifndef UNICORN_SYSTEM_WINDOW_HPP
 #define UNICORN_SYSTEM_WINDOW_HPP
 
+#include <unicorn/system/CursorShape.hpp>
 #include <unicorn/system/Monitor.hpp>
+#include <unicorn/system/MouseMode.hpp>
 
 #include <unicorn/system/input/Action.hpp>
 #include <unicorn/system/input/Key.hpp>
@@ -138,6 +140,50 @@ public:
     /** @brief  Makes window visible */
     UNICORN_EXPORT void Show();
 
+    /** @brief  Sets a cursor shape for a window
+     *
+     *  @param  shape   cursor shape
+     */
+    UNICORN_EXPORT void SetCursorShape(CursorShape shape);
+
+    /** @brief  Returns a mouse mode for a window
+     *
+     *  @return mouse mode
+     */
+    UNICORN_EXPORT MouseMode GetMouseMode() const;
+
+    /** @brief  Sets mouse mode for a window
+     *
+     *  @param  mode    mouse mode
+     */
+    UNICORN_EXPORT void SetMouseMode(MouseMode mode);
+
+    /** @brief  Checks if window has sticky mouse buttons
+     *
+     *  @return @c true if window has sticky mouse buttons enabled,
+     *          @c false otherwise
+     */
+    UNICORN_EXPORT bool GetStickyMouse() const;
+
+    /** @brief  Sets mouse button sticky mode for a window
+     *
+     *  @param  flag    new value
+     */
+    UNICORN_EXPORT void SetStickyMouse(bool flag);
+
+    /** @brief  Checks if window has sticky keys
+     *
+     *  @return @c true if window has sticky keys enabled,
+     *          @c false otherwise
+     */
+    UNICORN_EXPORT bool GetStickyKeys() const;
+
+    /** @brief  Sets sticky keys mode for a window
+     *
+     *  @param  flag    new value
+     */
+    UNICORN_EXPORT void SetStickyKeys(bool flag);
+
     /** @brief  Returns a handle provided by window manager adapter */
     UNICORN_EXPORT void* GetHandle() const { return m_handle; }
 
@@ -201,6 +247,38 @@ public:
      *  -# boolean flag
      */
     wink::signal< wink::slot<void(Window*, bool)> > Maximized;
+
+    /** @brief  Event triggered when cursor shape for a window is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# cursor shape
+     */
+    wink::signal< wink::slot<void(Window*, CursorShape)> > CursorShapeChanged;
+
+    /** @brief  Event triggered when mouse interaction mode of window is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# mouse interaction mode
+     */
+    wink::signal< wink::slot<void(Window*, MouseMode)> > MouseModeChanged;
+
+    /** @brief  Event triggered when sticky mouse mode of window is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# boolean flag
+     */
+    wink::signal< wink::slot<void(Window*, bool)> > StickyMouseChanged;
+
+    /** @brief  Event triggered when sticky keys mode of window is changed
+     *
+     *  Event is emitted with the following signature:
+     *  -# window pointer
+     *  -# boolean flag
+     */
+    wink::signal< wink::slot<void(Window*, bool)> > StickyKeysChanged;
 
     /** @brief  Event triggered when window framebuffer size is changed
      *

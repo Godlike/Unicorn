@@ -93,7 +93,6 @@ bool Graphics::Render()
         {
             if (!cit->second->ShouldClose() && cit->first->Render())
             {
-                m_systemManager.PollEvents();
                 ++cit;
             }
             else
