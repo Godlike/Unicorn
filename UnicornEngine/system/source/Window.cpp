@@ -6,7 +6,7 @@
 
 #include <unicorn/system/Window.hpp>
 
-#include <unicorn/system/adapters/Helper.hpp>
+#include <unicorn/system/adapter/Helper.hpp>
 
 namespace unicorn
 {
@@ -21,6 +21,7 @@ Window::Window(uint32_t id, int32_t width, int32_t height,
     , m_name( name )
     , m_pMonitor( pMonitor )
     , m_pSharedWindow( pSharedWindow )
+    , m_focus( false )
     , m_handle( nullptr )
 {
     m_handle = WINDOW_MANAGER_ADAPTER::CreateWindow(m_size.first
@@ -40,6 +41,14 @@ Window::Window(uint32_t id, int32_t width, int32_t height,
     WINDOW_MANAGER_ADAPTER::WindowMinimized.connect(this, &Window::OnWindowMinimized);
     WINDOW_MANAGER_ADAPTER::WindowMaximized.connect(this, &Window::OnWindowMaximized);
     WINDOW_MANAGER_ADAPTER::WindowFramebufferResized.connect(this, &Window::OnWindowFramebufferResized);
+
+    WINDOW_MANAGER_ADAPTER::WindowMouseButton.connect(this, &Window::OnWindowMouseButton);
+    WINDOW_MANAGER_ADAPTER::WindowMousePosition.connect(this, &Window::OnWindowMousePosition);
+    WINDOW_MANAGER_ADAPTER::WindowMouseEnter.connect(this, &Window::OnWindowMouseEnter);
+    WINDOW_MANAGER_ADAPTER::WindowScroll.connect(this, &Window::OnWindowScroll);
+    WINDOW_MANAGER_ADAPTER::WindowKeyboard.connect(this, &Window::OnWindowKeyboard);
+    WINDOW_MANAGER_ADAPTER::WindowUnicode.connect(this, &Window::OnWindowUnicode);
+    WINDOW_MANAGER_ADAPTER::WindowFileDrop.connect(this, &Window::OnWindowFileDrop);
 }
 
 Window::~Window()
@@ -55,6 +64,14 @@ Window::~Window()
     Minimized.clear();
     Maximized.clear();
     FramebufferResized.clear();
+
+    MouseButton.clear();
+    MousePosition.clear();
+    MouseEnter.clear();
+    Scroll.clear();
+    Keyboard.clear();
+    Unicode.clear();
+    FileDrop.clear();
 
     WINDOW_MANAGER_ADAPTER::DestroyWindow(m_handle);
 }
@@ -164,6 +181,8 @@ void Window::OnWindowFocused(void* handle, bool flag)
 {
     if (handle == m_handle)
     {
+        m_focus = flag;
+
         Focused.emit(this, flag);
     }
 }
@@ -189,6 +208,62 @@ void Window::OnWindowFramebufferResized(void* handle, std::pair<int32_t, int32_t
     if (handle == m_handle)
     {
         FramebufferResized.emit(this, size);
+    }
+}
+
+void Window::OnWindowMouseButton(void* handle, input::MouseButton button, input::Action action, input::Modifier::Mask modifiers)
+{
+    if (handle == m_handle)
+    {
+        MouseButton.emit(this, button, action, modifiers);
+    }
+}
+
+void Window::OnWindowMousePosition(void* handle, std::pair<double, double> coords)
+{
+    if (handle == m_handle)
+    {
+        MousePosition.emit(this, coords);
+    }
+}
+
+void Window::OnWindowMouseEnter(void* handle, bool entered)
+{
+    if (handle == m_handle)
+    {
+        MouseEnter.emit(this, entered);
+    }
+}
+
+void Window::OnWindowScroll(void* handle, std::pair<double, double> coords)
+{
+    if (handle == m_handle)
+    {
+        Scroll.emit(this, coords);
+    }
+}
+
+void Window::OnWindowKeyboard(void* handle, input::Key key, uint32_t scancode, input::Action action, input::Modifier::Mask modifiers)
+{
+    if (handle == m_handle)
+    {
+        Keyboard.emit(this, key, scancode, action, modifiers);
+    }
+}
+
+void Window::OnWindowUnicode(void* handle, uint32_t unicode, input::Modifier::Mask modifiers)
+{
+    if (handle == m_handle)
+    {
+        Unicode.emit(this, unicode, modifiers);
+    }
+}
+
+void Window::OnWindowFileDrop(void* handle, std::vector<std::string> paths)
+{
+    if (handle == m_handle)
+    {
+        FileDrop.emit(this, paths);
     }
 }
 

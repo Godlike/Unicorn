@@ -8,7 +8,7 @@
 
 #include <unicorn/system/MonitorMemento.hpp>
 
-#include <unicorn/system/adapters/Helper.hpp>
+#include <unicorn/system/adapter/Helper.hpp>
 
 #include <cmath>
 

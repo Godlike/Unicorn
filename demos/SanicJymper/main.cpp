@@ -13,11 +13,140 @@
 #include <unicorn/system/CustomValue.hpp>
 #include <unicorn/Settings.hpp>
 
+#include <unicorn/system/input/Action.hpp>
+#include <unicorn/system/input/Gamepad.hpp>
+#include <unicorn/system/input/Key.hpp>
+#include <unicorn/system/input/Modifier.hpp>
+
+#include <unicorn/core/Settings.hpp>
+
+#include <cmath>
 #include <iostream>
+
+static unicorn::video::Graphics* pGraphics = nullptr;
 
 void onWindowSizeChange(unicorn::system::Window* pWindow, std::pair<int32_t, int32_t> size)
 {
     std::cout << "Window[" << pWindow->GetId() << "]: size changed to " << size.first << "x" << size.second << std::endl;
+}
+
+void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
+{
+    std::cout << "Logic frame" << std::endl;
+}
+
+void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::Key key, uint32_t scancode, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask modifiers)
+{
+    using unicorn::system::input::Key;
+    using unicorn::system::input::Modifier;
+    using unicorn::system::input::Action;
+
+    if (Action::Release == action)
+    {
+        return;
+    }
+
+    std::pair<int32_t, int32_t> position = pWindow->GetPosition();
+    bool positionChanged = true;
+
+    uint32_t delta = 1;
+
+    if (Modifier::Shift & modifiers)
+    {
+        delta *= 10;
+    }
+
+    if (Modifier::Alt & modifiers)
+    {
+        delta *= 5;
+    }
+
+    switch (key)
+    {
+        case Key::Up:
+        {
+            position.second -= delta;
+            break;
+        }
+
+        case Key::Down:
+        {
+            position.second += delta;
+            break;
+        }
+        case Key::Left:
+        {
+            position.first -= delta;
+            break;
+        }
+        case Key::Right:
+        {
+            position.first += delta;
+            break;
+        }
+        default:
+        {
+            positionChanged = false;
+            break;
+        }
+    }
+
+    if (positionChanged)
+    {
+        pWindow->SetPosition(position);
+    }
+}
+
+void onGamepadUpdate(unicorn::system::input::Gamepad* pGamepad)
+{
+    if (!pGraphics)
+    {
+        return;
+    }
+
+    unicorn::system::Window* pWindow = pGraphics->GetFocusedWindow();
+
+    if (!pWindow)
+    {
+        return;
+    }
+
+    static const float speed = 5.0f;
+    static const float deadZone = 0.05f;
+
+    const std::vector<float>& axes = pGamepad->GetAxes();
+
+    uint32_t size = axes.size();
+
+    if (size % 2 != 0)
+    {
+        --size;
+    }
+
+    std::pair<int32_t, int32_t> position = pWindow->GetPosition();
+    int32_t oldX = position.first;
+    int32_t oldY = position.second;
+
+    for (uint32_t i = 0; i < size / 2; i += 2) // checking only sticks (at least for xbox)
+    {
+        const float x = axes[i];
+        const float y = axes[i + 1];
+
+        if (fabs(x) > deadZone)
+        {
+            position.first += round(speed * x);
+        }
+
+        if (fabs(y) > deadZone)
+        {
+            position.second += round(speed * y);
+        }
+    }
+
+    if (oldX != position.first || oldY != position.second)
+    {
+        pWindow->SetPosition(position);
+    }
 }
 
 int main(int argc, char* argv[])
@@ -31,6 +160,19 @@ int main(int argc, char* argv[])
 
     if (unicornEngine->Init())
     {
+        pGraphics = unicornEngine->GetGraphics();
+
+        for (auto const& cit : unicornEngine->GetGamepads())
+        {
+            cit.second->Updated.connect(&onGamepadUpdate);
+        }
+
+        unicornEngine->LogicFrame.connect(&onLogicFrame);
+
+        // Borderless undecorated
+        pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
+            unicorn::system::CustomValue::False);
+
         unicorn::video::Graphics* pGraphics = unicornEngine->GetGraphics();
         pGraphics->CreateVulkanContext();
         // Resizable
@@ -51,9 +193,25 @@ int main(int argc, char* argv[])
             nullptr,
             nullptr );
 
+        pWindow1->Keyboard.connect(&onWindowKeyboard);
+
+        // Decorated, with borders
+        pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
+            unicorn::system::CustomValue::True);
         auto vkRenderer0 = pGraphics->SpawnVulkanRenderer(pWindow0);
         auto vkRenderer1 = pGraphics->SpawnVulkanRenderer(pWindow1);
 
+        unicorn::system::Window* pWindow2 = pGraphics->SpawnWindow(
+            settings.GetApplicationWidth(),
+            settings.GetApplicationHeight(),
+            std::string("wat ") + settings.GetApplicationName(),
+            nullptr,
+            nullptr );
+
+        pWindow2->SizeChanged.connect(&onWindowSizeChange);
+        pWindow2->Keyboard.connect(&onWindowKeyboard);
+
+        pWindow0->Minimize();
         pGraphics->BindWindowRenderer(pWindow0, vkRenderer0);
         pGraphics->BindWindowRenderer(pWindow1, vkRenderer1);
 
