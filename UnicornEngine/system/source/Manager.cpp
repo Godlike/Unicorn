@@ -38,7 +38,7 @@ Window* Manager::CreateWindow(int32_t width,
     Monitor* pMonitor,
     Window* pSharedWindow)
 {
-    Window* result = new Window(m_windows.size(), width, height, name, pMonitor, pSharedWindow);
+    Window* result = new Window(static_cast<uint32_t>(m_windows.size()), width, height, name, pMonitor, pSharedWindow);
 
     std::pair<int32_t, int32_t> position;
     WINDOW_MANAGER_ADAPTER::GetWindowPosition(result->GetHandle(), &position.first, &position.second);

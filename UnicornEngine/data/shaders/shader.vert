@@ -1,26 +1,26 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
+layout(binding = 0) uniform UniformViewProjection {
+    mat4 view;
+    mat4 proj;
+} uvp_buffer;
+
+layout(binding = 1) uniform UniformModel {
+    mat4 model;
+} um_buffer;
+
+layout(location = 0) in vec3 pos;
+layout(location = 1) in vec3 color;
+
+layout(location = 0) out vec3 fragColor;
+
 out gl_PerVertex {
     vec4 gl_Position;
 };
 
-layout(location = 0) out vec3 fragColor;
-
-vec2 positions[3] = vec2[](
-    vec2(0.0, -0.5),
-    vec2(0.5, 0.5),
-    vec2(-0.5, 0.5)
-);
-
-vec3 colors[3] = vec3[](
-    vec3(1.0, 0.0, 0.0),
-    vec3(0.0, 1.0, 0.0),
-    vec3(0.0, 0.0, 1.0)
-);
-
 void main() {
-    gl_Position = vec4(positions[gl_VertexIndex], 0.0, 1.0);
-    fragColor = colors[gl_VertexIndex];
+    gl_Position = uvp_buffer.proj * uvp_buffer.view * um_buffer.model * vec4(pos, 1.0);
+    gl_Position.y = -gl_Position.y;
+    fragColor = color;
 }
-
