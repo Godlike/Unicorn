@@ -11,16 +11,13 @@
 #include <unicorn/system/Manager.hpp>
 #include <unicorn/system/Window.hpp>
 
-#include <unicorn/video/vulkan/Context.hpp>
-#include <unicorn/video/vulkan/Renderer.hpp>
-
 namespace unicorn
 {
 namespace video
 {
-Graphics::Graphics(system::Manager& manager) : m_isInitialized(false)
-                                             , m_systemManager(manager)
-                                             , m_driver(DriverType::Vulkan)
+Graphics::Graphics(system::Manager& manager)
+    : m_isInitialized(false)
+    , m_systemManager(manager)
 {
 }
 
@@ -29,34 +26,22 @@ Graphics::~Graphics()
     Deinit();
 }
 
-bool Graphics::Init(const DriverType& driver)
+bool Graphics::Init()
 {
     if (m_isInitialized)
     {
         return false;
     }
 
-    m_driver = driver;
-
     LOG_INFO("Graphics initialization started.");
 
-    switch (m_driver)
+    if (!m_systemManager.IsVulkanSupported())
     {
-    case DriverType::Vulkan:
-        if (!m_systemManager.IsVulkanSupported())
-        {
-            LOG_ERROR("Vulkan not supported!");
-            return false;
-        }
-        if (!vulkan::Context::Instance().Initialize(m_systemManager))
-        {
-            LOG_ERROR("Vulkan context not initialized!");
-            return false;
-        }
-        break;
-    default:
+        LOG_ERROR("Vulkan not supported!");
+
         return false;
     }
+
     m_isInitialized = true;
 
     LOG_INFO("Graphics initialized correctly.");
@@ -71,13 +56,6 @@ void Graphics::Deinit()
     m_renderers.clear();
 
     ProcessExpiredRenderers();
-
-    switch (m_driver)
-    {
-    case DriverType::Vulkan:
-        vulkan::Context::Instance().Deinitialize();
-        break;
-    }
 
     if (m_isInitialized)
     {
@@ -113,12 +91,35 @@ bool Graphics::Render()
 }
 
 system::Window* Graphics::SpawnWindow(int32_t width,
-                                      int32_t height,
-                                      const std::string& name,
-                                      system::Monitor* pMonitor,
-                                      system::Window* pSharedWindow)
+    int32_t height,
+    const std::string& name,
+    system::Monitor* pMonitor,
+    system::Window* pSharedWindow)
 {
-    return m_systemManager.CreateWindow(width, height, name, pMonitor, pSharedWindow);
+    system::Window* pWindow = m_systemManager.CreateWindow(width, height, name, pMonitor, pSharedWindow);
+    Renderer* pRenderer = new Renderer(m_systemManager, pWindow);
+
+    if (pRenderer->Init())
+    {
+        LOG_DEBUG("Created renderer for window %s", name.c_str());
+
+        m_renderers.insert(RendererWindowPair(pRenderer, pWindow));
+    }
+    else
+    {
+        LOG_WARNING("Failed to initialize new renderer for window %s", name.c_str());
+
+        if (!m_systemManager.DestroyWindow(pWindow))
+        {
+            LOG_WARNING("Failed to destroy window %s", name.c_str());
+
+            delete pWindow;
+        }
+    }
+
+    LOG_INFO("Graphics initialization started.");
+
+    return pWindow;
 }
 
 system::Window* Graphics::GetFocusedWindow() const
@@ -131,27 +132,22 @@ const std::vector<system::Monitor*>& Graphics::GetMonitors() const
     return m_systemManager.GetMonitors();
 }
 
-void Graphics::BindWindowRenderer(system::Window* pWindow, video::Renderer* pRenderer)
-{
-    m_renderers.insert(RendererWindowPair(pRenderer, pWindow));
-}
-
 system::Monitor* Graphics::GetWindowMonitor(const system::Window& window) const
 {
     return m_systemManager.GetWindowMonitor(window);
 }
 
 void Graphics::SetWindowMonitor(const system::Window& window,
-                                system::Monitor* pMonitor,
-                                const std::pair<int32_t, int32_t>& position,
-                                const std::pair<int32_t, int32_t>& size,
-                                int32_t refreshRate) const
+    system::Monitor* pMonitor,
+    std::pair<int32_t, int32_t> position,
+    std::pair<int32_t, int32_t> size,
+    int32_t refreshRate) const
 {
     m_systemManager.SetWindowMonitor(window,
-                                     pMonitor,
-                                     position,
-                                     size,
-                                     refreshRate);
+        pMonitor,
+        position,
+        size,
+        refreshRate);
 }
 
 void Graphics::SetWindowCreationHint(system::WindowHint hint, int32_t value) const
@@ -179,21 +175,5 @@ void Graphics::ProcessExpiredRenderers()
     }
 }
 
-Renderer* Graphics::SpawnRenderer(system::Window* window)
-{
-    vulkan::Renderer* renderer = nullptr;
-    switch (m_driver)
-    {
-    case DriverType::Vulkan:
-        renderer = new vulkan::Renderer(m_systemManager, window);
-        renderer->Init();
-        BindWindowRenderer(window, renderer);
-        break;
-    default:
-        LOG_ERROR("This render type not exist");
-        break;
-    }
-    return renderer;
-}
 }
 }

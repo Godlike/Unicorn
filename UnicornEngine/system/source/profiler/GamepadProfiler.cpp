@@ -62,7 +62,7 @@ void GamepadProfiler::OnGamepadUpdated(input::Gamepad* pGamepad)
     {
         const std::vector<float>& axes = pGamepad->GetAxes();
 
-        const uint32_t size = static_cast<uint32_t>(axes.size());
+        const uint32_t size = axes.size();
 
         for (uint32_t i = 0; i < size; ++i)
         {
@@ -73,7 +73,7 @@ void GamepadProfiler::OnGamepadUpdated(input::Gamepad* pGamepad)
     {
         const std::vector<bool>& buttons = pGamepad->GetButtons();
 
-        const uint32_t size = static_cast<uint32_t>(buttons.size());
+        const uint32_t size = buttons.size();
 
         for (uint32_t i = 0; i < size; ++i)
         {
