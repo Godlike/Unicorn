@@ -12,6 +12,7 @@
 
 #include <glm/glm.hpp>
 
+#include <unicorn/video/Camera.hpp>
 #include <cstdint>
 #include <memory>
 #include <array>
@@ -27,7 +28,6 @@ class Timer;
 
 namespace video
 {
-class Camera;
 
 class Renderer
 {
@@ -44,7 +44,7 @@ public:
     virtual bool Init() = 0;
     virtual void Deinit() = 0;
     virtual bool Render() = 0;
-    UNICORN_EXPORT Camera& GetCamera() const;
+    UNICORN_EXPORT Camera& GetCamera();
 
     /** @brief  Creates new geometry mesh
      *
@@ -89,7 +89,7 @@ protected:
     //! Pointer to associated window
     system::Window* m_pWindow;
     //! Main view camera
-    Camera* m_camera;
+    Camera m_camera;
     //! Background filling color
     std::array<float, 4> m_backgroundColor;
 };

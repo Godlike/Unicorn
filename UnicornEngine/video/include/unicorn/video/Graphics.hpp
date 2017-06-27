@@ -138,7 +138,7 @@ public:
 
     /** @brief  Spawn new Vulkan based Renderer, which contain VulkanDevice
     *  @param  window Output window.
-    *  @return Pointer to newly created Renderer.
+    *  @return Pointer to newly created Renderer, nullptr if any error occured.
     */
     UNICORN_EXPORT Renderer* SpawnRenderer(system::Window* window);
 

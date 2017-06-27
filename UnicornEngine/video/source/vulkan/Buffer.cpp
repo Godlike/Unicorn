@@ -14,7 +14,8 @@ namespace video
 namespace vulkan
 {
 Buffer::Buffer()
-    : m_size(0), m_mappedMemory(nullptr)
+    : m_size(0), 
+    m_mappedMemory(nullptr)
 {
 }
 
@@ -109,7 +110,7 @@ void Buffer::Write(const void* pData) const
     }
     else
     {
-        LOG_WARNING("Can't write buffer, because it's not maped!");        
+        LOG_WARNING("Can't write buffer, because it's not mapped!");
     }
 }
 
@@ -117,7 +118,7 @@ void Buffer::Map()
 {
     if(!m_mappedMemory)
     {
-        m_device.mapMemory(m_memory, 0, m_size, vk::MemoryMapFlagBits(), &m_mappedMemory);        
+        m_device.mapMemory(m_memory, 0, m_size, vk::MemoryMapFlagBits(), &m_mappedMemory);
     }
 }
 

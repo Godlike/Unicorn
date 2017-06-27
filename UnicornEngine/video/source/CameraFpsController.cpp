@@ -5,13 +5,21 @@
 */
 
 #include <unicorn/video/CameraFpsController.hpp>
+#include <algorithm>
 
 namespace unicorn
 {
 namespace video
 {
 CameraFpsController::CameraFpsController(unicorn::video::Camera& camera)
-    : sensitivity(0.1f), speed(100.0f), m_lastX(0.0), m_lastY(0.0), m_yaw(90.0), m_pitch(0.0), m_dirty(false), m_camera(camera)
+    : sensitivity(0.1f), 
+    speed(100.0f), 
+    m_lastX(0.0), 
+    m_lastY(0.0), 
+    m_yaw(90.0),
+    m_pitch(0.0), 
+    m_dirty(false),
+    m_camera(camera)
 {
 }
 
@@ -65,10 +73,7 @@ void CameraFpsController::UpdateView(double posX, double posY)
     m_yaw += xoffset;
     m_pitch += yoffset;
 
-    if (m_pitch > 89.0f)
-        m_pitch = 89.0f;
-    if (m_pitch < -89.0f)
-        m_pitch = -89.0f;
+    m_pitch = std::max(std::min(m_pitch, 89.0), -89.0);
 
     glm::vec3 front;
     front.x = static_cast<float>(cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
@@ -77,7 +82,7 @@ void CameraFpsController::UpdateView(double posX, double posY)
     m_camera.SetDirection(glm::normalize(front));
 }
 
-void CameraFpsController::Scroll(float yoffset)
+void CameraFpsController::Scroll(float yoffset) const
 {
     m_camera.SetFov(m_camera.GetFov() - yoffset);
 }

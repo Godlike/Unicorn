@@ -189,6 +189,9 @@ Renderer* Graphics::SpawnRenderer(system::Window* window)
         renderer->Init();
         BindWindowRenderer(window, renderer);
         break;
+    default:
+        LOG_ERROR("This render type not exist");
+        break;
     }
     return renderer;
 }

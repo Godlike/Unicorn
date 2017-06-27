@@ -21,6 +21,12 @@ Context::Context() : m_validationLayers({"VK_LAYER_LUNARG_standard_validation"})
 {
 }
 
+#ifdef NDEBUG
+const bool Context::s_enableValidationLayers = false;
+#else
+const bool Context::s_enableValidationLayers = true;
+#endif
+
 static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flags,
                                                       VkDebugReportObjectTypeEXT /*objType*/,
                                                       uint64_t /*obj*/,
