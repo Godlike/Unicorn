@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>UnicornEngine: /home/travis/build/Godlike/Unicorn/UnicornEngine/include/unicorn/video/Renderer.hpp Source File</title>
+<title>UnicornEngine: /home/travis/build/Godlike/Unicorn/UnicornEngine/video/include/unicorn/video/Renderer.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -79,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_f0cd6335bbe500d1e3068ea0962be968.html">UnicornEngine</a></li><li class="navelem"><a class="el" href="dir_7e6d8d7354cc4985d99d58053a7e4889.html">include</a></li><li class="navelem"><a class="el" href="dir_327d8a0b9c1a2f8cb950b88fa8a0ed29.html">unicorn</a></li><li class="navelem"><a class="el" href="dir_a6c494d1cb422bf643a305fe52765e67.html">video</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_f0cd6335bbe500d1e3068ea0962be968.html">UnicornEngine</a></li><li class="navelem"><a class="el" href="dir_83fb1958766c8d699675a32a7ec0f834.html">video</a></li><li class="navelem"><a class="el" href="dir_7d117303f0a81e7588ada0642e2bafd8.html">include</a></li><li class="navelem"><a class="el" href="dir_1f444e639152d75b47e2f880802ca9c5.html">unicorn</a></li><li class="navelem"><a class="el" href="dir_fa0220544bacbad8e5ca0a6f359dd2b7.html">video</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -96,152 +96,77 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#ifndef UNICORN_VIDEO_RENDERER_HPP</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define UNICORN_VIDEO_RENDERER_HPP</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;vulkan/vulkan.hpp&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;cstdint&gt;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">struct </span>GLFWwindow;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">namespace </span>unicorn</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;{</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">namespace </span>system</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;{</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">class </span>Manager;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">class </span>Window;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;}</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">namespace </span>video</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;{</div>
-<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="structunicorn_1_1video_1_1QueueFamilyIndices.html">   29</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structunicorn_1_1video_1_1QueueFamilyIndices.html">QueueFamilyIndices</a></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;unicorn/video/geometry/Mesh.hpp&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;unicorn/video/Color.hpp&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;glm/glm.hpp&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;unicorn/video/Camera.hpp&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;cstdint&gt;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;array&gt;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">namespace </span>unicorn</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">namespace </span>system</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;{</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">class </span>Manager;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">class </span>Window;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">class </span>Timer;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;}</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">namespace </span>video</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;{</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordtype">int</span> graphicsFamily = -1;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">int</span> presentFamily = -1;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">bool</span> IsComplete()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keywordflow">return</span> graphicsFamily &gt;= 0 &amp;&amp; presentFamily &gt;= 0;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    }</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;};</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;</div>
-<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="structunicorn_1_1video_1_1SwapChainSupportDetails.html">   40</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structunicorn_1_1video_1_1SwapChainSupportDetails.html">SwapChainSupportDetails</a></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;{</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    vk::SurfaceCapabilitiesKHR capabilities;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    std::vector&lt;vk::SurfaceFormatKHR&gt; formats;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    std::vector&lt;vk::PresentModeKHR&gt; presentModes;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;};</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classunicorn_1_1video_1_1Renderer.html">   51</a></span>&#160;<span class="keyword">class </span><a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;{</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>(<a class="code" href="classunicorn_1_1system_1_1Manager.html">system::Manager</a>&amp; manager,</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <a class="code" href="classunicorn_1_1system_1_1Window.html">system::Window</a>* pWindow);</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    ~<a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>();</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordtype">bool</span> Init();</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordtype">void</span> Deinit();</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">bool</span> Render();</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">bool</span> RecreateSwapChain();</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordtype">bool</span> m_isInitialized;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;</div>
-<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="classunicorn_1_1video_1_1Renderer.html#a3002e3a22b1f1193070105b9e7f8df00">   73</a></span>&#160;    <a class="code" href="classunicorn_1_1system_1_1Manager.html">system::Manager</a>&amp; <a class="code" href="classunicorn_1_1video_1_1Renderer.html#a3002e3a22b1f1193070105b9e7f8df00">m_systemManager</a>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;</div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="classunicorn_1_1video_1_1Renderer.html">   32</a></span>&#160;<span class="keyword">class </span><a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;{</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>(<a class="code" href="classunicorn_1_1system_1_1Manager.html">system::Manager</a>&amp; manager, <a class="code" href="classunicorn_1_1system_1_1Window.html">system::Window</a>* window);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">virtual</span> ~<a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>();</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1video_1_1Renderer.html">Renderer</a>&amp;&amp; other) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> Init() = 0;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> Deinit() = 0;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> Render() = 0;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    UNICORN_EXPORT <a class="code" href="classunicorn_1_1video_1_1Camera.html">Camera</a>&amp; GetCamera();</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keyword">virtual</span> <a class="code" href="classunicorn_1_1video_1_1geometry_1_1Mesh.html">geometry::Mesh</a>* <a class="code" href="classunicorn_1_1video_1_1Renderer.html#a7cfa6e8011396077b4f98cc7f57938b8">SpawnMesh</a>() = 0;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code" href="classunicorn_1_1video_1_1Renderer.html#a4bb041c8ee331c436339ae6864d8838e">DeleteMesh</a>(<span class="keyword">const</span> <a class="code" href="classunicorn_1_1video_1_1geometry_1_1Mesh.html">geometry::Mesh</a>* pMesh) = 0;</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>
-<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classunicorn_1_1video_1_1Renderer.html#a5fc081ceac4d6b877c83f11ed148237d">   76</a></span>&#160;    <a class="code" href="classunicorn_1_1system_1_1Window.html">system::Window</a>* <a class="code" href="classunicorn_1_1video_1_1Renderer.html#a5fc081ceac4d6b877c83f11ed148237d">m_pWindow</a>;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    vk::Instance m_vkInstance;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    vk::PhysicalDevice m_vkPhysicalDevice;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    vk::Device m_vkLogicalDevice;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    vk::SwapchainKHR m_vkSwapChain;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    vk::Queue m_graphicsQueue;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    vk::Queue m_presentQueue;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    vk::SurfaceKHR m_vkWindowSurface;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    vk::Format m_swapChainImageFormat;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    vk::Extent2D m_swapChainExtent;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    vk::PipelineLayout m_pipelineLayout;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    vk::Pipeline m_graphicsPipeline;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    vk::RenderPass m_renderPass;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    vk::CommandPool m_commandPool;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    vk::Semaphore m_imageAvailableSemaphore;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    vk::Semaphore m_renderFinishedSemaphore;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    std::vector&lt;const char*&gt; m_validationLayers;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    std::vector&lt;const char*&gt; m_deviceExtensions;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    VkDebugReportCallbackEXT m_vulkanCallback;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    std::string m_gpuName;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    std::vector&lt;vk::Image&gt; m_swapChainImages;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    std::vector&lt;vk::ImageView&gt; m_swapChainImageViews;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    std::vector&lt;vk::Framebuffer&gt; m_swapChainFramebuffers;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    std::vector&lt;vk::CommandBuffer&gt; m_commandBuffers;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="preprocessor">#ifdef NDEBUG</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="preprocessor"></span>    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">bool</span> s_enableValidationLayers = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="preprocessor"></span>    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">bool</span> s_enableValidationLayers = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keywordtype">void</span> FreeInstance();</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keywordtype">void</span> FreeDebugCallback();</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordtype">void</span> FreeSurface();</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordtype">void</span> FreeLogicalDevice();</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordtype">void</span> FreeSwapChain();</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordtype">void</span> FreeImageViews();</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordtype">void</span> FreeRenderPass();</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordtype">void</span> FreeGraphicsPipeline();</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordtype">void</span> FreeFrameBuffers();</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordtype">void</span> FreeCommandPool();</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordtype">void</span> FreeCommandBuffers();</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keywordtype">void</span> FreeSemaphores();</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keywordtype">bool</span> CreateInstance();</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordtype">bool</span> CheckValidationLayerSupport() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keywordtype">bool</span> PickPhysicalDevice();</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordtype">bool</span> CreateLogicalDevice();</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordtype">bool</span> CreateSurface();</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keywordtype">bool</span> CreateSwapChain();</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keywordtype">bool</span> CreateImageViews();</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keywordtype">bool</span> CreateRenderPass();</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keywordtype">bool</span> CreateGraphicsPipeline();</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keywordtype">bool</span> CreateFramebuffers();</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <span class="keywordtype">bool</span> CreateCommandPool();</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keywordtype">bool</span> CreateCommandBuffers();</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keywordtype">bool</span> CreateSemaphores();</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keywordtype">bool</span> CreateShaderModule(<span class="keyword">const</span> std::vector&lt;uint8_t&gt;&amp; code, vk::ShaderModule&amp; shaderModule);</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <span class="keywordtype">bool</span> IsDeviceSuitable(<span class="keyword">const</span> vk::PhysicalDevice&amp; device);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keywordtype">bool</span> CheckDeviceExtensionSupport(<span class="keyword">const</span> vk::PhysicalDevice&amp; device);</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <span class="keywordtype">bool</span> Frame();</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    std::vector&lt;const char*&gt; GetRequiredExtensions();</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <a class="code" href="structunicorn_1_1video_1_1QueueFamilyIndices.html">QueueFamilyIndices</a> FindQueueFamilies(<span class="keyword">const</span> vk::PhysicalDevice&amp; device);</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    <span class="keywordtype">bool</span> QuerySwapChainSupport(<a class="code" href="structunicorn_1_1video_1_1SwapChainSupportDetails.html">SwapChainSupportDetails</a>&amp; details, <span class="keyword">const</span> vk::PhysicalDevice&amp; device);</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    vk::SurfaceFormatKHR ChooseSwapSurfaceFormat(<span class="keyword">const</span> std::vector&lt;vk::SurfaceFormatKHR&gt;&amp; availableFormats);</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    vk::PresentModeKHR ChooseSwapPresentMode(<span class="keyword">const</span> std::vector&lt;vk::PresentModeKHR&gt;&amp; availablePresentModes);</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    vk::Extent2D ChooseSwapExtent(<span class="keyword">const</span> vk::SurfaceCapabilitiesKHR&amp; capabilities);</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keywordtype">bool</span> SetupDebugCallback();</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    VkResult CreateDebugReportCallbackEXT(<span class="keyword">const</span> VkDebugReportCallbackCreateInfoEXT* pCreateInfo);</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    <span class="keywordtype">void</span> DestroyDebugReportCallbackEXT();</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <span class="comment">// Callbacks for window events</span></div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keywordtype">void</span> OnWindowDestroyed(<a class="code" href="classunicorn_1_1system_1_1Window.html">system::Window</a>* pWindow);</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <span class="keywordtype">void</span> OnWindowSizeChanged(<a class="code" href="classunicorn_1_1system_1_1Window.html">system::Window</a>* pWindow, std::pair&lt;int32_t, int32_t&gt; size);</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;};</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;}</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;}</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="preprocessor">#endif // UNICORN_VIDEO_RENDERER_HPP</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    UNICORN_EXPORT <span class="keywordtype">void</span> SetBackgroundColor(<span class="keyword">const</span> glm::vec3&amp; backgroundColor);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;</div>
+<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="classunicorn_1_1video_1_1Renderer.html#af009946886addbe01bf4c088a1c6ecfb">   82</a></span>&#160;    wink::signal&lt; wink::slot&lt;void(Renderer*)&gt; &gt; <a class="code" href="classunicorn_1_1video_1_1Renderer.html#af009946886addbe01bf4c088a1c6ecfb">Destroyed</a>;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">bool</span> m_isInitialized;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;</div>
+<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="classunicorn_1_1video_1_1Renderer.html#a3002e3a22b1f1193070105b9e7f8df00">   88</a></span>&#160;    <a class="code" href="classunicorn_1_1system_1_1Manager.html">system::Manager</a>&amp; <a class="code" href="classunicorn_1_1video_1_1Renderer.html#a3002e3a22b1f1193070105b9e7f8df00">m_systemManager</a>;</div>
+<div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="classunicorn_1_1video_1_1Renderer.html#a5fc081ceac4d6b877c83f11ed148237d">   90</a></span>&#160;    <a class="code" href="classunicorn_1_1system_1_1Window.html">system::Window</a>* <a class="code" href="classunicorn_1_1video_1_1Renderer.html#a5fc081ceac4d6b877c83f11ed148237d">m_pWindow</a>;</div>
+<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="classunicorn_1_1video_1_1Renderer.html#afd7af75008b1dedbf34ebdb4f2e91886">   92</a></span>&#160;    <a class="code" href="classunicorn_1_1video_1_1Camera.html">Camera</a> <a class="code" href="classunicorn_1_1video_1_1Renderer.html#afd7af75008b1dedbf34ebdb4f2e91886">m_camera</a>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno"><a class="line" href="classunicorn_1_1video_1_1Renderer.html#a9f3ca7be6a76777048e44658e005d1b1">   94</a></span>&#160;    std::array&lt;float, 4&gt; <a class="code" href="classunicorn_1_1video_1_1Renderer.html#a9f3ca7be6a76777048e44658e005d1b1">m_backgroundColor</a>;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;};</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;}</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;}</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="preprocessor">#endif // UNICORN_VIDEO_RENDERER_HPP</span></div>
+<div class="ttc" id="classunicorn_1_1video_1_1geometry_1_1Mesh_html"><div class="ttname"><a href="classunicorn_1_1video_1_1geometry_1_1Mesh.html">unicorn::video::geometry::Mesh</a></div><div class="ttdoc">Mesh data. </div><div class="ttdef"><b>Definition:</b> Mesh.hpp:40</div></div>
 <div class="ttc" id="classunicorn_1_1system_1_1Manager_html"><div class="ttname"><a href="classunicorn_1_1system_1_1Manager.html">unicorn::system::Manager</a></div><div class="ttdoc">Provides interface to managing windows and monitors. </div><div class="ttdef"><b>Definition:</b> Manager.hpp:40</div></div>
 <div class="ttc" id="classunicorn_1_1system_1_1Window_html"><div class="ttname"><a href="classunicorn_1_1system_1_1Window.html">unicorn::system::Window</a></div><div class="ttdoc">Provides interface to system window. </div><div class="ttdef"><b>Definition:</b> Window.hpp:36</div></div>
-<div class="ttc" id="structunicorn_1_1video_1_1SwapChainSupportDetails_html"><div class="ttname"><a href="structunicorn_1_1video_1_1SwapChainSupportDetails.html">unicorn::video::SwapChainSupportDetails</a></div><div class="ttdef"><b>Definition:</b> Renderer.hpp:40</div></div>
-<div class="ttc" id="classunicorn_1_1video_1_1Renderer_html_a3002e3a22b1f1193070105b9e7f8df00"><div class="ttname"><a href="classunicorn_1_1video_1_1Renderer.html#a3002e3a22b1f1193070105b9e7f8df00">unicorn::video::Renderer::m_systemManager</a></div><div class="ttdeci">system::Manager &amp; m_systemManager</div><div class="ttdoc">Reference to window manager manager. </div><div class="ttdef"><b>Definition:</b> Renderer.hpp:73</div></div>
-<div class="ttc" id="classunicorn_1_1video_1_1Renderer_html"><div class="ttname"><a href="classunicorn_1_1video_1_1Renderer.html">unicorn::video::Renderer</a></div><div class="ttdoc">Vulkan renderer class. </div><div class="ttdef"><b>Definition:</b> Renderer.hpp:51</div></div>
-<div class="ttc" id="classunicorn_1_1video_1_1Renderer_html_a5fc081ceac4d6b877c83f11ed148237d"><div class="ttname"><a href="classunicorn_1_1video_1_1Renderer.html#a5fc081ceac4d6b877c83f11ed148237d">unicorn::video::Renderer::m_pWindow</a></div><div class="ttdeci">system::Window * m_pWindow</div><div class="ttdoc">Pointer to associated window. </div><div class="ttdef"><b>Definition:</b> Renderer.hpp:76</div></div>
-<div class="ttc" id="structunicorn_1_1video_1_1QueueFamilyIndices_html"><div class="ttname"><a href="structunicorn_1_1video_1_1QueueFamilyIndices.html">unicorn::video::QueueFamilyIndices</a></div><div class="ttdef"><b>Definition:</b> Renderer.hpp:29</div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Renderer_html_afd7af75008b1dedbf34ebdb4f2e91886"><div class="ttname"><a href="classunicorn_1_1video_1_1Renderer.html#afd7af75008b1dedbf34ebdb4f2e91886">unicorn::video::Renderer::m_camera</a></div><div class="ttdeci">Camera m_camera</div><div class="ttdoc">Main view camera. </div><div class="ttdef"><b>Definition:</b> Renderer.hpp:92</div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Renderer_html_a4bb041c8ee331c436339ae6864d8838e"><div class="ttname"><a href="classunicorn_1_1video_1_1Renderer.html#a4bb041c8ee331c436339ae6864d8838e">unicorn::video::Renderer::DeleteMesh</a></div><div class="ttdeci">virtual bool DeleteMesh(const geometry::Mesh *pMesh)=0</div><div class="ttdoc">Deletes geometry mesh. </div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Camera_html"><div class="ttname"><a href="classunicorn_1_1video_1_1Camera.html">unicorn::video::Camera</a></div><div class="ttdoc">Camera class, holds view and projection matrices. </div><div class="ttdef"><b>Definition:</b> Camera.hpp:29</div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Renderer_html_a3002e3a22b1f1193070105b9e7f8df00"><div class="ttname"><a href="classunicorn_1_1video_1_1Renderer.html#a3002e3a22b1f1193070105b9e7f8df00">unicorn::video::Renderer::m_systemManager</a></div><div class="ttdeci">system::Manager &amp; m_systemManager</div><div class="ttdoc">Reference to window manager. </div><div class="ttdef"><b>Definition:</b> Renderer.hpp:88</div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Renderer_html_af009946886addbe01bf4c088a1c6ecfb"><div class="ttname"><a href="classunicorn_1_1video_1_1Renderer.html#af009946886addbe01bf4c088a1c6ecfb">unicorn::video::Renderer::Destroyed</a></div><div class="ttdeci">wink::signal&lt; wink::slot&lt; void(Renderer *)&gt; &gt; Destroyed</div><div class="ttdoc">Event triggered from destructor before the renderer is destroyed. </div><div class="ttdef"><b>Definition:</b> Renderer.hpp:82</div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Renderer_html_a9f3ca7be6a76777048e44658e005d1b1"><div class="ttname"><a href="classunicorn_1_1video_1_1Renderer.html#a9f3ca7be6a76777048e44658e005d1b1">unicorn::video::Renderer::m_backgroundColor</a></div><div class="ttdeci">std::array&lt; float, 4 &gt; m_backgroundColor</div><div class="ttdoc">Background filling color. </div><div class="ttdef"><b>Definition:</b> Renderer.hpp:94</div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Renderer_html_a7cfa6e8011396077b4f98cc7f57938b8"><div class="ttname"><a href="classunicorn_1_1video_1_1Renderer.html#a7cfa6e8011396077b4f98cc7f57938b8">unicorn::video::Renderer::SpawnMesh</a></div><div class="ttdeci">virtual geometry::Mesh * SpawnMesh()=0</div><div class="ttdoc">Creates new geometry mesh. </div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Renderer_html"><div class="ttname"><a href="classunicorn_1_1video_1_1Renderer.html">unicorn::video::Renderer</a></div><div class="ttdef"><b>Definition:</b> Renderer.hpp:32</div></div>
+<div class="ttc" id="classunicorn_1_1video_1_1Renderer_html_a5fc081ceac4d6b877c83f11ed148237d"><div class="ttname"><a href="classunicorn_1_1video_1_1Renderer.html#a5fc081ceac4d6b877c83f11ed148237d">unicorn::video::Renderer::m_pWindow</a></div><div class="ttdeci">system::Window * m_pWindow</div><div class="ttdoc">Pointer to associated window. </div><div class="ttdef"><b>Definition:</b> Renderer.hpp:90</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
