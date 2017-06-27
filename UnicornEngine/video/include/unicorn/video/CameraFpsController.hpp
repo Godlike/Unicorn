@@ -15,7 +15,7 @@ namespace unicorn
 namespace video
 {
 /**
- * @brief Camera controller "FPS like".
+ * @brief FPS style camera controller
  */
 class CameraFpsController
 {
@@ -28,7 +28,7 @@ public:
     UNICORN_EXPORT void MoveForward(float deltaTime) const;
     UNICORN_EXPORT void MoveBackward(float deltaTime) const;
     UNICORN_EXPORT void UpdateView(double posX, double posY);
-    UNICORN_EXPORT void Scroll(float yoffset);
+    UNICORN_EXPORT void Scroll(float yoffset) const;
     float sensitivity, speed;
 private:
     double m_lastX, m_lastY, m_yaw, m_pitch;

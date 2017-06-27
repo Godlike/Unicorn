@@ -6,22 +6,24 @@
 
 #include <unicorn/video/Camera.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <algorithm>
 
 namespace unicorn
 {
 namespace video
 {
-Camera::Camera(const glm::vec3& position, const glm::vec3& direction) : m_aspect(0)
-                                                                      , m_position(position)
-                                                                      , m_upVector(0.0f, -1.0f, 0.0f)
-                                                                      , m_direction(direction)
-                                                                      , m_fov(45.0f)
-                                                                      , m_znear(0.1f)
-                                                                      , m_zfar(1000.0f)
-                                                                      , m_dirtyView(false)
-                                                                      , m_fovLowerBound(44.0f)
-                                                                      , m_fovUpperBound(45.0f)
-                                                                      , m_dirtyProjection(false)
+Camera::Camera(const glm::vec3& position, const glm::vec3& direction) : 
+    m_aspect(0)
+    , m_position(position)
+    , m_upVector(0.0f, -1.0f, 0.0f)
+    , m_direction(direction)
+    , m_fov(45.0f)
+    , m_znear(0.1f)
+    , m_zfar(1000.0f)
+    , m_dirtyView(false)
+    , m_fovLowerBound(44.0f)
+    , m_fovUpperBound(45.0f)
+    , m_dirtyProjection(false)
 {
     UpdateViewMatrix();
     UpdateProjectionMatrix();
@@ -107,18 +109,7 @@ void Camera::Frame()
 
 void Camera::SetFov(float fov)
 {
-    if (m_fov >= m_fovLowerBound && m_fov <= m_fovUpperBound)
-    {
-        m_fov = fov;
-    }
-    if (m_fov <= m_fovLowerBound)
-    {
-        m_fov = m_fovLowerBound;
-    }
-    if (m_fov >= m_fovUpperBound)
-    {
-        m_fov = m_fovUpperBound;
-    }
+    m_fov = std::max(std::min(fov, m_fovUpperBound), m_fovLowerBound);
     m_dirtyProjection = true;
 }
 

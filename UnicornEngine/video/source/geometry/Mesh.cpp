@@ -46,8 +46,9 @@ const std::vector<uint16_t>& Mesh::GetIndices() const
     return m_indices;
 }
 
-Vertex::Vertex(glm::vec3 pos, glm::vec3 color): pos(pos)
-                                              , color(color)
+Vertex::Vertex(glm::vec3 pos, glm::vec3 color):
+    pos(pos)
+    , color(color)
 {
 }
 }

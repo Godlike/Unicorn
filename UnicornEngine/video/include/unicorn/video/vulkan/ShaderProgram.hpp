@@ -27,7 +27,7 @@ public:
      * @param device device to allocate from
      * @param vertShaderPath pth to vertex shader path
      * @param fragShaderPath path to fragment shader 
-     * Always use 'main' as entry point
+     * @attention Always use 'main' as entry point
      */
     ShaderProgram(vk::Device device, const std::string& vertShaderPath, const std::string& fragShaderPath);
     /**

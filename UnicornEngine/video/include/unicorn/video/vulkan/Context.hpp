@@ -112,11 +112,7 @@ private:
 
     vk::Instance m_vkInstance;
     VkDebugReportCallbackEXT m_vulkanCallback;
-    #ifdef NDEBUG
-    const bool s_enableValidationLayers = false;
-    #else
-    const bool s_enableValidationLayers = true;
-    #endif
+    static const bool s_enableValidationLayers;
 };
 }
 }
