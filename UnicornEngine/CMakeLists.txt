@@ -46,8 +46,14 @@ include(loguru)
 ## STB
 include(stb)
 
+## utility
+include(utility)
+
 ## system
 include(system)
+
+## video
+include(video)
 
 ## Wink Signals
 include(WinkSignals)
@@ -77,43 +83,34 @@ if (BUILD_SHARED_LIBS)
 endif()
 
 add_subdirectory(system)
+add_subdirectory(utility)
+add_subdirectory(video)
 
 set(UNICORN_ENGINE_HEADERS
-    include/unicorn/core/Settings.hpp
-    include/unicorn/core/Timer.hpp
-    include/unicorn/utility/asset/Content.hpp
-    include/unicorn/utility/asset/FileReader.hpp
-    include/unicorn/utility/asset/Handler.hpp
-    include/unicorn/utility/asset/SimpleStorage.hpp
-    include/unicorn/utility/asset/Storage.hpp
-    include/unicorn/utility/concurrent/UnorderedMap.hpp
-    include/unicorn/utility/Logger.hpp
-    include/unicorn/utility/SharedMacros.hpp
-    include/unicorn/utility/templates/Singleton.hpp
-    include/unicorn/utility/templates/Singleton.imp
-    include/unicorn/video/Graphics.hpp
-    include/unicorn/video/Renderer.hpp
     include/unicorn/UnicornEngine.hpp
-)
+    include/unicorn/Settings.hpp)
 
 set(UNICORN_ENGINE_SOURCES
-    sources/core/Settings.cpp
-    sources/core/Timer.cpp
-    sources/utility/asset/Content.cpp
-    sources/utility/asset/FileReader.cpp
-    sources/utility/asset/Handler.cpp
-    sources/utility/asset/SimpleStorage.cpp
-    sources/utility/asset/Storage.cpp
-    sources/utility/Logger.cpp
-    sources/video/Graphics.cpp
-    sources/video/Renderer.cpp
-    sources/UnicornEngine.cpp
-)
+    source/UnicornEngine.cpp
+    source/Settings.cpp)
 
 add_library(${UNICORN_ENGINE_LIB}
     ${UNICORN_ENGINE_HEADERS}
     ${UNICORN_ENGINE_SOURCES}
+
+    $<TARGET_OBJECTS:${UNICORN_ENGINE_UTILITY_LIB}>
+    $<TARGET_OBJECTS:${UNICORN_ENGINE_VIDEO_LIB}>
+    $<TARGET_OBJECTS:${UNICORN_ENGINE_SYSTEM_LIB}>
 )
+
+target_link_libraries(${UNICORN_ENGINE_LIB}
+    ${WINDOW_MANAGER_LIBS}
+    ${VULKAN_LIBRARY}
+)
+
+if (UNIX)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+endif()
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # Workaround for a bug regarding __builtin_cpu_supports("sse2") call on GCC 5+
@@ -126,8 +123,7 @@ if (UNICORN_BUILD_DOCUMENTATION)
 
     if (DOXYGEN_FOUND)
         set(DOXYGEN_INPUT_DIRS
-            ${UNICORN_ENGINE_INCLUDE_DIR}
-            ${UNICORN_ENGINE_SYSTEM_INCLUDE_DIR}
+            ${UNICORN_ENGINE_INCLUDE_DIRS}
         )
         set(DOXYGEN_PROJECT_NAME ${PROJECT_NAME})
         string(REPLACE ";" " " DOXYGEN_INPUT "${DOXYGEN_INPUT_DIRS}")
@@ -144,8 +140,6 @@ if (UNICORN_BUILD_DOCUMENTATION)
         message(FATAL_ERROR "Doxygen is required to build documentation")
     endif()
 endif()
-
-target_link_libraries(${UNICORN_ENGINE_LIB} ${VULKAN_LIBRARY} ${UNICORN_ENGINE_SYSTEM_LIB})
 
 if(UNIX)
     set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/bin/glslangValidator")
