@@ -1,0 +1,44 @@
+version: 2
+
+always_rejected:
+  title_regex: '^(WIP|wip)'
+  explanation: 'This pull request is a work in progress...'
+
+group_defaults:
+  reset_on_push:
+    enabled: true
+
+  reset_on_reopened:
+    enabled: true
+
+  author_approval:
+    ignored: true
+
+  github_reviews:
+    enabled: true
+
+  conditions:
+    branches:
+      - master
+
+  approve_by_comment:
+    enabled: true
+    approve_regex: '^[Aa]{1}pprove'
+    reject_regex: '^[Rr]{1}eject'
+
+groups:
+  regular:
+    required: 2
+
+    teams:
+      - coders
+
+    reject_value: -1
+
+  security:
+    required: 1
+
+    teams:
+      - gods
+
+    reject_value: -100
