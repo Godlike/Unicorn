@@ -10,6 +10,7 @@
 #include <vulkan/vulkan.hpp>
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
+#include <unicorn/video/vulkan/Image.hpp>
 
 #include <list>
 
@@ -100,6 +101,7 @@ public:
     bool RecreateSwapChain();
     geometry::Mesh* SpawnMesh() override;
     bool DeleteMesh(const geometry::Mesh* pMesh) override;
+    void DepthTest(bool isOn) override;
 private:
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;
@@ -120,10 +122,11 @@ private:
     vk::DescriptorSetLayout m_descriptorSetLayout;
     vk::PhysicalDeviceProperties m_physicalDeviceProperties;
     std::string m_gpuName;
-    std::vector<vk::Image> m_swapChainImages;
+    std::vector<vk::Image> m_swapChainImages; //TODO: rewrite NOW
     std::vector<vk::ImageView> m_swapChainImageViews;
     std::vector<vk::Framebuffer> m_swapChainFramebuffers;
     std::vector<vk::CommandBuffer> m_commandBuffers;
+    Image m_depthImage;
 
     //! Array of geometry meshes
     std::list<geometry::Mesh*> m_meshes;
@@ -177,6 +180,7 @@ private:
     bool CreateGraphicsPipeline();
     bool CreateFramebuffers();
     bool CreateCommandPool();
+    bool CreateDepthBuffer();
     bool CreateCommandBuffers();
     bool CreateSemaphores();
 

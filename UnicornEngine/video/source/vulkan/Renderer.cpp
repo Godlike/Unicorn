@@ -71,6 +71,7 @@ bool Renderer::Init()
         !CreateDescriptionSetLayout() ||
         !CreateGraphicsPipeline() ||
         !CreateFramebuffers() ||
+        !CreateDepthBuffer() ||
         !CreateCommandPool() ||
         !CreateSemaphores() ||
         !CreateCommandBuffers())
@@ -382,6 +383,11 @@ bool Renderer::DeleteMesh(const geometry::Mesh* pMesh)
     {
         return false;
     }
+}
+
+void Renderer::DepthTest(bool isOn)
+{
+
 }
 
 void Renderer::DeleteVkMesh(VkMesh* pVkMesh)
@@ -1047,6 +1053,16 @@ bool Renderer::CreateCommandPool()
     }
 
     return true;
+}
+
+bool Renderer::CreateDepthBuffer()
+{
+    m_depthImage.Destroy();
+    return m_depthImage.Create(m_vkLogicalDevice,
+        vk::Format::eD16Unorm, 
+        vk::ImageUsageFlagBits::eDepthStencilAttachment,
+        m_swapChainExtent.width,
+        m_swapChainExtent.height);
 }
 
 bool Renderer::CreateCommandBuffers()

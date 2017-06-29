@@ -81,6 +81,12 @@ public:
      */
     wink::signal< wink::slot<void(Renderer*)> > Destroyed;
 
+    /**
+     * @brief Turns on or off depth test
+     * @param isOn if true - depth test is enabled, false - disable
+     */
+    virtual void DepthTest(bool isOn) = 0;
+
 protected:
     bool m_isInitialized;
 
