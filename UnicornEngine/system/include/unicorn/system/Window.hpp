@@ -311,7 +311,7 @@ public:
     /** @brief  Keyboard event information */
     struct KeyboardEvent
     {
-        Window * const pWindow;
+        Window* const pWindow;
         input::Key key;
         uint32_t scancode;
         input::Action action;

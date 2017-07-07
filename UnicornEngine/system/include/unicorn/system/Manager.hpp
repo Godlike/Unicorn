@@ -214,7 +214,7 @@ public:
     /** @brief  Polls all connected gamepads for new values */
     void PollGamepads();
 
-    /** @brief  Polls focused window for keyboard and mouse button events */
+    /** @brief  Polls windows for keyboard and mouse button events */
     void PollWindows();
 
     /** @brief  Event triggered every time new window is created

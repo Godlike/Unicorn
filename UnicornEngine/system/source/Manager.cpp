@@ -308,13 +308,8 @@ void Manager::PollWindows()
 {
     for (auto const& cit : m_windows)
     {
-        if (cit.second->IsFocused())
-        {
-            cit.second->TriggerKeyboardEvents();
-            cit.second->TriggerMouseButtonEvents();
-
-            break;
-        }
+        cit.second->TriggerKeyboardEvents();
+        cit.second->TriggerMouseButtonEvents();
     }
 }
 

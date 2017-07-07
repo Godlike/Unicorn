@@ -42,7 +42,7 @@ void KeyProfiler::OnWindowCreated(Window* pWindow)
 
 void KeyProfiler::OnWindowKeyboard(Window::KeyboardEvent const& keyboardEvent)
 {
-    Window * const& pWindow = keyboardEvent.pWindow;
+    Window* const& pWindow = keyboardEvent.pWindow;
     input::Key const& key = keyboardEvent.key;
     uint32_t const& scancode = keyboardEvent.scancode;
     input::Action const& action = keyboardEvent.action;
