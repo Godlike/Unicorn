@@ -42,7 +42,7 @@ public:
         uint32_t width,
         uint32_t height);
     /**
-     * @brief Destroies image
+     * @brief Removes image
      */
     void Destroy();
 
@@ -75,7 +75,7 @@ private:
     vk::Device m_device;
     vk::Image m_image;
     vk::ImageView m_imageView;
-    vulkan::Memory m_deviceMemory;
+    Memory m_deviceMemory;
     vk::Format m_format;
     vk::ImageUsageFlags m_usage;
     int32_t m_width;

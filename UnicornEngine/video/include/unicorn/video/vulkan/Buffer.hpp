@@ -81,12 +81,12 @@ public:
      * @brief Getter for memory where this buffer was allocated
      * @return device memory
      */
-    vk::DeviceMemory GetMemory();
+    vk::DeviceMemory GetMemory() const;
     /**
     * @brief Getter for raw vk::Buffer
     * @return reference to vk::Buffer
     */
-    const vk::Buffer& GetVkBuffer();
+    const vk::Buffer& GetVkBuffer() const;
 
     const vk::DescriptorBufferInfo& GetDescriptorInfo() const;
 private:
@@ -94,7 +94,7 @@ private:
     vk::BufferUsageFlags m_usage;
     size_t m_size;
     vk::Buffer m_buffer;
-    vulkan::Memory m_deviceMemory;
+    Memory m_deviceMemory;
     void* m_mappedMemory;
     vk::DescriptorBufferInfo m_descriptor;
 };

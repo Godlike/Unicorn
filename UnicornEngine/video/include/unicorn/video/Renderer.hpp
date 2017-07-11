@@ -89,7 +89,7 @@ public:
 
 protected:
     bool m_isInitialized;
-    
+
     //! Reference to window manager
     system::Manager& m_systemManager;
     //! Pointer to associated window

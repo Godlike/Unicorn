@@ -573,7 +573,7 @@ void Renderer::ResizeDynamicUniformBuffer() const
 
 void Renderer::UpdateUniformBuffer()
 {
-    if (m_uniformCameraData.view != m_camera.GetView() || m_uniformCameraData.proj != m_camera.GetProjection())
+    if(m_uniformCameraData.view != m_camera.GetView() || m_uniformCameraData.proj != m_camera.GetProjection())
     {
         m_uniformCameraData.proj = m_camera.GetProjection();
         m_uniformCameraData.view = m_camera.GetView();
@@ -987,7 +987,6 @@ bool Renderer::CreateGraphicsPipeline()
     multisampling.alphaToCoverageEnable = VK_FALSE;
     multisampling.alphaToOneEnable = VK_FALSE;
 
-    //TODO: Enable / Disable + abstarct depthCompareOp to vulkan::Renderer level
     vk::PipelineDepthStencilStateCreateInfo depthStencil;
     depthStencil.depthTestEnable = m_depthEnabled;
     depthStencil.depthWriteEnable = VK_TRUE;

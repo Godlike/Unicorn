@@ -20,13 +20,21 @@ Memory::~Memory()
 {
 }
 
-vk::Result Memory::Allocate(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties, vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize)
+vk::Result Memory::Allocate(
+    vk::Device device,
+    uint32_t typeFilter,
+    vk::PhysicalDeviceMemoryProperties physMemProperties,
+    vk::MemoryPropertyFlagBits reqMemProperties,
+    uint64_t allocSize)
 {
     m_device = device;
 
     uint32_t memoryTypeIndex = 0;
-    for (uint32_t i = 0; i < physMemProperties.memoryTypeCount; i++) {
-        if ((typeFilter & (1 << i)) && (physMemProperties.memoryTypes[i].propertyFlags & reqMemProperties) == reqMemProperties) {
+    for (uint32_t i = 0; i < physMemProperties.memoryTypeCount; i++)
+    {
+        if ((typeFilter & (1 << i))
+            && (physMemProperties.memoryTypes[i].propertyFlags & reqMemProperties) == reqMemProperties)
+        {
             memoryTypeIndex = i;
         }
     }
@@ -46,7 +54,12 @@ void Memory::Free()
     m_memory = nullptr;
 }
 
-vk::DeviceMemory& Memory::GetMemory()
+const vk::DeviceMemory& Memory::GetMemory() const
+{
+    return m_memory;
+}
+
+Memory::operator bool() const
 {
     return m_memory;
 }

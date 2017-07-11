@@ -154,12 +154,12 @@ vk::BufferUsageFlags Buffer::GetUsage() const
     return m_usage;
 }
 
-vk::DeviceMemory Buffer::GetMemory()
+vk::DeviceMemory Buffer::GetMemory() const
 {
     return m_deviceMemory.GetMemory();
 }
 
-const vk::Buffer& Buffer::GetVkBuffer()
+const vk::Buffer& Buffer::GetVkBuffer() const
 {
     return m_buffer;
 }

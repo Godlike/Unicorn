@@ -23,14 +23,27 @@ class Memory
 public:
     Memory();
     ~Memory();
+    /**
+     * @brief Allocates memory on device
+     * @param device device for allocation
+     * @param typeFilter bit field of memory types that are suitable
+     * @param physMemProperties properties of memory on physical device 
+     * @param reqMemProperties required memory properties
+     * @param allocSize size of allocation
+     * @return result of allocation
+     */
     vk::Result Allocate(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties, vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize);
+    /**
+     * @brief Frees memory
+     */
     void Free();
-    vk::DeviceMemory& GetMemory();
+    /**
+     * @brief Returns reference to vk::DeviceMemory
+     * @return reference to vk::DeviceMemory
+     */
+    const vk::DeviceMemory& GetMemory() const;
 
-    explicit operator bool() const
-    {
-        return m_memory;
-    }
+    explicit operator bool() const;
 private:
     vk::Device m_device;
     vk::DeviceMemory m_memory;
