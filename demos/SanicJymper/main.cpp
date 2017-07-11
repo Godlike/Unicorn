@@ -26,7 +26,7 @@ static unicorn::video::Graphics* pGraphics = nullptr;
 static unicorn::video::CameraFpsController* pCameraController = nullptr;
 static unicorn::system::Timer* timer = nullptr;
 static unicorn::video::Renderer* vkRenderer = nullptr;
-
+static bool depthTest = true;
 unicorn::system::Window* pWindow0 = nullptr;
 std::list<unicorn::video::geometry::MeshDescriptor*> cubes;
 
@@ -191,6 +191,12 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
             pWindow->SetMouseMode(MouseMode::Captured);
             break;
         }
+    case Key::V:
+    {
+        depthTest = !depthTest;
+        pGraphics->DepthTest(depthTest);
+        break;
+    }
     case Key::Escape:
         {
             pWindow->SetMouseMode(MouseMode::Normal);
@@ -298,5 +304,4 @@ int main(int argc, char* argv[])
     delete unicornEngine;
 
     unicorn::Settings::Destroy();
-    return 0;
 }

@@ -83,13 +83,13 @@ public:
 
     /**
      * @brief Turns on or off depth test
-     * @param isOn if true - depth test is enabled, false - disable
+     * @param enabled if true - depth test is enabled, false - disabled
      */
-    virtual void DepthTest(bool isOn) = 0;
+    virtual void DepthTest(bool enabled) = 0;
 
 protected:
     bool m_isInitialized;
-
+    
     //! Reference to window manager
     system::Manager& m_systemManager;
     //! Pointer to associated window
@@ -98,6 +98,8 @@ protected:
     Camera m_camera;
     //! Background filling color
     std::array<float, 4> m_backgroundColor;
+    //! Depth test
+    bool m_depthEnabled;
 };
 }
 }

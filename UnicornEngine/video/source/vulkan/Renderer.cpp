@@ -123,6 +123,8 @@ void Renderer::Deinit()
         FreeDescriptorPoolAndLayouts();
         FreeUniforms();
         FreeRenderPass();
+        FreeDepthBuffer();
+        FreeDepthBuffer();
         FreeImageViews();
         FreeSwapChain();
         FreeSurface();
@@ -306,6 +308,10 @@ void Renderer::OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, i
     {
         LOG_ERROR("Can't recreate swapchain!");
     }
+    if (!CreateDepthBuffer())
+    {
+        LOG_ERROR("Can't recreate depth buffer!");
+    }
 }
 
 bool Renderer::RecreateSwapChain()
@@ -385,8 +391,10 @@ bool Renderer::DeleteMesh(const geometry::Mesh* pMesh)
     }
 }
 
-void Renderer::DepthTest(bool isOn)
+void Renderer::DepthTest(bool enabled)
 {
+    m_depthEnabled = enabled;
+    CreateGraphicsPipeline();
 }
 
 void Renderer::DeleteVkMesh(VkMesh* pVkMesh)
@@ -432,6 +440,11 @@ void Renderer::FreeImageViews()
         }
         m_swapChainImageViews.clear();
     }
+}
+
+void Renderer::FreeDepthBuffer()
+{
+    m_depthImage.Destroy();
 }
 
 void Renderer::FreeRenderPass()
@@ -976,7 +989,7 @@ bool Renderer::CreateGraphicsPipeline()
 
     //TODO: Enable / Disable + abstarct depthCompareOp to vulkan::Renderer level
     vk::PipelineDepthStencilStateCreateInfo depthStencil;
-    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthTestEnable = m_depthEnabled;
     depthStencil.depthWriteEnable = VK_TRUE;
     depthStencil.depthCompareOp = vk::CompareOp::eLessOrEqual;
     depthStencil.stencilTestEnable = VK_FALSE;
@@ -1089,7 +1102,7 @@ bool Renderer::CreateCommandPool()
 
 bool Renderer::CreateDepthBuffer()
 {
-    m_depthImage.Destroy();
+    FreeDepthBuffer();
 
     if (!FindDepthFormat(m_depthImageFormat))
     {

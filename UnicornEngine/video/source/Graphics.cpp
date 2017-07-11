@@ -126,6 +126,14 @@ system::Window* Graphics::GetFocusedWindow() const
     return m_systemManager.GetFocusedWindow();
 }
 
+void Graphics::DepthTest(bool enabled)
+{
+    for(const auto& renderer : m_renderers)
+    {
+        renderer.first->DepthTest(enabled);
+    }
+}
+
 const std::vector<system::Monitor*>& Graphics::GetMonitors() const
 {
     return m_systemManager.GetMonitors();

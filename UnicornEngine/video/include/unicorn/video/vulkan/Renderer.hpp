@@ -101,7 +101,7 @@ public:
     bool RecreateSwapChain();
     geometry::Mesh* SpawnMesh() override;
     bool DeleteMesh(const geometry::Mesh* pMesh) override;
-    void DepthTest(bool isOn) override;
+    void DepthTest(bool enabled) override;
 private:
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;
@@ -156,6 +156,7 @@ private:
     void FreeLogicalDevice();
     void FreeSwapChain();
     void FreeImageViews();
+    void FreeDepthBuffer();
     void FreeRenderPass();
     void FreeGraphicsPipeline();
     void FreeFrameBuffers();
