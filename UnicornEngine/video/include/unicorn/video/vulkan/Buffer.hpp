@@ -7,6 +7,8 @@
 #ifndef UNICORN_VIDEO_VULKAN_BUFFER_HPP
 #define UNICORN_VIDEO_VULKAN_BUFFER_HPP
 
+#include <unicorn/video/vulkan/Memory.hpp>
+
 #include <vulkan/vulkan.hpp>
 
 namespace unicorn
@@ -79,7 +81,7 @@ public:
      * @brief Getter for memory where this buffer was allocated
      * @return device memory
      */
-    vk::DeviceMemory GetMemory() const;
+    vk::DeviceMemory GetMemory();
     /**
     * @brief Getter for raw vk::Buffer
     * @return reference to vk::Buffer
@@ -92,7 +94,7 @@ private:
     vk::BufferUsageFlags m_usage;
     size_t m_size;
     vk::Buffer m_buffer;
-    vk::DeviceMemory m_memory;
+    vulkan::Memory m_deviceMemory;
     void* m_mappedMemory;
     vk::DescriptorBufferInfo m_descriptor;
 };

@@ -8,6 +8,7 @@
 #define UNICORN_VIDEO_VULKAN_IMAGE_HPP
 
 #include <vulkan/vulkan.hpp>
+#include <unicorn/video/vulkan/Buffer.hpp>
 
 namespace unicorn
 {
@@ -27,15 +28,19 @@ public:
     /**
      * @brief Creates image
      * @param device device for allocation
+     * @param physicalDevice for memory type search and hardware allocation
      * @param format image specific format
      * @param usage image specific usage
      * @param width width of image
      * @param height height of image
      * @return true if creation sucessfull and false if not
      */
-    bool Create(vk::Device device, vk::Format format, vk::ImageUsageFlags usage,
-                uint32_t width,
-                uint32_t height);
+    bool Create(vk::PhysicalDevice physicalDevice,
+        vk::Device device,
+        vk::Format format,
+        vk::ImageUsageFlags usage,
+        uint32_t width,
+        uint32_t height);
     /**
      * @brief Destroies image
      */
@@ -68,10 +73,9 @@ public:
     const vk::ImageView& GetVkImageView() const;
 private:
     vk::Device m_device;
-    vk::DeviceMemory m_deviceMemory;
     vk::Image m_image;
     vk::ImageView m_imageView;
-
+    vulkan::Memory m_deviceMemory;
     vk::Format m_format;
     vk::ImageUsageFlags m_usage;
     int32_t m_width;

@@ -1058,8 +1058,15 @@ bool Renderer::CreateCommandPool()
 bool Renderer::CreateDepthBuffer()
 {
     m_depthImage.Destroy();
-    return m_depthImage.Create(m_vkLogicalDevice,
-        vk::Format::eD16Unorm, 
+    vk::Format depthFormat;
+    if(!FindDepthFormat(depthFormat))
+    {
+        LOG_ERROR("Not one of desired depth formats are not compatible!");
+        return false;
+    }
+    return m_depthImage.Create(m_vkPhysicalDevice, 
+        m_vkLogicalDevice,
+        depthFormat,
         vk::ImageUsageFlagBits::eDepthStencilAttachment,
         m_swapChainExtent.width,
         m_swapChainExtent.height);

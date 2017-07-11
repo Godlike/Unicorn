@@ -23,7 +23,7 @@ Image::~Image()
 {
 }
 
-bool Image::Create(vk::Device device, vk::Format format, vk::ImageUsageFlags usage, uint32_t width, uint32_t height)
+bool Image::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Format format, vk::ImageUsageFlags usage, uint32_t width, uint32_t height)
 {
     m_device = device;
     m_format = format;
@@ -44,28 +44,29 @@ bool Image::Create(vk::Device device, vk::Format format, vk::ImageUsageFlags usa
     imageInfo.setSharingMode(vk::SharingMode::eExclusive);
     imageInfo.setQueueFamilyIndexCount(0);
     imageInfo.setPQueueFamilyIndices(nullptr);
-    imageInfo.setInitialLayout(vk::ImageLayout::eUndefined);
+    imageInfo.setInitialLayout(vk::ImageLayout::ePreinitialized);
 
     vk::Result result = m_device.createImage(&imageInfo, nullptr, &m_image);
-    if(result != vk::Result::eSuccess)
+    if (result != vk::Result::eSuccess)
     {
         LOG_ERROR("Can't create Vulkan image!");
         return false;
     }
+
     vk::MemoryRequirements req;
     m_device.getImageMemoryRequirements(m_image, &req);
 
-    vk::MemoryAllocateInfo allocInfo;
-    allocInfo.setAllocationSize(req.size);
-    allocInfo.setMemoryTypeIndex(1); 
+    vk::PhysicalDeviceMemoryProperties memoryProperties;
+    physicalDevice.getMemoryProperties(&memoryProperties);
 
-    result = m_device.allocateMemory(&allocInfo, nullptr, &m_deviceMemory);
-    if(result != vk::Result::eSuccess)
+    result = m_deviceMemory.Allocate(m_device, req.memoryTypeBits, memoryProperties, vk::MemoryPropertyFlagBits::eDeviceLocal, req.size);
+    if (result != vk::Result::eSuccess)
     {
         LOG_ERROR("Can't allocate memory for image!");
         return false;
     }
-    m_device.bindImageMemory(m_image, m_deviceMemory, 0);
+
+    m_device.bindImageMemory(m_image, m_deviceMemory.GetMemory(), 0);
 
     vk::ImageAspectFlags aspect;
     if (m_usage & vk::ImageUsageFlagBits::eColorAttachment)
@@ -104,17 +105,16 @@ bool Image::Create(vk::Device device, vk::Format format, vk::ImageUsageFlags usa
 
 void Image::Destroy()
 {
-    if(m_imageView)
+    if (m_imageView)
     {
         m_device.destroyImageView(m_imageView, nullptr);
         m_imageView = nullptr;
     }
-    if(m_deviceMemory)
+    if (m_deviceMemory)
     {
-        m_device.freeMemory(m_deviceMemory, nullptr);
-        m_deviceMemory = nullptr;
+        m_deviceMemory.Free();
     }
-    if(m_image)
+    if (m_image)
     {
         m_device.destroyImage(m_image, nullptr);
         m_image = nullptr;
