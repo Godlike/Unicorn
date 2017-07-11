@@ -66,12 +66,12 @@ bool Renderer::Init()
         !CreateLogicalDevice() ||
         !CreateSwapChain() ||
         !CreateImageViews() ||
+        !CreateDepthBuffer() ||
         !CreateRenderPass() ||
         !PrepareUniformBuffers() ||
         !CreateDescriptionSetLayout() ||
         !CreateGraphicsPipeline() ||
         !CreateFramebuffers() ||
-        !CreateDepthBuffer() ||
         !CreateCommandPool() ||
         !CreateSemaphores() ||
         !CreateCommandBuffers())
@@ -387,7 +387,6 @@ bool Renderer::DeleteMesh(const geometry::Mesh* pMesh)
 
 void Renderer::DepthTest(bool isOn)
 {
-
 }
 
 void Renderer::DeleteVkMesh(VkMesh* pVkMesh)
@@ -561,7 +560,7 @@ void Renderer::ResizeDynamicUniformBuffer() const
 
 void Renderer::UpdateUniformBuffer()
 {
-    if(m_uniformCameraData.view != m_camera.GetView() || m_uniformCameraData.proj != m_camera.GetProjection())
+    if (m_uniformCameraData.view != m_camera.GetView() || m_uniformCameraData.proj != m_camera.GetProjection())
     {
         m_uniformCameraData.proj = m_camera.GetProjection();
         m_uniformCameraData.view = m_camera.GetView();
@@ -800,28 +799,44 @@ bool Renderer::CreateRenderPass()
 {
     FreeRenderPass();
 
-    vk::AttachmentDescription colorAttachment;
-    colorAttachment.format = m_swapChainImageFormat;
-    colorAttachment.samples = vk::SampleCountFlagBits::e1;
-    colorAttachment.loadOp = vk::AttachmentLoadOp::eClear;
-    colorAttachment.storeOp = vk::AttachmentStoreOp::eStore;
-    colorAttachment.stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
-    colorAttachment.stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
-    colorAttachment.initialLayout = vk::ImageLayout::eUndefined;
-    colorAttachment.finalLayout = vk::ImageLayout::ePresentSrcKHR;
+    const int32_t numAttachments = 2;
 
-    vk::AttachmentReference colorAttachmentRef;
-    colorAttachmentRef.attachment = 0;
-    colorAttachmentRef.layout = vk::ImageLayout::eColorAttachmentOptimal;
+    vk::AttachmentDescription attachments[numAttachments];
+
+    attachments[0].format = m_swapChainImageFormat;
+    attachments[0].samples = vk::SampleCountFlagBits::e1;
+    attachments[0].loadOp = vk::AttachmentLoadOp::eClear;
+    attachments[0].storeOp = vk::AttachmentStoreOp::eStore;
+    attachments[0].stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
+    attachments[0].stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
+    attachments[0].initialLayout = vk::ImageLayout::eUndefined;
+    attachments[0].finalLayout = vk::ImageLayout::ePresentSrcKHR;
+
+    attachments[1].format = m_depthImageFormat;
+    attachments[1].samples = vk::SampleCountFlagBits::e1;
+    attachments[1].loadOp = vk::AttachmentLoadOp::eClear;
+    attachments[1].storeOp = vk::AttachmentStoreOp::eDontCare;
+    attachments[1].stencilLoadOp = vk::AttachmentLoadOp::eDontCare;
+    attachments[1].stencilStoreOp = vk::AttachmentStoreOp::eDontCare;
+    attachments[1].initialLayout = vk::ImageLayout::eUndefined;
+    attachments[1].finalLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
+
+    vk::AttachmentReference attachmentRef[numAttachments];
+    attachmentRef[0].attachment = 0;
+    attachmentRef[0].layout = vk::ImageLayout::eColorAttachmentOptimal;
+
+    attachmentRef[1].attachment = 1;
+    attachmentRef[1].layout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
 
     vk::SubpassDescription subpass;
     subpass.pipelineBindPoint = vk::PipelineBindPoint::eGraphics;
     subpass.colorAttachmentCount = 1;
-    subpass.pColorAttachments = &colorAttachmentRef;
+    subpass.pColorAttachments = &attachmentRef[0];
+    subpass.pDepthStencilAttachment = &attachmentRef[1];
 
     vk::RenderPassCreateInfo renderPassInfo;
-    renderPassInfo.attachmentCount = 1;
-    renderPassInfo.pAttachments = &colorAttachment;
+    renderPassInfo.attachmentCount = numAttachments;
+    renderPassInfo.pAttachments = attachments;
     renderPassInfo.subpassCount = 1;
     renderPassInfo.pSubpasses = &subpass;
 
@@ -959,6 +974,21 @@ bool Renderer::CreateGraphicsPipeline()
     multisampling.alphaToCoverageEnable = VK_FALSE;
     multisampling.alphaToOneEnable = VK_FALSE;
 
+    //TODO: Enable / Disable + abstarct depthCompareOp to vulkan::Renderer level
+    vk::PipelineDepthStencilStateCreateInfo depthStencil;
+    depthStencil.depthTestEnable = VK_TRUE;
+    depthStencil.depthWriteEnable = VK_TRUE;
+    depthStencil.depthCompareOp = vk::CompareOp::eLessOrEqual;
+    depthStencil.stencilTestEnable = VK_FALSE;
+    depthStencil.back.failOp = vk::StencilOp::eKeep;
+    depthStencil.back.passOp = vk::StencilOp::eKeep;
+    depthStencil.back.compareOp = vk::CompareOp::eAlways;
+    depthStencil.back.compareMask = 0;
+    depthStencil.back.reference = 0;
+    depthStencil.back.depthFailOp = vk::StencilOp::eKeep;
+    depthStencil.back.writeMask = 0;
+    depthStencil.front = depthStencil.back;
+
     vk::PipelineColorBlendAttachmentState colorBlendAttachment;
     colorBlendAttachment.colorWriteMask = vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
     colorBlendAttachment.blendEnable = VK_FALSE;
@@ -989,7 +1019,7 @@ bool Renderer::CreateGraphicsPipeline()
     pipelineInfo.pViewportState = &viewportState;
     pipelineInfo.pRasterizationState = &rasterizer;
     pipelineInfo.pMultisampleState = &multisampling;
-    pipelineInfo.pDepthStencilState = nullptr;
+    pipelineInfo.pDepthStencilState = &depthStencil;
     pipelineInfo.pColorBlendState = &colorBlending;
     pipelineInfo.pDynamicState = nullptr;
     pipelineInfo.layout = m_pipelineLayout;
@@ -1015,18 +1045,20 @@ bool Renderer::CreateFramebuffers()
 
     m_swapChainFramebuffers.resize(m_swapChainImageViews.size());
 
+    vk::ImageView attachments[2];
+    attachments[1] = m_depthImage.GetVkImageView();
+
+    vk::FramebufferCreateInfo framebufferInfo;
+    framebufferInfo.renderPass = m_renderPass;
+    framebufferInfo.attachmentCount = 2;
+    framebufferInfo.pAttachments = attachments;
+    framebufferInfo.width = m_swapChainExtent.width;
+    framebufferInfo.height = m_swapChainExtent.height;
+    framebufferInfo.layers = 1;
+
     for (size_t i = 0; i < m_swapChainImageViews.size(); ++i)
     {
-        vk::ImageView attachments[] = {m_swapChainImageViews[i]};
-
-        vk::FramebufferCreateInfo framebufferInfo;
-        framebufferInfo.renderPass = m_renderPass;
-        framebufferInfo.attachmentCount = 1;
-        framebufferInfo.pAttachments = attachments;
-        framebufferInfo.width = m_swapChainExtent.width;
-        framebufferInfo.height = m_swapChainExtent.height;
-        framebufferInfo.layers = 1;
-
+        attachments[0] = m_swapChainImageViews[i];
         vk::Result result = m_vkLogicalDevice.createFramebuffer(&framebufferInfo, nullptr, &m_swapChainFramebuffers[i]);
 
         if (result != vk::Result::eSuccess)
@@ -1058,18 +1090,18 @@ bool Renderer::CreateCommandPool()
 bool Renderer::CreateDepthBuffer()
 {
     m_depthImage.Destroy();
-    vk::Format depthFormat;
-    if(!FindDepthFormat(depthFormat))
+
+    if (!FindDepthFormat(m_depthImageFormat))
     {
         LOG_ERROR("Not one of desired depth formats are not compatible!");
         return false;
     }
-    return m_depthImage.Create(m_vkPhysicalDevice, 
-        m_vkLogicalDevice,
-        depthFormat,
-        vk::ImageUsageFlagBits::eDepthStencilAttachment,
-        m_swapChainExtent.width,
-        m_swapChainExtent.height);
+    return m_depthImage.Create(m_vkPhysicalDevice,
+                               m_vkLogicalDevice,
+                               m_depthImageFormat,
+                               vk::ImageUsageFlagBits::eDepthStencilAttachment,
+                               m_swapChainExtent.width,
+                               m_swapChainExtent.height);
 }
 
 bool Renderer::CreateCommandBuffers()
@@ -1105,10 +1137,13 @@ bool Renderer::CreateCommandBuffers()
         renderPassInfo.renderArea.extent = m_swapChainExtent;
 
         vk::ClearColorValue clearColor(m_backgroundColor);
-        vk::ClearValue clearValue(clearColor);
 
-        renderPassInfo.clearValueCount = 1;
-        renderPassInfo.pClearValues = &clearValue;
+        std::array<vk::ClearValue, 2> clearValues = {};
+        clearValues[0].color = clearColor;
+        clearValues[1].depthStencil.setDepth(1.0f);
+
+        renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+        renderPassInfo.pClearValues = clearValues.data();
 
         m_commandBuffers[i].beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
         m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);

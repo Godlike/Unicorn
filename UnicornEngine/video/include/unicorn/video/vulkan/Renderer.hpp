@@ -110,6 +110,7 @@ private:
     vk::Queue m_presentQueue;
     vk::SurfaceKHR m_vkWindowSurface;
     vk::Format m_swapChainImageFormat;
+    vk::Format m_depthImageFormat;
     vk::Extent2D m_swapChainExtent;
     vk::PipelineLayout m_pipelineLayout;
     vk::Pipeline m_graphicsPipeline;
