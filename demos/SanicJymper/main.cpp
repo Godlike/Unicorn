@@ -15,6 +15,7 @@
 #include <unicorn/system/input/Modifier.hpp>
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/video/geometry/Primitives.hpp>
+#include <unicorn/video/Texture.hpp>
 #include <unicorn/video/CameraFpsController.hpp>
 
 #include <array>
@@ -282,6 +283,12 @@ int main(int argc, char* argv[])
 
             MeshDescriptor cube = Primitives::Cube(*meshes[2]);
             cube.Translate({5.0, 0.0f, 5.0f});
+
+            unicorn::video::Texture texture;
+            if(!texture.Load("data/textures/texture.jpg"))
+            {
+                return -1;
+            }
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);

@@ -21,6 +21,7 @@ include(${UNICORN_ENGINE_ROOT}/cmake/GlmConfig.cmake)
 set(UNICORN_ENGINE_EXTERNAL_INCLUDE_DEPENDENCIES
     ${WINK_SIGNALS_INCLUDE_DIR}
     ${GLM_INCLUDE_DIR}
+	${STB_INCLUDE_DIR}
     CACHE LIST "List of UnicornEngine external include dependencies")
 
 set(UNICORN_ENGINE_LIB ${UNICORN_ENGINE_NAME} CACHE STRING "Name of UnicornEngine library")
