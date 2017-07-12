@@ -13,14 +13,22 @@ namespace video
 {
 namespace vulkan
 {
-Image::Image(): m_format()
+Image::Image(): m_image(nullptr)
+              , m_format()
               , m_width(0)
               , m_height(0)
+              , m_initialized(false)
 {
 }
 
 Image::~Image()
 {
+    Destroy();
+}
+
+bool Image::IsInitialized() const
+{
+    return  m_initialized;
 }
 
 bool Image::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Format format, vk::ImageUsageFlags usage, uint32_t width, uint32_t height)
@@ -99,7 +107,7 @@ bool Image::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::For
         LOG_ERROR("Can't create Vulkan image view!");
         return false;
     }
-
+    m_initialized = true;
     return true;
 }
 
@@ -119,6 +127,7 @@ void Image::Destroy()
         m_device.destroyImage(m_image, nullptr);
         m_image = nullptr;
     }
+    m_initialized = false;
 }
 
 vk::Format Image::GetFormat() const

@@ -123,7 +123,7 @@ private:
     vk::DescriptorSetLayout m_descriptorSetLayout;
     vk::PhysicalDeviceProperties m_physicalDeviceProperties;
     std::string m_gpuName;
-    std::vector<vk::Image> m_swapChainImages; //TODO: rewrite NOW
+    std::vector<vk::Image> m_swapChainImages;
     std::vector<vk::ImageView> m_swapChainImageViews;
     std::vector<vk::Framebuffer> m_swapChainFramebuffers;
     std::vector<vk::CommandBuffer> m_commandBuffers;

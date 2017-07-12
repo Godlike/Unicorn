@@ -23,15 +23,42 @@ class Memory
 public:
     Memory();
     ~Memory();
-    vk::Result Allocate(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties, vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize);
-    void Free();
-    vk::DeviceMemory& GetMemory();
 
-    explicit operator bool() const
-    {
-        return m_memory;
-    }
+
+    Memory(const Memory& other) = delete;
+    Memory(Memory&& other) = delete;
+    Memory& operator=(Memory& other) = delete;
+    Memory& operator=(Memory&& other) = delete;
+
+    /**
+    * @brief Checks if memory was initialized before
+    * @return true if was initialized before and false if not
+    */
+    bool IsInitialized() const;
+
+    /**
+     * @brief Allocates memory on device
+     * @param device device for allocation
+     * @param typeFilter bit field of memory types that are suitable
+     * @param physMemProperties properties of memory on physical device 
+     * @param reqMemProperties required memory properties
+     * @param allocSize size of allocation
+     * @return result of allocation
+     */
+    vk::Result Allocate(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties, vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize);
+    /**
+     * @brief Frees memory
+     */
+    void Free();
+    /**
+     * @brief Returns reference to vk::DeviceMemory
+     * @return reference to vk::DeviceMemory
+     */
+    const vk::DeviceMemory& GetMemory() const;
+
+    explicit operator bool() const;
 private:
+    bool m_initialized;
     vk::Device m_device;
     vk::DeviceMemory m_memory;
 };

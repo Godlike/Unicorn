@@ -12,21 +12,36 @@ namespace video
 {
 namespace vulkan
 {
-Memory::Memory() : m_memory(nullptr)
+Memory::Memory() : m_initialized(false)
+                 , m_memory(nullptr)
 {
 }
 
 Memory::~Memory()
 {
+    Free();
 }
 
-vk::Result Memory::Allocate(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties, vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize)
+bool Memory::IsInitialized() const
+{
+    return m_initialized;
+}
+
+vk::Result Memory::Allocate(
+    vk::Device device,
+    uint32_t typeFilter,
+    vk::PhysicalDeviceMemoryProperties physMemProperties,
+    vk::MemoryPropertyFlagBits reqMemProperties,
+    uint64_t allocSize)
 {
     m_device = device;
 
     uint32_t memoryTypeIndex = 0;
-    for (uint32_t i = 0; i < physMemProperties.memoryTypeCount; i++) {
-        if ((typeFilter & (1 << i)) && (physMemProperties.memoryTypes[i].propertyFlags & reqMemProperties) == reqMemProperties) {
+    for (uint32_t i = 0; i < physMemProperties.memoryTypeCount; i++)
+    {
+        if ((typeFilter & (1 << i))
+            && (physMemProperties.memoryTypes[i].propertyFlags & reqMemProperties) == reqMemProperties)
+        {
             memoryTypeIndex = i;
         }
     }
@@ -36,17 +51,29 @@ vk::Result Memory::Allocate(vk::Device device, uint32_t typeFilter, vk::Physical
     memoryInfo.setAllocationSize(allocSize);
 
     vk::Result result = m_device.allocateMemory(&memoryInfo, nullptr, &m_memory);
-
+    if(result == vk::Result::eSuccess)
+    {
+        m_initialized = true;
+    }
     return result;
 }
 
 void Memory::Free()
 {
-    m_device.freeMemory(m_memory);
-    m_memory = nullptr;
+    if(m_memory)
+    {
+        m_device.freeMemory(m_memory);
+        m_memory = nullptr;
+    }
+    m_initialized = false;
 }
 
-vk::DeviceMemory& Memory::GetMemory()
+const vk::DeviceMemory& Memory::GetMemory() const
+{
+    return m_memory;
+}
+
+Memory::operator bool() const
 {
     return m_memory;
 }
