@@ -12,12 +12,19 @@ namespace video
 {
 namespace vulkan
 {
-Memory::Memory() : m_memory(nullptr)
+Memory::Memory() : m_initialized(false)
+                 , m_memory(nullptr)
 {
 }
 
 Memory::~Memory()
 {
+    Free();
+}
+
+bool Memory::IsInitialized() const
+{
+    return m_initialized;
 }
 
 vk::Result Memory::Allocate(
@@ -44,14 +51,21 @@ vk::Result Memory::Allocate(
     memoryInfo.setAllocationSize(allocSize);
 
     vk::Result result = m_device.allocateMemory(&memoryInfo, nullptr, &m_memory);
-
+    if(result == vk::Result::eSuccess)
+    {
+        m_initialized = true;
+    }
     return result;
 }
 
 void Memory::Free()
 {
-    m_device.freeMemory(m_memory);
-    m_memory = nullptr;
+    if(m_memory)
+    {
+        m_device.freeMemory(m_memory);
+        m_memory = nullptr;
+    }
+    m_initialized = false;
 }
 
 const vk::DeviceMemory& Memory::GetMemory() const

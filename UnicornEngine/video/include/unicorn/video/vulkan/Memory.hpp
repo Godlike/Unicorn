@@ -23,6 +23,19 @@ class Memory
 public:
     Memory();
     ~Memory();
+
+
+    Memory(const Memory& other) = delete;
+    Memory(Memory&& other) = delete;
+    Memory& operator=(Memory& other) = delete;
+    Memory& operator=(Memory&& other) = delete;
+
+    /**
+    * @brief Checks if memory was initialized before
+    * @return true if was initialized before and false if not
+    */
+    bool IsInitialized() const;
+
     /**
      * @brief Allocates memory on device
      * @param device device for allocation
@@ -45,6 +58,7 @@ public:
 
     explicit operator bool() const;
 private:
+    bool m_initialized;
     vk::Device m_device;
     vk::DeviceMemory m_memory;
 };
