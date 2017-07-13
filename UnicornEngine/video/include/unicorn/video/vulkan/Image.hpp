@@ -47,11 +47,11 @@ public:
      * @return true if creation sucessfull and false if not
      */
     bool Create(vk::PhysicalDevice physicalDevice,
-        vk::Device device,
-        vk::Format format,
-        vk::ImageUsageFlags usage,
-        uint32_t width,
-        uint32_t height);
+                vk::Device device,
+                vk::Format format,
+                vk::ImageUsageFlags usage,
+                uint32_t width,
+                uint32_t height);
 
     /**
      * @brief Removes image
@@ -68,13 +68,13 @@ public:
      * @brief Returns image width
      * @return image width
      */
-    int32_t GetWidth() const;
+    uint32_t GetWidth() const;
 
     /**
      * @brief Returns image height
      * @return image height
      */
-    int32_t GetHeight() const;
+    uint32_t GetHeight() const;
 
     /**
      * @brief Returns vulkan raw image
@@ -87,6 +87,19 @@ public:
      * @return vulkan raw image view
      */
     const vk::ImageView& GetVkImageView() const;
+
+    /**
+     * @brief TODO
+     * @param format 
+     * @param oldLayout 
+     * @param newLayout 
+     * @return 
+     */
+    bool TransitionLayout(const vk::Format& format,
+                          const vk::ImageLayout& oldLayout,
+                          const vk::ImageLayout& newLayout,
+                          const vk::CommandPool& cmdPool,
+                          const vk::Queue& queue) const;
 private:
     vk::Device m_device;
     vk::Image m_image;
@@ -94,8 +107,8 @@ private:
     Memory m_deviceMemory;
     vk::Format m_format;
     vk::ImageUsageFlags m_usage;
-    int32_t m_width;
-    int32_t m_height;
+    uint32_t m_width;
+    uint32_t m_height;
     bool m_initialized;
 };
 }

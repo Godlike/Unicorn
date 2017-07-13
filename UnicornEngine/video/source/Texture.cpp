@@ -33,22 +33,43 @@ void Texture::Delete()
     m_initialized = false;
 }
 
+int32_t Texture::Size() const
+{
+    return m_size;
+}
+
+unsigned char* Texture::Data() const
+{
+    return m_data;
+}
+
+int32_t Texture::Width() const
+{
+    return m_width;
+}
+
+int32_t Texture::Height() const
+{
+    return m_height;
+}
+
+const char* Texture::Path() const
+{
+    return m_path;
+}
+
 bool Texture::Load(const std::string& path)
 {
-    m_data = stbi_load(path.c_str(), &m_width, &m_height, &m_channels, STBI_rgb_alpha);
+    m_path = path.c_str();
+    m_data = stbi_load(m_path, &m_width, &m_height, &m_channels, STBI_rgb_alpha);
     m_size = m_width * m_height * 4;
 
     if (!m_data) {
-        LOG_ERROR("Failed to load texture image with path - ", path.c_str());
+        LOG_ERROR("Failed to load texture image with path - ", m_path);
         return false;
     }
     m_initialized = true;
     return true;
-}
-
-bool Texture::CopyToGPU()
-{
-
 }
 
 bool Texture::IsLoaded() const

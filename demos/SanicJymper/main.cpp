@@ -289,6 +289,8 @@ int main(int argc, char* argv[])
             {
                 return -1;
             }
+            vkRenderer->AllocateTexture(texture);
+            texture.Delete();
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);

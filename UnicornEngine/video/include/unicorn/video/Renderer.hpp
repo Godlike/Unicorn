@@ -28,6 +28,7 @@ class Timer;
 
 namespace video
 {
+class Texture;
 
 class Renderer
 {
@@ -87,6 +88,12 @@ public:
      */
     virtual void DepthTest(bool enabled) = 0;
 
+    /**
+    * @brief Allocates texture on GPU
+    * @param texture texture which provides data for allocation
+    * @return true if allocation was successful and false if not
+    */
+    virtual bool AllocateTexture(const Texture& texture) = 0;
 protected:
     bool m_isInitialized;
 

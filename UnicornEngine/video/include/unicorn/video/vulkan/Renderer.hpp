@@ -102,6 +102,7 @@ public:
     geometry::Mesh* SpawnMesh() override;
     bool DeleteMesh(const geometry::Mesh* pMesh) override;
     void DepthTest(bool enabled) override;
+    bool AllocateTexture(const Texture& texture) override;
 private:
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;

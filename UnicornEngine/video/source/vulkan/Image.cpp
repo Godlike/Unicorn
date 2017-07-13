@@ -6,6 +6,7 @@
 
 #include <unicorn/video/vulkan/Image.hpp>
 #include <unicorn/utility/Logger.hpp>
+#include <unicorn/video/vulkan/VulkanHelper.hpp>
 
 namespace unicorn
 {
@@ -28,7 +29,7 @@ Image::~Image()
 
 bool Image::IsInitialized() const
 {
-    return  m_initialized;
+    return m_initialized;
 }
 
 bool Image::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Format format, vk::ImageUsageFlags usage, uint32_t width, uint32_t height)
@@ -55,7 +56,7 @@ bool Image::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::For
     imageInfo.setInitialLayout(vk::ImageLayout::ePreinitialized);
 
     vk::Result result = m_device.createImage(&imageInfo, nullptr, &m_image);
-    if (result != vk::Result::eSuccess)
+    if(result != vk::Result::eSuccess)
     {
         LOG_ERROR("Can't create Vulkan image!");
         return false;
@@ -68,7 +69,7 @@ bool Image::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::For
     physicalDevice.getMemoryProperties(&memoryProperties);
 
     result = m_deviceMemory.Allocate(m_device, req.memoryTypeBits, memoryProperties, vk::MemoryPropertyFlagBits::eDeviceLocal, req.size);
-    if (result != vk::Result::eSuccess)
+    if(result != vk::Result::eSuccess)
     {
         LOG_ERROR("Can't allocate memory for image!");
         return false;
@@ -77,11 +78,11 @@ bool Image::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::For
     m_device.bindImageMemory(m_image, m_deviceMemory.GetMemory(), 0);
 
     vk::ImageAspectFlags aspect;
-    if (m_usage & vk::ImageUsageFlagBits::eColorAttachment)
+    if(m_usage & vk::ImageUsageFlagBits::eColorAttachment)
     {
         aspect |= vk::ImageAspectFlagBits::eColor;
     }
-    if (m_usage & vk::ImageUsageFlagBits::eDepthStencilAttachment)
+    if(m_usage & vk::ImageUsageFlagBits::eDepthStencilAttachment)
     {
         aspect |= vk::ImageAspectFlagBits::eDepth;
     }
@@ -102,7 +103,7 @@ bool Image::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::For
     imageViewInfo.setViewType(vk::ImageViewType::e2D);
 
     result = m_device.createImageView(&imageViewInfo, nullptr, &m_imageView);
-    if (result != vk::Result::eSuccess)
+    if(result != vk::Result::eSuccess)
     {
         LOG_ERROR("Can't create Vulkan image view!");
         return false;
@@ -113,16 +114,16 @@ bool Image::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::For
 
 void Image::Destroy()
 {
-    if (m_imageView)
+    if(m_imageView)
     {
         m_device.destroyImageView(m_imageView, nullptr);
         m_imageView = nullptr;
     }
-    if (m_deviceMemory)
+    if(m_deviceMemory)
     {
         m_deviceMemory.Free();
     }
-    if (m_image)
+    if(m_image)
     {
         m_device.destroyImage(m_image, nullptr);
         m_image = nullptr;
@@ -135,12 +136,12 @@ vk::Format Image::GetFormat() const
     return m_format;
 }
 
-int32_t Image::GetWidth() const
+uint32_t Image::GetWidth() const
 {
     return m_width;
 }
 
-int32_t Image::GetHeight() const
+uint32_t Image::GetHeight() const
 {
     return m_height;
 }
@@ -153,6 +154,54 @@ const vk::Image& Image::GetVkImage() const
 const vk::ImageView& Image::GetVkImageView() const
 {
     return m_imageView;
+}
+
+bool Image::TransitionLayout(const vk::Format& format,
+                             const vk::ImageLayout& oldLayout,
+                             const vk::ImageLayout& newLayout,
+                             const vk::CommandPool& cmdPool,
+                             const vk::Queue& queue) const
+{
+    vk::CommandBuffer commandBuffer = BeginSingleTimeCommands(m_device, cmdPool);
+
+    vk::ImageMemoryBarrier barrier;
+    barrier.oldLayout = oldLayout;
+    barrier.newLayout = newLayout;
+    barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+    barrier.image = m_image;
+    barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
+    barrier.subresourceRange.baseMipLevel = 0;
+    barrier.subresourceRange.levelCount = 1;
+    barrier.subresourceRange.baseArrayLayer = 0;
+    barrier.subresourceRange.layerCount = 1;
+
+    if(oldLayout == vk::ImageLayout::ePreinitialized && newLayout == vk::ImageLayout::eTransferDstOptimal)
+    {
+        barrier.srcAccessMask = vk::AccessFlagBits::eHostWrite;
+        barrier.dstAccessMask = vk::AccessFlagBits::eTransferWrite;
+    }
+    else if(oldLayout == vk::ImageLayout::eTransferDstOptimal && newLayout == vk::ImageLayout::eShaderReadOnlyOptimal)
+    {
+        barrier.srcAccessMask = vk::AccessFlagBits::eTransferWrite;
+        barrier.dstAccessMask = vk::AccessFlagBits::eShaderRead;
+    }
+    else
+    {
+        LOG_ERROR("Unsupported layout transition!");
+        return false;
+    }
+
+    commandBuffer.pipelineBarrier(
+                                  vk::PipelineStageFlagBits::eTopOfPipe,
+                                  vk::PipelineStageFlagBits::eTopOfPipe,
+                                  vk::DependencyFlagBits::eByRegion, 0,
+                                  nullptr, 0,
+                                  nullptr, 1,
+                                  &barrier);
+
+    EndSingleTimeCommands(commandBuffer, queue, m_device, cmdPool);
+    return true;
 }
 }
 }

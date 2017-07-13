@@ -27,6 +27,7 @@ set(VULKAN_HEADERS
     include/unicorn/video/vulkan/VkMesh.hpp
     include/unicorn/video/vulkan/Image.hpp
     include/unicorn/video/vulkan/Memory.hpp
+    include/unicorn/video/vulkan/VulkanHelper.hpp
 )
 
 set(VULKAN_SOURCES
@@ -38,6 +39,7 @@ set(VULKAN_SOURCES
     source/vulkan/VkMesh.cpp
     source/vulkan/Image.cpp
     source/vulkan/Memory.cpp
+    source/vulkan/VulkanHelper.cpp
 )
 
 set(VIDEO_HEADERS
