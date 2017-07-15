@@ -7,7 +7,6 @@
 #include <unicorn/system/profiler/MouseProfiler.hpp>
 
 #include <unicorn/system/Manager.hpp>
-#include <unicorn/system/Window.hpp>
 
 #include <unicorn/system/input/Modifier.hpp>
 
@@ -43,8 +42,13 @@ void MouseProfiler::OnWindowCreated(Window* pWindow)
     pWindow->Scroll.connect(this, &MouseProfiler::OnWindowScroll);
 }
 
-void MouseProfiler::OnWindowMouseButton(Window* pWindow, input::MouseButton button, input::Action action, input::Modifier::Mask modifiers)
+void MouseProfiler::OnWindowMouseButton(Window::MouseButtonEvent const& mouseButtonEvent)
 {
+    Window* const& pWindow = mouseButtonEvent.pWindow;
+    input::MouseButton const& button = mouseButtonEvent.button;
+    input::Action const& action = mouseButtonEvent.action;
+    input::Modifier::Mask const& modifiers = mouseButtonEvent.modifiers;
+
     LOG_DEBUG("Window[%d]: mouse input received: %s %s %s", pWindow->GetId(), input::Stringify(button), input::Stringify(action), input::Modifier::Stringify(modifiers).c_str());
 }
 

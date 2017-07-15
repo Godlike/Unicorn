@@ -159,7 +159,17 @@ void Manager::Deinit()
 
 void Manager::PollEvents() const
 {
+    for (auto const& cit : m_windows)
+    {
+        cit.second->ClearInputEvents();
+    }
+
     WINDOW_MANAGER_ADAPTER::PollEvents();
+
+    for (auto const& cit : m_windows)
+    {
+        cit.second->UpdateInputModifiers();
+    }
 }
 
 bool Manager::IsVulkanSupported() const
@@ -291,6 +301,15 @@ void Manager::PollGamepads()
     for (auto const& cit : m_gamepads)
     {
         cit.second->UpdateData();
+    }
+}
+
+void Manager::PollWindows()
+{
+    for (auto const& cit : m_windows)
+    {
+        cit.second->TriggerKeyboardEvents();
+        cit.second->TriggerMouseButtonEvents();
     }
 }
 

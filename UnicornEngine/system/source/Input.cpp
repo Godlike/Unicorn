@@ -27,6 +27,7 @@ Input::~Input()
 void Input::Process()
 {
     m_systemManager.PollGamepads();
+    m_systemManager.PollWindows();
 }
 
 const std::map<uint32_t, input::Gamepad*>& Input::GetGamepads() const

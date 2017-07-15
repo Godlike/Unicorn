@@ -73,12 +73,6 @@ private:
     /** @brief  Slot invoked when mouse interaction mode of window is changed */
     void OnMouseModeChanged(Window* pWindow, MouseMode mode);
 
-    /** @brief  Slot invoked when sticky mouse mode of window is changed */
-    void OnStickyMouseChanged(Window* pWindow, bool flag);
-
-    /** @brief  Slot invoked when sticky keys mode of window is changed */
-    void OnStickyKeysChanged(Window* pWindow, bool flag);
-
     /** @brief  Slot invoked when window framebuffer size is changed */
     void OnWindowFramebufferResized(Window* pWindow, std::pair<int32_t, int32_t> size);
 };
