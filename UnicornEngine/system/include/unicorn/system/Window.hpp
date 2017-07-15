@@ -275,9 +275,16 @@ public:
     /** @brief  Mouse button event information */
     struct MouseButtonEvent
     {
+        //! Pointer to a window that corresponds to the event
         Window* const pWindow;
+
+        //! Mouse button
         input::MouseButton button;
+
+        //! Mouse button action type
         input::Action action;
+
+        //! Modifiers mask
         input::Modifier::Mask modifiers;
     };
 
@@ -311,10 +318,19 @@ public:
     /** @brief  Keyboard event information */
     struct KeyboardEvent
     {
+        //! Pointer to a window that corresponds to the event
         Window* const pWindow;
+
+        //! Key indicator
         input::Key key;
+
+        //! Raw key scancode
         uint32_t scancode;
+
+        //! Key action type
         input::Action action;
+
+        //! Modifiers mask
         input::Modifier::Mask modifiers;
     };
 

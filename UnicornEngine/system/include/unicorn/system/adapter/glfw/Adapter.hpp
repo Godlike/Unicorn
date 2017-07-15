@@ -295,17 +295,21 @@ public:
      */
     static void SetWindowStickyKeys(void* handle, bool flag);
 
-    /** @brief  Returns mouse button state
+    /** @brief  Returns mouse button action state
      *
      *  @param  handle  window handle
      *  @param  button  mouse button
+     *
+     *  @return mouse button action state
      */
     static input::Action GetWindowMouseButton(void* handle, input::MouseButton button);
 
-    /** @brief  Returns key state
+    /** @brief  Returns key action state
      *
      *  @param  handle  window handle
      *  @param  key     key
+     *
+     *  @return key action state
      */
     static input::Action GetWindowKey(void* handle, input::Key key);
 
