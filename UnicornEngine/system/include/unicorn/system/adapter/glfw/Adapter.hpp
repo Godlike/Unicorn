@@ -309,6 +309,28 @@ public:
      */
     static input::Action GetWindowKey(void* handle, input::Key key);
 
+    /** @brief  Returns clipboard data
+     *
+     *  @note   If clipboard contents can't be represented as UTF-8 string
+     *          the result will be empty
+     *
+     *  @note   Some systems require valid window handler to access clipboard
+     *
+     *  @param  handle  window handle
+     *
+     *  @return clipboard string or empty string if some problem occured
+     */
+    static std::string GetClipboard(void* handle);
+
+    /** @brief  Sets clipboard data
+     *
+     *  @note   Some systems require valid window handler to access clipboard
+     *
+     *  @param  handle  window handle
+     *  @param  data    new clipboard data
+     */
+    static void SetClipboard(void* handle, const std::string& data);
+
     /** @brief  Returns key scancode
      *
      *  @param  key unicorn key code

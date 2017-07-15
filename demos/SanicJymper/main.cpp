@@ -10,6 +10,7 @@
 #include <unicorn/system/WindowHint.hpp>
 #include <unicorn/system/CustomValue.hpp>
 #include <unicorn/Settings.hpp>
+#include <unicorn/system/Input.hpp>
 #include <unicorn/system/input/Action.hpp>
 #include <unicorn/system/input/Key.hpp>
 #include <unicorn/system/input/Modifier.hpp>
@@ -23,6 +24,7 @@
 #include <list>
 
 static unicorn::video::Graphics* pGraphics = nullptr;
+static unicorn::system::Input* pInput = nullptr;
 static unicorn::video::CameraFpsController* pCameraController = nullptr;
 static unicorn::system::Timer* timer = nullptr;
 static unicorn::video::Renderer* vkRenderer = nullptr;
@@ -149,71 +151,95 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
     }
     switch (key)
     {
-    case Key::W:
+        case Key::W:
         {
             pCameraController->MoveForward(delta);
             break;
         }
-    case Key::S:
+        case Key::S:
         {
             pCameraController->MoveBackward(delta);
             break;
         }
-    case Key::A:
+        case Key::A:
         {
             pCameraController->MoveLeft(delta);
             break;
         }
-    case Key::D:
+        case Key::D:
         {
             pCameraController->MoveRight(delta);
             break;
         }
-    case Key::Q:
+        case Key::Q:
         {
             pCameraController->MoveUp(delta);
             break;
         }
-    case Key::E:
+        case Key::E:
         {
             pCameraController->MoveDown(delta);
             break;
         }
-    case Key::Up:
+        case Key::Up:
         {
             position.second -= static_cast<uint32_t>(delta);
             positionChanged = true;
             break;
         }
-    case Key::Down:
+        case Key::Down:
         {
             position.second += static_cast<uint32_t>(delta);
             positionChanged = true;
             break;
         }
-    case Key::Left:
+        case Key::Left:
         {
             position.first -= static_cast<uint32_t>(delta);
             positionChanged = true;
             break;
         }
-    case Key::Right:
+        case Key::Right:
         {
             position.first += static_cast<uint32_t>(delta);
             positionChanged = true;
             break;
         }
-    case Key::C:
+        case Key::C:
         {
             pWindow->SetMouseMode(MouseMode::Captured);
             break;
         }
-    case Key::Escape:
+        case Key::Escape:
         {
             pWindow->SetMouseMode(MouseMode::Normal);
             break;
         }
-    default:
+        case Key::Insert:
+        {
+            if (pInput)
+            {
+                switch (modifiers)
+                {
+                    case Modifier::Ctrl:
+                    {
+                        pInput->SetClipboard(std::string("Gotta go fast"));
+                        break;
+                    }
+                    case Modifier::Shift:
+                    {
+                        std::cout << "Clipboard data: " << pInput->GetClipboard() << std::endl;
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
+                }
+            }
+            break;
+        }
+        default:
         {
             break;
         }
@@ -244,6 +270,7 @@ int main(int argc, char* argv[])
     if (unicornEngine->Init())
     {
         pGraphics = unicornEngine->GetGraphics();
+        pInput = unicornEngine->GetInput();
 
         unicornEngine->LogicFrame.connect(&onLogicFrame);
 
