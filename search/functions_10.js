@@ -20,8 +20,6 @@ var searchData=
   ['setsize',['SetSize',['../classunicorn_1_1system_1_1Window.html#a1d290a312f338fd216194e74c4408747',1,'unicorn::system::Window']]],
   ['setsizelimits',['SetSizeLimits',['../classunicorn_1_1system_1_1Window.html#ae16d6e11ee4b89174233bb1a90f01f9c',1,'unicorn::system::Window']]],
   ['setstate',['SetState',['../classunicorn_1_1system_1_1Monitor.html#aa8caa33fdae3e73fd8c1db19ce758ed7',1,'unicorn::system::Monitor']]],
-  ['setstickykeys',['SetStickyKeys',['../classunicorn_1_1system_1_1Window.html#a72a8ed1a06e0330df72cb5381d550cc7',1,'unicorn::system::Window']]],
-  ['setstickymouse',['SetStickyMouse',['../classunicorn_1_1system_1_1Window.html#a007284a922de1d885ece09f3c07b2bc2',1,'unicorn::system::Window']]],
   ['settings',['Settings',['../classunicorn_1_1Settings.html#ad0e34d8b0e550cf0c585d619b141888a',1,'unicorn::Settings']]],
   ['setunicornenginename',['SetUnicornEngineName',['../classunicorn_1_1Settings.html#a63a18ec04af1cf65d5d488893caa07e1',1,'unicorn::Settings']]],
   ['setupdebugcallback',['SetupDebugCallback',['../classunicorn_1_1video_1_1vulkan_1_1Context.html#a27b9e6ab6890820e7b799f631e71f66a',1,'unicorn::video::vulkan::Context']]],

@@ -4,6 +4,7 @@ var searchData=
   ['pointer',['pointer',['../classunicorn_1_1utility_1_1concurrent_1_1UnorderedMap.html#a6edce3397c762093d26de326745d33e7',1,'unicorn::utility::concurrent::UnorderedMap']]],
   ['pollevents',['PollEvents',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a0d4235e3ed50450d866a2fc9dfb63b77',1,'unicorn::system::glfw::Adapter::PollEvents()'],['../classunicorn_1_1system_1_1Manager.html#ac83bb3359770e4dc12e0fe62a0c794f9',1,'unicorn::system::Manager::PollEvents()']]],
   ['pollgamepads',['PollGamepads',['../classunicorn_1_1system_1_1Manager.html#abccf497de6b7f0ea8735878346f48dab',1,'unicorn::system::Manager']]],
+  ['pollwindows',['PollWindows',['../classunicorn_1_1system_1_1Manager.html#ae533367c9910ec7fbcfe6cdf2bee7858',1,'unicorn::system::Manager']]],
   ['poptop',['PopTop',['../classunicorn_1_1utility_1_1asset_1_1Storage_1_1TaskQueue.html#aeaaf2134027d653620c6b1fb7954a758',1,'unicorn::utility::asset::Storage::TaskQueue']]],
   ['pos',['pos',['../structunicorn_1_1video_1_1geometry_1_1Vertex.html#a8a3038788468e81f48dd2bee9f21791a',1,'unicorn::video::geometry::Vertex']]],
   ['positionchanged',['PositionChanged',['../classunicorn_1_1system_1_1Window.html#a2868f5995190a4f8bd2e45689abbf9e9',1,'unicorn::system::Window']]],

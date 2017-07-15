@@ -87,6 +87,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
@@ -109,6 +110,15 @@ Collaboration diagram for unicorn::system::Window:</div>
 <area shape="rect" id="node2" href="classunicorn_1_1system_1_1Monitor.html" title="Provides information about monitor. " alt="" coords="7,5,173,32"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structunicorn_1_1system_1_1Window_1_1KeyboardEvent.html">KeyboardEvent</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Keyboard event information.  <a href="structunicorn_1_1system_1_1Window_1_1KeyboardEvent.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structunicorn_1_1system_1_1Window_1_1MouseButtonEvent.html">MouseButtonEvent</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mouse button event information.  <a href="structunicorn_1_1system_1_1Window_1_1MouseButtonEvent.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ad25ca6faec6578b23020e939f33b6092"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#ad25ca6faec6578b23020e939f33b6092">Window</a> (uint32_t id, int32_t width, int32_t height, const std::string &amp;name, <a class="el" href="classunicorn_1_1system_1_1Monitor.html">Monitor</a> *pMonitor=nullptr, <a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> *pSharedWindow=nullptr)</td></tr>
@@ -207,22 +217,35 @@ UNICORN_EXPORT void&#160;</td><td class="memItemRight" valign="bottom"><a class=
 <tr class="memitem:ade355001b1226f820bd2cf90b89da6e5"><td class="memItemLeft" align="right" valign="top">UNICORN_EXPORT void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#ade355001b1226f820bd2cf90b89da6e5">SetMouseMode</a> (MouseMode mode)</td></tr>
 <tr class="memdesc:ade355001b1226f820bd2cf90b89da6e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets mouse mode for a window.  <a href="#ade355001b1226f820bd2cf90b89da6e5">More...</a><br/></td></tr>
 <tr class="separator:ade355001b1226f820bd2cf90b89da6e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4b6eabe2bd12fe075d4a8e0a8ffece1"><td class="memItemLeft" align="right" valign="top">UNICORN_EXPORT bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#ab4b6eabe2bd12fe075d4a8e0a8ffece1">GetStickyMouse</a> () const </td></tr>
-<tr class="memdesc:ab4b6eabe2bd12fe075d4a8e0a8ffece1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if window has sticky mouse buttons.  <a href="#ab4b6eabe2bd12fe075d4a8e0a8ffece1">More...</a><br/></td></tr>
-<tr class="separator:ab4b6eabe2bd12fe075d4a8e0a8ffece1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a007284a922de1d885ece09f3c07b2bc2"><td class="memItemLeft" align="right" valign="top">UNICORN_EXPORT void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a007284a922de1d885ece09f3c07b2bc2">SetStickyMouse</a> (bool flag)</td></tr>
-<tr class="memdesc:a007284a922de1d885ece09f3c07b2bc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets mouse button sticky mode for a window.  <a href="#a007284a922de1d885ece09f3c07b2bc2">More...</a><br/></td></tr>
-<tr class="separator:a007284a922de1d885ece09f3c07b2bc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8bd4aa954aa37a30d66642e7c7ab3ead"><td class="memItemLeft" align="right" valign="top">UNICORN_EXPORT bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a8bd4aa954aa37a30d66642e7c7ab3ead">GetStickyKeys</a> () const </td></tr>
-<tr class="memdesc:a8bd4aa954aa37a30d66642e7c7ab3ead"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if window has sticky keys.  <a href="#a8bd4aa954aa37a30d66642e7c7ab3ead">More...</a><br/></td></tr>
-<tr class="separator:a8bd4aa954aa37a30d66642e7c7ab3ead"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a72a8ed1a06e0330df72cb5381d550cc7"><td class="memItemLeft" align="right" valign="top">UNICORN_EXPORT void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a72a8ed1a06e0330df72cb5381d550cc7">SetStickyKeys</a> (bool flag)</td></tr>
-<tr class="memdesc:a72a8ed1a06e0330df72cb5381d550cc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets sticky keys mode for a window.  <a href="#a72a8ed1a06e0330df72cb5381d550cc7">More...</a><br/></td></tr>
-<tr class="separator:a72a8ed1a06e0330df72cb5381d550cc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7555a0dc5af88640dcb8f06852d469ab"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7555a0dc5af88640dcb8f06852d469ab"></a>
+UNICORN_EXPORT const std::set<br class="typebreak"/>
+&lt; input::MouseButton &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a7555a0dc5af88640dcb8f06852d469ab">GetPressedMouseButtons</a> () const </td></tr>
+<tr class="memdesc:a7555a0dc5af88640dcb8f06852d469ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a set of pressed keys. <br/></td></tr>
+<tr class="separator:a7555a0dc5af88640dcb8f06852d469ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d53e914690ead87f53bc20b797f730a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9d53e914690ead87f53bc20b797f730a"></a>
+UNICORN_EXPORT const std::set<br class="typebreak"/>
+&lt; input::Key &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a9d53e914690ead87f53bc20b797f730a">GetPressedKeys</a> () const </td></tr>
+<tr class="memdesc:a9d53e914690ead87f53bc20b797f730a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a set of pressed keys. <br/></td></tr>
+<tr class="separator:a9d53e914690ead87f53bc20b797f730a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac20835657c4e94f35aafc09b96c5e880"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac20835657c4e94f35aafc09b96c5e880"></a>
 UNICORN_EXPORT void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#ac20835657c4e94f35aafc09b96c5e880">GetHandle</a> () const </td></tr>
 <tr class="memdesc:ac20835657c4e94f35aafc09b96c5e880"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a handle provided by window manager adapter. <br/></td></tr>
 <tr class="separator:ac20835657c4e94f35aafc09b96c5e880"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42fad98f8f4895d8d318db27ea165062"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a42fad98f8f4895d8d318db27ea165062">ClearInputEvents</a> ()</td></tr>
+<tr class="memdesc:a42fad98f8f4895d8d318db27ea165062"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears <a class="el" href="classunicorn_1_1system_1_1Window.html#af5afc41f572c010eb2c8a20618d0bd44">MouseButton</a> and <a class="el" href="classunicorn_1_1system_1_1Window.html#a9124b3e4d8b77521ad0e254986ae4b2c">Keyboard</a> event queues.  <a href="#a42fad98f8f4895d8d318db27ea165062">More...</a><br/></td></tr>
+<tr class="separator:a42fad98f8f4895d8d318db27ea165062"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1849b736747a315f1d0de6518516036e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1849b736747a315f1d0de6518516036e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a1849b736747a315f1d0de6518516036e">UpdateInputModifiers</a> ()</td></tr>
+<tr class="memdesc:a1849b736747a315f1d0de6518516036e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates input modifier keys. <br/></td></tr>
+<tr class="separator:a1849b736747a315f1d0de6518516036e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57b9636a64692cf29d52f7ead782a99b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a57b9636a64692cf29d52f7ead782a99b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a57b9636a64692cf29d52f7ead782a99b">TriggerMouseButtonEvents</a> ()</td></tr>
+<tr class="memdesc:a57b9636a64692cf29d52f7ead782a99b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emits <a class="el" href="classunicorn_1_1system_1_1Window.html#af5afc41f572c010eb2c8a20618d0bd44">MouseButton</a> signal for all processed mouse buttons events. <br/></td></tr>
+<tr class="separator:a57b9636a64692cf29d52f7ead782a99b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4b80dddfc6189a07f41365e6fbc4061"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab4b80dddfc6189a07f41365e6fbc4061"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#ab4b80dddfc6189a07f41365e6fbc4061">TriggerKeyboardEvents</a> ()</td></tr>
+<tr class="memdesc:ab4b80dddfc6189a07f41365e6fbc4061"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emits <a class="el" href="classunicorn_1_1system_1_1Window.html#a9124b3e4d8b77521ad0e254986ae4b2c">Keyboard</a> signal for all processed keyboard events. <br/></td></tr>
+<tr class="separator:ab4b80dddfc6189a07f41365e6fbc4061"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -263,25 +286,16 @@ Public Attributes</h2></td></tr>
 *, MouseMode)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a041f2ae29c30814aea2f0e11f5c460ed">MouseModeChanged</a></td></tr>
 <tr class="memdesc:a041f2ae29c30814aea2f0e11f5c460ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when mouse interaction mode of window is changed.  <a href="#a041f2ae29c30814aea2f0e11f5c460ed">More...</a><br/></td></tr>
 <tr class="separator:a041f2ae29c30814aea2f0e11f5c460ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6252168a69c6d1a5ab1f059c0e094b1f"><td class="memItemLeft" align="right" valign="top">wink::signal&lt; wink::slot&lt; void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> <br class="typebreak"/>
-*, bool)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a6252168a69c6d1a5ab1f059c0e094b1f">StickyMouseChanged</a></td></tr>
-<tr class="memdesc:a6252168a69c6d1a5ab1f059c0e094b1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when sticky mouse mode of window is changed.  <a href="#a6252168a69c6d1a5ab1f059c0e094b1f">More...</a><br/></td></tr>
-<tr class="separator:a6252168a69c6d1a5ab1f059c0e094b1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e4a1efa30a7284e7e0fc24233a30472"><td class="memItemLeft" align="right" valign="top">wink::signal&lt; wink::slot&lt; void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> <br class="typebreak"/>
-*, bool)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a0e4a1efa30a7284e7e0fc24233a30472">StickyKeysChanged</a></td></tr>
-<tr class="memdesc:a0e4a1efa30a7284e7e0fc24233a30472"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when sticky keys mode of window is changed.  <a href="#a0e4a1efa30a7284e7e0fc24233a30472">More...</a><br/></td></tr>
-<tr class="separator:a0e4a1efa30a7284e7e0fc24233a30472"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a910cc6d6e6b3674a2f24eb33f16938d6"><td class="memItemLeft" align="right" valign="top">wink::signal&lt; wink::slot&lt; void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> <br class="typebreak"/>
 *, std::pair&lt; int32_t, int32_t &gt;)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a910cc6d6e6b3674a2f24eb33f16938d6">FramebufferResized</a></td></tr>
 <tr class="memdesc:a910cc6d6e6b3674a2f24eb33f16938d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when window framebuffer size is changed.  <a href="#a910cc6d6e6b3674a2f24eb33f16938d6">More...</a><br/></td></tr>
 <tr class="separator:a910cc6d6e6b3674a2f24eb33f16938d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Input events</div></td></tr>
-<tr class="memitem:ace99339d91de356a0782fff3d6d0b0a5"><td class="memItemLeft" align="right" valign="top">wink::signal&lt; wink::slot&lt; void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> <br class="typebreak"/>
-*, input::MouseButton, <br class="typebreak"/>
-input::Action, <br class="typebreak"/>
-<a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a>)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#ace99339d91de356a0782fff3d6d0b0a5">MouseButton</a></td></tr>
-<tr class="memdesc:ace99339d91de356a0782fff3d6d0b0a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when window receives mouse button input.  <a href="#ace99339d91de356a0782fff3d6d0b0a5">More...</a><br/></td></tr>
-<tr class="separator:ace99339d91de356a0782fff3d6d0b0a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5afc41f572c010eb2c8a20618d0bd44"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af5afc41f572c010eb2c8a20618d0bd44"></a>
+wink::event_queue<br class="typebreak"/>
+&lt; <a class="el" href="structunicorn_1_1system_1_1Window_1_1MouseButtonEvent.html">MouseButtonEvent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#af5afc41f572c010eb2c8a20618d0bd44">MouseButton</a></td></tr>
+<tr class="memdesc:af5afc41f572c010eb2c8a20618d0bd44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when window receives mouse button input. <br/></td></tr>
+<tr class="separator:af5afc41f572c010eb2c8a20618d0bd44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e0c3437ae0684a5099fd2a3eed8f75a"><td class="memItemLeft" align="right" valign="top">wink::signal&lt; wink::slot&lt; void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> <br class="typebreak"/>
 *, std::pair&lt; double, double &gt;)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a7e0c3437ae0684a5099fd2a3eed8f75a">MousePosition</a></td></tr>
 <tr class="memdesc:a7e0c3437ae0684a5099fd2a3eed8f75a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when window receives mouse position update.  <a href="#a7e0c3437ae0684a5099fd2a3eed8f75a">More...</a><br/></td></tr>
@@ -294,12 +308,10 @@ input::Action, <br class="typebreak"/>
 *, std::pair&lt; double, double &gt;)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#aca3eb2d3851c3c580a7c900dc36e7429">Scroll</a></td></tr>
 <tr class="memdesc:aca3eb2d3851c3c580a7c900dc36e7429"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when window receives scroll input.  <a href="#aca3eb2d3851c3c580a7c900dc36e7429">More...</a><br/></td></tr>
 <tr class="separator:aca3eb2d3851c3c580a7c900dc36e7429"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a190d82783f248069dc9702493e8c9944"><td class="memItemLeft" align="right" valign="top">wink::signal&lt; wink::slot&lt; void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> <br class="typebreak"/>
-*, input::Key, uint32_t, <br class="typebreak"/>
-input::Action, <br class="typebreak"/>
-<a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a>)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a190d82783f248069dc9702493e8c9944">Keyboard</a></td></tr>
-<tr class="memdesc:a190d82783f248069dc9702493e8c9944"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when window receives keyboard input.  <a href="#a190d82783f248069dc9702493e8c9944">More...</a><br/></td></tr>
-<tr class="separator:a190d82783f248069dc9702493e8c9944"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9124b3e4d8b77521ad0e254986ae4b2c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9124b3e4d8b77521ad0e254986ae4b2c"></a>
+wink::event_queue&lt; <a class="el" href="structunicorn_1_1system_1_1Window_1_1KeyboardEvent.html">KeyboardEvent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a9124b3e4d8b77521ad0e254986ae4b2c">Keyboard</a></td></tr>
+<tr class="memdesc:a9124b3e4d8b77521ad0e254986ae4b2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event triggered when window receives keyboard input. <br/></td></tr>
+<tr class="separator:a9124b3e4d8b77521ad0e254986ae4b2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e91dae0fccaa6c507d0698ed028d5f6"><td class="memItemLeft" align="right" valign="top">wink::signal&lt; wink::slot&lt; void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a> <br class="typebreak"/>
 *, uint32_t, <br class="typebreak"/>
 <a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a>)&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a1e91dae0fccaa6c507d0698ed028d5f6">Unicode</a></td></tr>
@@ -388,6 +400,26 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#ac6ec64413ca908bc48188a3f83c41348">m_focus</a></td></tr>
 <tr class="memdesc:ac6ec64413ca908bc48188a3f83c41348"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flag describing if window is focused. <br/></td></tr>
 <tr class="separator:ac6ec64413ca908bc48188a3f83c41348"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a732264bfa8984919e2a5b1adbbfde95d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a732264bfa8984919e2a5b1adbbfde95d"></a>
+std::set&lt; input::Key &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a732264bfa8984919e2a5b1adbbfde95d">m_pressedKeys</a></td></tr>
+<tr class="memdesc:a732264bfa8984919e2a5b1adbbfde95d"><td class="mdescLeft">&#160;</td><td class="mdescRight">A set of pressed buttons. <br/></td></tr>
+<tr class="separator:a732264bfa8984919e2a5b1adbbfde95d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a926b8f1134dcb779908f8c8cc955a454"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a926b8f1134dcb779908f8c8cc955a454"></a>
+std::set&lt; input::Key &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a926b8f1134dcb779908f8c8cc955a454">m_pollKeys</a></td></tr>
+<tr class="memdesc:a926b8f1134dcb779908f8c8cc955a454"><td class="mdescLeft">&#160;</td><td class="mdescRight">A set of polled keys. <br/></td></tr>
+<tr class="separator:a926b8f1134dcb779908f8c8cc955a454"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a58085dc0f5ac9e97a6f49c70e6159f39"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a58085dc0f5ac9e97a6f49c70e6159f39"></a>
+std::set&lt; input::MouseButton &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a58085dc0f5ac9e97a6f49c70e6159f39">m_pressedMouseButtons</a></td></tr>
+<tr class="memdesc:a58085dc0f5ac9e97a6f49c70e6159f39"><td class="mdescLeft">&#160;</td><td class="mdescRight">A set of pressed buttons. <br/></td></tr>
+<tr class="separator:a58085dc0f5ac9e97a6f49c70e6159f39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47c82f0933f3c2b1d17c0feb9719b172"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a47c82f0933f3c2b1d17c0feb9719b172"></a>
+std::set&lt; input::MouseButton &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a47c82f0933f3c2b1d17c0feb9719b172">m_pollMouseButtons</a></td></tr>
+<tr class="memdesc:a47c82f0933f3c2b1d17c0feb9719b172"><td class="mdescLeft">&#160;</td><td class="mdescRight">A set of polled mouse buttons. <br/></td></tr>
+<tr class="separator:a47c82f0933f3c2b1d17c0feb9719b172"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f49e83ba4dda0340a20677dff99288f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0f49e83ba4dda0340a20677dff99288f"></a>
+<a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a0f49e83ba4dda0340a20677dff99288f">m_modifiers</a></td></tr>
+<tr class="memdesc:a0f49e83ba4dda0340a20677dff99288f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Last reported set of input modifiers. <br/></td></tr>
+<tr class="separator:a0f49e83ba4dda0340a20677dff99288f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a145bd295b4af6542375368e50bc74757"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a145bd295b4af6542375368e50bc74757"></a>
 void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Window.html#a145bd295b4af6542375368e50bc74757">m_handle</a></td></tr>
 <tr class="memdesc:a145bd295b4af6542375368e50bc74757"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle provided by window manager adapter. <br/></td></tr>
@@ -461,6 +493,24 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a42fad98f8f4895d8d318db27ea165062"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void unicorn::system::Window::ClearInputEvents </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Clears <a class="el" href="classunicorn_1_1system_1_1Window.html#af5afc41f572c010eb2c8a20618d0bd44">MouseButton</a> and <a class="el" href="classunicorn_1_1system_1_1Window.html#a9124b3e4d8b77521ad0e254986ae4b2c">Keyboard</a> event queues. </p>
+<p>Also clears <code>m_skipMouseButtons</code> and <code>m_skipKeys</code> </p>
+
+</div>
+</div>
 <a class="anchor" id="a3ba2651af7a2d01bc8d48258af0921c0"></a>
 <div class="memitem">
 <div class="memproto">
@@ -476,42 +526,6 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 
 <p>Returns a mouse mode for a window. </p>
 <dl class="section return"><dt>Returns</dt><dd>mouse mode </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a8bd4aa954aa37a30d66642e7c7ab3ead"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">UNICORN_EXPORT bool unicorn::system::Window::GetStickyKeys </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Checks if window has sticky keys. </p>
-<dl class="section return"><dt>Returns</dt><dd><code>true</code> if window has sticky keys enabled, <code>false</code> otherwise </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="ab4b6eabe2bd12fe075d4a8e0a8ffece1"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">UNICORN_EXPORT bool unicorn::system::Window::GetStickyMouse </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Checks if window has sticky mouse buttons. </p>
-<dl class="section return"><dt>Returns</dt><dd><code>true</code> if window has sticky mouse buttons enabled, <code>false</code> otherwise </dd></dl>
 
 </div>
 </div>
@@ -1399,54 +1413,6 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 
 </div>
 </div>
-<a class="anchor" id="a72a8ed1a06e0330df72cb5381d550cc7"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">UNICORN_EXPORT void unicorn::system::Window::SetStickyKeys </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>flag</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Sets sticky keys mode for a window. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">flag</td><td>new value </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="a007284a922de1d885ece09f3c07b2bc2"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">UNICORN_EXPORT void unicorn::system::Window::SetStickyMouse </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>flag</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Sets mouse button sticky mode for a window. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">flag</td><td>new value </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a class="anchor" id="aa0fea51af5840c0affd2ebb919792ed3"></a>
 <div class="memitem">
@@ -1578,28 +1544,6 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 
 </div>
 </div>
-<a class="anchor" id="a190d82783f248069dc9702493e8c9944"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">wink::signal&lt; wink::slot&lt;void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a>*, input::Key, uint32_t, input::Action, <a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a>)&gt; &gt; unicorn::system::Window::Keyboard</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Event triggered when window receives keyboard input. </p>
-<p>Event is emitted with the following signature:</p>
-<ol type="1">
-<li>window pointer</li>
-<li>key indicator</li>
-<li>raw scancode value</li>
-<li>key action type</li>
-<li>modifiers mask </li>
-</ol>
-
-</div>
-</div>
 <a class="anchor" id="a578d2ebe7da18e9668a4569b4a547abc"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1634,27 +1578,6 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <ol type="1">
 <li>window pointer</li>
 <li>boolean flag </li>
-</ol>
-
-</div>
-</div>
-<a class="anchor" id="ace99339d91de356a0782fff3d6d0b0a5"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">wink::signal&lt; wink::slot&lt;void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a>*, input::MouseButton, input::Action, <a class="el" href="structunicorn_1_1system_1_1input_1_1Modifier.html#abb6bc20ead86a7dc94bc1b8426637c87">input::Modifier::Mask</a>)&gt; &gt; unicorn::system::Window::MouseButton</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Event triggered when window receives mouse button input. </p>
-<p>Event is emitted with the following signature:</p>
-<ol type="1">
-<li>window pointer</li>
-<li>mouse button input</li>
-<li>button action type</li>
-<li>modifiers mask </li>
 </ol>
 
 </div>
@@ -1769,44 +1692,6 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <ol type="1">
 <li>window pointer</li>
 <li>pair of values as (width, height) </li>
-</ol>
-
-</div>
-</div>
-<a class="anchor" id="a0e4a1efa30a7284e7e0fc24233a30472"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">wink::signal&lt; wink::slot&lt;void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a>*, bool)&gt; &gt; unicorn::system::Window::StickyKeysChanged</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Event triggered when sticky keys mode of window is changed. </p>
-<p>Event is emitted with the following signature:</p>
-<ol type="1">
-<li>window pointer</li>
-<li>boolean flag </li>
-</ol>
-
-</div>
-</div>
-<a class="anchor" id="a6252168a69c6d1a5ab1f059c0e094b1f"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">wink::signal&lt; wink::slot&lt;void(<a class="el" href="classunicorn_1_1system_1_1Window.html">Window</a>*, bool)&gt; &gt; unicorn::system::Window::StickyMouseChanged</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Event triggered when sticky mouse mode of window is changed. </p>
-<p>Event is emitted with the following signature:</p>
-<ol type="1">
-<li>window pointer</li>
-<li>boolean flag </li>
 </ol>
 
 </div>

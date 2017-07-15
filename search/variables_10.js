@@ -7,7 +7,5 @@ var searchData=
   ['size',['size',['../structunicorn_1_1system_1_1GammaRamp.html#a59499ed8a39cc49411553ee0ffa3e744',1,'unicorn::system::GammaRamp']]],
   ['sizechanged',['SizeChanged',['../classunicorn_1_1system_1_1Window.html#aafcf22d4bfaa3395f760c369249ac6dd',1,'unicorn::system::Window']]],
   ['state',['state',['../structunicorn_1_1system_1_1MonitorMemento.html#a373a0ca76983e9ebd405de667b5c08d5',1,'unicorn::system::MonitorMemento']]],
-  ['statechanged',['StateChanged',['../classunicorn_1_1system_1_1Monitor.html#ada1c6efe74c93d4555997691f0e10a05',1,'unicorn::system::Monitor']]],
-  ['stickykeyschanged',['StickyKeysChanged',['../classunicorn_1_1system_1_1Window.html#a0e4a1efa30a7284e7e0fc24233a30472',1,'unicorn::system::Window']]],
-  ['stickymousechanged',['StickyMouseChanged',['../classunicorn_1_1system_1_1Window.html#a6252168a69c6d1a5ab1f059c0e094b1f',1,'unicorn::system::Window']]]
+  ['statechanged',['StateChanged',['../classunicorn_1_1system_1_1Monitor.html#ada1c6efe74c93d4555997691f0e10a05',1,'unicorn::system::Monitor']]]
 ];
