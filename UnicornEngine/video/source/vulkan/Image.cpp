@@ -13,31 +13,20 @@ namespace video
 {
 namespace vulkan
 {
-Image::Image(): m_image(nullptr)
-              , m_format()
-              , m_width(0)
-              , m_height(0)
-              , m_initialized(false)
+Image::Image(vk::PhysicalDevice physicalDevice,
+    vk::Device device,
+    vk::Format format,
+    vk::ImageUsageFlags usage,
+    uint32_t width,
+    uint32_t height): m_device(device)
+                      , m_image(nullptr)
+                      , m_deviceMemory(nullptr)
+                      , m_format(format)
+                      , m_width(width)
+                      , m_height(height)
+                      , m_initialized(false)
 {
-}
-
-Image::~Image()
-{
-    Destroy();
-}
-
-bool Image::IsInitialized() const
-{
-    return  m_initialized;
-}
-
-bool Image::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Format format, vk::ImageUsageFlags usage, uint32_t width, uint32_t height)
-{
-    m_device = device;
-    m_format = format;
     m_usage = usage;
-    m_width = width;
-    m_height = height;
 
     vk::ImageCreateInfo imageInfo;
     imageInfo.setImageType(vk::ImageType::e2D);
@@ -58,7 +47,7 @@ bool Image::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::For
     if (result != vk::Result::eSuccess)
     {
         LOG_ERROR("Can't create Vulkan image!");
-        return false;
+        return;
     }
 
     vk::MemoryRequirements req;
@@ -67,14 +56,15 @@ bool Image::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::For
     vk::PhysicalDeviceMemoryProperties memoryProperties;
     physicalDevice.getMemoryProperties(&memoryProperties);
 
-    result = m_deviceMemory.Allocate(m_device, req.memoryTypeBits, memoryProperties, vk::MemoryPropertyFlagBits::eDeviceLocal, req.size);
-    if (result != vk::Result::eSuccess)
+    m_deviceMemory = new Memory(m_device, req.memoryTypeBits, memoryProperties, vk::MemoryPropertyFlagBits::eDeviceLocal, req.size);
+
+    if (!m_deviceMemory->IsInitialized())
     {
         LOG_ERROR("Can't allocate memory for image!");
-        return false;
+        return;
     }
 
-    m_device.bindImageMemory(m_image, m_deviceMemory.GetMemory(), 0);
+    m_device.bindImageMemory(m_image, m_deviceMemory->GetMemory(), 0);
 
     vk::ImageAspectFlags aspect;
     if (m_usage & vk::ImageUsageFlagBits::eColorAttachment)
@@ -105,13 +95,12 @@ bool Image::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::For
     if (result != vk::Result::eSuccess)
     {
         LOG_ERROR("Can't create Vulkan image view!");
-        return false;
+        return;
     }
     m_initialized = true;
-    return true;
 }
 
-void Image::Destroy()
+Image::~Image()
 {
     if (m_imageView)
     {
@@ -120,7 +109,8 @@ void Image::Destroy()
     }
     if (m_deviceMemory)
     {
-        m_deviceMemory.Free();
+        delete m_deviceMemory;
+        m_deviceMemory = nullptr;
     }
     if (m_image)
     {
@@ -128,6 +118,11 @@ void Image::Destroy()
         m_image = nullptr;
     }
     m_initialized = false;
+}
+
+bool Image::IsInitialized() const
+{
+    return m_initialized;
 }
 
 vk::Format Image::GetFormat() const

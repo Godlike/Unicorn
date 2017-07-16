@@ -194,7 +194,7 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     case Key::V:
     {
         depthTest = !depthTest;
-        pGraphics->DepthTest(depthTest);
+        pGraphics->SetDepthTest(depthTest);
         break;
     }
     case Key::Escape:

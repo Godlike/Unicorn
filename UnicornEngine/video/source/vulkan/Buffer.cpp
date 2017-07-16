@@ -13,8 +13,8 @@ namespace video
 {
 namespace vulkan
 {
-Buffer::Buffer()
-    : m_size(0), 
+Buffer::Buffer() : m_size(0),
+    m_deviceMemory(nullptr),
     m_mappedMemory(nullptr)
 {
 }
@@ -54,9 +54,8 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
 
     vk::MemoryRequirements req;
     m_device.getBufferMemoryRequirements(m_buffer, &req);
-
-    result = m_deviceMemory.Allocate(m_device, req.memoryTypeBits, memoryProperties, vk::MemoryPropertyFlagBits::eHostVisible, req.size);
-    if (result != vk::Result::eSuccess)
+    m_deviceMemory = new Memory(m_device, req.memoryTypeBits, memoryProperties, vk::MemoryPropertyFlagBits::eHostVisible, req.size);
+    if (!m_deviceMemory->IsInitialized())
     {
         LOG_ERROR("Can't allocate memory on gpu!");
         return false;
@@ -65,7 +64,7 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
     m_descriptor.buffer = m_buffer;
     m_descriptor.range = VK_WHOLE_SIZE;
 
-    m_device.bindBufferMemory(m_buffer, m_deviceMemory.GetMemory(), 0);
+    m_device.bindBufferMemory(m_buffer, m_deviceMemory->GetMemory(), 0);
     return true;
 }
 
@@ -74,7 +73,8 @@ void Buffer::Destroy()
     Unmap();
     if (m_deviceMemory)
     {
-        m_deviceMemory.Free();
+        delete m_deviceMemory;
+        m_deviceMemory = nullptr;
     }
     if (m_buffer)
     {
@@ -99,7 +99,7 @@ void Buffer::Map()
 {
     if(!m_mappedMemory)
     {
-        m_device.mapMemory(m_deviceMemory.GetMemory(), 0, m_size, vk::MemoryMapFlagBits(), &m_mappedMemory);
+        m_device.mapMemory(m_deviceMemory->GetMemory(), 0, m_size, vk::MemoryMapFlagBits(), &m_mappedMemory);
     }
 }
 
@@ -107,7 +107,7 @@ void Buffer::Unmap()
 {
     if (m_mappedMemory)
     {
-        m_device.unmapMemory(m_deviceMemory.GetMemory());
+        m_device.unmapMemory(m_deviceMemory->GetMemory());
         m_mappedMemory = nullptr;
     }
 }
@@ -156,7 +156,7 @@ vk::BufferUsageFlags Buffer::GetUsage() const
 
 vk::DeviceMemory Buffer::GetMemory() const
 {
-    return m_deviceMemory.GetMemory();
+    return m_deviceMemory->GetMemory();
 }
 
 const vk::Buffer& Buffer::GetVkBuffer() const

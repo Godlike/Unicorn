@@ -22,7 +22,25 @@ namespace vulkan
 class Image
 {
 public:
-    Image();
+    /**
+   * @brief Creates image
+   * @param device device for allocation
+   * @param physicalDevice for memory type search and hardware allocation
+   * @param format image specific format
+   * @param usage image specific usage
+   * @param width width of image
+   * @param height height of image
+   * @return true if creation sucessfull and false if not
+   */
+    Image(vk::PhysicalDevice physicalDevice,
+        vk::Device device,
+        vk::Format format,
+        vk::ImageUsageFlags usage,
+        uint32_t width,
+        uint32_t height);
+    /**
+     * @brief Removes image
+     */
     ~Image();
 
     Image(const Image& other) = delete;
@@ -35,28 +53,6 @@ public:
      * @return true if was initialized before and false if not
      */
     bool IsInitialized() const;
-
-    /**
-     * @brief Creates image
-     * @param device device for allocation
-     * @param physicalDevice for memory type search and hardware allocation
-     * @param format image specific format
-     * @param usage image specific usage
-     * @param width width of image
-     * @param height height of image
-     * @return true if creation sucessfull and false if not
-     */
-    bool Create(vk::PhysicalDevice physicalDevice,
-        vk::Device device,
-        vk::Format format,
-        vk::ImageUsageFlags usage,
-        uint32_t width,
-        uint32_t height);
-
-    /**
-     * @brief Removes image
-     */
-    void Destroy();
 
     /**
      * @brief Returns image format
@@ -91,11 +87,11 @@ private:
     vk::Device m_device;
     vk::Image m_image;
     vk::ImageView m_imageView;
-    Memory m_deviceMemory;
+    Memory* m_deviceMemory;
     vk::Format m_format;
     vk::ImageUsageFlags m_usage;
-    int32_t m_width;
-    int32_t m_height;
+    uint32_t m_width;
+    uint32_t m_height;
     bool m_initialized;
 };
 }

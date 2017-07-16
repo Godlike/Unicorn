@@ -101,8 +101,8 @@ public:
     bool RecreateSwapChain();
     geometry::Mesh* SpawnMesh() override;
     bool DeleteMesh(const geometry::Mesh* pMesh) override;
-    void DepthTest(bool enabled) override;
-private:
+    void SetDepthTest(bool enabled) override;
+  private:
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;
     vk::SwapchainKHR m_vkSwapChain;
@@ -127,8 +127,7 @@ private:
     std::vector<vk::ImageView> m_swapChainImageViews;
     std::vector<vk::Framebuffer> m_swapChainFramebuffers;
     std::vector<vk::CommandBuffer> m_commandBuffers;
-    Image m_depthImage;
-
+    Image* m_depthImage;
     //! Array of geometry meshes
     std::list<geometry::Mesh*> m_meshes;
 
@@ -144,11 +143,8 @@ private:
 
     bool m_hasDirtyMeshes;
 
-    #ifdef NDEBUG
-    static const bool s_enableValidationLayers = false;
-    #else
-    static const bool s_enableValidationLayers = true;
-    #endif
+    static const bool s_enableValidationLayers;
+    static const uint32_t s_swapChainAttachmentsAmount;
 
     static void DeleteVkMesh(VkMesh* pVkMesh);
 
