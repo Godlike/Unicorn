@@ -44,7 +44,6 @@ Memory::~Memory()
         m_device.freeMemory(m_memory);
         m_memory = nullptr;
     }
-    m_initialized = false;
 }
 
 bool Memory::IsInitialized() const
@@ -57,10 +56,6 @@ const vk::DeviceMemory& Memory::GetMemory() const
     return m_memory;
 }
 
-Memory::operator bool() const
-{
-    return m_memory;
-}
 }
 }
 }

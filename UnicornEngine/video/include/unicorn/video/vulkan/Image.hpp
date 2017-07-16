@@ -24,13 +24,12 @@ class Image
 public:
     /**
    * @brief Creates image
-   * @param device device for allocation
    * @param physicalDevice for memory type search and hardware allocation
+   * @param device device for allocation
    * @param format image specific format
    * @param usage image specific usage
    * @param width width of image
    * @param height height of image
-   * @return true if creation sucessfull and false if not
    */
     Image(vk::PhysicalDevice physicalDevice,
         vk::Device device,

@@ -117,7 +117,6 @@ Image::~Image()
         m_device.destroyImage(m_image, nullptr);
         m_image = nullptr;
     }
-    m_initialized = false;
 }
 
 bool Image::IsInitialized() const

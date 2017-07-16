@@ -28,7 +28,6 @@ public:
      * @param physMemProperties properties of memory on physical device
      * @param reqMemProperties required memory properties
      * @param allocSize size of allocation
-     * @return result of allocation
      */
     Memory(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties, vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize);
     /**
@@ -51,9 +50,7 @@ public:
      * @brief Returns reference to vk::DeviceMemory
      * @return reference to vk::DeviceMemory
      */
-    const vk::DeviceMemory& GetMemory() const;
-
-    explicit operator bool() const;
+    const vk::DeviceMemory& GetMemory() const;    
 private:
     bool m_initialized;
     vk::Device m_device;
