@@ -58,7 +58,7 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
 
     unicorn::system::input::Action const& action = mouseButtonEvent.action;
 
-    if (action == Action::Release)
+    if (action == Action::Release || action == Action::Repeat)
     {
         return;
     }
@@ -210,6 +210,10 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         }
     case Key::V:
     {
+        if (Action::Repeat == action)
+        {
+            return;
+        }
         depthTest = !depthTest;
         pGraphics->SetDepthTest(depthTest);
         break;
