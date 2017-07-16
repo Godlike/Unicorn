@@ -7,7 +7,6 @@
 #include <unicorn/system/profiler/KeyProfiler.hpp>
 
 #include <unicorn/system/Manager.hpp>
-#include <unicorn/system/Window.hpp>
 
 #include <unicorn/system/input/Modifier.hpp>
 
@@ -41,8 +40,14 @@ void KeyProfiler::OnWindowCreated(Window* pWindow)
     pWindow->Unicode.connect(this, &KeyProfiler::OnWindowUnicode);
 }
 
-void KeyProfiler::OnWindowKeyboard(Window* pWindow, input::Key key, uint32_t scancode, input::Action action, input::Modifier::Mask modifiers)
+void KeyProfiler::OnWindowKeyboard(Window::KeyboardEvent const& keyboardEvent)
 {
+    Window* const& pWindow = keyboardEvent.pWindow;
+    input::Key const& key = keyboardEvent.key;
+    uint32_t const& scancode = keyboardEvent.scancode;
+    input::Action const& action = keyboardEvent.action;
+    input::Modifier::Mask const& modifiers = keyboardEvent.modifiers;
+
     LOG_DEBUG("Window[%d]: Key input received: %s[%d] %s %s", pWindow->GetId(), input::Stringify(key), scancode, input::Stringify(action), input::Modifier::Stringify(modifiers).c_str());
 }
 

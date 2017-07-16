@@ -49,51 +49,57 @@ void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
     lastFrame = currentFrame;
 }
 
-void onMouseButton(unicorn::system::Window* /*pWindow*/, unicorn::system::input::MouseButton button, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask)
+void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonEvent)
 {
     using unicorn::system::input::MouseButton;
     using unicorn::system::input::Action;
     using unicorn::video::geometry::MeshDescriptor;
     using unicorn::video::geometry::Primitives;
 
-    if (action == Action::Press)
+    unicorn::system::input::Action const& action = mouseButtonEvent.action;
+
+    if (action == Action::Release)
     {
-        switch (button)
+        return;
+    }
+
+    unicorn::system::input::MouseButton const& button = mouseButtonEvent.button;
+
+    switch (button)
+    {
+        case MouseButton::MouseLeft:
         {
-            case MouseButton::MouseLeft:
+            MeshDescriptor* obj = new MeshDescriptor(Primitives::Cube(*(vkRenderer->SpawnMesh())));
+            obj->Translate({std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20});
+            obj->SetColor({static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255});
+            cubes.push_back(obj);
+
+            break;
+        }
+        case MouseButton::MouseRight:
+        {
+            if (cubes.size())
             {
-                auto obj = new MeshDescriptor(Primitives::Cube(*(vkRenderer->SpawnMesh())));
-                obj->Translate({std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20});
-                obj->SetColor({static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255});
-                cubes.push_back(obj);
+                // Get random cube
+                auto meshIt = cubes.begin();
 
-                break;
+                std::advance(meshIt, std::rand() % cubes.size());
+
+                // Fetch cube's mesh
+                auto const& mesh = (*meshIt)->GetMesh();
+
+                // Erase cube
+                cubes.erase(meshIt);
+
+                // Release cube's mesh
+                vkRenderer->DeleteMesh(&mesh);
             }
-            case MouseButton::MouseRight:
-            {
-                if (cubes.size())
-                {
-                    // Get random cube
-                    auto meshIt = cubes.begin();
 
-                    std::advance(meshIt, std::rand() % cubes.size());
-
-                    // Fetch cube's mesh
-                    auto const& mesh = (*meshIt)->GetMesh();
-
-                    // Erase cube
-                    cubes.erase(meshIt);
-
-                    // Release cube's mesh
-                    vkRenderer->DeleteMesh(&mesh);
-                }
-
-                break;
-            }
-            default:
-            {
-                break;
-            }
+            break;
+        }
+        default:
+        {
+            break;
         }
     }
 }
@@ -108,22 +114,29 @@ void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double>
     pCameraController->Scroll(static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
 }
 
-void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::Key key, uint32_t scancode, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask modifiers)
+void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEvent)
 {
     using unicorn::system::input::Key;
     using unicorn::system::input::Modifier;
     using unicorn::system::input::Action;
     using unicorn::system::MouseMode;
 
+    unicorn::system::input::Action const& action = keyboardEvent.action;
+
     if (Action::Release == action)
     {
         return;
     }
 
-    std::pair<int32_t, int32_t> position = pWindow->GetPosition();
-    bool positionChanged = true;
+    unicorn::system::Window* const& pWindow = keyboardEvent.pWindow;
+    unicorn::system::input::Key const& key = keyboardEvent.key;
+    uint32_t const& scancode = keyboardEvent.scancode;
+    unicorn::system::input::Modifier::Mask const& modifiers = keyboardEvent.modifiers;
 
-    float delta = deltaTime;
+    std::pair<int32_t, int32_t> position = pWindow->GetPosition();
+    bool positionChanged = false;
+
+    float delta = deltaTime * 0.1f;
 
     if (Modifier::Shift & modifiers)
     {
@@ -169,21 +182,25 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     case Key::Up:
         {
             position.second -= static_cast<uint32_t>(delta);
+            positionChanged = true;
             break;
         }
     case Key::Down:
         {
             position.second += static_cast<uint32_t>(delta);
+            positionChanged = true;
             break;
         }
     case Key::Left:
         {
             position.first -= static_cast<uint32_t>(delta);
+            positionChanged = true;
             break;
         }
     case Key::Right:
         {
             position.first += static_cast<uint32_t>(delta);
+            positionChanged = true;
             break;
         }
     case Key::C:
@@ -204,7 +221,6 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
         }
     default:
         {
-            positionChanged = false;
             break;
         }
     }
