@@ -217,6 +217,18 @@ public:
     /** @brief  Polls windows for keyboard and mouse button events */
     void PollWindows();
 
+    /** @brief  Returns clipboard data
+     *
+     *  @note   If clipboard contents can't be represented as UTF-8 string
+     *          the result will be empty
+     *
+     *  @return clipboard string or empty string if some problem occured
+     */
+    std::string GetClipboard() const;
+
+    /** @brief  Sets clipboard data */
+    void SetClipboard(const std::string& data) const;
+
     /** @brief  Event triggered every time new window is created
      *
      *  Event is emitted with the following signature:

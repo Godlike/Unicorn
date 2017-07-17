@@ -642,6 +642,18 @@ input::Action Adapter::GetWindowKey(void* handle, input::Key key)
     return ConvertToUnicornActionType(glfwGetKey(static_cast<GLFWwindow*>(handle), ConvertToGlfwKey(key)));
 }
 
+std::string Adapter::GetClipboard(void* handle)
+{
+    const char* data = glfwGetClipboardString(static_cast<GLFWwindow*>(handle));
+
+    return nullptr != data ? std::string(data) : std::string();
+}
+
+void Adapter::SetClipboard(void* handle, const std::string& data)
+{
+    return glfwSetClipboardString(static_cast<GLFWwindow*>(handle), data.c_str());
+}
+
 uint32_t Adapter::GetKeyScancode(input::Key key)
 {
     return static_cast<uint32_t>(glfwGetKeyScancode(ConvertToGlfwKey(key)));
