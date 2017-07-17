@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['image',['Image',['../classunicorn_1_1video_1_1vulkan_1_1Image.html#a8bd0f55bdcd9d4a1dd9c4b66cad606e2',1,'unicorn::video::vulkan::Image']]],
   ['indicessize',['IndicesSize',['../classunicorn_1_1video_1_1vulkan_1_1VkMesh.html#af4e518d916b76593fdf4114f8ad0be13',1,'unicorn::video::vulkan::VkMesh']]],
   ['init',['Init',['../classunicorn_1_1Settings.html#aabcd6991542fdeabfe65b6e3ae082bd2',1,'unicorn::Settings::Init()'],['../classunicorn_1_1UnicornEngine.html#a88bf53290921d475a083332dde3d1b56',1,'unicorn::UnicornEngine::Init()'],['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a48cbebd3bda77937ff9c38694a8572ac',1,'unicorn::system::glfw::Adapter::Init()'],['../classunicorn_1_1system_1_1Manager.html#a4b759f8e2adeaffbfa6463fa076198c4',1,'unicorn::system::Manager::Init()'],['../classunicorn_1_1video_1_1Graphics.html#a295e3890c5aa4c06ed88849ecfc1c052',1,'unicorn::video::Graphics::Init()']]],
   ['initialize',['Initialize',['../classunicorn_1_1video_1_1vulkan_1_1Context.html#a7bb764c2f5ba80cf908da081212f29de',1,'unicorn::video::vulkan::Context']]],
@@ -11,7 +12,7 @@ var searchData=
   ['iscreated',['IsCreated',['../classunicorn_1_1video_1_1vulkan_1_1ShaderProgram.html#a2c4681348034067ecc5754193ebcbcd9',1,'unicorn::video::vulkan::ShaderProgram']]],
   ['isfocused',['IsFocused',['../classunicorn_1_1system_1_1Window.html#a583e3606800475a713ab691fd427f1be',1,'unicorn::system::Window']]],
   ['isgood',['IsGood',['../classunicorn_1_1utility_1_1asset_1_1FileReader.html#af537a181297b30f515ac0eaceb751157',1,'unicorn::utility::asset::FileReader']]],
-  ['isinitialized',['IsInitialized',['../classunicorn_1_1video_1_1vulkan_1_1Context.html#ac87138a147e9fde6f167c127998cf8b2',1,'unicorn::video::vulkan::Context']]],
+  ['isinitialized',['IsInitialized',['../classunicorn_1_1video_1_1vulkan_1_1Context.html#ac87138a147e9fde6f167c127998cf8b2',1,'unicorn::video::vulkan::Context::IsInitialized()'],['../classunicorn_1_1video_1_1vulkan_1_1Image.html#aa7464eb24eeb0111e406c8292405be67',1,'unicorn::video::vulkan::Image::IsInitialized()'],['../classunicorn_1_1video_1_1vulkan_1_1Memory.html#a874eb57c9c755d9cadc97cc7705eddf6',1,'unicorn::video::vulkan::Memory::IsInitialized()']]],
   ['isprimary',['IsPrimary',['../classunicorn_1_1system_1_1Monitor.html#a9b137793ed8d27733d28004c72aa867f',1,'unicorn::system::Monitor']]],
   ['isvalid',['IsValid',['../classunicorn_1_1video_1_1vulkan_1_1VkMesh.html#a093b2d99684f7b6744b22d1ffd0feddf',1,'unicorn::video::vulkan::VkMesh::IsValid()'],['../classunicorn_1_1utility_1_1asset_1_1Handler.html#aba1a3394d4f44eb30afec3279799f0d7',1,'unicorn::utility::asset::Handler::IsValid()']]],
   ['isvulkansupported',['IsVulkanSupported',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a23c99ddb2ac36facb4bee2931140cdbf',1,'unicorn::system::glfw::Adapter::IsVulkanSupported()'],['../classunicorn_1_1system_1_1Manager.html#acd8427d41a0a265dd03359c846fd0c22',1,'unicorn::system::Manager::IsVulkanSupported()']]]

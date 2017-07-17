@@ -148,6 +148,9 @@ UNICORN_EXPORT <a class="el" href="classunicorn_1_1video_1_1Camera.html">Camera<
 <tr class="memitem:a11d1ef38399732fb959e3d68107a48a6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a11d1ef38399732fb959e3d68107a48a6"></a>
 UNICORN_EXPORT void&#160;</td><td class="memItemRight" valign="bottom"><b>SetBackgroundColor</b> (const glm::vec3 &amp;backgroundColor)</td></tr>
 <tr class="separator:a11d1ef38399732fb959e3d68107a48a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad080557aa7003ebc5c85cb7e3d683945"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Renderer.html#ad080557aa7003ebc5c85cb7e3d683945">SetDepthTest</a> (bool enabled)=0</td></tr>
+<tr class="memdesc:ad080557aa7003ebc5c85cb7e3d683945"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turns on or off depth test.  <a href="#ad080557aa7003ebc5c85cb7e3d683945">More...</a><br/></td></tr>
+<tr class="separator:ad080557aa7003ebc5c85cb7e3d683945"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -176,6 +179,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>m_isInitialized</b></
 std::array&lt; float, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Renderer.html#a9f3ca7be6a76777048e44658e005d1b1">m_backgroundColor</a></td></tr>
 <tr class="memdesc:a9f3ca7be6a76777048e44658e005d1b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Background filling color. <br/></td></tr>
 <tr class="separator:a9f3ca7be6a76777048e44658e005d1b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdcae7ced453805b86a372d4b6a9acaa"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acdcae7ced453805b86a372d4b6a9acaa"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Renderer.html#acdcae7ced453805b86a372d4b6a9acaa">m_depthTestEnabled</a></td></tr>
+<tr class="memdesc:acdcae7ced453805b86a372d4b6a9acaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Depth test. <br/></td></tr>
+<tr class="separator:acdcae7ced453805b86a372d4b6a9acaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a4bb041c8ee331c436339ae6864d8838e"></a>
@@ -205,6 +212,40 @@ std::array&lt; float, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom">
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if mesh was deleted, <code>false</code> otherwise </dd></dl>
 
 <p>Implemented in <a class="el" href="classunicorn_1_1video_1_1vulkan_1_1Renderer.html#a6916d26f26f93727dd8ebd6497016a49">unicorn::video::vulkan::Renderer</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad080557aa7003ebc5c85cb7e3d683945"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void unicorn::video::Renderer::SetDepthTest </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enabled</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Turns on or off depth test. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">enabled</td><td>if true - depth test is enabled, false - disabled </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classunicorn_1_1video_1_1vulkan_1_1Renderer.html#a64bf1ad530475798cbd1cc1282fcb564">unicorn::video::vulkan::Renderer</a>.</p>
 
 </div>
 </div>

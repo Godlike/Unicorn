@@ -4,6 +4,7 @@ var searchData=
   ['map',['Map',['../classunicorn_1_1video_1_1vulkan_1_1Buffer.html#a62ed2b2c6db3567f5c21275524a191f3',1,'unicorn::video::vulkan::Buffer']]],
   ['maximize',['Maximize',['../classunicorn_1_1system_1_1Window.html#aa775ff1922f89d30538e76a4ad8bc735',1,'unicorn::system::Window']]],
   ['maximizewindow',['MaximizeWindow',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#ae4e854f0923d3f1df37c7cf9cf9ed42b',1,'unicorn::system::glfw::Adapter']]],
+  ['memory',['Memory',['../classunicorn_1_1video_1_1vulkan_1_1Memory.html#a6b8212356b0ee0d781e9b32a1cd407a1',1,'unicorn::video::vulkan::Memory']]],
   ['meshdescriptor',['MeshDescriptor',['../classunicorn_1_1video_1_1geometry_1_1MeshDescriptor.html#a399fa64945cd03e54fbd286b680a1463',1,'unicorn::video::geometry::MeshDescriptor']]],
   ['minimize',['Minimize',['../classunicorn_1_1system_1_1Window.html#abdb94284fc0d57d9c03d536aa6c32052',1,'unicorn::system::Window']]],
   ['minimizewindow',['MinimizeWindow',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a924bbfa4ab755135f98f963d8bb8224d',1,'unicorn::system::glfw::Adapter']]],

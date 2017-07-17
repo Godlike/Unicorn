@@ -6,6 +6,8 @@
 <area shape="rect" id="node6" href="$classunicorn_1_1video_1_1Camera.html" title="Camera class, holds view and projection matrices. " alt="" coords="304,145,461,172"/>
 <area shape="rect" id="node7" href="$structunicorn_1_1video_1_1vulkan_1_1UniformCameraData.html" title="Camera data. " alt="" coords="642,146,793,187"/>
 <area shape="rect" id="node8" href="$classunicorn_1_1video_1_1vulkan_1_1ShaderProgram.html" title="Abstraction for shader program, which renderer uses for rendering meshes. " alt="" coords="643,211,792,253"/>
-<area shape="rect" id="node9" href="$structunicorn_1_1video_1_1vulkan_1_1UniformAllMeshesData.html" title="Struct which holds all models uniform data for sending to shader. " alt="" coords="635,277,800,318"/>
-<area shape="rect" id="node10" href="$classunicorn_1_1video_1_1vulkan_1_1Buffer.html" title="Wrapper for vk::Buffer item in Vulkan API. " alt="" coords="643,342,792,383"/>
+<area shape="rect" id="node9" href="$classunicorn_1_1video_1_1vulkan_1_1Image.html" title="Wrapper for Vulkan image. " alt="" coords="643,277,792,318"/>
+<area shape="rect" id="node10" href="$classunicorn_1_1video_1_1vulkan_1_1Memory.html" title="Wrapper for vk::DeviceMemory item in Vulkan API. " alt="" coords="308,311,457,353"/>
+<area shape="rect" id="node12" href="$classunicorn_1_1video_1_1vulkan_1_1Buffer.html" title="Wrapper for vk::Buffer item in Vulkan API. " alt="" coords="643,342,792,383"/>
+<area shape="rect" id="node11" href="$structunicorn_1_1video_1_1vulkan_1_1UniformAllMeshesData.html" title="Struct which holds all models uniform data for sending to shader. " alt="" coords="635,407,800,449"/>
 </map>

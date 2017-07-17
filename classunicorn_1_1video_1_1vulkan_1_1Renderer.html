@@ -114,7 +114,7 @@ Collaboration diagram for unicorn::video::vulkan::Renderer:</div>
 <div class="dyncontent">
 <div class="center"><img src="classunicorn_1_1video_1_1vulkan_1_1Renderer__coll__graph.png" border="0" usemap="#unicorn_1_1video_1_1vulkan_1_1Renderer_coll__map" alt="Collaboration graph"/></div>
 <map name="unicorn_1_1video_1_1vulkan_1_1Renderer_coll__map" id="unicorn_1_1video_1_1vulkan_1_1Renderer_coll__map">
-<area shape="rect" id="node2" href="classunicorn_1_1video_1_1Renderer.html" title="unicorn::video::Renderer" alt="" coords="635,95,799,121"/><area shape="rect" id="node3" href="classunicorn_1_1system_1_1Manager.html" title="Provides interface to managing windows and monitors. " alt="" coords="296,5,469,32"/><area shape="rect" id="node4" href="classunicorn_1_1system_1_1Window.html" title="Provides interface to system window. " alt="" coords="297,95,468,121"/><area shape="rect" id="node5" href="classunicorn_1_1system_1_1Monitor.html" title="Provides information about monitor. " alt="" coords="6,95,173,121"/><area shape="rect" id="node6" href="classunicorn_1_1video_1_1Camera.html" title="Camera class, holds view and projection matrices. " alt="" coords="304,145,461,172"/><area shape="rect" id="node7" href="structunicorn_1_1video_1_1vulkan_1_1UniformCameraData.html" title="Camera data. " alt="" coords="642,146,793,187"/><area shape="rect" id="node8" href="classunicorn_1_1video_1_1vulkan_1_1ShaderProgram.html" title="Abstraction for shader program, which renderer uses for rendering meshes. " alt="" coords="643,211,792,253"/><area shape="rect" id="node9" href="structunicorn_1_1video_1_1vulkan_1_1UniformAllMeshesData.html" title="Struct which holds all models uniform data for sending to shader. " alt="" coords="635,277,800,318"/><area shape="rect" id="node10" href="classunicorn_1_1video_1_1vulkan_1_1Buffer.html" title="Wrapper for vk::Buffer item in Vulkan API. " alt="" coords="643,342,792,383"/></map>
+<area shape="rect" id="node2" href="classunicorn_1_1video_1_1Renderer.html" title="unicorn::video::Renderer" alt="" coords="635,95,799,121"/><area shape="rect" id="node3" href="classunicorn_1_1system_1_1Manager.html" title="Provides interface to managing windows and monitors. " alt="" coords="296,5,469,32"/><area shape="rect" id="node4" href="classunicorn_1_1system_1_1Window.html" title="Provides interface to system window. " alt="" coords="297,95,468,121"/><area shape="rect" id="node5" href="classunicorn_1_1system_1_1Monitor.html" title="Provides information about monitor. " alt="" coords="6,95,173,121"/><area shape="rect" id="node6" href="classunicorn_1_1video_1_1Camera.html" title="Camera class, holds view and projection matrices. " alt="" coords="304,145,461,172"/><area shape="rect" id="node7" href="structunicorn_1_1video_1_1vulkan_1_1UniformCameraData.html" title="Camera data. " alt="" coords="642,146,793,187"/><area shape="rect" id="node8" href="classunicorn_1_1video_1_1vulkan_1_1ShaderProgram.html" title="Abstraction for shader program, which renderer uses for rendering meshes. " alt="" coords="643,211,792,253"/><area shape="rect" id="node9" href="classunicorn_1_1video_1_1vulkan_1_1Image.html" title="Wrapper for Vulkan image. " alt="" coords="643,277,792,318"/><area shape="rect" id="node10" href="classunicorn_1_1video_1_1vulkan_1_1Memory.html" title="Wrapper for vk::DeviceMemory item in Vulkan API. " alt="" coords="308,311,457,353"/><area shape="rect" id="node12" href="classunicorn_1_1video_1_1vulkan_1_1Buffer.html" title="Wrapper for vk::Buffer item in Vulkan API. " alt="" coords="643,342,792,383"/><area shape="rect" id="node11" href="structunicorn_1_1video_1_1vulkan_1_1UniformAllMeshesData.html" title="Struct which holds all models uniform data for sending to shader. " alt="" coords="635,407,800,449"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -156,6 +156,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>RecreateSwapChain</b>
 <tr class="memitem:a6916d26f26f93727dd8ebd6497016a49"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1vulkan_1_1Renderer.html#a6916d26f26f93727dd8ebd6497016a49">DeleteMesh</a> (const <a class="el" href="classunicorn_1_1video_1_1geometry_1_1Mesh.html">geometry::Mesh</a> *pMesh) override</td></tr>
 <tr class="memdesc:a6916d26f26f93727dd8ebd6497016a49"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes geometry mesh.  <a href="#a6916d26f26f93727dd8ebd6497016a49">More...</a><br/></td></tr>
 <tr class="separator:a6916d26f26f93727dd8ebd6497016a49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64bf1ad530475798cbd1cc1282fcb564"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1vulkan_1_1Renderer.html#a64bf1ad530475798cbd1cc1282fcb564">SetDepthTest</a> (bool enabled) override</td></tr>
+<tr class="memdesc:a64bf1ad530475798cbd1cc1282fcb564"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turns on or off depth test.  <a href="#a64bf1ad530475798cbd1cc1282fcb564">More...</a><br/></td></tr>
+<tr class="separator:a64bf1ad530475798cbd1cc1282fcb564"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classunicorn_1_1video_1_1Renderer"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classunicorn_1_1video_1_1Renderer')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classunicorn_1_1video_1_1Renderer.html">unicorn::video::Renderer</a></td></tr>
 <tr class="memitem:a28b554b8f64641407edb55240fd55334 inherit pub_methods_classunicorn_1_1video_1_1Renderer"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28b554b8f64641407edb55240fd55334"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Renderer</b> (<a class="el" href="classunicorn_1_1system_1_1Manager.html">system::Manager</a> &amp;manager, <a class="el" href="classunicorn_1_1system_1_1Window.html">system::Window</a> *window)</td></tr>
@@ -193,6 +196,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>FreeSwapChain</b> ()<
 <tr class="memitem:afbd89c852c46fd38b747bc5ac2cb1709"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afbd89c852c46fd38b747bc5ac2cb1709"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>FreeImageViews</b> ()</td></tr>
 <tr class="separator:afbd89c852c46fd38b747bc5ac2cb1709"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e322c05b73deb6deb134bd5bd158e32"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6e322c05b73deb6deb134bd5bd158e32"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>FreeDepthBuffer</b> ()</td></tr>
+<tr class="separator:a6e322c05b73deb6deb134bd5bd158e32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8fa178968f4c0106436f525efab725c6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8fa178968f4c0106436f525efab725c6"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>FreeRenderPass</b> ()</td></tr>
 <tr class="separator:a8fa178968f4c0106436f525efab725c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -262,6 +268,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>CreateFramebuffers</b
 <tr class="memitem:a85e359e10843f24e7c36ba4d42c843a6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a85e359e10843f24e7c36ba4d42c843a6"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>CreateCommandPool</b> ()</td></tr>
 <tr class="separator:a85e359e10843f24e7c36ba4d42c843a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8037dbcc94b2e6fd0d1c9685366d2ea4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8037dbcc94b2e6fd0d1c9685366d2ea4"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>CreateDepthBuffer</b> ()</td></tr>
+<tr class="separator:a8037dbcc94b2e6fd0d1c9685366d2ea4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab389fcb494a22b6f22506d38aff82ec6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab389fcb494a22b6f22506d38aff82ec6"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>CreateCommandBuffers</b> ()</td></tr>
 <tr class="separator:ab389fcb494a22b6f22506d38aff82ec6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -340,6 +349,9 @@ vk::SurfaceKHR&#160;</td><td class="memItemRight" valign="bottom"><b>m_vkWindowS
 <tr class="memitem:ad3f9ec1be211d0ffd481188c76268729"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad3f9ec1be211d0ffd481188c76268729"></a>
 vk::Format&#160;</td><td class="memItemRight" valign="bottom"><b>m_swapChainImageFormat</b></td></tr>
 <tr class="separator:ad3f9ec1be211d0ffd481188c76268729"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28679d70007c1c78d05b3b5a740fe71c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a28679d70007c1c78d05b3b5a740fe71c"></a>
+vk::Format&#160;</td><td class="memItemRight" valign="bottom"><b>m_depthImageFormat</b></td></tr>
+<tr class="separator:a28679d70007c1c78d05b3b5a740fe71c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15bd9f3e83460fb903e3fe86201fd4f5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a15bd9f3e83460fb903e3fe86201fd4f5"></a>
 vk::Extent2D&#160;</td><td class="memItemRight" valign="bottom"><b>m_swapChainExtent</b></td></tr>
 <tr class="separator:a15bd9f3e83460fb903e3fe86201fd4f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -388,6 +400,9 @@ std::vector&lt; vk::Framebuffer &gt;&#160;</td><td class="memItemRight" valign="
 <tr class="memitem:a22205d4f887b5aa6b5b6b5821b13fc18"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a22205d4f887b5aa6b5b6b5821b13fc18"></a>
 std::vector&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_commandBuffers</b></td></tr>
 <tr class="separator:a22205d4f887b5aa6b5b6b5821b13fc18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae544eade0d04f5829fdca6627eee958b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae544eade0d04f5829fdca6627eee958b"></a>
+<a class="el" href="classunicorn_1_1video_1_1vulkan_1_1Image.html">Image</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>m_depthImage</b></td></tr>
+<tr class="separator:ae544eade0d04f5829fdca6627eee958b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8fe894947842663ade5600a5e1b2314e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8fe894947842663ade5600a5e1b2314e"></a>
 std::list&lt; <a class="el" href="classunicorn_1_1video_1_1geometry_1_1Mesh.html">geometry::Mesh</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1vulkan_1_1Renderer.html#a8fe894947842663ade5600a5e1b2314e">m_meshes</a></td></tr>
 <tr class="memdesc:a8fe894947842663ade5600a5e1b2314e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Array of geometry meshes. <br/></td></tr>
@@ -421,8 +436,11 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>m_hasDirtyMeshes</b><
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
 Static Private Attributes</h2></td></tr>
 <tr class="memitem:aadd7694e4883949ca13391b65ac32961"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aadd7694e4883949ca13391b65ac32961"></a>
-static const bool&#160;</td><td class="memItemRight" valign="bottom"><b>s_enableValidationLayers</b> = true</td></tr>
+static const bool&#160;</td><td class="memItemRight" valign="bottom"><b>s_enableValidationLayers</b></td></tr>
 <tr class="separator:aadd7694e4883949ca13391b65ac32961"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfb62edf69fb6d6cb9fcc931d518ca61"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abfb62edf69fb6d6cb9fcc931d518ca61"></a>
+static const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>s_swapChainAttachmentsAmount</b></td></tr>
+<tr class="separator:abfb62edf69fb6d6cb9fcc931d518ca61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -450,6 +468,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>m_isInitialized</b></
 std::array&lt; float, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Renderer.html#a9f3ca7be6a76777048e44658e005d1b1">m_backgroundColor</a></td></tr>
 <tr class="memdesc:a9f3ca7be6a76777048e44658e005d1b1 inherit pro_attribs_classunicorn_1_1video_1_1Renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Background filling color. <br/></td></tr>
 <tr class="separator:a9f3ca7be6a76777048e44658e005d1b1 inherit pro_attribs_classunicorn_1_1video_1_1Renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdcae7ced453805b86a372d4b6a9acaa inherit pro_attribs_classunicorn_1_1video_1_1Renderer"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acdcae7ced453805b86a372d4b6a9acaa"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1video_1_1Renderer.html#acdcae7ced453805b86a372d4b6a9acaa">m_depthTestEnabled</a></td></tr>
+<tr class="memdesc:acdcae7ced453805b86a372d4b6a9acaa inherit pro_attribs_classunicorn_1_1video_1_1Renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Depth test. <br/></td></tr>
+<tr class="separator:acdcae7ced453805b86a372d4b6a9acaa inherit pro_attribs_classunicorn_1_1video_1_1Renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Vulkan renderer backend. </p>
@@ -517,6 +539,40 @@ std::array&lt; float, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom">
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if mesh was deleted, <code>false</code> otherwise </dd></dl>
 
 <p>Implements <a class="el" href="classunicorn_1_1video_1_1Renderer.html#a4bb041c8ee331c436339ae6864d8838e">unicorn::video::Renderer</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a64bf1ad530475798cbd1cc1282fcb564"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void unicorn::video::vulkan::Renderer::SetDepthTest </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enabled</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Turns on or off depth test. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">enabled</td><td>if true - depth test is enabled, false - disabled </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classunicorn_1_1video_1_1Renderer.html#ad080557aa7003ebc5c85cb7e3d683945">unicorn::video::Renderer</a>.</p>
 
 </div>
 </div>
