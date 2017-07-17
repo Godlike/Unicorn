@@ -17,6 +17,7 @@ Renderer::Renderer(system::Manager& manager, system::Window* window) : m_isIniti
                                                                      , m_pWindow(window)
                                                                      , m_camera({0.0f, 0.0f, -5.0f}, {0.0f, 0.0f, 1.0f})
                                                                      , m_backgroundColor({{0.0f, 0.0f, 0.0f, 0.0f}})
+                                                                     , m_depthTestEnabled(true)
 {
     m_camera.SetPerspective(45.0f, static_cast<float>(window->GetSize().first) / window->GetSize().second, 0.1f, 100.0f);
 }

@@ -10,6 +10,7 @@
 #include <vulkan/vulkan.hpp>
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
+#include <unicorn/video/vulkan/Image.hpp>
 
 #include <list>
 
@@ -100,7 +101,8 @@ public:
     bool RecreateSwapChain();
     geometry::Mesh* SpawnMesh() override;
     bool DeleteMesh(const geometry::Mesh* pMesh) override;
-private:
+    void SetDepthTest(bool enabled) override;
+  private:
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;
     vk::SwapchainKHR m_vkSwapChain;
@@ -108,6 +110,7 @@ private:
     vk::Queue m_presentQueue;
     vk::SurfaceKHR m_vkWindowSurface;
     vk::Format m_swapChainImageFormat;
+    vk::Format m_depthImageFormat;
     vk::Extent2D m_swapChainExtent;
     vk::PipelineLayout m_pipelineLayout;
     vk::Pipeline m_graphicsPipeline;
@@ -124,7 +127,7 @@ private:
     std::vector<vk::ImageView> m_swapChainImageViews;
     std::vector<vk::Framebuffer> m_swapChainFramebuffers;
     std::vector<vk::CommandBuffer> m_commandBuffers;
-
+    Image* m_depthImage;
     //! Array of geometry meshes
     std::list<geometry::Mesh*> m_meshes;
 
@@ -140,11 +143,8 @@ private:
 
     bool m_hasDirtyMeshes;
 
-    #ifdef NDEBUG
-    static const bool s_enableValidationLayers = false;
-    #else
-    static const bool s_enableValidationLayers = true;
-    #endif
+    static const bool s_enableValidationLayers;
+    static const uint32_t s_swapChainAttachmentsAmount;
 
     static void DeleteVkMesh(VkMesh* pVkMesh);
 
@@ -152,6 +152,7 @@ private:
     void FreeLogicalDevice();
     void FreeSwapChain();
     void FreeImageViews();
+    void FreeDepthBuffer();
     void FreeRenderPass();
     void FreeGraphicsPipeline();
     void FreeFrameBuffers();
@@ -177,6 +178,7 @@ private:
     bool CreateGraphicsPipeline();
     bool CreateFramebuffers();
     bool CreateCommandPool();
+    bool CreateDepthBuffer();
     bool CreateCommandBuffers();
     bool CreateSemaphores();
 

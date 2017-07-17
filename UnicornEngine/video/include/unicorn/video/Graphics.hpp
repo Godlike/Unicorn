@@ -102,6 +102,11 @@ public:
     */
     UNICORN_EXPORT system::Window* GetFocusedWindow() const;
 
+    /** @brief Enable or disable depth test
+    *   @param enabled Enabled if true and disabled if false
+    */
+    UNICORN_EXPORT void SetDepthTest(bool enabled);
+
     /** @brief  Returns the list of known monitors */
     UNICORN_EXPORT const std::vector<system::Monitor*>& GetMonitors() const;
 

@@ -81,6 +81,12 @@ public:
      */
     wink::signal< wink::slot<void(Renderer*)> > Destroyed;
 
+    /**
+     * @brief Turns on or off depth test
+     * @param enabled if true - depth test is enabled, false - disabled
+     */
+    virtual void SetDepthTest(bool enabled) = 0;
+
 protected:
     bool m_isInitialized;
 
@@ -92,6 +98,8 @@ protected:
     Camera m_camera;
     //! Background filling color
     std::array<float, 4> m_backgroundColor;
+    //! Depth test
+    bool m_depthTestEnabled;
 };
 }
 }

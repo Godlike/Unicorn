@@ -13,8 +13,8 @@ namespace video
 {
 namespace vulkan
 {
-Buffer::Buffer()
-    : m_size(0), 
+Buffer::Buffer() : m_size(0),
+    m_deviceMemory(nullptr),
     m_mappedMemory(nullptr)
 {
 }
@@ -45,6 +45,7 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
     vk::Result result = m_device.createBuffer(&bufferInfo, nullptr, &m_buffer);
     if (result != vk::Result::eSuccess)
     {
+        LOG_ERROR("Can't create vulkan buffer!");
         return false;
     }
 
@@ -53,47 +54,27 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
 
     vk::MemoryRequirements req;
     m_device.getBufferMemoryRequirements(m_buffer, &req);
-
-    uint32_t memoryTypeBits = req.memoryTypeBits;
-    uint32_t memoryTypeIndex = 0;
-    const uint32_t memTypeBits = (sizeof(memoryTypeBits) * 8);
-    for (uint32_t i = 0; i < memTypeBits; ++i)
+    m_deviceMemory = new Memory(m_device, req.memoryTypeBits, memoryProperties, vk::MemoryPropertyFlagBits::eHostVisible, req.size);
+    if (!m_deviceMemory->IsInitialized())
     {
-        if ((memoryTypeBits >> i) & 1)
-        {
-            if ( memoryProperties.memoryTypes[i].propertyFlags & vk::MemoryPropertyFlagBits::eHostVisible )
-            {
-                memoryTypeIndex = i;
-                break;
-            }
-        }
-    }
-
-    vk::MemoryAllocateInfo memoryInfo;
-    memoryInfo.setMemoryTypeIndex(memoryTypeIndex);
-    memoryInfo.setAllocationSize(req.size);
-
-    result = m_device.allocateMemory(&memoryInfo, nullptr, &m_memory);
-    if (result != vk::Result::eSuccess)
-    {
+        LOG_ERROR("Can't allocate memory on gpu!");
         return false;
     }
-
     m_descriptor.offset = 0;
     m_descriptor.buffer = m_buffer;
     m_descriptor.range = VK_WHOLE_SIZE;
 
-    m_device.bindBufferMemory(m_buffer, m_memory, 0);
+    m_device.bindBufferMemory(m_buffer, m_deviceMemory->GetMemory(), 0);
     return true;
 }
 
 void Buffer::Destroy()
 {
     Unmap();
-    if (m_memory)
+    if (m_deviceMemory)
     {
-        m_device.freeMemory(m_memory);
-        m_memory = nullptr;
+        delete m_deviceMemory;
+        m_deviceMemory = nullptr;
     }
     if (m_buffer)
     {
@@ -118,7 +99,7 @@ void Buffer::Map()
 {
     if(!m_mappedMemory)
     {
-        m_device.mapMemory(m_memory, 0, m_size, vk::MemoryMapFlagBits(), &m_mappedMemory);
+        m_device.mapMemory(m_deviceMemory->GetMemory(), 0, m_size, vk::MemoryMapFlagBits(), &m_mappedMemory);
     }
 }
 
@@ -126,7 +107,7 @@ void Buffer::Unmap()
 {
     if (m_mappedMemory)
     {
-        m_device.unmapMemory(m_memory);
+        m_device.unmapMemory(m_deviceMemory->GetMemory());
         m_mappedMemory = nullptr;
     }
 }
@@ -175,10 +156,10 @@ vk::BufferUsageFlags Buffer::GetUsage() const
 
 vk::DeviceMemory Buffer::GetMemory() const
 {
-    return m_memory;
+    return m_deviceMemory->GetMemory();
 }
 
-const vk::Buffer& Buffer::GetVkBuffer()
+const vk::Buffer& Buffer::GetVkBuffer() const
 {
     return m_buffer;
 }
