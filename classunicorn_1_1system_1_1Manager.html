@@ -186,6 +186,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Manager.html#ae533367c9910ec7fbcfe6cdf2bee7858">PollWindows</a> ()</td></tr>
 <tr class="memdesc:ae533367c9910ec7fbcfe6cdf2bee7858"><td class="mdescLeft">&#160;</td><td class="mdescRight">Polls windows for keyboard and mouse button events. <br/></td></tr>
 <tr class="separator:ae533367c9910ec7fbcfe6cdf2bee7858"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af914564bf8df48b16bf88b3a13d22d07"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Manager.html#af914564bf8df48b16bf88b3a13d22d07">GetClipboard</a> () const </td></tr>
+<tr class="memdesc:af914564bf8df48b16bf88b3a13d22d07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns clipboard data.  <a href="#af914564bf8df48b16bf88b3a13d22d07">More...</a><br/></td></tr>
+<tr class="separator:af914564bf8df48b16bf88b3a13d22d07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe9cca23135fb7287df06aec719e08ef"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abe9cca23135fb7287df06aec719e08ef"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Manager.html#abe9cca23135fb7287df06aec719e08ef">SetClipboard</a> (const std::string &amp;data) const </td></tr>
+<tr class="memdesc:abe9cca23135fb7287df06aec719e08ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets clipboard data. <br/></td></tr>
+<tr class="separator:abe9cca23135fb7287df06aec719e08ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -432,6 +439,25 @@ std::vector&lt; <a class="el" href="classunicorn_1_1system_1_1Monitor.html">Moni
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the window was destroyed, <code>false</code> otherwise</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="classunicorn_1_1system_1_1Manager.html#af92f371bcc238aae8419295d999f618b" title="Destroys a window identified by id. ">DestroyWindow(uint32_t id)</a> </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="af914564bf8df48b16bf88b3a13d22d07"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string unicorn::system::Manager::GetClipboard </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns clipboard data. </p>
+<dl class="section note"><dt>Note</dt><dd>If clipboard contents can't be represented as UTF-8 string the result will be empty</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>clipboard string or empty string if some problem occured </dd></dl>
 
 </div>
 </div>

@@ -17,6 +17,7 @@ var searchData=
   ['getaxes',['GetAxes',['../classunicorn_1_1system_1_1input_1_1Gamepad.html#a9fdde1bdf7777742a8282eeb3ead123f',1,'unicorn::system::input::Gamepad']]],
   ['getbuffer',['GetBuffer',['../classunicorn_1_1utility_1_1asset_1_1Content.html#a3af8c5f6a78a07932b8b080c956ae03d',1,'unicorn::utility::asset::Content']]],
   ['getbuttons',['GetButtons',['../classunicorn_1_1system_1_1input_1_1Gamepad.html#ac06be597e305c246e5ba173b7966b1f9',1,'unicorn::system::input::Gamepad']]],
+  ['getclipboard',['GetClipboard',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a3fe6444535194f512c9ce14bd78e3551',1,'unicorn::system::glfw::Adapter::GetClipboard()'],['../classunicorn_1_1system_1_1Input.html#af96e6912209e35e739ebfb82841fd6e3',1,'unicorn::system::Input::GetClipboard()'],['../classunicorn_1_1system_1_1Manager.html#af914564bf8df48b16bf88b3a13d22d07',1,'unicorn::system::Manager::GetClipboard()']]],
   ['getconnectedgamepads',['GetConnectedGamepads',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#ab51c337f900efa35903b395f23c68ac9',1,'unicorn::system::glfw::Adapter']]],
   ['getcontent',['GetContent',['../classunicorn_1_1utility_1_1asset_1_1FileReader.html#aef08281f96840c6ea3c25a53a958e7ff',1,'unicorn::utility::asset::FileReader::GetContent()'],['../classunicorn_1_1utility_1_1asset_1_1Handler.html#a2fdb086d96e50dd5cc0732ff092d0feb',1,'unicorn::utility::asset::Handler::GetContent()']]],
   ['getdirection',['GetDirection',['../classunicorn_1_1video_1_1Camera.html#a8b115cf8b18495d79cce0f49156ec064',1,'unicorn::video::Camera']]],

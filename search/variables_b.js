@@ -63,6 +63,7 @@ var searchData=
   ['minimized',['Minimized',['../classunicorn_1_1system_1_1Window.html#a60b94fd55ec962df69b1b66897c7e0aa',1,'unicorn::system::Window']]],
   ['model',['model',['../classunicorn_1_1video_1_1geometry_1_1Mesh.html#afdf68c8429abeec372b5fdca93131501',1,'unicorn::video::geometry::Mesh']]],
   ['modes',['modes',['../structunicorn_1_1system_1_1MonitorMemento.html#a4a99037fd366a22b9734595392397139',1,'unicorn::system::MonitorMemento']]],
+  ['modifiers',['modifiers',['../structunicorn_1_1system_1_1Window_1_1MouseButtonEvent.html#a6b9660661353ec5ad56fbab94913d103',1,'unicorn::system::Window::MouseButtonEvent::modifiers()'],['../structunicorn_1_1system_1_1Window_1_1KeyboardEvent.html#a29455437b6d01f34764f514c58e450bd',1,'unicorn::system::Window::KeyboardEvent::modifiers()']]],
   ['monitorcreated',['MonitorCreated',['../classunicorn_1_1system_1_1Manager.html#aeb3877184d850cffeb159cd533b553f1',1,'unicorn::system::Manager']]],
   ['monitorstatechanged',['MonitorStateChanged',['../classunicorn_1_1system_1_1glfw_1_1Adapter.html#a02dbdc19072bfa89d1e7e9a6af08a6cc',1,'unicorn::system::glfw::Adapter']]],
   ['mousebutton',['MouseButton',['../classunicorn_1_1system_1_1Window.html#af5afc41f572c010eb2c8a20618d0bd44',1,'unicorn::system::Window']]],

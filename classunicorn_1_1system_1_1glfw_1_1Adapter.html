@@ -207,11 +207,17 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="memdesc:a85ec9269967e2d72b6483c64e9567b9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets sticky keys mode for a window.  <a href="#a85ec9269967e2d72b6483c64e9567b9d">More...</a><br/></td></tr>
 <tr class="separator:a85ec9269967e2d72b6483c64e9567b9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5030af548a611ea095346ae9097ea08f"><td class="memItemLeft" align="right" valign="top">static input::Action&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1glfw_1_1Adapter.html#a5030af548a611ea095346ae9097ea08f">GetWindowMouseButton</a> (void *handle, input::MouseButton button)</td></tr>
-<tr class="memdesc:a5030af548a611ea095346ae9097ea08f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns mouse button state.  <a href="#a5030af548a611ea095346ae9097ea08f">More...</a><br/></td></tr>
+<tr class="memdesc:a5030af548a611ea095346ae9097ea08f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns mouse button action state.  <a href="#a5030af548a611ea095346ae9097ea08f">More...</a><br/></td></tr>
 <tr class="separator:a5030af548a611ea095346ae9097ea08f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e10bbaa289803cc1ddf78e46d61732c"><td class="memItemLeft" align="right" valign="top">static input::Action&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1glfw_1_1Adapter.html#a4e10bbaa289803cc1ddf78e46d61732c">GetWindowKey</a> (void *handle, input::Key key)</td></tr>
-<tr class="memdesc:a4e10bbaa289803cc1ddf78e46d61732c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns key state.  <a href="#a4e10bbaa289803cc1ddf78e46d61732c">More...</a><br/></td></tr>
+<tr class="memdesc:a4e10bbaa289803cc1ddf78e46d61732c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns key action state.  <a href="#a4e10bbaa289803cc1ddf78e46d61732c">More...</a><br/></td></tr>
 <tr class="separator:a4e10bbaa289803cc1ddf78e46d61732c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3fe6444535194f512c9ce14bd78e3551"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1glfw_1_1Adapter.html#a3fe6444535194f512c9ce14bd78e3551">GetClipboard</a> (void *handle)</td></tr>
+<tr class="memdesc:a3fe6444535194f512c9ce14bd78e3551"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns clipboard data.  <a href="#a3fe6444535194f512c9ce14bd78e3551">More...</a><br/></td></tr>
+<tr class="separator:a3fe6444535194f512c9ce14bd78e3551"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c270c5f40ff2c409326d56061af45f3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1glfw_1_1Adapter.html#a4c270c5f40ff2c409326d56061af45f3">SetClipboard</a> (void *handle, const std::string &amp;data)</td></tr>
+<tr class="memdesc:a4c270c5f40ff2c409326d56061af45f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets clipboard data.  <a href="#a4c270c5f40ff2c409326d56061af45f3">More...</a><br/></td></tr>
+<tr class="separator:a4c270c5f40ff2c409326d56061af45f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38a9dfc2cfbb112d477b411f6586192d"><td class="memItemLeft" align="right" valign="top">static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1glfw_1_1Adapter.html#a38a9dfc2cfbb112d477b411f6586192d">GetKeyScancode</a> (input::Key key)</td></tr>
 <tr class="memdesc:a38a9dfc2cfbb112d477b411f6586192d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns key scancode.  <a href="#a38a9dfc2cfbb112d477b411f6586192d">More...</a><br/></td></tr>
 <tr class="separator:a38a9dfc2cfbb112d477b411f6586192d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -632,6 +638,42 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 
 </div>
 </div>
+<a class="anchor" id="a3fe6444535194f512c9ce14bd78e3551"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::string unicorn::system::glfw::Adapter::GetClipboard </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>handle</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns clipboard data. </p>
+<dl class="section note"><dt>Note</dt><dd>If clipboard contents can't be represented as UTF-8 string the result will be empty</dd>
+<dd>
+Some systems require valid window handler to access clipboard</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handle</td><td>window handle</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>clipboard string or empty string if some problem occured </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="aabae9c9564e90593548fe82db2fc4994"></a>
 <div class="memitem">
 <div class="memproto">
@@ -965,14 +1007,15 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 </div><div class="memdoc">
 
-<p>Returns key state. </p>
+<p>Returns key action state. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">handle</td><td>window handle </td></tr>
-    <tr><td class="paramname">key</td><td>key </td></tr>
+    <tr><td class="paramname">key</td><td>key</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>key action state </dd></dl>
 
 </div>
 </div>
@@ -1041,14 +1084,15 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </table>
 </div><div class="memdoc">
 
-<p>Returns mouse button state. </p>
+<p>Returns mouse button action state. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">handle</td><td>window handle </td></tr>
-    <tr><td class="paramname">button</td><td>mouse button </td></tr>
+    <tr><td class="paramname">button</td><td>mouse button</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>mouse button action state </dd></dl>
 
 </div>
 </div>
@@ -1373,6 +1417,50 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">handle</td><td>window handle </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a4c270c5f40ff2c409326d56061af45f3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void unicorn::system::glfw::Adapter::SetClipboard </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>handle</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets clipboard data. </p>
+<dl class="section note"><dt>Note</dt><dd>Some systems require valid window handler to access clipboard</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handle</td><td>window handle </td></tr>
+    <tr><td class="paramname">data</td><td>new clipboard data </td></tr>
   </table>
   </dd>
 </dl>

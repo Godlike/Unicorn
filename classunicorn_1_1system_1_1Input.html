@@ -130,15 +130,21 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Input.html#acfd556dd72bc3a968a78f6ed9ca9ee5f">~Input</a> ()</td></tr>
 <tr class="memdesc:acfd556dd72bc3a968a78f6ed9ca9ee5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructs the input system. <br/></td></tr>
 <tr class="separator:acfd556dd72bc3a968a78f6ed9ca9ee5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a449a726f6e6f00898ff4c3d848ff56fc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a449a726f6e6f00898ff4c3d848ff56fc"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Input.html#a449a726f6e6f00898ff4c3d848ff56fc">Process</a> ()</td></tr>
-<tr class="memdesc:a449a726f6e6f00898ff4c3d848ff56fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process all inputs. <br/></td></tr>
-<tr class="separator:a449a726f6e6f00898ff4c3d848ff56fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af96e6912209e35e739ebfb82841fd6e3"><td class="memItemLeft" align="right" valign="top">UNICORN_EXPORT std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Input.html#af96e6912209e35e739ebfb82841fd6e3">GetClipboard</a> () const </td></tr>
+<tr class="memdesc:af96e6912209e35e739ebfb82841fd6e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns clipboard data.  <a href="#af96e6912209e35e739ebfb82841fd6e3">More...</a><br/></td></tr>
+<tr class="separator:af96e6912209e35e739ebfb82841fd6e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a129101c4cbb7a6f170cb300042c0db1d"><td class="memItemLeft" align="right" valign="top">UNICORN_EXPORT void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Input.html#a129101c4cbb7a6f170cb300042c0db1d">SetClipboard</a> (const std::string &amp;data) const </td></tr>
+<tr class="memdesc:a129101c4cbb7a6f170cb300042c0db1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets clipboard data.  <a href="#a129101c4cbb7a6f170cb300042c0db1d">More...</a><br/></td></tr>
+<tr class="separator:a129101c4cbb7a6f170cb300042c0db1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa82031cee6387d6c834d1f049f418a69"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa82031cee6387d6c834d1f049f418a69"></a>
 UNICORN_EXPORT const std::map<br class="typebreak"/>
 &lt; uint32_t, <a class="el" href="classunicorn_1_1system_1_1input_1_1Gamepad.html">input::Gamepad</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Input.html#aa82031cee6387d6c834d1f049f418a69">GetGamepads</a> () const </td></tr>
 <tr class="memdesc:aa82031cee6387d6c834d1f049f418a69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a map of connected gamepads. <br/></td></tr>
 <tr class="separator:aa82031cee6387d6c834d1f049f418a69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a449a726f6e6f00898ff4c3d848ff56fc"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a449a726f6e6f00898ff4c3d848ff56fc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classunicorn_1_1system_1_1Input.html#a449a726f6e6f00898ff4c3d848ff56fc">Process</a> ()</td></tr>
+<tr class="memdesc:a449a726f6e6f00898ff4c3d848ff56fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process all inputs. <br/></td></tr>
+<tr class="separator:a449a726f6e6f00898ff4c3d848ff56fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -157,7 +163,51 @@ Private Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classunicorn_1_1system_1_1Input.html" title="Input gateway system. ">Input</a> gateway system. </p>
 <p>Initializes and controls all supported inputs </p>
-</div><h2 class="groupheader">Member Data Documentation</h2>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="af96e6912209e35e739ebfb82841fd6e3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">UNICORN_EXPORT std::string unicorn::system::Input::GetClipboard </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns clipboard data. </p>
+<dl class="section note"><dt>Note</dt><dd>If clipboard contents can't be represented as UTF-8 string the result will be empty</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>clipboard string or empty string if some problem occured </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a129101c4cbb7a6f170cb300042c0db1d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">UNICORN_EXPORT void unicorn::system::Input::SetClipboard </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets clipboard data. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>new clipboard data </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
 <a class="anchor" id="a2f11a54f40c7f22ecbcddab138662020"></a>
 <div class="memitem">
 <div class="memproto">
