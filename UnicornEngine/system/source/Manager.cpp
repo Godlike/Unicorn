@@ -313,5 +313,25 @@ void Manager::PollWindows()
     }
 }
 
+std::string Manager::GetClipboard() const
+{
+    if (!m_windows.empty())
+    {
+        return WINDOW_MANAGER_ADAPTER::GetClipboard(m_windows.cbegin()->second->GetHandle());
+    }
+    else
+    {
+        return std::string();
+    }
+}
+
+void Manager::SetClipboard(const std::string& data) const
+{
+    if (!m_windows.empty())
+    {
+        WINDOW_MANAGER_ADAPTER::SetClipboard(m_windows.cbegin()->second->GetHandle(), data);
+    }
+}
+
 }
 }
