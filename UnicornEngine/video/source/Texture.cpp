@@ -6,6 +6,7 @@
 
 #include <unicorn/utility/Logger.hpp>
 #include <unicorn/video/Texture.hpp>
+#include <unicorn/utility/asset/SimpleStorage.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -59,9 +60,15 @@ const char* Texture::Path() const
 }
 
 bool Texture::Load(const std::string& path)
-{
+{    
     m_path = path.c_str();
-    m_data = stbi_load(m_path, &m_width, &m_height, &m_channels, STBI_rgb_alpha);
+    
+    unicorn::utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
+    unicorn::utility::asset::Handler textureHandler = storage.Get(path.c_str());
+    
+    m_data = stbi_load_from_memory(textureHandler.GetContent().GetBuffer().data(), 
+                                   textureHandler.GetContent().GetBuffer().size(),
+                                   &m_width, &m_height, &m_channels, STBI_rgb_alpha);
     m_size = m_width * m_height * 4;
 
     if (!m_data) {
