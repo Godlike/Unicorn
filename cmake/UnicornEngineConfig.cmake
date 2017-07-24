@@ -17,6 +17,7 @@ set(UNICORN_ENGINE_INCLUDE_DIRS
 
 include(${UNICORN_ENGINE_ROOT}/cmake/WinkSignals.cmake)
 include(${UNICORN_ENGINE_ROOT}/cmake/GlmConfig.cmake)
+include(${UNICORN_ENGINE_ROOT}/cmake/AssimpConfig.cmake)
 
 set(UNICORN_ENGINE_EXTERNAL_INCLUDE_DEPENDENCIES
     ${WINK_SIGNALS_INCLUDE_DIR}

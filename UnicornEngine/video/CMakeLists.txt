@@ -10,12 +10,14 @@ set(GEOMETRY_HEADERS
     include/unicorn/video/geometry/Mesh.hpp
     include/unicorn/video/geometry/Primitives.hpp
     include/unicorn/video/geometry/MeshDescriptor.hpp
+	include/unicorn/video/geometry/Model.hpp
 )
 
 set(GEOMETRY_SOURCES
     source/geometry/Mesh.cpp
     source/geometry/Primitives.cpp
     source/geometry/MeshDescriptor.cpp
+	source/geometry/Model.cpp
 )
 
 set(VULKAN_HEADERS
@@ -49,6 +51,8 @@ set(VIDEO_HEADERS
     include/unicorn/video/CameraFpsController.hpp
     include/unicorn/video/Color.hpp
 	include/unicorn/video/Texture.hpp
+	include/unicorn/video/Material.hpp
+	include/unicorn/video/Sprite.hpp
     ${VULKAN_HEADERS}
     ${GEOMETRY_HEADERS}
 )
@@ -60,6 +64,8 @@ set(VIDEO_SOURCES
     source/CameraFpsController.cpp
     source/Color.cpp
 	source/Texture.cpp
+	source/Material.cpp
+	source/Sprite.cpp
     ${VULKAN_SOURCES}
     ${GEOMETRY_SOURCES}
 )

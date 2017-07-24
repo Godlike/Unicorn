@@ -32,9 +32,9 @@ endif()
 
 add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS -DVULKAN_HPP_TYPESAFE_CONVERSION)
 
-## Should be uncommented when TinyObjLoader library is used
-# include(TinyObjLoaderConfig)
-# add_subdirectory(${TINYOBJLOADER_ROOT_DIR})
+## Assimp
+include(AssimpConfig)
+add_subdirectory(${ASSIMP_ROOT_DIR})
 
 ## GLM
 include(GlmConfig)
@@ -72,7 +72,7 @@ include_directories(
 
 include_directories( SYSTEM
     ${WINK_SIGNALS_INCLUDE_DIR}
-    ${TINYOBJLOADER_INCLUDE_DIR}
+    ${ASSIMP_INCLUDE_DIR}
     ${GLM_INCLUDE_DIR}
     ${LOGURU_INCLUDE_DIR}
     ${STB_INCLUDE_DIR}

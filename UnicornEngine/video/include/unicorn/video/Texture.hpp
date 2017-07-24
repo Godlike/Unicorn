@@ -29,7 +29,7 @@ public:
     UNICORN_EXPORT unsigned char* Data() const;
     UNICORN_EXPORT int32_t Width() const;
     UNICORN_EXPORT int32_t Height() const;
-    UNICORN_EXPORT const char* Path() const;;
+    UNICORN_EXPORT const char* Path() const;
 private:
     int32_t m_width;
     int32_t m_height;

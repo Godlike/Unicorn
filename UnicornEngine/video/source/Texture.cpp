@@ -20,6 +20,7 @@ Texture::Texture(): m_width(0)
                   , m_channels(0)
                   , m_size(0)
                   , m_data(nullptr)
+                  , m_path(nullptr)
                   , m_initialized(false)
 {
 }
