@@ -10,5 +10,12 @@ namespace unicorn
 {
 namespace video
 {
+    unicorn::video::Model::Model(const geometry::Mesh& mesh, const std::list<Texture>& textures, const Material& material) 
+        : m_mesh(mesh), 
+          m_textures(textures),
+          m_material(material)
+    {
+
+    }
 }
 }

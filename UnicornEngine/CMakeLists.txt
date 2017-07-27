@@ -32,10 +32,6 @@ endif()
 
 add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS -DVULKAN_HPP_TYPESAFE_CONVERSION)
 
-## Assimp
-include(AssimpConfig)
-add_subdirectory(${ASSIMP_ROOT_DIR})
-
 ## GLM
 include(GlmConfig)
 add_subdirectory(${GLM_ROOT_DIR})

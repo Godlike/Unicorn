@@ -7,9 +7,10 @@
 #ifndef UNICORN_VIDEO_CAMERA_HPP
 #define UNICORN_VIDEO_CAMERA_HPP
 
+#include <unicorn/utility/SharedMacros.hpp>
+
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
-#include <unicorn/utility/SharedMacros.hpp>
 
 namespace unicorn
 {

@@ -7,7 +7,7 @@
 #ifndef UNICORN_VIDEO_TEXTURE_HPP
 #define UNICORN_VIDEO_TEXTURE_HPP
 
-#include "unicorn/utility/SharedMacros.hpp"
+#include <unicorn/utility/SharedMacros.hpp>
 
 #include <cstdint>
 #include <string>

@@ -17,6 +17,7 @@
 #include <unicorn/video/geometry/Primitives.hpp>
 #include <unicorn/video/Texture.hpp>
 #include <unicorn/video/CameraFpsController.hpp>
+#include <unicorn/video/Material.hpp>
 
 #include <array>
 #include <cstdlib>
@@ -289,6 +290,19 @@ int main(int argc, char* argv[])
             {
                 return -1;
             }
+            unicorn::video::Material colorMaterial("data/shaders/ColorShader.vert.spv", 
+                                                   "data/shaders/ColorShader.frag.spv");
+            if(!colorMaterial.IsInitialized())
+            {
+                return -1;
+            }
+            unicorn::video::Material textureMaterial("data/shaders/TextureShader.vert.spv", 
+                                                     "data/shaders/TextureShader.frag.spv");
+            if (!textureMaterial.IsInitialized())
+            {
+                return -1;
+            }
+
             vkRenderer->AllocateTexture(texture);
             texture.Delete();
 

@@ -9,10 +9,10 @@
 
 #include <unicorn/video/geometry/Mesh.hpp>
 #include <unicorn/video/Color.hpp>
+#include <unicorn/video/Camera.hpp>
 
 #include <glm/glm.hpp>
 
-#include <unicorn/video/Camera.hpp>
 #include <cstdint>
 #include <memory>
 #include <array>
