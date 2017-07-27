@@ -7,7 +7,7 @@
 #include <unicorn/video/vulkan/ShaderProgram.hpp>
 #include <unicorn/utility/asset/SimpleStorage.hpp>
 #include <unicorn/utility/Logger.hpp>
-#include <unicorn/video/geometry/Mesh.hpp>
+#include <unicorn/video/Mesh.hpp>
 
 namespace unicorn
 {
@@ -26,6 +26,7 @@ ShaderProgram::ShaderProgram(vk::Device device, const std::string& vertShader, c
     {
         LOG_ERROR("Can't find shaders!");
         m_isCreated = false;
+        return;
     }
 
     bool shadersCreatedFailed = !CreateShaderModule(simpleVertShaderHandler.GetContent().GetBuffer(), m_vertShaderModule) ||
@@ -35,6 +36,7 @@ ShaderProgram::ShaderProgram(vk::Device device, const std::string& vertShader, c
     {
         LOG_ERROR("Can't create shader module!");
         m_isCreated = false;
+        return;
     }
 
     vk::PipelineShaderStageCreateInfo vertShaderStageInfo = {};

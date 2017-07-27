@@ -8,7 +8,7 @@
 #define UNICORN_VIDEO_SPRITE_HPP
 
 #include <unicorn/video/Texture.hpp>
-#include <unicorn/video/geometry/Model.hpp>
+#include <unicorn/video/Model.hpp>
 #include <unicorn/utility/SharedMacros.hpp>
 
 #include <cstdint>

@@ -4,34 +4,36 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#ifndef UNICORN_VIDEO_GEOMETRY_MESH_HPP
-#define UNICORN_VIDEO_GEOMETRY_MESH_HPP
+#ifndef UNICORN_VIDEO_MESH_HPP
+#define UNICORN_VIDEO_MESH_HPP
 
 #include <unicorn/utility/SharedMacros.hpp>
+
 #include <wink/signal.hpp>
 #include <glm/glm.hpp>
-#include <vector>
+
+#include <list>
 
 namespace unicorn
 {
 namespace video
 {
-namespace geometry
-{
+class Texture;
+
 /**
  * @brief Vertex information
  */
 struct Vertex
 {
-    Vertex(glm::vec3 pos, glm::vec3 color);
+    Vertex(glm::vec3 pos);
     /**
      * @brief Position of vertex
      */
     glm::vec3 pos;
     /**
-     * @brief Color of vertex
-     */
-    glm::vec3 color;
+    * @brief Texture coordinates of vertex
+    */
+    glm::vec2 texCoords;
 };
 
 /**
@@ -41,6 +43,7 @@ class Mesh
 {
 public:
     UNICORN_EXPORT Mesh();
+    UNICORN_EXPORT Mesh(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices, const std::list<Texture*>& textures);
     UNICORN_EXPORT ~Mesh();
 
     /**
@@ -48,7 +51,7 @@ public:
     * @param vertices vertexes data
     * @param indices indices data
     */
-    UNICORN_EXPORT void SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices);
+    UNICORN_EXPORT void SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices, const std::list<Texture*>& textures);
     /**
      * @brief Returns mesh vertices
      * @return Mesh vertices
@@ -59,26 +62,14 @@ public:
     * @return Mesh indices
     */
     UNICORN_EXPORT const std::vector<uint16_t>& GetIndices() const;
-    /**
-     * @brief Apply given color to each vertex
-     * @param color color that will be applied to each vertex; each color component shall be in range [0.0, 1.0]
-     */
-    UNICORN_EXPORT void SetColor(const glm::vec3& color);
-    /**
-     * @brief Signal for GPU data update
-     */
-    wink::signal<wink::slot<void()>> VerticesUpdated;
-    /**
-     * @brief Model matrix of this mesh for MVP transformations
-     * Model matrix update uniform buffer every frame and don't need to emit VerticesUpdated
-     */
-    glm::mat4 model;
+
+    UNICORN_EXPORT void AddTexture(const Texture& texture);
 private:
     std::vector<Vertex> m_vertices;
     std::vector<uint16_t> m_indices;
+    std::list<Texture*> m_textures;
 };
 }
 }
-}
 
-#endif // UNICORN_VIDEO_GEOMETRY_MESH_HPP
+#endif // UNICORN_VIDEO_MESH_HPP

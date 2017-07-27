@@ -8,7 +8,7 @@
 #define UNICORN_VIDEO_VULKAN_MESH_HPP
 
 #include <vulkan/vulkan.hpp>
-#include <unicorn/video/geometry/Mesh.hpp>
+#include <unicorn/video/Mesh.hpp>
 #include <unicorn/video/vulkan/Buffer.hpp>
 #include <wink/signal.hpp>
 

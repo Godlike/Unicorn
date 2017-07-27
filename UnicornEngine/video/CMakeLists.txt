@@ -5,21 +5,6 @@
 cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.0)
 
-
-set(GEOMETRY_HEADERS
-    include/unicorn/video/geometry/Mesh.hpp
-    include/unicorn/video/geometry/Primitives.hpp
-    include/unicorn/video/geometry/MeshDescriptor.hpp
-	include/unicorn/video/geometry/Model.hpp
-)
-
-set(GEOMETRY_SOURCES
-    source/geometry/Mesh.cpp
-    source/geometry/Primitives.cpp
-    source/geometry/MeshDescriptor.cpp
-	source/geometry/Model.cpp
-)
-
 set(VULKAN_HEADERS
     include/unicorn/video/vulkan/Context.hpp
     include/unicorn/video/vulkan/Renderer.hpp
@@ -53,8 +38,11 @@ set(VIDEO_HEADERS
 	include/unicorn/video/Texture.hpp
 	include/unicorn/video/Material.hpp
 	include/unicorn/video/Sprite.hpp
+    include/unicorn/video/Mesh.hpp
+    include/unicorn/video/Primitives.hpp
+    include/unicorn/video/ModelMatrix.hpp
+	include/unicorn/video/Model.hpp
     ${VULKAN_HEADERS}
-    ${GEOMETRY_HEADERS}
 )
 
 set(VIDEO_SOURCES
@@ -66,8 +54,11 @@ set(VIDEO_SOURCES
 	source/Texture.cpp
 	source/Material.cpp
 	source/Sprite.cpp
+    source/Mesh.cpp
+    source/Primitives.cpp
+    source/ModelMatrix.cpp
+	source/Model.cpp
     ${VULKAN_SOURCES}
-    ${GEOMETRY_SOURCES}
 )
 
 add_library(video OBJECT
