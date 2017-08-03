@@ -8,6 +8,7 @@
 #define UNICORN_VIDEO_MESH_HPP
 
 #include <unicorn/utility/SharedMacros.hpp>
+#include <unicorn/video/Color.hpp>
 
 #include <wink/signal.hpp>
 #include <glm/glm.hpp>
@@ -51,7 +52,11 @@ public:
     * @param vertices vertexes data
     * @param indices indices data
     */
-    UNICORN_EXPORT void SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices, const std::list<Texture*>& textures);
+    UNICORN_EXPORT void SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices);
+
+    UNICORN_EXPORT void AddTexture(Texture* texture);
+
+    UNICORN_EXPORT void AddTextures(const std::list<Texture*>& textures);
     /**
      * @brief Returns mesh vertices
      * @return Mesh vertices
@@ -63,11 +68,13 @@ public:
     */
     UNICORN_EXPORT const std::vector<uint16_t>& GetIndices() const;
 
-    UNICORN_EXPORT void AddTexture(const Texture& texture);
+    std::list<Texture*> const& GetTextures() const;
+
 private:
     std::vector<Vertex> m_vertices;
     std::vector<uint16_t> m_indices;
     std::list<Texture*> m_textures;
+    glm::vec3 m_color = Color::Red; // Always default red for everything to detect visual errors
 };
 }
 }

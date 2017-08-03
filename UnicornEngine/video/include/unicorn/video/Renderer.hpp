@@ -16,6 +16,7 @@
 #include <cstdint>
 #include <memory>
 #include <array>
+#include <unordered_map>
 
 namespace unicorn
 {
@@ -28,6 +29,7 @@ class Timer;
 
 namespace video
 {
+class Material;
 class Model;
 class Texture;
 
@@ -68,9 +70,11 @@ public:
     * @param texture texture which provides data for allocation
     * @return true if allocation was successful and false if not
     */
-    virtual bool AllocateTexture(const Texture& texture) = 0;
+    virtual bool AddTexture(const Texture* texture) = 0;
 
-    virtual bool AddModel(const Model& model) = 0;
+    virtual bool AddModel(const Model* model) = 0;
+
+    virtual bool AddMaterial(const Material* material) = 0;
 protected:
     bool m_isInitialized;
 

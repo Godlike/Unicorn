@@ -7,7 +7,10 @@
 #ifndef UNICORN_VIDEO_SHADER_PROGRAM_HPP
 #define UNICORN_VIDEO_SHADER_PROGRAM_HPP
 
+#include <unicorn/video/Material.hpp>
+
 #include <vulkan/vulkan.hpp>
+
 #include <array>
 
 namespace unicorn
@@ -29,7 +32,7 @@ public:
      * @param fragShaderPath path to fragment shader 
      * @attention Always use 'main' as entry point
      */
-    ShaderProgram(vk::Device device, const std::string& vertShaderPath, const std::string& fragShaderPath);
+    ShaderProgram(vk::Device device, const unicorn::video::Material& material);
     /**
      * @brief Function to check is shader was successfully loaded and created
      * @return true if shader was created and false if not

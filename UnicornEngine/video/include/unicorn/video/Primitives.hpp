@@ -15,19 +15,22 @@ namespace unicorn
 namespace video
 {
 
-class Triangle : public Mesh
-{
-        
-};
-
 class Cube : public Mesh
 {
+public:
     Cube();
+private:
+    //Hide it to prevent data updating
+    void SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices) = delete;
 };
 
 class Quad : public Mesh
 {
-
+public:
+    Quad();
+private:
+    //Hide it to prevent data updating
+    void SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices) = delete;
 };
 
 }

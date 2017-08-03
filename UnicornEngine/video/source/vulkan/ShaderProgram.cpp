@@ -15,22 +15,11 @@ namespace video
 {
 namespace vulkan
 {
-ShaderProgram::ShaderProgram(vk::Device device, const std::string& vertShader, const std::string& fragShader)
+ShaderProgram::ShaderProgram(vk::Device device, const unicorn::video::Material& material)
     : m_isCreated(false), m_device(device)
 {
-    unicorn::utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
-    unicorn::utility::asset::Handler simpleVertShaderHandler = storage.Get(vertShader);
-    unicorn::utility::asset::Handler simpleFragShaderHandler = storage.Get(fragShader);
-
-    if (!simpleVertShaderHandler.IsValid() || !simpleFragShaderHandler.IsValid())
-    {
-        LOG_ERROR("Can't find shaders!");
-        m_isCreated = false;
-        return;
-    }
-
-    bool shadersCreatedFailed = !CreateShaderModule(simpleVertShaderHandler.GetContent().GetBuffer(), m_vertShaderModule) ||
-                                !CreateShaderModule(simpleFragShaderHandler.GetContent().GetBuffer(), m_fragShaderModule);
+    bool shadersCreatedFailed = !CreateShaderModule(material.GetVertShaderHandler().GetContent().GetBuffer(), m_vertShaderModule) ||
+                                !CreateShaderModule(material.GetFragShaderHandler().GetContent().GetBuffer(), m_fragShaderModule);
 
     if (shadersCreatedFailed)
     {
@@ -61,7 +50,7 @@ ShaderProgram::ShaderProgram(vk::Device device, const std::string& vertShader, c
 void ShaderProgram::CreateBindingDescription()
 {
     m_bindingDescription.setBinding(0);
-    m_bindingDescription.setStride(sizeof(geometry::Vertex));
+    m_bindingDescription.setStride(sizeof(Vertex));
     m_bindingDescription.setInputRate(vk::VertexInputRate::eVertex);
 }
 
@@ -71,12 +60,12 @@ void ShaderProgram::CreateAttributeDescription()
     m_attributeDescription.at(0).setBinding(0);
     m_attributeDescription.at(0).setLocation(0);
     m_attributeDescription.at(0).setFormat(vk::Format::eR32G32B32Sfloat);
-    m_attributeDescription.at(0).setOffset(offsetof(geometry::Vertex, pos));
-    //Color
-    m_attributeDescription.at(1).setBinding(0);
-    m_attributeDescription.at(1).setLocation(1);
-    m_attributeDescription.at(1).setFormat(vk::Format::eR32G32B32Sfloat);
-    m_attributeDescription.at(1).setOffset(offsetof(geometry::Vertex, color));
+    m_attributeDescription.at(0).setOffset(offsetof(Vertex, pos));
+    ////Color
+    //m_attributeDescription.at(1).setBinding(0);
+    //m_attributeDescription.at(1).setLocation(1);
+    //m_attributeDescription.at(1).setFormat(vk::Format::eR32G32B32Sfloat);
+    //m_attributeDescription.at(1).setOffset(offsetof(Vertex, color));
 }
 
 void ShaderProgram::CreateVertexInputInfo()

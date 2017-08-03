@@ -221,8 +221,8 @@ int main(int argc, char* argv[])
         using unicorn::video::Quad;
         {
             //Loading textures
-            unicorn::video::Texture texture("data/textures/texture.jpg");
-            unicorn::video::Texture textureMandrill("data/textures/mandrill.png");
+            unicorn::video::Texture* texture = new unicorn::video::Texture("data/textures/texture.jpg");
+            unicorn::video::Texture* textureMandrill = new unicorn::video::Texture("data/textures/mandrill.png");
             //Loading shaders
             unicorn::video::Material textureMaterial("data/shaders/TextureShader.vert.spv",
                 "data/shaders/TextureShader.frag.spv");
@@ -231,8 +231,8 @@ int main(int argc, char* argv[])
             unicorn::video::Material multipleTextureMaterial("data/shaders/MultipleTextureShader.vert.spv",
                 "data/shaders/MultipleTextureShader.frag.spv");
             //Checks data
-            if(!texture.IsLoaded() 
-            || !textureMandrill.IsLoaded()
+            if(!texture->IsLoaded() 
+            || !textureMandrill->IsLoaded()
             || !colorMaterial.IsInitialized() 
             || !textureMaterial.IsInitialized()
             || !multipleTextureMaterial.IsInitialized())
@@ -241,8 +241,11 @@ int main(int argc, char* argv[])
             }
 
             Cube texturedCubeMesh;
+            texturedCubeMesh.AddTexture(texture);
             Quad texturedQuad;
+            texturedQuad.AddTexture(textureMandrill);
             Quad multipleTextureQuad;
+            multipleTextureQuad.AddTextures({texture, textureMandrill});
             Quad coloredQuad;
             
             Model* cubeOneTextureModel = new Model(texturedCubeMesh, textureMaterial);
@@ -256,14 +259,6 @@ int main(int argc, char* argv[])
             pWindow0->MouseButton.connect(&onMouseButton);
 
             unicornEngine->Run();
-        }
-
-        if (vkRenderer)
-        {
-            for (auto& pMesh : meshes)
-            {
-                vkRenderer->DeleteMesh(pMesh);
-            }
         }
     }
 

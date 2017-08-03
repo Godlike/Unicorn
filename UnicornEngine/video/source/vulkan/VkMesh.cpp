@@ -13,7 +13,7 @@ namespace video
 {
 namespace vulkan
 {
-VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, geometry::Mesh& mesh)
+VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, Mesh& mesh)
     : m_valid(false)
     , m_device(device)
     , m_physicalDevice(physicalDevice)
@@ -21,22 +21,23 @@ VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::Command
     , m_pool(pool)
     , m_queue(queue)
 {
-    m_mesh.VerticesUpdated.connect(this, &VkMesh::AllocateOnGPU);
+   // m_mesh.VerticesUpdated.connect(this, &VkMesh::AllocateOnGPU);
 }
 
 VkMesh::~VkMesh()
 {
-    m_mesh.VerticesUpdated.disconnect(this, &VkMesh::AllocateOnGPU);
+   // m_mesh.VerticesUpdated.disconnect(this, &VkMesh::AllocateOnGPU);
 }
 
-bool VkMesh::operator==(const geometry::Mesh& mesh) const
+bool VkMesh::operator==(const Mesh& mesh) const
 {
     return &mesh == &m_mesh;
 }
 
 const glm::mat4& VkMesh::GetModel() const
 {
-    return m_mesh.model;
+ //   return m_mesh.model;
+    return {};
 }
 
 void VkMesh::AllocateOnGPU()

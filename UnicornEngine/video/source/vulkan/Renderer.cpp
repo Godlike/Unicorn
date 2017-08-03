@@ -15,6 +15,8 @@
 #include <unicorn/video/Camera.hpp>
 #include <unicorn/utility/Memory.hpp>
 #include <unicorn/video/Texture.hpp>
+#include <unicorn/video/Model.hpp>
+#include <unicorn/video/Material.hpp>
 
 #include <set>
 #include <algorithm>
@@ -92,15 +94,15 @@ void Renderer::Deinit()
     if(m_isInitialized)
     {
         {
-            // Create a copy of mesh list to delete all meshes
-            std::list<geometry::Mesh*> meshes(m_meshes);
+            //// Create a copy of mesh list to delete all meshes
+            //std::list<geometry::Mesh*> meshes(m_meshes);
 
-            for(auto& pMesh : meshes)
-            {
-                DeleteMesh(pMesh);
-            }
+            //for(auto& pMesh : meshes)
+            //{
+            //    DeleteMesh(pMesh);
+            //}
 
-            LOG_DEBUG("Deleted %u meshes", static_cast<uint32_t>(meshes.size()));
+            //LOG_DEBUG("Deleted %u meshes", static_cast<uint32_t>(meshes.size()));
 
             if(!m_vkMeshes.empty())
             {
@@ -353,44 +355,44 @@ void Renderer::OnMeshReallocated(VkMesh* /*vkmesh*/)
     ResizeDynamicUniformBuffer();
     CreateCommandBuffers();
 }
-
-geometry::Mesh* Renderer::SpawnMesh()
-{
-    auto mesh = new geometry::Mesh();
-    auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
-    vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
-    m_vkMeshes.push_back(vkmesh);
-    m_meshes.push_back(mesh);
-    return mesh;
-}
-
-bool Renderer::DeleteMesh(const geometry::Mesh* pMesh)
-{
-    auto vkMeshIt = std::find_if(m_vkMeshes.begin(), m_vkMeshes.end(), [=](VkMesh* p) -> bool { return *p == *pMesh; });
-
-    if(vkMeshIt != m_vkMeshes.end())
-    {
-        DeleteVkMesh(*vkMeshIt);
-
-        m_vkMeshes.erase(vkMeshIt);
-
-        m_hasDirtyMeshes = true;
-    }
-
-    auto meshIt = std::find(m_meshes.begin(), m_meshes.end(), pMesh);
-
-    if(meshIt != m_meshes.end())
-    {
-        delete *meshIt;
-        m_meshes.erase(meshIt);
-
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
+//
+//geometry::Mesh* Renderer::SpawnMesh()
+//{
+//    auto mesh = new geometry::Mesh();
+//    auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
+//    vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
+//    m_vkMeshes.push_back(vkmesh);
+//    m_meshes.push_back(mesh);
+//    return mesh;
+//}
+//
+//bool Renderer::DeleteMesh(const geometry::Mesh* pMesh)
+//{
+//    auto vkMeshIt = std::find_if(m_vkMeshes.begin(), m_vkMeshes.end(), [=](VkMesh* p) -> bool { return *p == *pMesh; });
+//
+//    if(vkMeshIt != m_vkMeshes.end())
+//    {
+//        DeleteVkMesh(*vkMeshIt);
+//
+//        m_vkMeshes.erase(vkMeshIt);
+//
+//        m_hasDirtyMeshes = true;
+//    }
+//
+//    auto meshIt = std::find(m_meshes.begin(), m_meshes.end(), pMesh);
+//
+//    if(meshIt != m_meshes.end())
+//    {
+//        delete *meshIt;
+//        m_meshes.erase(meshIt);
+//
+//        return true;
+//    }
+//    else
+//    {
+//        return false;
+//    }
+//}
 
 void Renderer::DepthTest(bool enabled)
 {
@@ -398,20 +400,20 @@ void Renderer::DepthTest(bool enabled)
     CreateGraphicsPipeline();
 }
 
-bool Renderer::AllocateTexture(const Texture& texture)
+bool Renderer::AddTexture(const Texture* texture)
 {
     Buffer imageStagingBuffer;
     bool result = imageStagingBuffer.Create(m_vkPhysicalDevice, m_vkLogicalDevice,
                                             vk::BufferUsageFlagBits::eTransferSrc,
                                             vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-                                            texture.Size());
+                                            texture->Size());
     if(!result)
     {
-        LOG_ERROR("Can't allocate staging buffer for texture - ", texture.Path());
+        LOG_ERROR("Can't allocate staging buffer for texture - ", texture->Path());
         return false;
     }
     imageStagingBuffer.Map();
-    imageStagingBuffer.Write(texture.Data());
+    imageStagingBuffer.Write(texture->Data());
     imageStagingBuffer.Unmap();
 
     Image gpuTexture;
@@ -419,11 +421,11 @@ bool Renderer::AllocateTexture(const Texture& texture)
         m_vkLogicalDevice,
         vk::Format::eR8G8B8A8Unorm,
         vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
-        texture.Width(),
-        texture.Height());
+        texture->Width(),
+        texture->Height());
     if (!result)
     {
-        LOG_ERROR("Can't allocate vulkan based image for texture - ", texture.Path());
+        LOG_ERROR("Can't allocate vulkan based image for texture - ", texture->Path());
         return false;
     }
 
@@ -432,6 +434,19 @@ bool Renderer::AllocateTexture(const Texture& texture)
     gpuTexture.TransitionLayout(vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal, m_commandPool, m_graphicsQueue);
 
     imageStagingBuffer.Destroy();
+    return true;
+}
+
+bool Renderer::AddModel(const Model* model)
+{
+    for(auto const& mesh : model->GetMeshes())
+    {
+        for(auto const& texture : mesh->GetTextures())
+        {
+            AddTexture(texture);
+        }
+        
+    }
     return true;
 }
 

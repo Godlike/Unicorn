@@ -16,18 +16,18 @@ Mesh::Mesh()
 
 Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices, const std::list<Texture*>& textures)
 {
-    SetMeshData(vertices, indices, textures);
+    SetMeshData(vertices, indices);
+    AddTextures(textures);
 }
 
 Mesh::~Mesh()
 {
 }
 
-void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices, const std::list<Texture*>& textures)
+void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices)
 {
     m_vertices = vertices;
     m_indices = indices;
-    m_textures = textures;
 }
 
 const std::vector<Vertex>& Mesh::GetVertices() const
@@ -40,9 +40,19 @@ const std::vector<uint16_t>& Mesh::GetIndices() const
     return m_indices;
 }
 
-void Mesh::AddTexture(const Texture& texture)
+std::list<Texture*> const& Mesh::GetTextures() const
+{
+    return m_textures;
+}
+
+void Mesh::AddTexture(Texture* texture)
 {
     m_textures.push_back(texture);
+}
+
+void Mesh::AddTextures(const std::list<Texture*>& textures)
+{
+    m_textures.insert(textures.end(), textures.begin(), textures.end());
 }
 
 Vertex::Vertex(glm::vec3 pos) : pos(pos)

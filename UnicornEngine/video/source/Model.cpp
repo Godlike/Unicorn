@@ -16,5 +16,10 @@ namespace video
     {
 
     }
+
+std::list<Mesh*> Model::GetMeshes() const
+{
+    return m_meshes;
+}
 }
 }

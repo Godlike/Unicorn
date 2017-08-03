@@ -21,6 +21,7 @@ class Model
 public:
     Model(const std::list<Mesh*>& meshes, const Material& material);
     Model(const Mesh& mesh, const Material& material);
+    UNICORN_EXPORT std::list<Mesh*> GetMeshes() const;
 private:
     std::list<Mesh*> m_meshes;
     Material m_material;

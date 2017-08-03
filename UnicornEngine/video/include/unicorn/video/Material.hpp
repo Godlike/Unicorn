@@ -11,6 +11,7 @@
 #include <unicorn/utility/SharedMacros.hpp>
 
 #include <string>
+#include <unordered_map>
 
 namespace unicorn
 {
@@ -23,10 +24,15 @@ class Material
         UNICORN_EXPORT const std::vector<uint8_t>& GetVertexShaderContent() const;
         UNICORN_EXPORT const std::vector<uint8_t>& GetFragmentShaderContent() const;
         UNICORN_EXPORT bool IsInitialized() const;
+        UNICORN_EXPORT void AddUniform(uint32_t bindingLocation, const std::string& uniformName);
+        UNICORN_EXPORT unicorn::utility::asset::Handler const& GetVertShaderHandler() const;
+        UNICORN_EXPORT unicorn::utility::asset::Handler const& GetFragShaderHandler() const;
     private:
         bool m_isInitialized;
         unicorn::utility::asset::Handler m_vertShaderHandler;
         unicorn::utility::asset::Handler m_fragShaderHandler;
+
+        std::unordered_map<uint32_t, std::string> m_uniforms;
 };
 }
 }

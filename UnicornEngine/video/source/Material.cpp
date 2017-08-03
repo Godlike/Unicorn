@@ -45,5 +45,19 @@ namespace video
         return m_isInitialized;
     }
 
+void Material::AddUniform(uint32_t bindingLocation, const std::string& uniformName)
+{
+        m_uniforms.insert({bindingLocation, uniformName});
+}
+
+unicorn::utility::asset::Handler const& Material::GetVertShaderHandler() const
+{
+    return m_vertShaderHandler;
+}
+
+unicorn::utility::asset::Handler const& Material::GetFragShaderHandler() const
+{
+    return m_fragShaderHandler;
+}
 }
 }
