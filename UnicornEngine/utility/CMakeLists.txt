@@ -36,6 +36,13 @@ add_library(utility OBJECT
     ${UTILITY_SOURCES}
 )
 
+install( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    DESTINATION include/godlike
+    COMPONENT godlike_headers
+    FILES_MATCHING PATTERN "*.hpp"
+    PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
+)
+
 if (UNIX)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()

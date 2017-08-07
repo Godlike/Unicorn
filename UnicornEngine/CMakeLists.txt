@@ -38,7 +38,11 @@ add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS -DVULKAN_HPP_TYPESAFE_CONVERSION)
 
 ## GLM
 include(GlmConfig)
-add_subdirectory(${GLM_ROOT_DIR})
+find_package(GLM)
+
+if (NOT GLM_FOUND)
+    add_subdirectory(${GLM_ROOT_DIR})
+endif()
 
 ## Loguru
 include(loguru)
@@ -108,6 +112,19 @@ target_link_libraries(${UNICORN_ENGINE_LIB}
     ${VULKAN_LIBRARY}
 )
 
+install( TARGETS ${UNICORN_ENGINE_LIB}
+    COMPONENT godlike_libraries
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib/static
+)
+
+install( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+    DESTINATION include/godlike
+    COMPONENT godlike_headers
+    FILES_MATCHING PATTERN "*.hpp"
+    PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
+)
+
 if (UNIX)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()
@@ -152,16 +169,16 @@ elseif(WIN32)
 endif()
 
 file(GLOB_RECURSE GLSL_SOURCE_FILES
-    "${CMAKE_SOURCE_DIR}/UnicornEngine/data/shaders/*.frag"
-    "${CMAKE_SOURCE_DIR}/UnicornEngine/data/shaders/*.vert"
+    "${CMAKE_CURRENT_SOURCE_DIR}/data/shaders/*.frag"
+    "${CMAKE_CURRENT_SOURCE_DIR}/data/shaders/*.vert"
     )
 
 foreach(GLSL ${GLSL_SOURCE_FILES})
     get_filename_component(FILE_NAME ${GLSL} NAME)
-    set(SPIRV "${PROJECT_BINARY_DIR}/data/shaders/${FILE_NAME}.spv")
+    set(SPIRV "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/shaders/${FILE_NAME}.spv")
     add_custom_command(
         OUTPUT ${SPIRV}
-        COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/data/shaders/"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/shaders/"
         COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
         DEPENDS ${GLSL})
     list(APPEND SPIRV_BINARY_FILES ${SPIRV})
@@ -173,10 +190,3 @@ add_custom_target(
     )
 
 add_dependencies(${UNICORN_ENGINE_LIB} Shaders)
-
-add_custom_command(TARGET ${UNICORN_ENGINE_LIB} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${UNICORN_ENGINE_LIB}>/data/shaders/"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-        "${PROJECT_BINARY_DIR}/data/shaders"
-        "$<TARGET_FILE_DIR:${UNICORN_ENGINE_LIB}>/data/shaders"
-        )
