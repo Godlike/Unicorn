@@ -6,15 +6,13 @@ cmake_minimum_required(VERSION 3.0)
 
 project(Godlike)
 
-option(UNICORN_BUILD_DOCUMENTATION "Build UnicornEngine documentation" OFF)
-option(UNICORN_BUILD_DEMOS "Build UnicornEngine demo projects" ON)
-option(UNICORN_BUILD_TESTS "Build UnicornEngine tests" ON)
+option(UNICORN_BUILD_DOCUMENTATION "Build UnicornRender documentation" OFF)
+option(UNICORN_BUILD_DEMOS "Build UnicornRender demo projects" ON)
+option(UNICORN_BUILD_TESTS "Build UnicornRender tests" ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-set(UNICORN_ENGINE_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/UnicornEngine" CACHE STRING "Path to UnicornEngine root directory")
-
-include(UnicornEngineConfig)
+include(UnicornRenderConfig)
 
 if (NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/lib)
@@ -28,7 +26,7 @@ if (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output)
 endif()
 
-add_subdirectory(${UNICORN_ENGINE_ROOT})
+add_subdirectory(${UNICORN_RENDER_ROOT})
 
 if (${UNICORN_BUILD_DEMOS})
     add_subdirectory(demos)
