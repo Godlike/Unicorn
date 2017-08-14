@@ -7,11 +7,9 @@
 #ifndef UNICORN_VIDEO_MATERIAL_HPP
 #define UNICORN_VIDEO_MATERIAL_HPP
 
-#include <unicorn/utility/asset/SimpleStorage.hpp>
-#include <unicorn/utility/SharedMacros.hpp>
+#include <unicorn/video/Color.hpp>
 
-#include <string>
-#include <unordered_map>
+#include <glm/glm.hpp>
 
 namespace unicorn
 {
@@ -19,20 +17,11 @@ namespace video
 {
 class Material
 {
-    public:
-        UNICORN_EXPORT Material(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
-        UNICORN_EXPORT const std::vector<uint8_t>& GetVertexShaderContent() const;
-        UNICORN_EXPORT const std::vector<uint8_t>& GetFragmentShaderContent() const;
-        UNICORN_EXPORT bool IsInitialized() const;
-        UNICORN_EXPORT void AddUniform(uint32_t bindingLocation, const std::string& uniformName);
-        UNICORN_EXPORT unicorn::utility::asset::Handler const& GetVertShaderHandler() const;
-        UNICORN_EXPORT unicorn::utility::asset::Handler const& GetFragShaderHandler() const;
-    private:
-        bool m_isInitialized;
-        unicorn::utility::asset::Handler m_vertShaderHandler;
-        unicorn::utility::asset::Handler m_fragShaderHandler;
-
-        std::unordered_map<uint32_t, std::string> m_uniforms;
+public:
+    UNICORN_EXPORT Material(bool isColored);
+private:
+    glm::vec3 m_color = Color::Red; // Always default red for everything to detect visual errors
+    bool m_isColored = false;
 };
 }
 }

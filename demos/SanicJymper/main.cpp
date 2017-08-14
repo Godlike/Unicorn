@@ -223,35 +223,18 @@ int main(int argc, char* argv[])
             //Loading textures
             unicorn::video::Texture* texture = new unicorn::video::Texture("data/textures/texture.jpg");
             unicorn::video::Texture* textureMandrill = new unicorn::video::Texture("data/textures/mandrill.png");
-            //Loading shaders
-            unicorn::video::Material textureMaterial("data/shaders/TextureShader.vert.spv",
-                "data/shaders/TextureShader.frag.spv");
-            unicorn::video::Material colorMaterial("data/shaders/ColorShader.vert.spv",
-                "data/shaders/ColorShader.frag.spv");
-            unicorn::video::Material multipleTextureMaterial("data/shaders/MultipleTextureShader.vert.spv",
-                "data/shaders/MultipleTextureShader.frag.spv");
+
             //Checks data
             if(!texture->IsLoaded() 
-            || !textureMandrill->IsLoaded()
-            || !colorMaterial.IsInitialized() 
-            || !textureMaterial.IsInitialized()
-            || !multipleTextureMaterial.IsInitialized())
+            || !textureMandrill->IsLoaded())            
             {
                 return -1;
             }
+            Quad* texturedQuad = new Quad;
+            texturedQuad->AddTexture(texture);
+            Model* mymodel = new Model(texturedQuad, {false});
 
-            Cube texturedCubeMesh;
-            texturedCubeMesh.AddTexture(texture);
-            Quad texturedQuad;
-            texturedQuad.AddTexture(textureMandrill);
-            Quad multipleTextureQuad;
-            multipleTextureQuad.AddTextures({texture, textureMandrill});
-            Quad coloredQuad;
-            
-            Model* cubeOneTextureModel = new Model(texturedCubeMesh, textureMaterial);
-            Model* texturedQuadModel = new Model(texturedQuad, textureMaterial);
-            Model* multipleTexturedQuadModel = new Model(multipleTextureQuad, multipleTextureMaterial);
-            Model* coloredQuadModel = new Model(coloredQuad, colorMaterial);
+            vkRenderer->AddModel(mymodel);
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);

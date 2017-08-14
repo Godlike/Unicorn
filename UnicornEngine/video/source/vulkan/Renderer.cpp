@@ -281,9 +281,9 @@ bool Renderer::Render()
             m_hasDirtyMeshes = false;
         }
 
-        Frame();
+       // Frame();
 
-        m_vkLogicalDevice.waitIdle();
+        //m_vkLogicalDevice.waitIdle();
 
         return true;
     }
@@ -448,6 +448,11 @@ bool Renderer::AddModel(const Model* model)
         
     }
     return true;
+}
+
+bool Renderer::AddMaterial(const Material* material)
+{
+    return false;
 }
 
 void Renderer::DeleteVkMesh(VkMesh* pVkMesh)
@@ -1005,7 +1010,7 @@ bool Renderer::CreateGraphicsPipeline()
     vk::Result result;
     FreeGraphicsPipeline();
 
-    m_shaderProgram = new ShaderProgram(m_vkLogicalDevice, "data/shaders/shader.vert.spv", "data/shaders/shader.frag.spv");
+    m_shaderProgram = new ShaderProgram(m_vkLogicalDevice, "data/shaders/UberShader.vert.spv", "data/shaders/UberShader.frag.spv");
 
     vk::PipelineInputAssemblyStateCreateInfo inputAssembly;
     inputAssembly.topology = vk::PrimitiveTopology::eTriangleList;

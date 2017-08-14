@@ -10,12 +10,16 @@ namespace unicorn
 {
 namespace video
 {
-    unicorn::video::Model::Model(const std::list<Mesh*>& meshes, const Material& material)
-        : m_meshes(meshes),
-          m_material(material)
-    {
+unicorn::video::Model::Model(const std::list<Mesh*>& meshes, const Material& material)
+    : m_meshes(meshes)
+    , m_material(material)
+{
+}
 
-    }
+Model::Model(Mesh* mesh, const Material& material) : m_material(material)
+{
+    m_meshes.push_back(mesh);
+}
 
 std::list<Mesh*> Model::GetMeshes() const
 {

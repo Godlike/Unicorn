@@ -9,6 +9,9 @@
 
 #include <unicorn/video/Material.hpp>
 #include <unicorn/video/ModelMatrix.hpp>
+#include <unicorn/utility/SharedMacros.hpp>
+
+#include <list>
 
 namespace unicorn
 {
@@ -19,8 +22,8 @@ class Mesh;
 class Model
 {
 public:
-    Model(const std::list<Mesh*>& meshes, const Material& material);
-    Model(const Mesh& mesh, const Material& material);
+    UNICORN_EXPORT Model(const std::list<Mesh*>& meshes, const Material& material);
+    UNICORN_EXPORT Model(Mesh* mesh, const Material& material);
     UNICORN_EXPORT std::list<Mesh*> GetMeshes() const;
 private:
     std::list<Mesh*> m_meshes;

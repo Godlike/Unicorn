@@ -11,11 +11,10 @@ layout(binding = 1) uniform UniformModel {
 } um_buffer;
 
 layout(location = 0) in vec3 pos;
-layout(location = 1) in vec3 color;
-layout(location = 2) in vec2 texCoord;
+layout(location = 1) in vec2 texCoord;
 
-layout(location = 0) out vec3 fragColor;
-layout(location = 1) out vec2 fragTexCoord;
+//layout(location = 0) out vec3 fragColor;
+layout(location = 0) out vec2 fragTexCoord;
 
 out gl_PerVertex {
     vec4 gl_Position;
@@ -23,6 +22,6 @@ out gl_PerVertex {
 
 void main() {
     gl_Position = uvp_buffer.proj * uvp_buffer.view * um_buffer.model * vec4(pos, 1.0);
-    fragColor = color;
+    gl_Position.y = -gl_Position.y;
     fragTexCoord = texCoord;
 }

@@ -105,6 +105,7 @@ public:
     void DepthTest(bool enabled) override;
     bool AddTexture(const Texture* texture) override;
     bool AddModel(const Model* model) override;
+    bool AddMaterial(const Material* material) override;
 private:
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;

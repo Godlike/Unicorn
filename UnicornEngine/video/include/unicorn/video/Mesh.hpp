@@ -74,7 +74,6 @@ private:
     std::vector<Vertex> m_vertices;
     std::vector<uint16_t> m_indices;
     std::list<Texture*> m_textures;
-    glm::vec3 m_color = Color::Red; // Always default red for everything to detect visual errors
 };
 }
 }
