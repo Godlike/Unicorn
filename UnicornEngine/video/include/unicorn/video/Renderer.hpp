@@ -63,7 +63,7 @@ public:
      * @brief Turns on or off depth test
      * @param enabled if true - depth test is enabled, false - disabled
      */
-    virtual void DepthTest(bool enabled) = 0;
+    virtual void SetDepthTest(bool enabled) = 0;
 
     /**
     * @brief Allocates texture on GPU
@@ -87,7 +87,7 @@ protected:
     //! Background filling color
     std::array<float, 4> m_backgroundColor;
     //! Depth test
-    bool m_depthEnabled;
+    bool m_depthTestEnabled;
 };
 }
 }

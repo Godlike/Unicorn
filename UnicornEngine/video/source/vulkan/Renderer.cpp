@@ -31,6 +31,14 @@ namespace video
 {
 namespace vulkan
 {
+const uint32_t Renderer::s_swapChainAttachmentsAmount = 2;
+
+#ifdef NDEBUG
+const bool Renderer::s_enableValidationLayers = false;
+#else
+const bool Renderer::s_enableValidationLayers = true;
+#endif
+
 bool QueueFamilyIndices::IsComplete() const
 {
     return graphicsFamily >= 0 && presentFamily >= 0;
@@ -38,6 +46,7 @@ bool QueueFamilyIndices::IsComplete() const
 
 Renderer::Renderer(system::Manager& manager, system::Window* window)
     : video::Renderer(manager, window)
+    , m_depthImage(nullptr)
     , m_hasDirtyMeshes(false)
 {
     m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
@@ -71,6 +80,7 @@ bool Renderer::Init()
         !CreateLogicalDevice() ||
         !CreateSwapChain() ||
         !CreateImageViews() ||
+        !FindDepthFormat(m_depthImageFormat) ||
         !CreateDepthBuffer() ||
         !CreateRenderPass() ||
         !PrepareUniformBuffers() ||
@@ -128,7 +138,6 @@ void Renderer::Deinit()
         FreeDescriptorPoolAndLayouts();
         FreeUniforms();
         FreeRenderPass();
-        FreeDepthBuffer();
         FreeDepthBuffer();
         FreeImageViews();
         FreeSwapChain();
@@ -508,7 +517,11 @@ void Renderer::FreeImageViews()
 
 void Renderer::FreeDepthBuffer()
 {
-    m_depthImage.Destroy();
+    if(m_depthImage && m_depthImage->IsInitialized())
+    {
+        delete m_depthImage;
+        m_depthImage = nullptr;
+    }
 }
 
 void Renderer::FreeRenderPass()
@@ -876,9 +889,7 @@ bool Renderer::CreateRenderPass()
 {
     FreeRenderPass();
 
-    const int32_t numAttachments = 2;
-
-    vk::AttachmentDescription attachments[numAttachments];
+    vk::AttachmentDescription attachments[s_swapChainAttachmentsAmount];
 
     attachments[0].format = m_swapChainImageFormat;
     attachments[0].samples = vk::SampleCountFlagBits::e1;
@@ -898,7 +909,7 @@ bool Renderer::CreateRenderPass()
     attachments[1].initialLayout = vk::ImageLayout::eUndefined;
     attachments[1].finalLayout = vk::ImageLayout::eDepthStencilAttachmentOptimal;
 
-    vk::AttachmentReference attachmentRef[numAttachments];
+    vk::AttachmentReference attachmentRef[s_swapChainAttachmentsAmount];
     attachmentRef[0].attachment = 0;
     attachmentRef[0].layout = vk::ImageLayout::eColorAttachmentOptimal;
 
@@ -912,7 +923,7 @@ bool Renderer::CreateRenderPass()
     subpass.pDepthStencilAttachment = &attachmentRef[1];
 
     vk::RenderPassCreateInfo renderPassInfo;
-    renderPassInfo.attachmentCount = numAttachments;
+    renderPassInfo.attachmentCount = s_swapChainAttachmentsAmount;
     renderPassInfo.pAttachments = attachments;
     renderPassInfo.subpassCount = 1;
     renderPassInfo.pSubpasses = &subpass;
@@ -1064,7 +1075,7 @@ bool Renderer::CreateGraphicsPipeline()
     multisampling.alphaToOneEnable = VK_FALSE;
 
     vk::PipelineDepthStencilStateCreateInfo depthStencil;
-    depthStencil.depthTestEnable = m_depthEnabled;
+    depthStencil.depthTestEnable = m_depthTestEnabled;
     depthStencil.depthWriteEnable = VK_TRUE;
     depthStencil.depthCompareOp = vk::CompareOp::eLessOrEqual;
     depthStencil.stencilTestEnable = VK_FALSE;
@@ -1133,12 +1144,12 @@ bool Renderer::CreateFramebuffers()
 
     m_swapChainFramebuffers.resize(m_swapChainImageViews.size());
 
-    vk::ImageView attachments[2];
-    attachments[1] = m_depthImage.GetVkImageView();
+    vk::ImageView attachments[s_swapChainAttachmentsAmount];
+    attachments[1] = m_depthImage->GetVkImageView();
 
     vk::FramebufferCreateInfo framebufferInfo;
     framebufferInfo.renderPass = m_renderPass;
-    framebufferInfo.attachmentCount = 2;
+    framebufferInfo.attachmentCount = s_swapChainAttachmentsAmount;
     framebufferInfo.pAttachments = attachments;
     framebufferInfo.width = m_swapChainExtent.width;
     framebufferInfo.height = m_swapChainExtent.height;
@@ -1190,6 +1201,7 @@ bool Renderer::CreateDepthBuffer()
                                vk::ImageUsageFlagBits::eDepthStencilAttachment,
                                m_swapChainExtent.width,
                                m_swapChainExtent.height);
+    return m_depthImage->IsInitialized();
 }
 
 bool Renderer::CreateCommandBuffers()

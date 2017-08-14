@@ -103,7 +103,7 @@ private:
     vk::BufferUsageFlags m_usage;
     size_t m_size;
     vk::Buffer m_buffer;
-    Memory m_deviceMemory;
+    Memory* m_deviceMemory;
     void* m_mappedMemory;
     vk::DescriptorBufferInfo m_descriptor;
 };

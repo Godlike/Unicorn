@@ -295,6 +295,54 @@ public:
      */
     static void SetWindowStickyKeys(void* handle, bool flag);
 
+    /** @brief  Returns mouse button action state
+     *
+     *  @param  handle  window handle
+     *  @param  button  mouse button
+     *
+     *  @return mouse button action state
+     */
+    static input::Action GetWindowMouseButton(void* handle, input::MouseButton button);
+
+    /** @brief  Returns key action state
+     *
+     *  @param  handle  window handle
+     *  @param  key     key
+     *
+     *  @return key action state
+     */
+    static input::Action GetWindowKey(void* handle, input::Key key);
+
+    /** @brief  Returns clipboard data
+     *
+     *  @note   If clipboard contents can't be represented as UTF-8 string
+     *          the result will be empty
+     *
+     *  @note   Some systems require valid window handler to access clipboard
+     *
+     *  @param  handle  window handle
+     *
+     *  @return clipboard string or empty string if some problem occured
+     */
+    static std::string GetClipboard(void* handle);
+
+    /** @brief  Sets clipboard data
+     *
+     *  @note   Some systems require valid window handler to access clipboard
+     *
+     *  @param  handle  window handle
+     *  @param  data    new clipboard data
+     */
+    static void SetClipboard(void* handle, const std::string& data);
+
+    /** @brief  Returns key scancode
+     *
+     *  @param  key unicorn key code
+     *
+     *  @return scancode value
+     */
+    static uint32_t GetKeyScancode(input::Key key);
+
     /** @brief  Processes events that are in event queue */
     static void PollEvents();
 
@@ -555,6 +603,9 @@ public:
     /** @brief  Converts mouse button from glfw to unicorn */
     static input::MouseButton ConvertToUnicornMouseButton(int32_t button);
 
+    /** @brief  Converts mouse button from unicorn to glfw */
+    static int32_t ConvertToGlfwMouseButton(input::MouseButton button);
+
     /** @brief  Converts action type from glfw to unicorn */
     static input::Action ConvertToUnicornActionType(int32_t action);
 
@@ -563,6 +614,9 @@ public:
 
     /** @brief  Converts key code from glfw to unicorn */
     static input::Key ConvertToUnicornKey(int32_t key);
+
+    /** @brief  Converts key code from unicorn to glfw */
+    static int32_t ConvertToGlfwKey(input::Key key);
 
     //!@}
 

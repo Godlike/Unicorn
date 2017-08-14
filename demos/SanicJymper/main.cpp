@@ -49,7 +49,7 @@ void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
 
 void onMouseButton(unicorn::system::Window* /*pWindow*/, unicorn::system::input::MouseButton button, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask)
 {
-    
+
 }
 
 void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double, double> pos)
@@ -91,60 +91,60 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     switch (key)
     {
     case Key::W:
-        {
-            pCameraController->MoveForward(delta);
-            break;
-        }
+    {
+        pCameraController->MoveForward(delta);
+        break;
+    }
     case Key::S:
-        {
-            pCameraController->MoveBackward(delta);
-            break;
-        }
+    {
+        pCameraController->MoveBackward(delta);
+        break;
+    }
     case Key::A:
-        {
-            pCameraController->MoveLeft(delta);
-            break;
-        }
+    {
+        pCameraController->MoveLeft(delta);
+        break;
+    }
     case Key::D:
-        {
-            pCameraController->MoveRight(delta);
-            break;
-        }
+    {
+        pCameraController->MoveRight(delta);
+        break;
+    }
     case Key::Q:
-        {
-            pCameraController->MoveUp(delta);
-            break;
-        }
+    {
+        pCameraController->MoveUp(delta);
+        break;
+    }
     case Key::E:
-        {
-            pCameraController->MoveDown(delta);
-            break;
-        }
+    {
+        pCameraController->MoveDown(delta);
+        break;
+    }
     case Key::Up:
-        {
-            position.second -= static_cast<uint32_t>(delta);
-            break;
-        }
+    {
+        position.second -= static_cast<uint32_t>(delta);
+        break;
+    }
     case Key::Down:
-        {
-            position.second += static_cast<uint32_t>(delta);
-            break;
-        }
+    {
+        position.second += static_cast<uint32_t>(delta);
+        break;
+    }
     case Key::Left:
-        {
-            position.first -= static_cast<uint32_t>(delta);
-            break;
-        }
+    {
+        position.first -= static_cast<uint32_t>(delta);
+        break;
+    }
     case Key::Right:
-        {
-            position.first += static_cast<uint32_t>(delta);
-            break;
-        }
+    {
+        position.first += static_cast<uint32_t>(delta);
+        break;
+    }
     case Key::C:
-        {
-            pWindow->SetMouseMode(MouseMode::Captured);
-            break;
-        }
+    {
+        pWindow->SetMouseMode(MouseMode::Captured);
+        break;
+    }
     case Key::V:
     {
         depthTest = !depthTest;
@@ -152,15 +152,15 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
         break;
     }
     case Key::Escape:
-        {
-            pWindow->SetMouseMode(MouseMode::Normal);
-            break;
-        }
+    {
+        pWindow->SetMouseMode(MouseMode::Normal);
+        break;
+    }
     default:
-        {
-            positionChanged = false;
-            break;
-        }
+    {
+        positionChanged = false;
+        break;
+    }
     }
 
     if (positionChanged)
@@ -192,10 +192,10 @@ int main(int argc, char* argv[])
         unicornEngine->LogicFrame.connect(&onLogicFrame);
 
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
-                                         unicorn::system::CustomValue::True);
+            unicorn::system::CustomValue::True);
 
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Resizable,
-                                         unicorn::system::CustomValue::True);
+            unicorn::system::CustomValue::True);
 
         auto h = pGraphics->GetMonitors().back()->GetActiveVideoMode().height;
         auto w = pGraphics->GetMonitors().back()->GetActiveVideoMode().width;
@@ -203,10 +203,10 @@ int main(int argc, char* argv[])
         settings.SetApplicationWidth(w);
 
         unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(settings.GetApplicationWidth(),
-                                                                   settings.GetApplicationHeight(),
-                                                                   settings.GetApplicationName(),
-                                                                   nullptr,
-                                                                   nullptr);
+            settings.GetApplicationHeight(),
+            settings.GetApplicationName(),
+            nullptr,
+            nullptr);
         pWindow0->SetMouseMode(unicorn::system::MouseMode::Captured);
 
         vkRenderer = pGraphics->SpawnRenderer(pWindow0);
@@ -225,14 +225,14 @@ int main(int argc, char* argv[])
             unicorn::video::Texture* textureMandrill = new unicorn::video::Texture("data/textures/mandrill.png");
 
             //Checks data
-            if(!texture->IsLoaded() 
-            || !textureMandrill->IsLoaded())            
+            if (!texture->IsLoaded()
+                || !textureMandrill->IsLoaded())
             {
                 return -1;
             }
             Quad* texturedQuad = new Quad;
             texturedQuad->AddTexture(texture);
-            Model* mymodel = new Model(texturedQuad, {false});
+            Model* mymodel = new Model(texturedQuad, { false });
 
             vkRenderer->AddModel(mymodel);
 

@@ -25,17 +25,6 @@ public:
     Image();
     ~Image();
 
-    Image(const Image& other) = delete;
-    Image(Image&& other) = delete;
-    Image& operator=(Image& other) = delete;
-    Image& operator=(Image&& other) = delete;
-
-    /**
-     * @brief Checks if image was initialized before
-     * @return true if was initialized before and false if not
-     */
-    bool IsInitialized() const;
-
     /**
      * @brief Creates image
      * @param device device for allocation
@@ -47,16 +36,15 @@ public:
      * @return true if creation sucessfull and false if not
      */
     bool Create(vk::PhysicalDevice physicalDevice,
-                vk::Device device,
-                vk::Format format,
-                vk::ImageUsageFlags usage,
-                uint32_t width,
-                uint32_t height);
-
+        vk::Device device,
+        vk::Format format,
+        vk::ImageUsageFlags usage,
+        uint32_t width,
+        uint32_t height);
     /**
-     * @brief Removes image
+     * @brief Destroies image
      */
-    void Destroy();
+    bool IsInitialized() const;
 
     /**
      * @brief Returns image format
@@ -68,14 +56,12 @@ public:
      * @brief Returns image width
      * @return image width
      */
-    uint32_t GetWidth() const;
-
+    int32_t GetWidth() const;
     /**
      * @brief Returns image height
      * @return image height
      */
-    uint32_t GetHeight() const;
-
+    int32_t GetHeight() const;
     /**
      * @brief Returns vulkan raw image
      * @return vulkan raw image
@@ -104,7 +90,7 @@ private:
     vk::Device m_device;
     vk::Image m_image;
     vk::ImageView m_imageView;
-    Memory m_deviceMemory;
+    Memory* m_deviceMemory;
     vk::Format m_format;
     vk::ImageUsageFlags m_usage;
     uint32_t m_width;

@@ -632,6 +632,33 @@ void Adapter::SetWindowStickyKeys(void* handle, bool flag)
     glfwSetInputMode(static_cast<GLFWwindow*>(handle), GLFW_STICKY_KEYS, flag ? GLFW_TRUE : GLFW_FALSE);
 }
 
+input::Action Adapter::GetWindowMouseButton(void* handle, input::MouseButton button)
+{
+    return ConvertToUnicornActionType(glfwGetMouseButton(static_cast<GLFWwindow*>(handle), ConvertToGlfwMouseButton(button)));
+}
+
+input::Action Adapter::GetWindowKey(void* handle, input::Key key)
+{
+    return ConvertToUnicornActionType(glfwGetKey(static_cast<GLFWwindow*>(handle), ConvertToGlfwKey(key)));
+}
+
+std::string Adapter::GetClipboard(void* handle)
+{
+    const char* data = glfwGetClipboardString(static_cast<GLFWwindow*>(handle));
+
+    return nullptr != data ? std::string(data) : std::string();
+}
+
+void Adapter::SetClipboard(void* handle, const std::string& data)
+{
+    return glfwSetClipboardString(static_cast<GLFWwindow*>(handle), data.c_str());
+}
+
+uint32_t Adapter::GetKeyScancode(input::Key key)
+{
+    return static_cast<uint32_t>(glfwGetKeyScancode(ConvertToGlfwKey(key)));
+}
+
 void Adapter::PollEvents()
 {
     glfwPollEvents();
@@ -1052,6 +1079,49 @@ input::MouseButton Adapter::ConvertToUnicornMouseButton(int32_t button)
         default:
         {
             return input::MouseButton::Unknown;
+        }
+    }
+}
+
+int32_t Adapter::ConvertToGlfwMouseButton(input::MouseButton button)
+{
+    switch (button)
+    {
+        case input::MouseButton::Mouse1:
+        {
+            return GLFW_MOUSE_BUTTON_1;
+        }
+        case input::MouseButton::Mouse2:
+        {
+            return GLFW_MOUSE_BUTTON_2;
+        }
+        case input::MouseButton::Mouse3:
+        {
+            return GLFW_MOUSE_BUTTON_3;
+        }
+        case input::MouseButton::Mouse4:
+        {
+            return GLFW_MOUSE_BUTTON_4;
+        }
+        case input::MouseButton::Mouse5:
+        {
+            return GLFW_MOUSE_BUTTON_5;
+        }
+        case input::MouseButton::Mouse6:
+        {
+            return GLFW_MOUSE_BUTTON_6;
+        }
+        case input::MouseButton::Mouse7:
+        {
+            return GLFW_MOUSE_BUTTON_7;
+        }
+        case input::MouseButton::Mouse8:
+        {
+            return GLFW_MOUSE_BUTTON_8;
+        }
+        default:
+        {
+            return GLFW_KEY_UNKNOWN;
         }
     }
 }
@@ -1602,6 +1672,498 @@ input::Key Adapter::ConvertToUnicornKey(int32_t key)
         default:
         {
             return input::Key::Unknown;
+        }
+    }
+}
+
+int32_t Adapter::ConvertToGlfwKey(input::Key key)
+{
+    switch (key)
+    {
+        case input::Key::Space:
+        {
+            return GLFW_KEY_SPACE;
+        }
+        case input::Key::Apostrophe:
+        {
+            return GLFW_KEY_APOSTROPHE;
+        }
+        case input::Key::Comma:
+        {
+            return GLFW_KEY_COMMA;
+        }
+        case input::Key::Minus:
+        {
+            return GLFW_KEY_MINUS;
+        }
+        case input::Key::Period:
+        {
+            return GLFW_KEY_PERIOD;
+        }
+        case input::Key::Slash:
+        {
+            return GLFW_KEY_SLASH;
+        }
+        case input::Key::Normal_0:
+        {
+            return GLFW_KEY_0;
+        }
+        case input::Key::Normal_1:
+        {
+            return GLFW_KEY_1;
+        }
+        case input::Key::Normal_2:
+        {
+            return GLFW_KEY_2;
+        }
+        case input::Key::Normal_3:
+        {
+            return GLFW_KEY_3;
+        }
+        case input::Key::Normal_4:
+        {
+            return GLFW_KEY_4;
+        }
+        case input::Key::Normal_5:
+        {
+            return GLFW_KEY_5;
+        }
+        case input::Key::Normal_6:
+        {
+            return GLFW_KEY_6;
+        }
+        case input::Key::Normal_7:
+        {
+            return GLFW_KEY_7;
+        }
+        case input::Key::Normal_8:
+        {
+            return GLFW_KEY_8;
+        }
+        case input::Key::Normal_9:
+        {
+            return GLFW_KEY_9;
+        }
+        case input::Key::Semicolon:
+        {
+            return GLFW_KEY_SEMICOLON;
+        }
+        case input::Key::Equal:
+        {
+            return GLFW_KEY_EQUAL;
+        }
+        case input::Key::A:
+        {
+            return GLFW_KEY_A;
+        }
+        case input::Key::B:
+        {
+            return GLFW_KEY_B;
+        }
+        case input::Key::C:
+        {
+            return GLFW_KEY_C;
+        }
+        case input::Key::D:
+        {
+            return GLFW_KEY_D;
+        }
+        case input::Key::E:
+        {
+            return GLFW_KEY_E;
+        }
+        case input::Key::F:
+        {
+            return GLFW_KEY_F;
+        }
+        case input::Key::G:
+        {
+            return GLFW_KEY_G;
+        }
+        case input::Key::H:
+        {
+            return GLFW_KEY_H;
+        }
+        case input::Key::I:
+        {
+            return GLFW_KEY_I;
+        }
+        case input::Key::J:
+        {
+            return GLFW_KEY_J;
+        }
+        case input::Key::K:
+        {
+            return GLFW_KEY_K;
+        }
+        case input::Key::L:
+        {
+            return GLFW_KEY_L;
+        }
+        case input::Key::M:
+        {
+            return GLFW_KEY_M;
+        }
+        case input::Key::N:
+        {
+            return GLFW_KEY_N;
+        }
+        case input::Key::O:
+        {
+            return GLFW_KEY_O;
+        }
+        case input::Key::P:
+        {
+            return GLFW_KEY_P;
+        }
+        case input::Key::Q:
+        {
+            return GLFW_KEY_Q;
+        }
+        case input::Key::R:
+        {
+            return GLFW_KEY_R;
+        }
+        case input::Key::S:
+        {
+            return GLFW_KEY_S;
+        }
+        case input::Key::T:
+        {
+            return GLFW_KEY_T;
+        }
+        case input::Key::U:
+        {
+            return GLFW_KEY_U;
+        }
+        case input::Key::V:
+        {
+            return GLFW_KEY_V;
+        }
+        case input::Key::W:
+        {
+            return GLFW_KEY_W;
+        }
+        case input::Key::X:
+        {
+            return GLFW_KEY_X;
+        }
+        case input::Key::Y:
+        {
+            return GLFW_KEY_Y;
+        }
+        case input::Key::Z:
+        {
+            return GLFW_KEY_Z;
+        }
+        case input::Key::LeftBracket:
+        {
+            return GLFW_KEY_LEFT_BRACKET;
+        }
+        case input::Key::Backslash:
+        {
+            return GLFW_KEY_BACKSLASH;
+        }
+        case input::Key::RightBracket:
+        {
+            return GLFW_KEY_RIGHT_BRACKET;
+        }
+        case input::Key::GraveAccent:
+        {
+            return GLFW_KEY_GRAVE_ACCENT;
+        }
+        case input::Key::World_1:
+        {
+            return GLFW_KEY_WORLD_1;
+        }
+        case input::Key::World_2:
+        {
+            return GLFW_KEY_WORLD_2;
+        }
+        case input::Key::Escape:
+        {
+            return GLFW_KEY_ESCAPE;
+        }
+        case input::Key::Enter:
+        {
+            return GLFW_KEY_ENTER;
+        }
+        case input::Key::Tab:
+        {
+            return GLFW_KEY_TAB;
+        }
+        case input::Key::Backspace:
+        {
+            return GLFW_KEY_BACKSPACE;
+        }
+        case input::Key::Insert:
+        {
+            return GLFW_KEY_INSERT;
+        }
+        case input::Key::Delete:
+        {
+            return GLFW_KEY_DELETE;
+        }
+        case input::Key::Right:
+        {
+            return GLFW_KEY_RIGHT;
+        }
+        case input::Key::Left:
+        {
+            return GLFW_KEY_LEFT;
+        }
+        case input::Key::Down:
+        {
+            return GLFW_KEY_DOWN;
+        }
+        case input::Key::Up:
+        {
+            return GLFW_KEY_UP;
+        }
+        case input::Key::PageUp:
+        {
+            return GLFW_KEY_PAGE_UP;
+        }
+        case input::Key::PageDown:
+        {
+            return GLFW_KEY_PAGE_DOWN;
+        }
+        case input::Key::Home:
+        {
+            return GLFW_KEY_HOME;
+        }
+        case input::Key::End:
+        {
+            return GLFW_KEY_END;
+        }
+        case input::Key::CapsLock:
+        {
+            return GLFW_KEY_CAPS_LOCK;
+        }
+        case input::Key::ScrollLock:
+        {
+            return GLFW_KEY_SCROLL_LOCK;
+        }
+        case input::Key::NumLock:
+        {
+            return GLFW_KEY_NUM_LOCK;
+        }
+        case input::Key::PrintScreen:
+        {
+            return GLFW_KEY_PRINT_SCREEN;
+        }
+        case input::Key::Pause:
+        {
+            return GLFW_KEY_PAUSE;
+        }
+        case input::Key::F1:
+        {
+            return GLFW_KEY_F1;
+        }
+        case input::Key::F2:
+        {
+            return GLFW_KEY_F2;
+        }
+        case input::Key::F3:
+        {
+            return GLFW_KEY_F3;
+        }
+        case input::Key::F4:
+        {
+            return GLFW_KEY_F4;
+        }
+        case input::Key::F5:
+        {
+            return GLFW_KEY_F5;
+        }
+        case input::Key::F6:
+        {
+            return GLFW_KEY_F6;
+        }
+        case input::Key::F7:
+        {
+            return GLFW_KEY_F7;
+        }
+        case input::Key::F8:
+        {
+            return GLFW_KEY_F8;
+        }
+        case input::Key::F9:
+        {
+            return GLFW_KEY_F9;
+        }
+        case input::Key::F10:
+        {
+            return GLFW_KEY_F10;
+        }
+        case input::Key::F11:
+        {
+            return GLFW_KEY_F11;
+        }
+        case input::Key::F12:
+        {
+            return GLFW_KEY_F12;
+        }
+        case input::Key::F13:
+        {
+            return GLFW_KEY_F13;
+        }
+        case input::Key::F14:
+        {
+            return GLFW_KEY_F14;
+        }
+        case input::Key::F15:
+        {
+            return GLFW_KEY_F15;
+        }
+        case input::Key::F16:
+        {
+            return GLFW_KEY_F16;
+        }
+        case input::Key::F17:
+        {
+            return GLFW_KEY_F17;
+        }
+        case input::Key::F18:
+        {
+            return GLFW_KEY_F18;
+        }
+        case input::Key::F19:
+        {
+            return GLFW_KEY_F19;
+        }
+        case input::Key::F20:
+        {
+            return GLFW_KEY_F20;
+        }
+        case input::Key::F21:
+        {
+            return GLFW_KEY_F21;
+        }
+        case input::Key::F22:
+        {
+            return GLFW_KEY_F22;
+        }
+        case input::Key::F23:
+        {
+            return GLFW_KEY_F23;
+        }
+        case input::Key::F24:
+        {
+            return GLFW_KEY_F24;
+        }
+        case input::Key::F25:
+        {
+            return GLFW_KEY_F25;
+        }
+        case input::Key::Num_0:
+        {
+            return GLFW_KEY_KP_0;
+        }
+        case input::Key::Num_1:
+        {
+            return GLFW_KEY_KP_1;
+        }
+        case input::Key::Num_2:
+        {
+            return GLFW_KEY_KP_2;
+        }
+        case input::Key::Num_3:
+        {
+            return GLFW_KEY_KP_3;
+        }
+        case input::Key::Num_4:
+        {
+            return GLFW_KEY_KP_4;
+        }
+        case input::Key::Num_5:
+        {
+            return GLFW_KEY_KP_5;
+        }
+        case input::Key::Num_6:
+        {
+            return GLFW_KEY_KP_6;
+        }
+        case input::Key::Num_7:
+        {
+            return GLFW_KEY_KP_7;
+        }
+        case input::Key::Num_8:
+        {
+            return GLFW_KEY_KP_8;
+        }
+        case input::Key::Num_9:
+        {
+            return GLFW_KEY_KP_9;
+        }
+        case input::Key::Num_Decimal:
+        {
+            return GLFW_KEY_KP_DECIMAL;
+        }
+        case input::Key::Num_Divide:
+        {
+            return GLFW_KEY_KP_DIVIDE;
+        }
+        case input::Key::Num_Multiply:
+        {
+            return GLFW_KEY_KP_MULTIPLY;
+        }
+        case input::Key::Num_Subtract:
+        {
+            return GLFW_KEY_KP_SUBTRACT;
+        }
+        case input::Key::Num_Add:
+        {
+            return GLFW_KEY_KP_ADD;
+        }
+        case input::Key::Num_Enter:
+        {
+            return GLFW_KEY_KP_ENTER;
+        }
+        case input::Key::Num_Equal:
+        {
+            return GLFW_KEY_KP_EQUAL;
+        }
+        case input::Key::LeftShift:
+        {
+            return GLFW_KEY_LEFT_SHIFT;
+        }
+        case input::Key::LeftControl:
+        {
+            return GLFW_KEY_LEFT_CONTROL;
+        }
+        case input::Key::LeftAlt:
+        {
+            return GLFW_KEY_LEFT_ALT;
+        }
+        case input::Key::LeftSuper:
+        {
+            return GLFW_KEY_LEFT_SUPER;
+        }
+        case input::Key::RightShift:
+        {
+            return GLFW_KEY_RIGHT_SHIFT;
+        }
+        case input::Key::RightControl:
+        {
+            return GLFW_KEY_RIGHT_CONTROL;
+        }
+        case input::Key::RightAlt:
+        {
+            return GLFW_KEY_RIGHT_ALT;
+        }
+        case input::Key::RightSuper:
+        {
+            return GLFW_KEY_RIGHT_SUPER;
+        }
+        case input::Key::Menu:
+        {
+            return GLFW_KEY_MENU;
+        }
+        case input::Key::Unrecognized:
+        default:
+        {
+            return GLFW_KEY_UNKNOWN;
         }
     }
 }

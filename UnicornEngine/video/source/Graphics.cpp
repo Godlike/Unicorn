@@ -126,11 +126,11 @@ system::Window* Graphics::GetFocusedWindow() const
     return m_systemManager.GetFocusedWindow();
 }
 
-void Graphics::DepthTest(bool enabled)
+void Graphics::SetDepthTest(bool enabled)
 {
     for(const auto& renderer : m_renderers)
     {
-        renderer.first->DepthTest(enabled);
+        renderer.first->SetDepthTest(enabled);
     }
 }
 

@@ -11,6 +11,8 @@
 #include <unicorn/system/input/Key.hpp>
 #include <unicorn/system/input/Modifier.hpp>
 
+#include <unicorn/system/Window.hpp>
+
 #include <cstdint>
 #include <utility>
 
@@ -20,7 +22,6 @@ namespace system
 {
 
 class Manager;
-class Window;
 
 /** @brief  Class that reports all window events */
 class KeyProfiler
@@ -45,7 +46,7 @@ private:
     void OnWindowCreated(Window* pWindow);
 
     /** @brief  Slot invoked when window receives keyboard input */
-    void OnWindowKeyboard(Window* pWindow, input::Key key, uint32_t scancode, input::Action action, input::Modifier::Mask modifiers);
+    void OnWindowKeyboard(Window::KeyboardEvent const& keyboardEvent);
 
     /** @brief  Slot invoked when window receives unicode input */
     void OnWindowUnicode(Window* pWindow, uint32_t unicode, input::Modifier::Mask modifiers);

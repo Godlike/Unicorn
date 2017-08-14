@@ -21,7 +21,18 @@ namespace vulkan
 class Memory
 {
 public:
-    Memory();
+    /**
+     * @brief Creates object and allocates memory on device
+     * @param device device for allocation
+     * @param typeFilter bit field describing suitable memory types in @p physMemProperties
+     * @param physMemProperties properties of memory on physical device
+     * @param reqMemProperties required memory properties
+     * @param allocSize size of allocation
+     */
+    Memory(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties, vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize);
+    /**
+     * @brief Frees memory
+     */
     ~Memory();
 
 
@@ -56,7 +67,10 @@ public:
      */
     const vk::DeviceMemory& GetMemory() const;
 
-    explicit operator bool() const;
+    explicit operator bool() const
+    {
+        return m_memory;
+    }
 private:
     bool m_initialized;
     vk::Device m_device;

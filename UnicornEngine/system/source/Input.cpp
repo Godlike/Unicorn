@@ -24,14 +24,25 @@ Input::~Input()
 
 }
 
-void Input::Process()
+std::string Input::GetClipboard() const
 {
-    m_systemManager.PollGamepads();
+    return m_systemManager.GetClipboard();
+}
+
+void Input::SetClipboard(const std::string& data) const
+{
+    m_systemManager.SetClipboard(data);
 }
 
 const std::map<uint32_t, input::Gamepad*>& Input::GetGamepads() const
 {
     return m_systemManager.GetGamepads();
+}
+
+void Input::Process()
+{
+    m_systemManager.PollGamepads();
+    m_systemManager.PollWindows();
 }
 
 }

@@ -106,7 +106,8 @@ public:
     bool AddTexture(const Texture* texture) override;
     bool AddModel(const Model* model) override;
     bool AddMaterial(const Material* material) override;
-private:
+    void SetDepthTest(bool enabled) override;
+  private:
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;
     vk::SwapchainKHR m_vkSwapChain;
@@ -142,11 +143,8 @@ private:
 
     bool m_hasDirtyMeshes;
 
-    #ifdef NDEBUG
-    static const bool s_enableValidationLayers = false;
-    #else
-    static const bool s_enableValidationLayers = true;
-    #endif
+    static const bool s_enableValidationLayers;
+    static const uint32_t s_swapChainAttachmentsAmount;
 
     static void DeleteVkMesh(VkMesh* pVkMesh);
 

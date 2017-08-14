@@ -44,11 +44,26 @@ public:
     /** @brief  Destructs the input system */
     ~Input();
 
-    /** @brief  Process all inputs */
-    void Process();
+    /** @brief  Returns clipboard data
+     *
+     *  @note   If clipboard contents can't be represented as UTF-8 string
+     *          the result will be empty
+     *
+     *  @return clipboard string or empty string if some problem occured
+     */
+    UNICORN_EXPORT std::string GetClipboard() const;
+
+    /** @brief  Sets clipboard data
+     *
+     *  @param  data    new clipboard data
+     */
+    UNICORN_EXPORT void SetClipboard(const std::string& data) const;
 
     /** @brief  Returns a map of connected gamepads */
     UNICORN_EXPORT const std::map<uint32_t, input::Gamepad*>& GetGamepads() const;
+
+    /** @brief  Process all inputs */
+    void Process();
 
     /** @brief  Event queue triggered every time new bath of gamepads is created
      *
