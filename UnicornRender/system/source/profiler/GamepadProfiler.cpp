@@ -22,7 +22,7 @@ namespace system
 GamepadProfiler::GamepadProfiler(Manager& manager)
     : m_systemManager( manager )
 {
-    LOG_DEBUG("GamepadProfiler created");
+    LOG_INFO("GamepadProfiler created");
     m_systemManager.GamepadCreated.connect(this, &GamepadProfiler::OnGamepadCreated);
 }
 
@@ -30,12 +30,12 @@ GamepadProfiler::~GamepadProfiler()
 {
     m_systemManager.GamepadCreated.disconnect(this, &GamepadProfiler::OnGamepadCreated);
 
-    LOG_DEBUG("GamepadProfiler destroyed");
+    LOG_INFO("GamepadProfiler destroyed");
 }
 
 void GamepadProfiler::OnGamepadCreated(input::Gamepad* const& pGamepad)
 {
-    LOG_DEBUG("Gamepad[%d]: created:"
+    LOG_INFO("Gamepad[%d]: created:"
         "\r\n\t%8s\t%s"
         "\r\n\t%8s\t%d"
         "\r\n\t%8s\t%d"
@@ -52,7 +52,7 @@ void GamepadProfiler::OnGamepadCreated(input::Gamepad* const& pGamepad)
 
 void GamepadProfiler::OnGamepadDestroyed(input::Gamepad* pGamepad)
 {
-    LOG_DEBUG("Gamepad[%d]: destroyed", pGamepad->GetId());
+    LOG_INFO("Gamepad[%d]: destroyed", pGamepad->GetId());
 }
 
 void GamepadProfiler::OnGamepadUpdated(input::Gamepad* pGamepad)
@@ -81,7 +81,7 @@ void GamepadProfiler::OnGamepadUpdated(input::Gamepad* pGamepad)
         }
     }
 
-    LOG_DEBUG("Gamepad[%d]: updated: %s", pGamepad->GetId(), result.str().c_str());
+    LOG_INFO("Gamepad[%d]: updated: %s", pGamepad->GetId(), result.str().c_str());
 }
 
 }

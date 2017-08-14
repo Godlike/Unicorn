@@ -38,10 +38,11 @@ static unicorn::system::GamepadProfiler* s_pGamepadProfiler = nullptr;
 
 namespace unicorn
 {
-UnicornRender::UnicornRender() : m_isInitialized(false)
-                               , m_pSystemManager(nullptr)
-                               , m_pGraphics(nullptr)
-                               , m_pInput(nullptr)
+UnicornRender::UnicornRender()
+    : m_isInitialized(false)
+    , m_pSystemManager(nullptr)
+    , m_pGraphics(nullptr)
+    , m_pInput(nullptr)
 {
 }
 
@@ -50,7 +51,7 @@ UnicornRender::~UnicornRender()
     Deinit();
 }
 
-bool UnicornRender::Init()
+bool UnicornRender::Init(ProfilingMask::MaskType profilingMask)
 {
     if (m_isInitialized)
     {
@@ -62,13 +63,33 @@ bool UnicornRender::Init()
 
     m_pSystemManager = new system::Manager();
 
-#ifdef DEBUG
-    s_pWindowProfiler = new system::WindowProfiler(*m_pSystemManager);
-    s_pMonitorProfiler = new system::MonitorProfiler(*m_pSystemManager);
-    s_pMouseProfiler = new system::MouseProfiler(*m_pSystemManager);
-    s_pKeyProfiler = new system::KeyProfiler(*m_pSystemManager);
-    s_pGamepadProfiler = new system::GamepadProfiler(*m_pSystemManager);
-#endif // DEBUG
+    if (ProfilingMask::None != profilingMask)
+    {
+        if (ProfilingMask::Window & profilingMask)
+        {
+            s_pWindowProfiler = new system::WindowProfiler(*m_pSystemManager);
+        }
+
+        if (ProfilingMask::Monitor & profilingMask)
+        {
+            s_pMonitorProfiler = new system::MonitorProfiler(*m_pSystemManager);
+        }
+
+        if (ProfilingMask::Mouse & profilingMask)
+        {
+            s_pMouseProfiler = new system::MouseProfiler(*m_pSystemManager);
+        }
+
+        if (ProfilingMask::Key & profilingMask)
+        {
+            s_pKeyProfiler = new system::KeyProfiler(*m_pSystemManager);
+        }
+
+        if (ProfilingMask::Gamepad & profilingMask)
+        {
+            s_pGamepadProfiler = new system::GamepadProfiler(*m_pSystemManager);
+        }
+    }
 
     m_pSystemManager->Init();
 

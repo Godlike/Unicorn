@@ -36,6 +36,20 @@ class Manager;
 class UnicornRender
 {
 public:
+    /** @brief Bit mask class describing profiling settings */
+    struct ProfilingMask
+    {
+        typedef uint16_t MaskType;
+
+        static const MaskType None      = 0;
+
+        static const MaskType Window    = 1 << 0;
+        static const MaskType Monitor   = 1 << 1;
+        static const MaskType Mouse     = 1 << 2;
+        static const MaskType Key       = 1 << 3;
+        static const MaskType Gamepad   = 1 << 4;
+    };
+
     /** @brief  Constructs an empty render */
     UNICORN_EXPORT UnicornRender();
 
@@ -57,9 +71,11 @@ public:
      *
      *  Initializes storage and @p m_pGraphics
      *
+     *  @param  profilingMask   bit mask describing which profilers shall be activated
+     *
      *  @return @c true if initialization was successful, @c false otherwise
      */
-    UNICORN_EXPORT bool Init();
+    UNICORN_EXPORT bool Init(ProfilingMask::MaskType profilingMask = ProfilingMask::None);
 
     /** @brief  Render's main loop */
     UNICORN_EXPORT void Run();

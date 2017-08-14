@@ -21,14 +21,14 @@ namespace system
 MonitorProfiler::MonitorProfiler(Manager& manager)
     : m_systemManager( manager )
 {
-    LOG_DEBUG("MonitorProfiler created");
+    LOG_INFO("MonitorProfiler created");
 
     m_systemManager.MonitorCreated.connect(this, &MonitorProfiler::OnMonitorCreated);
 }
 
 MonitorProfiler::~MonitorProfiler()
 {
-    LOG_DEBUG("MonitorProfiler destroyed");
+    LOG_INFO("MonitorProfiler destroyed");
 }
 
 void MonitorProfiler::OnMonitorCreated(Monitor* const& pMonitor)
@@ -39,7 +39,7 @@ void MonitorProfiler::OnMonitorCreated(Monitor* const& pMonitor)
     const std::pair<int32_t, int32_t>& physicalSize = pMonitor->GetPhysicalSize();
     const std::pair<int32_t, int32_t>& virtualPosition = pMonitor->GetVirtualPosition();
 
-    LOG_DEBUG("Monitor[%d]: created:"
+    LOG_INFO("Monitor[%d]: created:"
         "\r\n\t%16s\t%s"
         "\r\n\t%16s\t%dx%d"
         "\r\n\t%16s\t%d:%d"
@@ -61,7 +61,7 @@ void MonitorProfiler::OnMonitorCreated(Monitor* const& pMonitor)
     for (uint32_t i = 0; i < videoModes.size(); ++i)
     {
         const VideoMode& mode = videoModes[i];
-        LOG_DEBUG("Monitor[%d] video mode[%*d]%s: %dx%d@%dHz R%d G%d B%d"
+        LOG_INFO("Monitor[%d] video mode[%*d]%s: %dx%d@%dHz R%d G%d B%d"
             , id, counterChars, i, (currentVideoMode == mode) ? "*" : " "
             , mode.width, mode.height
             , mode.refreshRate
@@ -72,7 +72,7 @@ void MonitorProfiler::OnMonitorCreated(Monitor* const& pMonitor)
 
 void MonitorProfiler::OnMonitorStateChanged(Monitor* pMonitor, Monitor::State state)
 {
-    LOG_DEBUG("Monitor[%d]: connected state changed to %s",
+    LOG_INFO("Monitor[%d]: connected state changed to %s",
         pMonitor->GetId(),
         pMonitor->GetState() != MonitorMemento::State::Unknown ?
             (pMonitor->GetState() == MonitorMemento::State::Connected ?
