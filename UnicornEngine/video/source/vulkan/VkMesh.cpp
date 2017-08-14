@@ -79,6 +79,11 @@ vk::Buffer VkMesh::GetVertexBuffer()
     return m_vertexBuffer.GetVkBuffer();
 }
 
+void VkMesh::AddVkTexture(VkTexture* vkTexture)
+{
+    m_vkTextures.push_back(vkTexture);
+}
+
 std::uint32_t VkMesh::VerticesSize()
 {
     return static_cast<uint32_t>(m_mesh.GetVertices().size());

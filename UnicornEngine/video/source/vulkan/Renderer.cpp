@@ -12,6 +12,8 @@
 #include <unicorn/system/Window.hpp>
 #include <unicorn/video/vulkan/Context.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
+#include <unicorn/video/vulkan/VkModel.hpp>
+#include <unicorn/video/vulkan/VkTexture.hpp>
 #include <unicorn/video/Camera.hpp>
 #include <unicorn/utility/Memory.hpp>
 #include <unicorn/video/Texture.hpp>
@@ -439,13 +441,17 @@ bool Renderer::AddTexture(const Texture* texture)
 
 bool Renderer::AddModel(const Model* model)
 {
+    VkModel* vkModel = new VkModel;
     for(auto const& mesh : model->GetMeshes())
     {
+        VkMesh* vkMesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
+
         for(auto const& texture : mesh->GetTextures())
         {
-            AddTexture(texture);
+            VkTexture* vkTexture = new VkTexture;
+            vkMesh->
         }
-        
+        vkModel->AddVkMesh(vkMesh);        
     }
     return true;
 }
@@ -924,21 +930,26 @@ bool Renderer::CreateRenderPass()
 bool Renderer::CreateDescriptionSetLayout()
 {
     std::vector<vk::DescriptorPoolSize> descriptorPoolSizes;
-    vk::DescriptorPoolSize descriptorMVPPoolSize;
-    descriptorMVPPoolSize.type = vk::DescriptorType::eUniformBuffer;
-    descriptorMVPPoolSize.descriptorCount = 1;
+    vk::DescriptorPoolSize descriptorViewProjectionPoolSize;
+    descriptorViewProjectionPoolSize.type = vk::DescriptorType::eUniformBuffer;
+    descriptorViewProjectionPoolSize.descriptorCount = 1;
 
     vk::DescriptorPoolSize descriptorModelPoolSize;
     descriptorModelPoolSize.type = vk::DescriptorType::eUniformBufferDynamic;
     descriptorModelPoolSize.descriptorCount = 1;
 
-    descriptorPoolSizes.push_back(descriptorMVPPoolSize);
+    vk::DescriptorPoolSize descriptorSamplerPoolSize;
+    descriptorSamplerPoolSize.type = vk::DescriptorType::eCombinedImageSampler;
+    descriptorSamplerPoolSize.descriptorCount = 1;
+
+    descriptorPoolSizes.push_back(descriptorViewProjectionPoolSize);
     descriptorPoolSizes.push_back(descriptorModelPoolSize);
+    descriptorPoolSizes.push_back(descriptorSamplerPoolSize);
 
     vk::DescriptorPoolCreateInfo poolCreateInfo;
     poolCreateInfo.poolSizeCount = static_cast<uint32_t>(descriptorPoolSizes.size());
     poolCreateInfo.pPoolSizes = descriptorPoolSizes.data();
-    poolCreateInfo.maxSets = 2;
+    poolCreateInfo.maxSets = 1;
 
     vk::Result result = m_vkLogicalDevice.createDescriptorPool(&poolCreateInfo, nullptr, &m_descriptorPool);
     if(result != vk::Result::eSuccess)
@@ -949,20 +960,27 @@ bool Renderer::CreateDescriptionSetLayout()
 
     std::vector<vk::DescriptorSetLayoutBinding> descriptorSetLayoutBindings;
 
-    vk::DescriptorSetLayoutBinding setMVP;
-    setMVP.descriptorType = vk::DescriptorType::eUniformBuffer;
-    setMVP.stageFlags = vk::ShaderStageFlagBits::eVertex;
-    setMVP.binding = 0; //TODO: hardcode description binding
-    setMVP.descriptorCount = 1;
+    vk::DescriptorSetLayoutBinding setViewProjection;
+    setViewProjection.descriptorType = vk::DescriptorType::eUniformBuffer;
+    setViewProjection.stageFlags = vk::ShaderStageFlagBits::eVertex;
+    setViewProjection.binding = 0; //TODO: hardcode descriptor binding
+    setViewProjection.descriptorCount = 1;
 
-    vk::DescriptorSetLayoutBinding setMODEL;
-    setMODEL.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
-    setMODEL.stageFlags = vk::ShaderStageFlagBits::eVertex;
-    setMODEL.binding = 1; //TODO: hardcode description binding
-    setMODEL.descriptorCount = 1;
+    vk::DescriptorSetLayoutBinding setModel;
+    setModel.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
+    setModel.stageFlags = vk::ShaderStageFlagBits::eVertex;
+    setModel.binding = 1; //TODO: hardcode descriptor binding
+    setModel.descriptorCount = 1;
 
-    descriptorSetLayoutBindings.push_back(setMVP);
-    descriptorSetLayoutBindings.push_back(setMODEL);
+    vk::DescriptorSetLayoutBinding textureSampler;
+    textureSampler.descriptorType = vk::DescriptorType::eCombinedImageSampler;
+    textureSampler.stageFlags = vk::ShaderStageFlagBits::eFragment;
+    textureSampler.binding = 1; //TODO: hardcode descriptor binding
+    textureSampler.descriptorCount = 1;
+
+    descriptorSetLayoutBindings.push_back(setViewProjection);
+    descriptorSetLayoutBindings.push_back(setModel);
+    descriptorSetLayoutBindings.push_back(textureSampler);
 
     vk::DescriptorSetLayoutCreateInfo descriptorLayout;
     descriptorLayout.pBindings = descriptorSetLayoutBindings.data();

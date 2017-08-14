@@ -132,13 +132,7 @@ private:
     std::vector<vk::Framebuffer> m_swapChainFramebuffers;
     std::vector<vk::CommandBuffer> m_commandBuffers;
     Image m_depthImage;
-
-    //! Array of models
-    std::list<Model*> m_models;
-
-    //! Array of renderer meshes
-    std::list<VkMesh*> m_vkMeshes;
-
+    
     ShaderProgram* m_shaderProgram;
     Buffer m_uniformMvp;
     Buffer m_uniformModel;

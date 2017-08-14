@@ -12,6 +12,8 @@ set(VULKAN_HEADERS
     include/unicorn/video/vulkan/CommandBuffers.hpp
     include/unicorn/video/vulkan/ShaderProgram.hpp
     include/unicorn/video/vulkan/VkMesh.hpp
+    include/unicorn/video/vulkan/VkModel.hpp
+    include/unicorn/video/vulkan/VkTexture.hpp
     include/unicorn/video/vulkan/Image.hpp
     include/unicorn/video/vulkan/Memory.hpp
     include/unicorn/video/vulkan/VulkanHelper.hpp
@@ -24,6 +26,8 @@ set(VULKAN_SOURCES
     source/vulkan/CommandBuffers.cpp
     source/vulkan/ShaderProgram.cpp
     source/vulkan/VkMesh.cpp
+    source/vulkan/VkModel.cpp
+    source/vulkan/VkTexture.cpp
     source/vulkan/Image.cpp
     source/vulkan/Memory.cpp
     source/vulkan/VulkanHelper.cpp
