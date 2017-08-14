@@ -1,18 +1,18 @@
-[submodule "UnicornEngine/external/loguru"]
-	path = UnicornEngine/external/loguru
+[submodule "UnicornRender/external/loguru"]
+	path = UnicornRender/external/loguru
 	url = https://github.com/emilk/loguru.git
-[submodule "UnicornEngine/external/glfw"]
-	path = UnicornEngine/external/glfw
+[submodule "UnicornRender/external/glfw"]
+	path = UnicornRender/external/glfw
 	url = https://github.com/glfw/glfw.git
-[submodule "UnicornEngine/external/glm"]
-	path = UnicornEngine/external/glm
+[submodule "UnicornRender/external/glm"]
+	path = UnicornRender/external/glm
 	url = https://github.com/g-truc/glm.git
-[submodule "UnicornEngine/external/stb"]
-	path = UnicornEngine/external/stb
+[submodule "UnicornRender/external/stb"]
+	path = UnicornRender/external/stb
 	url = https://github.com/nothings/stb.git
-[submodule "UnicornEngine/external/tinyobjloader"]
-	path = UnicornEngine/external/tinyobjloader
+[submodule "UnicornRender/external/tinyobjloader"]
+	path = UnicornRender/external/tinyobjloader
 	url = https://github.com/syoyo/tinyobjloader.git
-[submodule "UnicornEngine/external/Wink-Signals"]
-	path = UnicornEngine/external/Wink-Signals
+[submodule "UnicornRender/external/Wink-Signals"]
+	path = UnicornRender/external/Wink-Signals
 	url = https://github.com/Godlike/Wink-Signals.git

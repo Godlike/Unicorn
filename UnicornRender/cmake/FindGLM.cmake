@@ -17,11 +17,11 @@ include(FindPackageHandleStandardArgs)
 find_path( GLM_INCLUDE_DIR
     NAMES glm/glm.hpp
     PATHS
+        ${GLM_ROOT_DIR}
         /usr/include
         /usr/local/include
         /opt/local/include
         $ENV{PROGRAMFILES}/glm
-        ${GLM_ROOT_DIR}
     DOC "The directory that contains glm/glm.hpp file path")
 
 find_package_handle_standard_args(GLM DEFAULT_MSG GLM_INCLUDE_DIR)
