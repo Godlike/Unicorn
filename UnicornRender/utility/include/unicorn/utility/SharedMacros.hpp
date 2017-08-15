@@ -7,11 +7,11 @@
 #define UNICORN_UTILITY_SHARED_MACROS_HPP
 
 /**
- *  @brief CMake will define UnicornEngine_EXPORTS when building the library.
+ *  @brief CMake will define UnicornRender_EXPORTS when building the library.
  */
 
 #if defined(_WIN32) && defined(UNICORN_SHARED)
-#ifdef UnicornEngine_EXPORTS
+#ifdef UnicornRender_EXPORTS
 #define UNICORN_EXPORT __declspec(dllexport)
 #else
 #define UNICORN_EXPORT __declspec(dllimport)

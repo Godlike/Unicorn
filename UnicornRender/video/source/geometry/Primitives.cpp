@@ -27,40 +27,43 @@ MeshDescriptor Primitives::Triangle(Mesh& mesh)
 MeshDescriptor Primitives::Cube(Mesh& mesh)
 {
     std::vector<Vertex> temp_vertices;
+
+    auto const white = Color::White();
+
     //front
-    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, 1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, 1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, 1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, 1.0), Color::White);
+    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, 1.0), white);
+    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, 1.0), white);
+    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, 1.0), white);
+    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, 1.0), white);
 
     //right
-    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, 1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, -1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, -1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, 1.0), Color::White);
+    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, 1.0), white);
+    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, -1.0), white);
+    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, -1.0), white);
+    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, 1.0), white);
 
     //back
-    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, -1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, -1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, -1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, -1.0), Color::White);
+    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, -1.0), white);
+    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, -1.0), white);
+    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, -1.0), white);
+    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, -1.0), white);
 
     //left
-    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, -1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, 1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, 1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, -1.0), Color::White);
+    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, -1.0), white);
+    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, 1.0), white);
+    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, 1.0), white);
+    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, -1.0), white);
 
     //upper
-    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, 1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, 1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, -1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, -1.0), Color::White);
+    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, 1.0), white);
+    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, 1.0), white);
+    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, -1.0), white);
+    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, -1.0), white);
     //bottom
-    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, -1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, -1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, 1.0), Color::White);
-    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, 1.0), Color::White);
+    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, -1.0), white);
+    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, -1.0), white);
+    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, 1.0), white);
+    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, 1.0), white);
 
     mesh.SetMeshData(temp_vertices, { 0,  1,  2,  0,  2,  3,
                                       4,  5,  6,  4,  6,  7,
