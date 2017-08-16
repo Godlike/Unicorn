@@ -305,12 +305,13 @@ int main(int argc, char* argv[])
         vkRenderer = pGraphics->SpawnRenderer(pWindow0);
         vkRenderer->Destroyed.connect(&onRendererDestroyed);
 
-        vkRenderer->SetBackgroundColor(unicorn::video::Color::LightPink);
-        pCameraController = new unicorn::video::CameraFpsController(vkRenderer->GetCamera());
-
+        using unicorn::video::Color;
         using unicorn::video::geometry::Mesh;
         using unicorn::video::geometry::MeshDescriptor;
         using unicorn::video::geometry::Primitives;
+
+        vkRenderer->SetBackgroundColor(Color::LightPink());
+        pCameraController = new unicorn::video::CameraFpsController(vkRenderer->GetCamera());
 
         std::array<Mesh*, 3> meshes = {
             vkRenderer->SpawnMesh(),
@@ -320,12 +321,12 @@ int main(int argc, char* argv[])
 
         {
             MeshDescriptor triangle1 = Primitives::Triangle(*meshes[0]);
-            triangle1.SetColor(unicorn::video::Color::Red);
+            triangle1.SetColor(Color::Red());
             triangle1.Translate({-2.0f, 0.0f, 0.0f});
             triangle1.Scale({0.5, 0.5, 0.5});
 
             MeshDescriptor triangle2 = Primitives::Triangle(*meshes[1]);
-            triangle2.SetColor(unicorn::video::Color::Green);
+            triangle2.SetColor(Color::Green());
 
             MeshDescriptor cube = Primitives::Cube(*meshes[2]);
             cube.Translate({5.0, 0.0f, 5.0f});
