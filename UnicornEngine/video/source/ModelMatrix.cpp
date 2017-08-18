@@ -13,7 +13,11 @@ namespace unicorn
 {
 namespace video
 {
-void ModelMatrix::Rotate(float angle, const glm::vec3& axis)
+		ModelMatrix::ModelMatrix() : model(glm::mat4(1.0))
+		{
+
+		}
+		void ModelMatrix::Rotate(float angle, const glm::vec3& axis)
 {
     model = glm::rotate(model, angle, axis);
 }

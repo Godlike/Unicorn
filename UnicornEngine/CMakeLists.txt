@@ -68,7 +68,6 @@ include_directories(
 
 include_directories( SYSTEM
     ${WINK_SIGNALS_INCLUDE_DIR}
-    ${ASSIMP_INCLUDE_DIR}
     ${GLM_INCLUDE_DIR}
     ${LOGURU_INCLUDE_DIR}
     ${STB_INCLUDE_DIR}

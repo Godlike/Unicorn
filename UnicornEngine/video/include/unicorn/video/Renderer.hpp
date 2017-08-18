@@ -16,7 +16,6 @@
 #include <cstdint>
 #include <memory>
 #include <array>
-#include <unordered_map>
 
 namespace unicorn
 {
@@ -29,10 +28,6 @@ class Timer;
 
 namespace video
 {
-class Material;
-class Model;
-class Texture;
-
 class Renderer
 {
 public:
@@ -65,16 +60,8 @@ public:
      */
     virtual void SetDepthTest(bool enabled) = 0;
 
-    /**
-    * @brief Allocates texture on GPU
-    * @param texture texture which provides data for allocation
-    * @return true if allocation was successful and false if not
-    */
-    virtual bool AddTexture(const Texture* texture) = 0;
-
-    virtual bool AddModel(const Model* model) = 0;
-
-    virtual bool AddMaterial(const Material* material) = 0;
+		virtual bool AddMesh(Mesh* mesh) = 0;
+		virtual bool DeleteMesh(const Mesh* mesh) = 0;
 protected:
     bool m_isInitialized;
 
@@ -87,7 +74,10 @@ protected:
     //! Background filling color
     std::array<float, 4> m_backgroundColor;
     //! Depth test
-    bool m_depthTestEnabled;
+		bool m_depthTestEnabled;
+
+		//! Array of geometry meshes		
+		std::list<Mesh*> m_meshes;
 };
 }
 }

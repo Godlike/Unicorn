@@ -12,7 +12,6 @@ set(VULKAN_HEADERS
     include/unicorn/video/vulkan/CommandBuffers.hpp
     include/unicorn/video/vulkan/ShaderProgram.hpp
     include/unicorn/video/vulkan/VkMesh.hpp
-    include/unicorn/video/vulkan/VkModel.hpp
     include/unicorn/video/vulkan/VkTexture.hpp
     include/unicorn/video/vulkan/Image.hpp
     include/unicorn/video/vulkan/Memory.hpp
@@ -26,7 +25,6 @@ set(VULKAN_SOURCES
     source/vulkan/CommandBuffers.cpp
     source/vulkan/ShaderProgram.cpp
     source/vulkan/VkMesh.cpp
-    source/vulkan/VkModel.cpp
     source/vulkan/VkTexture.cpp
     source/vulkan/Image.cpp
     source/vulkan/Memory.cpp
@@ -39,13 +37,10 @@ set(VIDEO_HEADERS
     include/unicorn/video/Camera.hpp
     include/unicorn/video/CameraFpsController.hpp
     include/unicorn/video/Color.hpp
-	include/unicorn/video/Texture.hpp
-	include/unicorn/video/Material.hpp
-	include/unicorn/video/Sprite.hpp
+    include/unicorn/video/Texture.hpp
     include/unicorn/video/Mesh.hpp
     include/unicorn/video/Primitives.hpp
     include/unicorn/video/ModelMatrix.hpp
-	include/unicorn/video/Model.hpp
     ${VULKAN_HEADERS}
 )
 
@@ -55,13 +50,10 @@ set(VIDEO_SOURCES
     source/Camera.cpp
     source/CameraFpsController.cpp
     source/Color.cpp
-	source/Texture.cpp
-	source/Material.cpp
-	source/Sprite.cpp
+    source/Texture.cpp
     source/Mesh.cpp
     source/Primitives.cpp
     source/ModelMatrix.cpp
-	source/Model.cpp
     ${VULKAN_SOURCES}
 )
 

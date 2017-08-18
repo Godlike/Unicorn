@@ -11,17 +11,24 @@
 
 #include <glm/glm.hpp>
 
+#include <string>
+
 namespace unicorn
 {
 namespace video
 {
+class Texture;
+
 class Material
 {
 public:
-    UNICORN_EXPORT Material(bool isColored);
+    UNICORN_EXPORT Material();
+		void SetColor();
+		void SetAlbedo(const std::string& path);
 private:
     glm::vec3 m_color = Color::Red; // Always default red for everything to detect visual errors
-    bool m_isColored = false;
+		bool m_isColored;
+		Texture* m_albedo;
 };
 }
 }

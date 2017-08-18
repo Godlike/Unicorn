@@ -36,7 +36,7 @@ bool VkMesh::operator==(const Mesh& mesh) const
 
 const glm::mat4& VkMesh::GetModel() const
 {
-		return m_mesh.model;
+		return m_mesh.modelMatrix.model;
 }
 
 void VkMesh::AllocateOnGPU()
@@ -76,11 +76,6 @@ void VkMesh::DeallocateOnGPU()
 vk::Buffer VkMesh::GetVertexBuffer()
 {
     return m_vertexBuffer.GetVkBuffer();
-}
-
-void VkMesh::AddVkTexture(VkTexture* vkTexture)
-{
-    m_vkTextures.push_back(vkTexture);
 }
 
 std::uint32_t VkMesh::VerticesSize()

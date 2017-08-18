@@ -18,7 +18,6 @@
 #include <unicorn/video/Texture.hpp>
 #include <unicorn/video/CameraFpsController.hpp>
 #include <unicorn/video/Material.hpp>
-#include <unicorn/video/Model.hpp>
 
 #include <array>
 #include <cstdlib>
@@ -216,7 +215,6 @@ int main(int argc, char* argv[])
         pCameraController = new unicorn::video::CameraFpsController(vkRenderer->GetCamera());
 
         using unicorn::video::Mesh;
-        using unicorn::video::Model;
         using unicorn::video::Cube;
         using unicorn::video::Quad;
         {
@@ -231,10 +229,6 @@ int main(int argc, char* argv[])
                 return -1;
             }
             Quad* texturedQuad = new Quad;
-            texturedQuad->AddTexture(texture);
-            Model* mymodel = new Model(texturedQuad, { false });
-
-            vkRenderer->AddModel(mymodel);
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);

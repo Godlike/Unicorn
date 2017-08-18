@@ -13,6 +13,3 @@
 [submodule "UnicornEngine/external/Wink-Signals"]
 	path = UnicornEngine/external/Wink-Signals
 	url = https://github.com/Godlike/Wink-Signals.git
-[submodule "UnicornEngine/external/assimp"]
-	path = UnicornEngine/external/assimp
-	url = https://github.com/assimp/assimp

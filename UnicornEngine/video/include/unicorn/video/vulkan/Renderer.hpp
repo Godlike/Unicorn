@@ -103,9 +103,8 @@ public:
     void Deinit() override;
     bool Render() override;
     bool RecreateSwapChain();
-    bool AddTexture(const Texture* texture) override;
-    bool AddModel(const Model* model) override;
-    bool AddMaterial(const Material* material) override;
+    bool AddMesh(Mesh* mesh) override;
+		bool DeleteMesh(const Mesh* mesh) override;
     void SetDepthTest(bool enabled) override;
   private:
     vk::PhysicalDevice m_vkPhysicalDevice;
@@ -133,6 +132,7 @@ public:
     std::vector<vk::Framebuffer> m_swapChainFramebuffers;
     std::vector<vk::CommandBuffer> m_commandBuffers;
 
+		std::list<VkMesh*> m_vkMeshes;
     Image* m_depthImage;
     VkTexture* m_tepmTexture;
 

@@ -7,10 +7,11 @@
 #ifndef UNICORN_VIDEO_VULKAN_MESH_HPP
 #define UNICORN_VIDEO_VULKAN_MESH_HPP
 
-#include <vulkan/vulkan.hpp>
 #include <unicorn/video/Mesh.hpp>
 #include <unicorn/video/vulkan/Buffer.hpp>
 #include <unicorn/video/vulkan/VkTexture.hpp>
+
+#include <vulkan/vulkan.hpp>
 #include <wink/signal.hpp>
 
 namespace unicorn
@@ -66,7 +67,6 @@ public:
      */
     vk::Buffer GetVertexBuffer();
 
-    void AddVkTexture(VkTexture* vkTexture);
     /**
      * @brief Returns index buffer
      * @return vulkan buffer
@@ -99,8 +99,6 @@ private:
     Mesh& m_mesh;
     vk::CommandPool m_pool;
     vk::Queue m_queue;
-
-    std::list<VkTexture*> m_vkTextures;
 };
 }
 }

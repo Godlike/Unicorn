@@ -11,9 +11,20 @@ namespace unicorn
 {
 namespace video
 {
-   Material::Material(bool isColored) : m_isColored(isColored)
+   Material::Material() : m_isColored(true)
    {
        
    }
+	 Material::Material()
+	 {
+	 }
+
+	 void Material::SetColor()
+	 {
+	 }
+
+	 void Material::SetAlbedo(const Texture * albedo)
+	 {
+	 }
 }
 }

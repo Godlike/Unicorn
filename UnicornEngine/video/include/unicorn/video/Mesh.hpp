@@ -8,7 +8,7 @@
 #define UNICORN_VIDEO_MESH_HPP
 
 #include <unicorn/utility/SharedMacros.hpp>
-#include <unicorn/video/Color.hpp>
+#include <unicorn/video/ModelMatrix.hpp>
 
 #include <wink/signal.hpp>
 #include <glm/glm.hpp>
@@ -19,7 +19,7 @@ namespace unicorn
 {
 namespace video
 {
-class Texture;
+class Material;
 
 /**
  * @brief Vertex information
@@ -34,7 +34,7 @@ struct Vertex
     /**
     * @brief Texture coordinates of vertex
     */
-    glm::vec2 texCoords;
+    glm::vec2 tc;
 };
 
 /**
@@ -44,7 +44,7 @@ class Mesh
 {
 public:
     UNICORN_EXPORT Mesh();
-    UNICORN_EXPORT Mesh(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices, const std::list<Texture*>& textures);
+    UNICORN_EXPORT Mesh(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices);
     UNICORN_EXPORT ~Mesh();
 
     /**
@@ -53,10 +53,6 @@ public:
     * @param indices indices data
     */
     UNICORN_EXPORT void SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices);
-
-    UNICORN_EXPORT void AddTexture(Texture* texture);
-
-    UNICORN_EXPORT void AddTextures(const std::list<Texture*>& textures);
     /**
      * @brief Returns mesh vertices
      * @return Mesh vertices
@@ -68,13 +64,12 @@ public:
     */
     UNICORN_EXPORT const std::vector<uint16_t>& GetIndices() const;
 
-    std::list<Texture*> const& GetTextures() const;
-
-		glm::mat4 model;
+		ModelMatrix modelMatrix;
 private:
     std::vector<Vertex> m_vertices;
     std::vector<uint16_t> m_indices;
-    std::list<Texture*> m_textures;
+
+		Material* m_material;
 };
 }
 }

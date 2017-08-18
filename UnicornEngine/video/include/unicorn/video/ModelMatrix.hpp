@@ -18,6 +18,7 @@ namespace video
 class ModelMatrix
 {
 public:
+		ModelMatrix();
     /**
     * @brief Rotate mesh
     * @param angle angle in degrees
