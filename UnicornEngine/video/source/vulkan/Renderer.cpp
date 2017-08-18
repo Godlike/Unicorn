@@ -94,6 +94,11 @@ bool Renderer::Init()
         return false;
     }
 
+		unicorn::video::Texture* texture = new unicorn::video::Texture("data/textures/texture.jpg");
+		m_tepmTexture = new VkTexture;
+		m_tepmTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, texture);
+		texture->Delete();
+
     m_isInitialized = true;
 
     LOG_INFO("Renderer initialized correctly.");
@@ -116,18 +121,18 @@ void Renderer::Deinit()
 
             //LOG_DEBUG("Deleted %u meshes", static_cast<uint32_t>(meshes.size()));
 
-            if(!m_vkMeshes.empty())
-            {
-                // Also free up all remaining vk meshes
-                for(auto& pVkMesh : m_vkMeshes)
-                {
-                    DeleteVkMesh(pVkMesh);
-                }
+            //if(!m_vkMeshes.empty())
+            //{
+            //    // Also free up all remaining vk meshes
+            //    for(auto& pVkMesh : m_vkMeshes)
+            //    {
+            //        DeleteVkMesh(pVkMesh);
+            //    }
 
-                LOG_DEBUG("Deleted %u stray vk meshes", static_cast<uint32_t>(m_vkMeshes.size()));
+            //    LOG_DEBUG("Deleted %u stray vk meshes", static_cast<uint32_t>(m_vkMeshes.size()));
 
-                m_vkMeshes.clear();
-            }
+            //    m_vkMeshes.clear();
+            //}
         }
 
         FreeSemaphores();
@@ -405,46 +410,45 @@ void Renderer::OnMeshReallocated(VkMesh* /*vkmesh*/)
 //    }
 //}
 
-void Renderer::DepthTest(bool enabled)
+void Renderer::SetDepthTest(bool enabled)
 {
-    m_depthEnabled = enabled;
+    m_depthTestEnabled = enabled;
     CreateGraphicsPipeline();
 }
 
 bool Renderer::AddTexture(const Texture* texture)
 {
-    Buffer imageStagingBuffer;
-    bool result = imageStagingBuffer.Create(m_vkPhysicalDevice, m_vkLogicalDevice,
-                                            vk::BufferUsageFlagBits::eTransferSrc,
-                                            vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-                                            texture->Size());
-    if(!result)
-    {
-        LOG_ERROR("Can't allocate staging buffer for texture - ", texture->Path());
-        return false;
-    }
-    imageStagingBuffer.Map();
-    imageStagingBuffer.Write(texture->Data());
-    imageStagingBuffer.Unmap();
+		/*Buffer imageStagingBuffer;
+		bool result = imageStagingBuffer.Create(m_vkPhysicalDevice, m_vkLogicalDevice,
+																						vk::BufferUsageFlagBits::eTransferSrc,
+																						vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
+																						texture->Size());
+		if(!result)
+		{
+				LOG_ERROR("Can't allocate staging buffer for texture - ", texture->Path());
+				return false;
+		}
+		imageStagingBuffer.Map();
+		imageStagingBuffer.Write(texture->Data());
+		imageStagingBuffer.Unmap();
 
-    Image gpuTexture;
-    result = gpuTexture.Create(m_vkPhysicalDevice,
-        m_vkLogicalDevice,
-        vk::Format::eR8G8B8A8Unorm,
-        vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
-        texture->Width(),
-        texture->Height());
-    if (!result)
-    {
-        LOG_ERROR("Can't allocate vulkan based image for texture - ", texture->Path());
-        return false;
-    }
+		Image* gpuTexture = new Image(m_vkPhysicalDevice,
+				m_vkLogicalDevice,
+				vk::Format::eR8G8B8A8Unorm,
+				vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
+				texture->Width(),
+				texture->Height());
+		if (!gpuTexture->IsInitialized())
+		{
+				LOG_ERROR("Can't allocate vulkan based image for texture - ", texture->Path());
+				return false;
+		}
 
-    gpuTexture.TransitionLayout(vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferDstOptimal, m_commandPool, m_graphicsQueue);
-    imageStagingBuffer.CopyToImage(gpuTexture, m_commandPool, m_graphicsQueue);
-    gpuTexture.TransitionLayout(vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal, m_commandPool, m_graphicsQueue);
+		gpuTexture->TransitionLayout(vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::ePreinitialized, vk::ImageLayout::eTransferDstOptimal, m_commandPool, m_graphicsQueue);
+		imageStagingBuffer.CopyToImage(*gpuTexture, m_commandPool, m_graphicsQueue);
+		gpuTexture->TransitionLayout(vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal, m_commandPool, m_graphicsQueue);
 
-    imageStagingBuffer.Destroy();
+		imageStagingBuffer.Destroy();*/
     return true;
 }
 
@@ -457,10 +461,10 @@ bool Renderer::AddModel(const Model* model)
 
         for(auto const& texture : mesh->GetTextures())
         {
-            VkTexture* vkTexture = new VkTexture;
+            
             vkMesh->
         }
-        vkModel->AddVkMesh(vkMesh);        
+        vkModel->AddVkMesh(vkMesh);
     }
     return true;
 }
@@ -1195,7 +1199,7 @@ bool Renderer::CreateDepthBuffer()
         LOG_ERROR("Not one of desired depth formats are not compatible!");
         return false;
     }
-    return m_depthImage.Create(m_vkPhysicalDevice,
+    m_depthImage = new Image(m_vkPhysicalDevice,
                                m_vkLogicalDevice,
                                m_depthImageFormat,
                                vk::ImageUsageFlagBits::eDepthStencilAttachment,
@@ -1248,7 +1252,7 @@ bool Renderer::CreateCommandBuffers()
         m_commandBuffers[i].beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
         m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
 
-        vk::DeviceSize offsets[] = {0};
+       /* vk::DeviceSize offsets[] = {0};
 
         {
             uint32_t j = 0;
@@ -1267,7 +1271,7 @@ bool Renderer::CreateCommandBuffers()
                     ++j;
                 }
             }
-        }
+        }*/
 
         m_commandBuffers[i].endRenderPass();
 

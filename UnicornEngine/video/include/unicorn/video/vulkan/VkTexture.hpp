@@ -7,33 +7,32 @@
 #ifndef UNICORN_VIDEO_VULKAN_TEXTURE_HPP
 #define UNICORN_VIDEO_VULKAN_TEXTURE_HPP
 
-#include <vulkan/vulkan.hpp>
 #include <unicorn/video/vulkan/Image.hpp>
+#include <unicorn/utility/Logger.hpp>
+
+#include <vulkan/vulkan.hpp>
 #include <wink/signal.hpp>
+
+
 
 namespace unicorn
 {
 namespace video
 {
+class Texture;
 namespace vulkan
 {
 class VkTexture
 {
 public:
-    VkTexture(unsigned char* data, int32_t width, int32_t height)
-    {
-
-        m_imageInfo.imageView = textureImageView;
-        m_imageInfo.sampler = textureSampler;
-    }
-    const vk::DescriptorImageInfo& GetDescriptorImageInfo()
-    {
-        return m_imageInfo;
-    }
-
+		VkTexture();
+    
+		const vk::DescriptorImageInfo& GetDescriptorImageInfo();
+		bool Create(const vk::PhysicalDevice& physicalDevice, const vk::Device& device, const vk::CommandPool& commandPool, const vk::Queue& queue, const Texture* texture);
 private:
     vk::DescriptorImageInfo m_imageInfo;
-    Image m_VkImage;
+    Image* m_vkImage;
+		bool m_isInitialized;
 };
 }
 }

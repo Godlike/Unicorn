@@ -22,28 +22,35 @@ namespace vulkan
 class Image
 {
 public:
-    Image();
-    ~Image();
-
     /**
-     * @brief Creates image
-     * @param device device for allocation
-     * @param physicalDevice for memory type search and hardware allocation
-     * @param format image specific format
-     * @param usage image specific usage
-     * @param width width of image
-     * @param height height of image
-     * @return true if creation sucessfull and false if not
-     */
-    bool Create(vk::PhysicalDevice physicalDevice,
+    * @brief Creates image
+    * @param physicalDevice for memory type search and hardware allocation
+    * @param device device for allocation
+    * @param format image specific format
+    * @param usage image specific usage
+    * @param width width of image
+    * @param height height of image
+    */
+    Image(vk::PhysicalDevice physicalDevice,
         vk::Device device,
         vk::Format format,
         vk::ImageUsageFlags usage,
         uint32_t width,
         uint32_t height);
     /**
-     * @brief Destroies image
-     */
+    * @brief Removes image
+    */
+    ~Image();
+
+    Image(const Image& other) = delete;
+    Image(Image&& other) = delete;
+    Image& operator=(Image& other) = delete;
+    Image& operator=(Image&& other) = delete;
+
+    /**
+    * @brief Checks if image was initialized before
+    * @return true if was initialized before and false if not
+    */
     bool IsInitialized() const;
 
     /**
@@ -56,12 +63,12 @@ public:
      * @brief Returns image width
      * @return image width
      */
-    int32_t GetWidth() const;
+    uint32_t GetWidth() const;
     /**
      * @brief Returns image height
      * @return image height
      */
-    int32_t GetHeight() const;
+    uint32_t GetHeight() const;
     /**
      * @brief Returns vulkan raw image
      * @return vulkan raw image

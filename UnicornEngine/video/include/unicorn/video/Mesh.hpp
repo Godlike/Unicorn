@@ -70,6 +70,7 @@ public:
 
     std::list<Texture*> const& GetTextures() const;
 
+		glm::mat4 model;
 private:
     std::vector<Vertex> m_vertices;
     std::vector<uint16_t> m_indices;

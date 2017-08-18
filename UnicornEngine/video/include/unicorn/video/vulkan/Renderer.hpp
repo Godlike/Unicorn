@@ -10,6 +10,7 @@
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
 #include <unicorn/video/vulkan/Image.hpp>
+#include <unicorn/video/vulkan/VkTexture.hpp>
 
 #include <vulkan/vulkan.hpp>
 
@@ -27,7 +28,7 @@ class Window;
 namespace video
 {
 namespace vulkan
-{ 
+{
 
 /**
  * @brief Struct for easy check of required queue family indices
@@ -102,7 +103,6 @@ public:
     void Deinit() override;
     bool Render() override;
     bool RecreateSwapChain();
-    void DepthTest(bool enabled) override;
     bool AddTexture(const Texture* texture) override;
     bool AddModel(const Model* model) override;
     bool AddMaterial(const Material* material) override;
@@ -132,8 +132,10 @@ public:
     std::vector<vk::ImageView> m_swapChainImageViews;
     std::vector<vk::Framebuffer> m_swapChainFramebuffers;
     std::vector<vk::CommandBuffer> m_commandBuffers;
-    Image m_depthImage;
-    
+
+    Image* m_depthImage;
+    VkTexture* m_tepmTexture;
+
     ShaderProgram* m_shaderProgram;
     Buffer m_uniformMvp;
     Buffer m_uniformModel;
