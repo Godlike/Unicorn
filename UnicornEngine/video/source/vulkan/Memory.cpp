@@ -12,49 +12,49 @@ namespace video
 {
 namespace vulkan
 {
-Memory::Memory(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties, vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize) : m_initialized(false)
-                                   , m_device(device)
-                                   , m_memory(nullptr)
-{
-    uint32_t memoryTypeIndex = 0;
-    for(uint32_t i = 0; i < physMemProperties.memoryTypeCount; i++)
+    Memory::Memory(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties, vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize) : m_initialized(false)
+        , m_device(device)
+        , m_memory(nullptr)
     {
-        if((typeFilter & (1 << i))
-            && (physMemProperties.memoryTypes[i].propertyFlags & reqMemProperties) == reqMemProperties)
+        uint32_t memoryTypeIndex = 0;
+        for (uint32_t i = 0; i < physMemProperties.memoryTypeCount; i++)
         {
-            memoryTypeIndex = i;
+            if ((typeFilter & (1 << i))
+                && (physMemProperties.memoryTypes[i].propertyFlags & reqMemProperties) == reqMemProperties)
+            {
+                memoryTypeIndex = i;
+            }
+        }
+
+        vk::MemoryAllocateInfo memoryInfo;
+        memoryInfo.setMemoryTypeIndex(memoryTypeIndex);
+        memoryInfo.setAllocationSize(allocSize);
+
+        vk::Result result = m_device.allocateMemory(&memoryInfo, nullptr, &m_memory);
+        if (result == vk::Result::eSuccess)
+        {
+            m_initialized = true;
         }
     }
 
-    vk::MemoryAllocateInfo memoryInfo;
-    memoryInfo.setMemoryTypeIndex(memoryTypeIndex);
-    memoryInfo.setAllocationSize(allocSize);
-
-    vk::Result result = m_device.allocateMemory(&memoryInfo, nullptr, &m_memory);
-    if(result == vk::Result::eSuccess)
+    Memory::~Memory()
     {
-        m_initialized = true;
+        if (m_initialized && m_memory)
+        {
+            m_device.freeMemory(m_memory);
+            m_memory = nullptr;
+        }
     }
-}
 
-Memory::~Memory()
-{
-    if(m_initialized && m_memory)
+    bool Memory::IsInitialized() const
     {
-        m_device.freeMemory(m_memory);
-        m_memory = nullptr;
+        return m_initialized;
     }
-}
 
-bool Memory::IsInitialized() const
-{
-    return m_initialized;
-}
-
-const vk::DeviceMemory& Memory::GetMemory() const
-{
-    return m_memory;
-}
+    const vk::DeviceMemory& Memory::GetMemory() const
+    {
+        return m_memory;
+    }
 
 }
 }

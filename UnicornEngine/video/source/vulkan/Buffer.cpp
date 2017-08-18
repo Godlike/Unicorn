@@ -6,6 +6,8 @@
 
 #include <unicorn/video/vulkan/Buffer.hpp>
 #include <unicorn/utility/Logger.hpp>
+#include <unicorn/video/vulkan/VulkanHelper.hpp>
+#include <unicorn/video/vulkan/Image.hpp>
 
 namespace unicorn
 {
@@ -114,34 +116,39 @@ void Buffer::Unmap()
 
 void Buffer::CopyToBuffer(vk::CommandPool pool, vk::Queue queue, vulkan::Buffer& dstBuffer, vk::DeviceSize size) const
 {
-    vk::CommandBufferAllocateInfo allocInfo;
-    allocInfo.level = vk::CommandBufferLevel::ePrimary;
-    allocInfo.commandPool = pool;
-    allocInfo.commandBufferCount = 1;
-
-    vk::CommandBuffer commandBuffer;
-    m_device.allocateCommandBuffers(&allocInfo, &commandBuffer);
-
-    vk::CommandBufferBeginInfo beginInfo;
-    beginInfo.flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit;
-
-    commandBuffer.begin(&beginInfo);
+    vk::CommandBuffer commandBuffer = BeginSingleTimeCommands(m_device, pool);
 
     vk::BufferCopy copyRegion;
     copyRegion.srcOffset = 0;
     copyRegion.dstOffset = 0;
     copyRegion.size = size;
+
     commandBuffer.copyBuffer(m_buffer, dstBuffer.GetVkBuffer(), 1, &copyRegion);
+    
+    EndSingleTimeCommands(commandBuffer, queue, m_device, pool);
+}
 
-    commandBuffer.end();
+void Buffer::CopyToImage(const vulkan::Image& dstImage, const vk::CommandPool& pool, const vk::Queue& queue) const
+{
+    vk::CommandBuffer commandBuffer = BeginSingleTimeCommands(m_device, pool);
 
-    vk::SubmitInfo submitInfo;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &commandBuffer;
+    vk::BufferImageCopy region;
+    region.bufferOffset = 0;
+    region.bufferRowLength = 0;
+    region.bufferImageHeight = 0;
+    region.imageSubresource.aspectMask = vk::ImageAspectFlagBits::eColor;
+    region.imageSubresource.mipLevel = 0;
+    region.imageSubresource.baseArrayLayer = 0;
+    region.imageSubresource.layerCount = 1;
+    region.imageOffset = vk::Offset3D{ 0, 0, 0 };
+    region.imageExtent = vk::Extent3D{
+        dstImage.GetWidth(),
+        dstImage.GetHeight(),
+        1
+    };
+    commandBuffer.copyBufferToImage(m_buffer, dstImage.GetVkImage(), vk::ImageLayout::eTransferDstOptimal, 1, &region);
 
-    queue.submit(1, &submitInfo, nullptr); // TODO: parallelize this, move to another queue
-    queue.waitIdle();
-    m_device.freeCommandBuffers(pool, 1, &commandBuffer);
+    EndSingleTimeCommands(commandBuffer, queue, m_device, pool);
 }
 
 size_t Buffer::GetSize() const

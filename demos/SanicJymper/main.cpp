@@ -10,13 +10,14 @@
 #include <unicorn/system/WindowHint.hpp>
 #include <unicorn/system/CustomValue.hpp>
 #include <unicorn/Settings.hpp>
-#include <unicorn/system/Input.hpp>
 #include <unicorn/system/input/Action.hpp>
 #include <unicorn/system/input/Key.hpp>
 #include <unicorn/system/input/Modifier.hpp>
 #include <unicorn/video/Renderer.hpp>
-#include <unicorn/video/geometry/Primitives.hpp>
+#include <unicorn/video/Primitives.hpp>
+#include <unicorn/video/Texture.hpp>
 #include <unicorn/video/CameraFpsController.hpp>
+#include <unicorn/video/Material.hpp>
 
 #include <array>
 #include <cstdlib>
@@ -24,13 +25,11 @@
 #include <list>
 
 static unicorn::video::Graphics* pGraphics = nullptr;
-static unicorn::system::Input* pInput = nullptr;
 static unicorn::video::CameraFpsController* pCameraController = nullptr;
 static unicorn::system::Timer* timer = nullptr;
 static unicorn::video::Renderer* vkRenderer = nullptr;
 static bool depthTest = true;
 unicorn::system::Window* pWindow0 = nullptr;
-std::list<unicorn::video::geometry::MeshDescriptor*> cubes;
 
 float deltaTime = 0.0f; // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -44,66 +43,12 @@ void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
         return;
     }
     deltaTime = newDeltatime;
-    for (auto& mesh : cubes)
-    {
-        mesh->Rotate(deltaTime, {1, 1, 0});
-    }
     lastFrame = currentFrame;
 }
 
-void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonEvent)
+void onMouseButton(unicorn::system::Window* /*pWindow*/, unicorn::system::input::MouseButton button, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask)
 {
-    using unicorn::system::input::MouseButton;
-    using unicorn::system::input::Action;
-    using unicorn::video::geometry::MeshDescriptor;
-    using unicorn::video::geometry::Primitives;
 
-    unicorn::system::input::Action const& action = mouseButtonEvent.action;
-
-    if (action == Action::Release || action == Action::Repeat)
-    {
-        return;
-    }
-
-    unicorn::system::input::MouseButton const& button = mouseButtonEvent.button;
-
-    switch (button)
-    {
-        case MouseButton::MouseLeft:
-        {
-            MeshDescriptor* obj = new MeshDescriptor(Primitives::Cube(*(vkRenderer->SpawnMesh())));
-            obj->Translate({std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20});
-            obj->SetColor({static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255});
-            cubes.push_back(obj);
-
-            break;
-        }
-        case MouseButton::MouseRight:
-        {
-            if (cubes.size())
-            {
-                // Get random cube
-                auto meshIt = cubes.begin();
-
-                std::advance(meshIt, std::rand() % cubes.size());
-
-                // Fetch cube's mesh
-                auto const& mesh = (*meshIt)->GetMesh();
-
-                // Erase cube
-                cubes.erase(meshIt);
-
-                // Release cube's mesh
-                vkRenderer->DeleteMesh(&mesh);
-            }
-
-            break;
-        }
-        default:
-        {
-            break;
-        }
-    }
 }
 
 void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double, double> pos)
@@ -116,29 +61,22 @@ void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double>
     pCameraController->Scroll(static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
 }
 
-void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEvent)
+void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::Key key, uint32_t scancode, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask modifiers)
 {
     using unicorn::system::input::Key;
     using unicorn::system::input::Modifier;
     using unicorn::system::input::Action;
     using unicorn::system::MouseMode;
 
-    unicorn::system::input::Action const& action = keyboardEvent.action;
-
     if (Action::Release == action)
     {
         return;
     }
 
-    unicorn::system::Window* const& pWindow = keyboardEvent.pWindow;
-    unicorn::system::input::Key const& key = keyboardEvent.key;
-    uint32_t const& scancode = keyboardEvent.scancode;
-    unicorn::system::input::Modifier::Mask const& modifiers = keyboardEvent.modifiers;
-
     std::pair<int32_t, int32_t> position = pWindow->GetPosition();
-    bool positionChanged = false;
+    bool positionChanged = true;
 
-    float delta = deltaTime * 0.1f;
+    float delta = deltaTime;
 
     if (Modifier::Shift & modifiers)
     {
@@ -151,108 +89,77 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
     }
     switch (key)
     {
-        case Key::W:
-        {
-            pCameraController->MoveForward(delta);
-            break;
-        }
-        case Key::S:
-        {
-            pCameraController->MoveBackward(delta);
-            break;
-        }
-        case Key::A:
-        {
-            pCameraController->MoveLeft(delta);
-            break;
-        }
-        case Key::D:
-        {
-            pCameraController->MoveRight(delta);
-            break;
-        }
-        case Key::Q:
-        {
-            pCameraController->MoveUp(delta);
-            break;
-        }
-        case Key::E:
-        {
-            pCameraController->MoveDown(delta);
-            break;
-        }
-        case Key::Up:
-        {
-            position.second -= static_cast<uint32_t>(delta);
-            positionChanged = true;
-            break;
-        }
-        case Key::Down:
-        {
-            position.second += static_cast<uint32_t>(delta);
-            positionChanged = true;
-            break;
-        }
-        case Key::Left:
-        {
-            position.first -= static_cast<uint32_t>(delta);
-            positionChanged = true;
-            break;
-        }
-        case Key::Right:
-        {
-            position.first += static_cast<uint32_t>(delta);
-            positionChanged = true;
-            break;
-        }
-        case Key::C:
-        {
-            pWindow->SetMouseMode(MouseMode::Captured);
-            break;
-        }
+    case Key::W:
+    {
+        pCameraController->MoveForward(delta);
+        break;
+    }
+    case Key::S:
+    {
+        pCameraController->MoveBackward(delta);
+        break;
+    }
+    case Key::A:
+    {
+        pCameraController->MoveLeft(delta);
+        break;
+    }
+    case Key::D:
+    {
+        pCameraController->MoveRight(delta);
+        break;
+    }
+    case Key::Q:
+    {
+        pCameraController->MoveUp(delta);
+        break;
+    }
+    case Key::E:
+    {
+        pCameraController->MoveDown(delta);
+        break;
+    }
+    case Key::Up:
+    {
+        position.second -= static_cast<uint32_t>(delta);
+        break;
+    }
+    case Key::Down:
+    {
+        position.second += static_cast<uint32_t>(delta);
+        break;
+    }
+    case Key::Left:
+    {
+        position.first -= static_cast<uint32_t>(delta);
+        break;
+    }
+    case Key::Right:
+    {
+        position.first += static_cast<uint32_t>(delta);
+        break;
+    }
+    case Key::C:
+    {
+        pWindow->SetMouseMode(MouseMode::Captured);
+        break;
+    }
     case Key::V:
     {
-        if (Action::Repeat == action)
-        {
-            return;
-        }
         depthTest = !depthTest;
         pGraphics->SetDepthTest(depthTest);
         break;
     }
     case Key::Escape:
-        {
-            pWindow->SetMouseMode(MouseMode::Normal);
-            break;
-        }
-        case Key::Insert:
-        {
-            if (pInput)
-            {
-                switch (modifiers)
-                {
-                    case Modifier::Ctrl:
-                    {
-                        pInput->SetClipboard(std::string("Gotta go fast"));
-                        break;
-                    }
-                    case Modifier::Shift:
-                    {
-                        std::cout << "Clipboard data: " << pInput->GetClipboard() << std::endl;
-                        break;
-                    }
-                    default:
-                    {
-                        break;
-                    }
-                }
-            }
-            break;
-        }
-        default:
-        {
-            break;
-        }
+    {
+        pWindow->SetMouseMode(MouseMode::Normal);
+        break;
+    }
+    default:
+    {
+        positionChanged = false;
+        break;
+    }
     }
 
     if (positionChanged)
@@ -280,15 +187,14 @@ int main(int argc, char* argv[])
     if (unicornEngine->Init())
     {
         pGraphics = unicornEngine->GetGraphics();
-        pInput = unicornEngine->GetInput();
 
         unicornEngine->LogicFrame.connect(&onLogicFrame);
 
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
-                                         unicorn::system::CustomValue::True);
+            unicorn::system::CustomValue::True);
 
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Resizable,
-                                         unicorn::system::CustomValue::True);
+            unicorn::system::CustomValue::True);
 
         auto h = pGraphics->GetMonitors().back()->GetActiveVideoMode().height;
         auto w = pGraphics->GetMonitors().back()->GetActiveVideoMode().width;
@@ -296,10 +202,10 @@ int main(int argc, char* argv[])
         settings.SetApplicationWidth(w);
 
         unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(settings.GetApplicationWidth(),
-                                                                   settings.GetApplicationHeight(),
-                                                                   settings.GetApplicationName(),
-                                                                   nullptr,
-                                                                   nullptr);
+            settings.GetApplicationHeight(),
+            settings.GetApplicationName(),
+            nullptr,
+            nullptr);
         pWindow0->SetMouseMode(unicorn::system::MouseMode::Captured);
 
         vkRenderer = pGraphics->SpawnRenderer(pWindow0);
@@ -308,27 +214,21 @@ int main(int argc, char* argv[])
         vkRenderer->SetBackgroundColor(unicorn::video::Color::LightPink);
         pCameraController = new unicorn::video::CameraFpsController(vkRenderer->GetCamera());
 
-        using unicorn::video::geometry::Mesh;
-        using unicorn::video::geometry::MeshDescriptor;
-        using unicorn::video::geometry::Primitives;
-
-        std::array<Mesh*, 3> meshes = {
-            vkRenderer->SpawnMesh(),
-            vkRenderer->SpawnMesh(),
-            vkRenderer->SpawnMesh()
-        };
-
+        using unicorn::video::Mesh;
+        using unicorn::video::Cube;
+        using unicorn::video::Quad;
         {
-            MeshDescriptor triangle1 = Primitives::Triangle(*meshes[0]);
-            triangle1.SetColor(unicorn::video::Color::Red);
-            triangle1.Translate({-2.0f, 0.0f, 0.0f});
-            triangle1.Scale({0.5, 0.5, 0.5});
+            //Loading textures
+            unicorn::video::Texture* texture = new unicorn::video::Texture("data/textures/texture.jpg");
+            unicorn::video::Texture* textureMandrill = new unicorn::video::Texture("data/textures/mandrill.png");
 
-            MeshDescriptor triangle2 = Primitives::Triangle(*meshes[1]);
-            triangle2.SetColor(unicorn::video::Color::Green);
-
-            MeshDescriptor cube = Primitives::Cube(*meshes[2]);
-            cube.Translate({5.0, 0.0f, 5.0f});
+            //Checks data
+            if (!texture->IsLoaded()
+                || !textureMandrill->IsLoaded())
+            {
+                return -1;
+            }
+            Quad* texturedQuad = new Quad;
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);
@@ -336,14 +236,6 @@ int main(int argc, char* argv[])
             pWindow0->MouseButton.connect(&onMouseButton);
 
             unicornEngine->Run();
-        }
-
-        if (vkRenderer)
-        {
-            for (auto& pMesh : meshes)
-            {
-                vkRenderer->DeleteMesh(pMesh);
-            }
         }
     }
 

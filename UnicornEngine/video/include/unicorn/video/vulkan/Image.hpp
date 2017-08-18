@@ -23,14 +23,14 @@ class Image
 {
 public:
     /**
-   * @brief Creates image
-   * @param physicalDevice for memory type search and hardware allocation
-   * @param device device for allocation
-   * @param format image specific format
-   * @param usage image specific usage
-   * @param width width of image
-   * @param height height of image
-   */
+    * @brief Creates image
+    * @param physicalDevice for memory type search and hardware allocation
+    * @param device device for allocation
+    * @param format image specific format
+    * @param usage image specific usage
+    * @param width width of image
+    * @param height height of image
+    */
     Image(vk::PhysicalDevice physicalDevice,
         vk::Device device,
         vk::Format format,
@@ -38,8 +38,8 @@ public:
         uint32_t width,
         uint32_t height);
     /**
-     * @brief Removes image
-     */
+    * @brief Removes image
+    */
     ~Image();
 
     Image(const Image& other) = delete;
@@ -48,9 +48,9 @@ public:
     Image& operator=(Image&& other) = delete;
 
     /**
-     * @brief Checks if image was initialized before
-     * @return true if was initialized before and false if not
-     */
+    * @brief Checks if image was initialized before
+    * @return true if was initialized before and false if not
+    */
     bool IsInitialized() const;
 
     /**
@@ -63,14 +63,12 @@ public:
      * @brief Returns image width
      * @return image width
      */
-    int32_t GetWidth() const;
-
+    uint32_t GetWidth() const;
     /**
      * @brief Returns image height
      * @return image height
      */
-    int32_t GetHeight() const;
-
+    uint32_t GetHeight() const;
     /**
      * @brief Returns vulkan raw image
      * @return vulkan raw image
@@ -82,6 +80,19 @@ public:
      * @return vulkan raw image view
      */
     const vk::ImageView& GetVkImageView() const;
+
+    /**
+     * @brief TODO
+     * @param format 
+     * @param oldLayout 
+     * @param newLayout 
+     * @return 
+     */
+    bool TransitionLayout(const vk::Format& format,
+                          const vk::ImageLayout& oldLayout,
+                          const vk::ImageLayout& newLayout,
+                          const vk::CommandPool& cmdPool,
+                          const vk::Queue& queue) const;
 private:
     vk::Device m_device;
     vk::Image m_image;

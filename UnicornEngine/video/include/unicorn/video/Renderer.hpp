@@ -7,12 +7,12 @@
 #ifndef UNICORN_VIDEO_RENDERER_HPP
 #define UNICORN_VIDEO_RENDERER_HPP
 
-#include <unicorn/video/geometry/Mesh.hpp>
+#include <unicorn/video/Mesh.hpp>
 #include <unicorn/video/Color.hpp>
+#include <unicorn/video/Camera.hpp>
 
 #include <glm/glm.hpp>
 
-#include <unicorn/video/Camera.hpp>
 #include <cstdint>
 #include <memory>
 #include <array>
@@ -28,7 +28,6 @@ class Timer;
 
 namespace video
 {
-
 class Renderer
 {
 public:
@@ -46,32 +45,6 @@ public:
     virtual bool Render() = 0;
     UNICORN_EXPORT Camera& GetCamera();
 
-    /** @brief  Creates new geometry mesh
-     *
-     *  Creates and subscribes to mesh.
-     *  Mesh shall be deleted via DeleteMesh().
-     *
-     *  @attention  Mesh lifetime is bound by its renderer's lifetime.
-     *              Using meshes after their renderer was destroyed is undefined behaviour.
-     *              If you're storing mesh pointers, consider storing them with a reference
-     *              to their renderer and listening for its Destroyed event for proper cleanup.
-     *
-     *  @return pointer to newly created geometry::Mesh
-     *
-     *  @sa DeleteMesh
-     */
-    virtual geometry::Mesh* SpawnMesh() = 0;
-
-    /** @brief  Deletes geometry mesh
-     *
-     *  Checks if given mesh is associated with this renderer and deletes it cleaning up
-     *  all associated resources within Renderer.
-     *  Does nothing if given mesh is not associated with this renderer.
-     *
-     *  @return @c true if mesh was deleted, @c false otherwise
-     */
-    virtual bool DeleteMesh(const geometry::Mesh* pMesh) = 0;
-
     UNICORN_EXPORT void SetBackgroundColor(const glm::vec3& backgroundColor);
 
     /** @brief  Event triggered from destructor before the renderer is destroyed
@@ -87,6 +60,8 @@ public:
      */
     virtual void SetDepthTest(bool enabled) = 0;
 
+		virtual bool AddMesh(Mesh* mesh) = 0;
+		virtual bool DeleteMesh(const Mesh* mesh) = 0;
 protected:
     bool m_isInitialized;
 
@@ -99,7 +74,10 @@ protected:
     //! Background filling color
     std::array<float, 4> m_backgroundColor;
     //! Depth test
-    bool m_depthTestEnabled;
+		bool m_depthTestEnabled;
+
+		//! Array of geometry meshes		
+		std::list<Mesh*> m_meshes;
 };
 }
 }

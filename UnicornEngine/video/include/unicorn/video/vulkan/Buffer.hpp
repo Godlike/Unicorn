@@ -17,6 +17,8 @@ namespace video
 {
 namespace vulkan
 {
+class Image;
+
 /**
  * @brief Wrapper for vk::Buffer item in Vulkan API
  */
@@ -67,6 +69,13 @@ public:
      * @param size size of copyable data
      */
     void CopyToBuffer(vk::CommandPool pool, vk::Queue queue, vulkan::Buffer& dstBuffer, vk::DeviceSize size) const;
+    /**
+     * @brief TODO
+     * @param dstImage 
+     * @param pool 
+     * @param queue 
+     */
+    void CopyToImage(const vulkan::Image& dstImage, const vk::CommandPool& pool, const vk::Queue& queue) const;
     /**
      * @brief Getter for size of buffer
      * @return size of buffer

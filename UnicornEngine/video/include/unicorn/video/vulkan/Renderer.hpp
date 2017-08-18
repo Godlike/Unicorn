@@ -7,12 +7,15 @@
 #ifndef UNICORN_VIDEO_VULKAN_RENDERER_HPP
 #define UNICORN_VIDEO_VULKAN_RENDERER_HPP
 
-#include <vulkan/vulkan.hpp>
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
 #include <unicorn/video/vulkan/Image.hpp>
+#include <unicorn/video/vulkan/VkTexture.hpp>
+
+#include <vulkan/vulkan.hpp>
 
 #include <list>
+#include <vector>
 
 namespace unicorn
 {
@@ -26,6 +29,7 @@ namespace video
 {
 namespace vulkan
 {
+
 /**
  * @brief Struct for easy check of required queue family indices
  */
@@ -99,8 +103,8 @@ public:
     void Deinit() override;
     bool Render() override;
     bool RecreateSwapChain();
-    geometry::Mesh* SpawnMesh() override;
-    bool DeleteMesh(const geometry::Mesh* pMesh) override;
+    bool AddMesh(Mesh* mesh) override;
+		bool DeleteMesh(const Mesh* mesh) override;
     void SetDepthTest(bool enabled) override;
   private:
     vk::PhysicalDevice m_vkPhysicalDevice;
@@ -127,12 +131,10 @@ public:
     std::vector<vk::ImageView> m_swapChainImageViews;
     std::vector<vk::Framebuffer> m_swapChainFramebuffers;
     std::vector<vk::CommandBuffer> m_commandBuffers;
-    Image* m_depthImage;
-    //! Array of geometry meshes
-    std::list<geometry::Mesh*> m_meshes;
 
-    //! Array of renderer meshes
-    std::list<VkMesh*> m_vkMeshes;
+		std::list<VkMesh*> m_vkMeshes;
+    Image* m_depthImage;
+    VkTexture* m_tepmTexture;
 
     ShaderProgram* m_shaderProgram;
     Buffer m_uniformMvp;

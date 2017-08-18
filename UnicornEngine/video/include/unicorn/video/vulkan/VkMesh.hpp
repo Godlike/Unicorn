@@ -7,9 +7,11 @@
 #ifndef UNICORN_VIDEO_VULKAN_MESH_HPP
 #define UNICORN_VIDEO_VULKAN_MESH_HPP
 
-#include <vulkan/vulkan.hpp>
-#include <unicorn/video/geometry/Mesh.hpp>
+#include <unicorn/video/Mesh.hpp>
 #include <unicorn/video/vulkan/Buffer.hpp>
+#include <unicorn/video/vulkan/VkTexture.hpp>
+
+#include <vulkan/vulkan.hpp>
 #include <wink/signal.hpp>
 
 namespace unicorn
@@ -32,7 +34,7 @@ public:
      * @param queue Which queue to use to buffer copying
      * @param mesh Geometry data
      */
-    VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, geometry::Mesh& mesh);
+    VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, Mesh& mesh);
     ~VkMesh();
 
     /**
@@ -42,7 +44,7 @@ public:
      *
      *  @return @c true if object operates on given mesh, @c false otherwise
      */
-    bool operator==(const geometry::Mesh& mesh) const;
+    bool operator==(const Mesh& mesh) const;
 
     /**
      *  @brief  Returns if VkMesh is valid to use
@@ -64,6 +66,7 @@ public:
      * @return vulkan buffer
      */
     vk::Buffer GetVertexBuffer();
+
     /**
      * @brief Returns index buffer
      * @return vulkan buffer
@@ -93,7 +96,7 @@ private:
     vk::Device m_device;
     vk::PhysicalDevice m_physicalDevice;
     vulkan::Buffer m_vertexBuffer, m_indexBuffer;
-    geometry::Mesh& m_mesh;
+    Mesh& m_mesh;
     vk::CommandPool m_pool;
     vk::Queue m_queue;
 };

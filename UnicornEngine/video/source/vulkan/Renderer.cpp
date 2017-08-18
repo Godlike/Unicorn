@@ -12,8 +12,11 @@
 #include <unicorn/system/Window.hpp>
 #include <unicorn/video/vulkan/Context.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
+#include <unicorn/video/vulkan/VkTexture.hpp>
 #include <unicorn/video/Camera.hpp>
 #include <unicorn/utility/Memory.hpp>
+#include <unicorn/video/Texture.hpp>
+#include <unicorn/video/Material.hpp>
 
 #include <set>
 #include <algorithm>
@@ -89,6 +92,11 @@ bool Renderer::Init()
         return false;
     }
 
+        unicorn::video::Texture* texture = new unicorn::video::Texture("data/textures/texture.jpg");
+        m_tepmTexture = new VkTexture;
+        m_tepmTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, texture);
+        texture->Delete();
+
     m_isInitialized = true;
 
     LOG_INFO("Renderer initialized correctly.");
@@ -102,7 +110,7 @@ void Renderer::Deinit()
     {
         {
             // Create a copy of mesh list to delete all meshes
-            std::list<geometry::Mesh*> meshes(m_meshes);
+            std::list<Mesh*> meshes(m_meshes);
 
             for(auto& pMesh : meshes)
             {
@@ -287,9 +295,9 @@ bool Renderer::Render()
             m_hasDirtyMeshes = false;
         }
 
-        Frame();
+       // Frame();
 
-        m_vkLogicalDevice.waitIdle();
+        //m_vkLogicalDevice.waitIdle();
 
         return true;
     }
@@ -339,10 +347,18 @@ bool Renderer::RecreateSwapChain()
     return false;
 }
 
+bool Renderer::AddMesh(Mesh* mesh)
+{
+        auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
+        vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
+        m_vkMeshes.push_back(vkmesh);
+        m_meshes.push_back(mesh);
+        return false;
+}
+
 void Renderer::OnMeshReallocated(VkMesh* /*vkmesh*/)
 {
     m_uniformModel.Destroy();
-
     size_t bufferSize = m_vkMeshes.size() * m_dynamicAlignment;
     m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, bufferSize);
 
@@ -362,42 +378,33 @@ void Renderer::OnMeshReallocated(VkMesh* /*vkmesh*/)
     CreateCommandBuffers();
 }
 
-geometry::Mesh* Renderer::SpawnMesh()
+
+bool Renderer::DeleteMesh(const Mesh* mesh)
 {
-    auto mesh = new geometry::Mesh();
-    auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
-    vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
-    m_vkMeshes.push_back(vkmesh);
-    m_meshes.push_back(mesh);
-    return mesh;
-}
+        auto vkMeshIt = std::find_if(m_vkMeshes.begin(), m_vkMeshes.end(), [=](VkMesh* p) -> bool { return *p == *mesh; });
 
-bool Renderer::DeleteMesh(const geometry::Mesh* pMesh)
-{
-    auto vkMeshIt = std::find_if(m_vkMeshes.begin(), m_vkMeshes.end(), [=](VkMesh* p) -> bool { return *p == *pMesh; });
+        if (vkMeshIt != m_vkMeshes.end())
+        {
+                DeleteVkMesh(*vkMeshIt);
 
-    if(vkMeshIt != m_vkMeshes.end())
-    {
-        DeleteVkMesh(*vkMeshIt);
+                m_vkMeshes.erase(vkMeshIt);
 
-        m_vkMeshes.erase(vkMeshIt);
+                m_hasDirtyMeshes = true;
+        }
 
-        m_hasDirtyMeshes = true;
-    }
+        auto meshIt = std::find(m_meshes.begin(), m_meshes.end(), mesh);
 
-    auto meshIt = std::find(m_meshes.begin(), m_meshes.end(), pMesh);
+        if (meshIt != m_meshes.end())
+        {
+                delete *meshIt;
+                m_meshes.erase(meshIt);
 
-    if(meshIt != m_meshes.end())
-    {
-        delete *meshIt;
-        m_meshes.erase(meshIt);
-
-        return true;
-    }
-    else
-    {
-    }
-    return false;
+                return true;
+        }
+        else
+        {
+                return false;
+        }
 }
 
 void Renderer::SetDepthTest(bool enabled)
@@ -735,7 +742,7 @@ bool Renderer::CreateSwapChain()
     createInfo.imageColorSpace = surfaceFormat.colorSpace;
     createInfo.imageExtent = extent;
     createInfo.imageArrayLayers = 1;
-    createInfo.imageUsage = vk::ImageUsageFlagBits::eColorAttachment; // VK_IMAGE_USAGE_TRANSFER_DST_BIT for post processing.
+    createInfo.imageUsage = vk::ImageUsageFlagBits::eColorAttachment;
 
     QueueFamilyIndices indices = FindQueueFamilies(m_vkPhysicalDevice);
     uint32_t queueFamilyIndices[] = {static_cast<uint32_t>(indices.graphicsFamily), static_cast<uint32_t>(indices.presentFamily)};
@@ -877,21 +884,26 @@ bool Renderer::CreateRenderPass()
 bool Renderer::CreateDescriptionSetLayout()
 {
     std::vector<vk::DescriptorPoolSize> descriptorPoolSizes;
-    vk::DescriptorPoolSize descriptorMVPPoolSize;
-    descriptorMVPPoolSize.type = vk::DescriptorType::eUniformBuffer;
-    descriptorMVPPoolSize.descriptorCount = 1;
+    vk::DescriptorPoolSize descriptorViewProjectionPoolSize;
+    descriptorViewProjectionPoolSize.type = vk::DescriptorType::eUniformBuffer;
+    descriptorViewProjectionPoolSize.descriptorCount = 1;
 
     vk::DescriptorPoolSize descriptorModelPoolSize;
     descriptorModelPoolSize.type = vk::DescriptorType::eUniformBufferDynamic;
     descriptorModelPoolSize.descriptorCount = 1;
 
-    descriptorPoolSizes.push_back(descriptorMVPPoolSize);
+    vk::DescriptorPoolSize descriptorSamplerPoolSize;
+    descriptorSamplerPoolSize.type = vk::DescriptorType::eCombinedImageSampler;
+    descriptorSamplerPoolSize.descriptorCount = 1;
+
+    descriptorPoolSizes.push_back(descriptorViewProjectionPoolSize);
     descriptorPoolSizes.push_back(descriptorModelPoolSize);
+    descriptorPoolSizes.push_back(descriptorSamplerPoolSize);
 
     vk::DescriptorPoolCreateInfo poolCreateInfo;
     poolCreateInfo.poolSizeCount = static_cast<uint32_t>(descriptorPoolSizes.size());
     poolCreateInfo.pPoolSizes = descriptorPoolSizes.data();
-    poolCreateInfo.maxSets = 2;
+    poolCreateInfo.maxSets = 1;
 
     vk::Result result = m_vkLogicalDevice.createDescriptorPool(&poolCreateInfo, nullptr, &m_descriptorPool);
     if(result != vk::Result::eSuccess)
@@ -902,20 +914,27 @@ bool Renderer::CreateDescriptionSetLayout()
 
     std::vector<vk::DescriptorSetLayoutBinding> descriptorSetLayoutBindings;
 
-    vk::DescriptorSetLayoutBinding setMVP;
-    setMVP.descriptorType = vk::DescriptorType::eUniformBuffer;
-    setMVP.stageFlags = vk::ShaderStageFlagBits::eVertex;
-    setMVP.binding = 0; //TODO: hardcode description binding
-    setMVP.descriptorCount = 1;
+    vk::DescriptorSetLayoutBinding setViewProjection;
+    setViewProjection.descriptorType = vk::DescriptorType::eUniformBuffer;
+    setViewProjection.stageFlags = vk::ShaderStageFlagBits::eVertex;
+    setViewProjection.binding = 0; //TODO: hardcode descriptor binding
+    setViewProjection.descriptorCount = 1;
 
-    vk::DescriptorSetLayoutBinding setMODEL;
-    setMODEL.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
-    setMODEL.stageFlags = vk::ShaderStageFlagBits::eVertex;
-    setMODEL.binding = 1; //TODO: hardcode description binding
-    setMODEL.descriptorCount = 1;
+    vk::DescriptorSetLayoutBinding setModel;
+    setModel.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
+    setModel.stageFlags = vk::ShaderStageFlagBits::eVertex;
+    setModel.binding = 1; //TODO: hardcode descriptor binding
+    setModel.descriptorCount = 1;
 
-    descriptorSetLayoutBindings.push_back(setMVP);
-    descriptorSetLayoutBindings.push_back(setMODEL);
+    vk::DescriptorSetLayoutBinding textureSampler;
+    textureSampler.descriptorType = vk::DescriptorType::eCombinedImageSampler;
+    textureSampler.stageFlags = vk::ShaderStageFlagBits::eFragment;
+    textureSampler.binding = 1; //TODO: hardcode descriptor binding
+    textureSampler.descriptorCount = 1;
+
+    descriptorSetLayoutBindings.push_back(setViewProjection);
+    descriptorSetLayoutBindings.push_back(setModel);
+    descriptorSetLayoutBindings.push_back(textureSampler);
 
     vk::DescriptorSetLayoutCreateInfo descriptorLayout;
     descriptorLayout.pBindings = descriptorSetLayoutBindings.data();
@@ -963,7 +982,7 @@ bool Renderer::CreateGraphicsPipeline()
     vk::Result result;
     FreeGraphicsPipeline();
 
-    m_shaderProgram = new ShaderProgram(m_vkLogicalDevice, "data/shaders/shader.vert.spv", "data/shaders/shader.frag.spv");
+    m_shaderProgram = new ShaderProgram(m_vkLogicalDevice, "data/shaders/UberShader.vert.spv", "data/shaders/UberShader.frag.spv");
 
     vk::PipelineInputAssemblyStateCreateInfo inputAssembly;
     inputAssembly.topology = vk::PrimitiveTopology::eTriangleList;
@@ -1113,6 +1132,12 @@ bool Renderer::CreateCommandPool()
 bool Renderer::CreateDepthBuffer()
 {
     FreeDepthBuffer();
+
+    if(!FindDepthFormat(m_depthImageFormat))
+    {
+        LOG_ERROR("Not one of desired depth formats are not compatible!");
+        return false;
+    }
     m_depthImage = new Image(m_vkPhysicalDevice,
                                m_vkLogicalDevice,
                                m_depthImageFormat,
@@ -1166,7 +1191,7 @@ bool Renderer::CreateCommandBuffers()
         m_commandBuffers[i].beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
         m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
 
-        vk::DeviceSize offsets[] = {0};
+       /* vk::DeviceSize offsets[] = {0};
 
         {
             uint32_t j = 0;
@@ -1185,7 +1210,7 @@ bool Renderer::CreateCommandBuffers()
                     ++j;
                 }
             }
-        }
+        }*/
 
         m_commandBuffers[i].endRenderPass();
 
