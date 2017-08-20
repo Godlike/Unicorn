@@ -10,6 +10,7 @@
 #include <unicorn/system/WindowHint.hpp>
 #include <unicorn/system/CustomValue.hpp>
 #include <unicorn/Settings.hpp>
+#include <unicorn/system/Input.hpp>
 #include <unicorn/system/input/Action.hpp>
 #include <unicorn/system/input/Key.hpp>
 #include <unicorn/system/input/Modifier.hpp>
@@ -28,6 +29,7 @@ static unicorn::video::Graphics* pGraphics = nullptr;
 static unicorn::video::CameraFpsController* pCameraController = nullptr;
 static unicorn::system::Timer* timer = nullptr;
 static unicorn::video::Renderer* vkRenderer = nullptr;
+static unicorn::system::Input* pInput = nullptr;
 static bool depthTest = true;
 unicorn::system::Window* pWindow0 = nullptr;
 
@@ -46,7 +48,7 @@ void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
     lastFrame = currentFrame;
 }
 
-void onMouseButton(unicorn::system::Window* /*pWindow*/, unicorn::system::input::MouseButton button, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask)
+void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonEvent)
 {
 
 }
@@ -60,23 +62,29 @@ void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double>
 {
     pCameraController->Scroll(static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
 }
-
-void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::Key key, uint32_t scancode, unicorn::system::input::Action action, unicorn::system::input::Modifier::Mask modifiers)
+void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEvent)
 {
     using unicorn::system::input::Key;
     using unicorn::system::input::Modifier;
     using unicorn::system::input::Action;
     using unicorn::system::MouseMode;
 
+    unicorn::system::input::Action const& action = keyboardEvent.action;
+
     if (Action::Release == action)
     {
         return;
     }
 
-    std::pair<int32_t, int32_t> position = pWindow->GetPosition();
-    bool positionChanged = true;
+    unicorn::system::Window* const& pWindow = keyboardEvent.pWindow;
+    unicorn::system::input::Key const& key = keyboardEvent.key;
+    uint32_t const& scancode = keyboardEvent.scancode;
+    unicorn::system::input::Modifier::Mask const& modifiers = keyboardEvent.modifiers;
 
-    float delta = deltaTime;
+    std::pair<int32_t, int32_t> position = pWindow->GetPosition();
+    bool positionChanged = false;
+
+    float delta = deltaTime * 0.1f;
 
     if (Modifier::Shift & modifiers)
     {
@@ -122,21 +130,25 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     case Key::Up:
     {
         position.second -= static_cast<uint32_t>(delta);
+        positionChanged = true;
         break;
     }
     case Key::Down:
     {
         position.second += static_cast<uint32_t>(delta);
+        positionChanged = true;
         break;
     }
     case Key::Left:
     {
         position.first -= static_cast<uint32_t>(delta);
+        positionChanged = true;
         break;
     }
     case Key::Right:
     {
         position.first += static_cast<uint32_t>(delta);
+        positionChanged = true;
         break;
     }
     case Key::C:
@@ -146,6 +158,10 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
     }
     case Key::V:
     {
+        if (Action::Repeat == action)
+        {
+            return;
+        }
         depthTest = !depthTest;
         pGraphics->SetDepthTest(depthTest);
         break;
@@ -155,9 +171,32 @@ void onWindowKeyboard(unicorn::system::Window* pWindow, unicorn::system::input::
         pWindow->SetMouseMode(MouseMode::Normal);
         break;
     }
+    case Key::Insert:
+    {
+        if (pInput)
+        {
+            switch (modifiers)
+            {
+            case Modifier::Ctrl:
+            {
+                pInput->SetClipboard(std::string("Gotta go fast"));
+                break;
+            }
+            case Modifier::Shift:
+            {
+                std::cout << "Clipboard data: " << pInput->GetClipboard() << std::endl;
+                break;
+            }
+            default:
+            {
+                break;
+            }
+            }
+        }
+        break;
+    }
     default:
     {
-        positionChanged = false;
         break;
     }
     }
@@ -187,6 +226,7 @@ int main(int argc, char* argv[])
     if (unicornEngine->Init())
     {
         pGraphics = unicornEngine->GetGraphics();
+        pInput = unicornEngine->GetInput();
 
         unicornEngine->LogicFrame.connect(&onLogicFrame);
 
