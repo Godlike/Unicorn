@@ -65,6 +65,12 @@ include(WinkSignals)
 ## Installation info
 include(InstallInfo)
 
+install( FILES ${LOGURU_INCLUDE_DIR}/loguru.hpp
+    DESTINATION ${UNICORN_INSTALL_INCLUDE_DIR}
+    COMPONENT godlike_headers
+    PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
+)
+
 install( DIRECTORY ${WINK_SIGNALS_INCLUDE_DIR}/wink
     DESTINATION ${UNICORN_INSTALL_INCLUDE_DIR}
     COMPONENT godlike_headers

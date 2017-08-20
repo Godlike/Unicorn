@@ -46,6 +46,9 @@ install( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
             PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
         PATTERN "*.imp"
             PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
+        PATTERN "utility/asset/FileReader.hpp" EXCLUDE
+        PATTERN "utility/concurrent" EXCLUDE
+        PATTERN "utility/Memory.hpp" EXCLUDE
 )
 
 if (UNIX)

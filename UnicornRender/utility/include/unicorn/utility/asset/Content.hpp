@@ -1,11 +1,13 @@
 /*
 * Copyright (C) 2017 by Godlike
-* This code is licensed under the MIT license (MIT) 
+* This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
 
 #ifndef UNICORN_UTILITY_ASSET_CONTENT_HPP
 #define UNICORN_UTILITY_ASSET_CONTENT_HPP
+
+#include <unicorn/utility/SharedMacros.hpp>
 
 #include <cstdint>
 #include <vector>
@@ -38,10 +40,10 @@ public:
     ~Content() = default;
 
     /** @brief  Returns stored buffer */
-    const std::vector<uint8_t>& GetBuffer() const { return m_buffer; }
+    UNICORN_EXPORT const std::vector<uint8_t>& GetBuffer() const { return m_buffer; }
 
     /** @brief  Returns the size of stored buffer */
-    uintmax_t GetSize() const { return m_buffer.size(); }
+    UNICORN_EXPORT uintmax_t GetSize() const { return m_buffer.size(); }
 
 private:
     //! Buffer with asset contents

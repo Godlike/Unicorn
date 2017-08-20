@@ -88,8 +88,12 @@ include(InstallInfo)
 install( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
     DESTINATION ${UNICORN_INSTALL_INCLUDE_DIR}
     COMPONENT godlike_headers
-    FILES_MATCHING PATTERN "*.hpp"
-    PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
+    FILES_MATCHING
+        PATTERN "*.hpp"
+            PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
+        PATTERN "system/adapter" EXCLUDE
+        PATTERN "system/Manager.hpp" EXCLUDE
+        PATTERN "system/profiler" EXCLUDE
 )
 
 if (UNIX)
