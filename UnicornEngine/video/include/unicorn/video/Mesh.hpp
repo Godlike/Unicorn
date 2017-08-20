@@ -63,8 +63,7 @@ public:
     * @return Mesh indices
     */
     UNICORN_EXPORT const std::vector<uint16_t>& GetIndices() const;
-
-        ModelMatrix modelMatrix;
+    ModelMatrix modelMatrix;
 private:
     std::vector<Vertex> m_vertices;
     std::vector<uint16_t> m_indices;

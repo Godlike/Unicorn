@@ -21,12 +21,12 @@ VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::Command
     , m_pool(pool)
     , m_queue(queue)
 {
-   // m_mesh.VerticesUpdated.connect(this, &VkMesh::AllocateOnGPU);
+   //m_mesh.VerticesUpdated.connect(this, &VkMesh::AllocateOnGPU);
 }
 
 VkMesh::~VkMesh()
 {
-   // m_mesh.VerticesUpdated.disconnect(this, &VkMesh::AllocateOnGPU);
+   //m_mesh.VerticesUpdated.disconnect(this, &VkMesh::AllocateOnGPU);
 }
 
 bool VkMesh::operator==(const Mesh& mesh) const
@@ -36,7 +36,7 @@ bool VkMesh::operator==(const Mesh& mesh) const
 
 const glm::mat4& VkMesh::GetModel() const
 {
-		return m_mesh.modelMatrix.model;
+        return m_mesh.modelMatrix.model;
 }
 
 void VkMesh::AllocateOnGPU()

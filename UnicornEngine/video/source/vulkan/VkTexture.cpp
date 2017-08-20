@@ -44,7 +44,7 @@ bool VkTexture::Create(const vk::PhysicalDevice & physicalDevice, const vk::Devi
         m_vkImage = new Image(physicalDevice,
             device,
             vk::Format::eR8G8B8A8Unorm,
-            vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
+            vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled | vk::ImageUsageFlagBits::eColorAttachment,
             texture->Width(),
             texture->Height());
         if (!m_vkImage->IsInitialized())
@@ -88,6 +88,7 @@ bool VkTexture::Create(const vk::PhysicalDevice & physicalDevice, const vk::Devi
         m_imageInfo.imageView = m_vkImage->GetVkImageView();
         m_isInitialized = true;
     }
+    return true;
 }
 }
 }

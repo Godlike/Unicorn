@@ -104,7 +104,7 @@ public:
     bool Render() override;
     bool RecreateSwapChain();
     bool AddMesh(Mesh* mesh) override;
-		bool DeleteMesh(const Mesh* mesh) override;
+        bool DeleteMesh(const Mesh* mesh) override;
     void SetDepthTest(bool enabled) override;
   private:
     vk::PhysicalDevice m_vkPhysicalDevice;
@@ -132,9 +132,10 @@ public:
     std::vector<vk::Framebuffer> m_swapChainFramebuffers;
     std::vector<vk::CommandBuffer> m_commandBuffers;
 
-		std::list<VkMesh*> m_vkMeshes;
+        std::list<VkMesh*> m_vkMeshes;
     Image* m_depthImage;
     VkTexture* m_tepmTexture;
+    unicorn::video::Texture* m_textureData;
 
     ShaderProgram* m_shaderProgram;
     Buffer m_uniformMvp;

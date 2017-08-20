@@ -27,9 +27,10 @@ class VkTexture
 public:
         VkTexture();
     
-        const vk::DescriptorImageInfo& GetDescriptorImageInfo();
-        bool Create(const vk::PhysicalDevice& physicalDevice, const vk::Device& device, const vk::CommandPool& commandPool, const vk::Queue& queue, const Texture* texture);
-private:
+    const vk::DescriptorImageInfo& GetDescriptorImageInfo();
+    bool Create(const vk::PhysicalDevice& physicalDevice, const vk::Device& device, const vk::CommandPool& commandPool, const vk::Queue& queue, const Texture* texture);
+    bool IsInitialized() const { return m_isInitialized; }
+    private:
     vk::DescriptorImageInfo m_imageInfo;
     Image* m_vkImage;
     vk::Sampler m_sampler;

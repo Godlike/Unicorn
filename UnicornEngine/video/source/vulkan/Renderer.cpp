@@ -73,6 +73,8 @@ bool Renderer::Init()
 
     LOG_INFO("Renderer initialization started.");
 
+    m_tepmTexture = new VkTexture;
+
     if(!CreateSurface() ||
         !PickPhysicalDevice() ||
         !CreateLogicalDevice() ||
@@ -92,10 +94,10 @@ bool Renderer::Init()
         return false;
     }
 
-        unicorn::video::Texture* texture = new unicorn::video::Texture("data/textures/texture.jpg");
-        m_tepmTexture = new VkTexture;
-        m_tepmTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, texture);
-        texture->Delete();
+    m_textureData = new unicorn::video::Texture("data/textures/texture.jpg");
+    m_tepmTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, m_textureData);
+
+    ResizeDynamicUniformBuffer();
 
     m_isInitialized = true;
 
@@ -295,9 +297,9 @@ bool Renderer::Render()
             m_hasDirtyMeshes = false;
         }
 
-       // Frame();
+       Frame();
 
-        //m_vkLogicalDevice.waitIdle();
+        m_vkLogicalDevice.waitIdle();
 
         return true;
     }
@@ -350,7 +352,9 @@ bool Renderer::RecreateSwapChain()
 bool Renderer::AddMesh(Mesh* mesh)
 {
         auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
-        vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
+        vkmesh->AllocateOnGPU();
+        OnMeshReallocated(vkmesh);
+        //vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
         m_vkMeshes.push_back(vkmesh);
         m_meshes.push_back(mesh);
         return false;
@@ -591,11 +595,15 @@ void Renderer::ResizeDynamicUniformBuffer() const
     imageDescriptorSet.setDstArrayElement(0);
     imageDescriptorSet.setDescriptorType(vk::DescriptorType::eCombinedImageSampler);
     imageDescriptorSet.setDescriptorCount(1);
-    imageDescriptorSet.setPImageInfo(&m_tepmTexture->GetDescriptorImageInfo());
+
+    if(m_tepmTexture->IsInitialized())
+    {
+        imageDescriptorSet.setPImageInfo(&m_tepmTexture->GetDescriptorImageInfo());
+        writeDescriptorSets.push_back(imageDescriptorSet);
+    }
 
     writeDescriptorSets.push_back(writeDescriptorSetMVP);
     writeDescriptorSets.push_back(writeDescriptorSetModel);
-    writeDescriptorSets.push_back(imageDescriptorSet);
 
     m_vkLogicalDevice.updateDescriptorSets(static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
 }
@@ -938,7 +946,7 @@ bool Renderer::CreateDescriptionSetLayout()
     vk::DescriptorSetLayoutBinding textureSampler;
     textureSampler.descriptorType = vk::DescriptorType::eCombinedImageSampler;
     textureSampler.stageFlags = vk::ShaderStageFlagBits::eFragment;
-    textureSampler.binding = 1; //TODO: hardcode descriptor binding
+    textureSampler.binding = 2; //TODO: hardcode descriptor binding
     textureSampler.descriptorCount = 1;
 
     descriptorSetLayoutBindings.push_back(setViewProjection);
