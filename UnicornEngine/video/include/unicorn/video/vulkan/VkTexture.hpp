@@ -25,14 +25,15 @@ namespace vulkan
 class VkTexture
 {
 public:
-		VkTexture();
+        VkTexture();
     
-		const vk::DescriptorImageInfo& GetDescriptorImageInfo();
-		bool Create(const vk::PhysicalDevice& physicalDevice, const vk::Device& device, const vk::CommandPool& commandPool, const vk::Queue& queue, const Texture* texture);
+        const vk::DescriptorImageInfo& GetDescriptorImageInfo();
+        bool Create(const vk::PhysicalDevice& physicalDevice, const vk::Device& device, const vk::CommandPool& commandPool, const vk::Queue& queue, const Texture* texture);
 private:
     vk::DescriptorImageInfo m_imageInfo;
     Image* m_vkImage;
-		bool m_isInitialized;
+    vk::Sampler m_sampler;
+    bool m_isInitialized;
 };
 }
 }

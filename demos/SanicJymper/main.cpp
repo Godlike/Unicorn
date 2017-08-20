@@ -270,6 +270,8 @@ int main(int argc, char* argv[])
             }
             Quad* texturedQuad = new Quad;
 
+            vkRenderer->AddMesh(texturedQuad);
+
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);
             pWindow0->Keyboard.connect(&onWindowKeyboard);

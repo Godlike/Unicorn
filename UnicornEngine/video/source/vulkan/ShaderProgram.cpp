@@ -70,7 +70,7 @@ namespace unicorn
                 m_attributeDescription.at(0).setLocation(0);
                 m_attributeDescription.at(0).setFormat(vk::Format::eR32G32B32Sfloat);
                 m_attributeDescription.at(0).setOffset(offsetof(Vertex, pos));
-                //Color
+                //Texture coordinates
                 m_attributeDescription.at(1).setBinding(0);
                 m_attributeDescription.at(1).setLocation(1);
                 m_attributeDescription.at(1).setFormat(vk::Format::eR32G32B32Sfloat);

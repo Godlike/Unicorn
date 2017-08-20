@@ -585,8 +585,17 @@ void Renderer::ResizeDynamicUniformBuffer() const
     writeDescriptorSetModel.pBufferInfo = &m_uniformModel.GetDescriptorInfo();
     writeDescriptorSetModel.descriptorCount = 1;
 
+    vk::WriteDescriptorSet imageDescriptorSet;
+    imageDescriptorSet.setDstSet(m_descriptorSet);
+    imageDescriptorSet.setDstBinding(2);
+    imageDescriptorSet.setDstArrayElement(0);
+    imageDescriptorSet.setDescriptorType(vk::DescriptorType::eCombinedImageSampler);
+    imageDescriptorSet.setDescriptorCount(1);
+    imageDescriptorSet.setPImageInfo(&m_tepmTexture->GetDescriptorImageInfo());
+
     writeDescriptorSets.push_back(writeDescriptorSetMVP);
     writeDescriptorSets.push_back(writeDescriptorSetModel);
+    writeDescriptorSets.push_back(imageDescriptorSet);
 
     m_vkLogicalDevice.updateDescriptorSets(static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
 }
@@ -1191,7 +1200,7 @@ bool Renderer::CreateCommandBuffers()
         m_commandBuffers[i].beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
         m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
 
-       /* vk::DeviceSize offsets[] = {0};
+        vk::DeviceSize offsets[] = {0};
 
         {
             uint32_t j = 0;
@@ -1210,7 +1219,7 @@ bool Renderer::CreateCommandBuffers()
                     ++j;
                 }
             }
-        }*/
+        }
 
         m_commandBuffers[i].endRenderPass();
 

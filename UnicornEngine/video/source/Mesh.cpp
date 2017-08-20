@@ -40,7 +40,7 @@ const std::vector<uint16_t>& Mesh::GetIndices() const
 }
 
 
-Vertex::Vertex(glm::vec3 pos) : pos(pos)
+Vertex::Vertex(glm::vec3 pos, glm::vec2 tc) : pos(pos), tc(tc)
 {
 }
 }

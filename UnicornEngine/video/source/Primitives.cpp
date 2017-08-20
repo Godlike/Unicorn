@@ -14,39 +14,39 @@ Cube::Cube()
 {
     std::vector<Vertex> temp_vertices;
     //front
-    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, 1.0));
-    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, 1.0));
-    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, 1.0));
-    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, 1.0));
+    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, 1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, 1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, 1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, 1.0), glm::vec2(1.0f, 0.0f));
 
     //right
-    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, 1.0));
-    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, -1.0));
-    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, -1.0));
-    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, 1.0));
+    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, 1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, -1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, -1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, 1.0), glm::vec2(1.0f, 0.0f));
 
     //back
-    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, -1.0));
-    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, -1.0));
-    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, -1.0));
-    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, -1.0));
+    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, -1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, -1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, -1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, -1.0), glm::vec2(1.0f, 0.0f));
 
     //left
-    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, -1.0));
-    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, 1.0));
-    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, 1.0));
-    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, -1.0));
+    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, -1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, 1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, 1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, -1.0), glm::vec2(1.0f, 0.0f));
 
     //upper
-    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, 1.0));
-    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, 1.0));
-    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, -1.0));
-    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, -1.0));
+    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, 1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, 1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(-1.0, 1.0, -1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(1.0, 1.0, -1.0), glm::vec2(1.0f, 0.0f));
     //bottom
-    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, -1.0));
-    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, -1.0));
-    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, 1.0));
-    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, 1.0));
+    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, -1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, -1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(1.0, -1.0, 1.0), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(-1.0, -1.0, 1.0), glm::vec2(1.0f, 0.0f));
 
     Mesh::SetMeshData(temp_vertices, {0, 1, 2, 0, 2, 3,
                     4, 5, 6, 4, 6, 7,
@@ -58,11 +58,13 @@ Cube::Cube()
 
 Quad::Quad()
 {
-    Mesh::SetMeshData({{{-1.0f, -1.0f, 0.0f}},
-                    {{1.0f, -1.0f, 0.0f}},
-                    {{1.0f, 1.0f, 0.0f}},
-                    {{-1.0f, 1.0f, 0.0f}}},
-                {0, 1, 2, 2, 3, 0});
+    std::vector<Vertex> temp_vertices;
+    temp_vertices.emplace_back(glm::vec3(-1.0f, -1.0f, 0.0f), glm::vec2(1.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(1.0f, -1.0f, 0.0f), glm::vec2(0.0f, 0.0f));
+    temp_vertices.emplace_back(glm::vec3(1.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f));
+    temp_vertices.emplace_back(glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec2(1.0f, 1.0f));
+
+    Mesh::SetMeshData(temp_vertices, {0, 1, 2, 2, 3, 0});
 }
 }
 }

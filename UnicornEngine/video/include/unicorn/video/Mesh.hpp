@@ -26,7 +26,7 @@ class Material;
  */
 struct Vertex
 {
-    Vertex(glm::vec3 pos);
+    Vertex(glm::vec3 pos, glm::vec2 tc);
     /**
      * @brief Position of vertex
      */
@@ -64,12 +64,11 @@ public:
     */
     UNICORN_EXPORT const std::vector<uint16_t>& GetIndices() const;
 
-		ModelMatrix modelMatrix;
+        ModelMatrix modelMatrix;
 private:
     std::vector<Vertex> m_vertices;
     std::vector<uint16_t> m_indices;
-
-		Material* m_material;
+    Material* m_material;
 };
 }
 }
