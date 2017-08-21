@@ -6,6 +6,7 @@
 
 #include <unicorn/video/vulkan/VkMesh.hpp>
 #include <unicorn/utility/Logger.hpp>
+#include <unicorn/video/Material.hpp>
 
 namespace unicorn
 {
@@ -14,15 +15,17 @@ namespace video
 namespace vulkan
 {
 VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, Mesh& mesh)
-    : m_valid(false)
-    , m_device(device)
-    , m_physicalDevice(physicalDevice)
-    , m_mesh(mesh)
-    , m_pool(pool)
-    , m_queue(queue)
-{
-   //m_mesh.VerticesUpdated.connect(this, &VkMesh::AllocateOnGPU);
-}
+        : m_valid(false)
+          , m_device(device)
+          , m_physicalDevice(physicalDevice)
+          , m_mesh(mesh)
+          , m_pool(pool)
+          , m_queue(queue)
+          , m_isColored(mesh.GetMaterial().IsColored())
+          , m_color(mesh.GetMaterial().GetColor())
+    {
+        //m_mesh.VerticesUpdated.connect(this, &VkMesh::AllocateOnGPU);
+    }
 
 VkMesh::~VkMesh()
 {

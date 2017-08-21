@@ -87,6 +87,17 @@ public:
     * @return size of indices
     */
     uint32_t IndicesSize();
+
+    bool IsColored() const
+    {
+        return m_isColored;
+    }
+
+    glm::vec3 GetColor() const
+    {
+        return m_color;
+    }
+
     /**
      * @brief Signal for command buffer reallocation
      */
@@ -99,6 +110,8 @@ private:
     Mesh& m_mesh;
     vk::CommandPool m_pool;
     vk::Queue m_queue;
+    bool m_isColored;
+    glm::vec3 m_color;
 };
 }
 }

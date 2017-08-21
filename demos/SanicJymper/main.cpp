@@ -259,18 +259,34 @@ int main(int argc, char* argv[])
         using unicorn::video::Quad;
         {
             //Loading textures
-            unicorn::video::Texture* texture = new unicorn::video::Texture("data/textures/texture.jpg");
-            unicorn::video::Texture* textureMandrill = new unicorn::video::Texture("data/textures/mandrill.png");
+            unicorn::video::Texture texture, textureMandrill;
+
+            texture.Load("data/textures/texture.jpg");
+            textureMandrill.Load("data/textures/mandrill.png");
 
             //Checks data
-            if (!texture->IsLoaded()
-                || !textureMandrill->IsLoaded())
+            if (!texture.IsLoaded()
+                || !textureMandrill.IsLoaded())
             {
                 return -1;
             }
-            Quad* texturedQuad = new Quad;
+
+            unicorn::video::Material textureMaterial;
+            textureMaterial.SetAlbedo(texture);
+            unicorn::video::Material mandrillMaterial;
+            mandrillMaterial.SetAlbedo(textureMandrill);
+            unicorn::video::Material defaultMaterial;
+
+            Quad* texturedQuad = new Quad(textureMaterial);
+            Quad* mandrillQuad = new Quad(mandrillMaterial);
+            Quad* coloredQuad = new Quad(defaultMaterial);
+
+            mandrillQuad->modelMatrix.Translate({ 3.0, 0.0, 0.0 });
+            coloredQuad->modelMatrix.Translate({-3.0, 0.0, 0.0});
 
             vkRenderer->AddMesh(texturedQuad);
+            vkRenderer->AddMesh(mandrillQuad);
+            vkRenderer->AddMesh(coloredQuad);
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);

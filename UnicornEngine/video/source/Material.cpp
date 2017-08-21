@@ -5,26 +5,36 @@
 */
 
 #include <unicorn/video/Material.hpp>
-#include <unicorn/utility/Logger.hpp>
 
 namespace unicorn
 {
 namespace video
 {
-   Material::Material() : m_isColored(true)
-   {
+    Material::Material() : m_isColored(true), m_albedo(nullptr), m_color(Color::Red)
+    {
        
-   }
-	 Material::Material()
-	 {
-	 }
+    }
 
-	 void Material::SetColor()
-	 {
-	 }
+    void Material::SetColor(const glm::vec3 color)
+    {
+        m_color = color;
+    }
 
-	 void Material::SetAlbedo(const Texture * albedo)
-	 {
-	 }
+    void Material::SetAlbedo(Texture& albedo)
+    {
+        m_albedo = &albedo;
+        m_isColored = false;
+    }
+
+    void Material::RemoveAlbedo()
+    {
+        m_albedo = nullptr;
+        m_isColored = true;
+    }
+
+    bool Material::IsColored() const
+    {
+        return m_isColored;
+    }
 }
 }

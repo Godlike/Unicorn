@@ -19,7 +19,7 @@ namespace video
 class Texture
 {
 public:
-
+    UNICORN_EXPORT Texture();
     UNICORN_EXPORT Texture(const std::string& path);
 
     UNICORN_EXPORT bool Load(const std::string& path);

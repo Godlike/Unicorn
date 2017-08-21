@@ -15,13 +15,18 @@ namespace unicorn
 {
 namespace video
 {
-Texture::Texture(const std::string& path): m_width(0)
-                  , m_height(0)
-                  , m_channels(0)
-                  , m_size(0)
-                  , m_data(nullptr)
-                  , m_path(nullptr)
-                  , m_initialized(false)
+    Texture::Texture() : m_width(0)
+        , m_height(0)
+        , m_channels(0)
+        , m_size(0)
+        , m_data(nullptr)
+        , m_path(nullptr)
+        , m_initialized(false)
+    {
+
+    }
+
+Texture::Texture(const std::string& path) : Texture()
 {
     Load(path);
 }

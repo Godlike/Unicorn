@@ -39,6 +39,7 @@ set(VIDEO_HEADERS
     include/unicorn/video/Color.hpp
     include/unicorn/video/Texture.hpp
     include/unicorn/video/Mesh.hpp
+    include/unicorn/video/Material.hpp
     include/unicorn/video/Primitives.hpp
     include/unicorn/video/ModelMatrix.hpp
     ${VULKAN_HEADERS}
@@ -52,6 +53,7 @@ set(VIDEO_SOURCES
     source/Color.cpp
     source/Texture.cpp
     source/Mesh.cpp
+    source/Material.cpp
     source/Primitives.cpp
     source/ModelMatrix.cpp
     ${VULKAN_SOURCES}

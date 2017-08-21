@@ -10,13 +10,8 @@ namespace unicorn
 {
 namespace video
 {
-Mesh::Mesh()
+Mesh::Mesh(Material& material) : m_material(&material)
 {
-}
-
-Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices)
-{
-    SetMeshData(vertices, indices);
 }
 
 Mesh::~Mesh()

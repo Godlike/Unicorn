@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <tuple>
 #include <chrono>
+#include "glm/gtc/type_ptr.hpp"
 
 namespace unicorn
 {
@@ -968,6 +969,12 @@ bool Renderer::CreateDescriptionSetLayout()
     vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
     pipelineLayoutInfo.setLayoutCount = 1;
     pipelineLayoutInfo.pSetLayouts = &m_descriptorSetLayout;
+    
+    vk::PushConstantRange pushConstanRange;
+    pushConstanRange.setSize(sizeof(glm::vec4));
+
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstanRange;
 
     result = m_vkLogicalDevice.createPipelineLayout(&pipelineLayoutInfo, nullptr, &m_pipelineLayout);
     if(result != vk::Result::eSuccess)
@@ -1217,6 +1224,8 @@ bool Renderer::CreateCommandBuffers()
             {
                 if(pVkMesh->IsValid())
                 {
+                    glm::vec4 colorPush({pVkMesh->GetColor(), pVkMesh->IsColored()}); // xyz - color. w - 1.0 enabled color or 0.0 disabled color
+                    m_commandBuffers[i].pushConstants(m_pipelineLayout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(colorPush), glm::value_ptr(colorPush));
                     vk::Buffer vertexBuffer[] = {pVkMesh->GetVertexBuffer()};
                     uint32_t dynamicOffset = j * static_cast<uint32_t>(m_dynamicAlignment);
                     m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);

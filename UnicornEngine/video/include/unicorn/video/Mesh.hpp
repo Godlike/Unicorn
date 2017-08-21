@@ -43,8 +43,7 @@ struct Vertex
 class Mesh
 {
 public:
-    UNICORN_EXPORT Mesh();
-    UNICORN_EXPORT Mesh(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices);
+    UNICORN_EXPORT Mesh(Material& material);
     UNICORN_EXPORT ~Mesh();
 
     /**
@@ -63,6 +62,12 @@ public:
     * @return Mesh indices
     */
     UNICORN_EXPORT const std::vector<uint16_t>& GetIndices() const;
+
+    UNICORN_EXPORT const Material& GetMaterial() const
+    {
+        return *m_material;
+    }
+
     ModelMatrix modelMatrix;
 private:
     std::vector<Vertex> m_vertices;

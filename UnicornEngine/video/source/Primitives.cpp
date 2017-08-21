@@ -10,7 +10,7 @@ namespace unicorn
 {
 namespace video
 {
-Cube::Cube()
+Cube::Cube(Material& material) : Mesh(material)
 {
     std::vector<Vertex> temp_vertices;
     //front
@@ -56,7 +56,7 @@ Cube::Cube()
                     21, 22, 20, 22, 23});
 }
 
-Quad::Quad()
+Quad::Quad(Material& material) : Mesh(material)
 {
     std::vector<Vertex> temp_vertices;
     temp_vertices.emplace_back(glm::vec3(-1.0f, -1.0f, 0.0f), glm::vec2(1.0f, 0.0f));

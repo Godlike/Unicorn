@@ -18,7 +18,7 @@ namespace video
 class Cube : public Mesh
 {
 public:
-    UNICORN_EXPORT Cube();
+    UNICORN_EXPORT Cube(Material& material);
 private:
     //Hide it to prevent data updating
     void SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices) = delete;
@@ -27,7 +27,7 @@ private:
 class Quad : public Mesh
 {
 public:
-    UNICORN_EXPORT Quad();
+    UNICORN_EXPORT Quad(Material& material);
 private:
     //Hide it to prevent data updating
     void SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices) = delete;
