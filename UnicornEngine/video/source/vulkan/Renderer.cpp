@@ -352,12 +352,11 @@ bool Renderer::RecreateSwapChain()
 bool Renderer::AddMesh(Mesh* mesh)
 {
         auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
-        vkmesh->AllocateOnGPU();
-        OnMeshReallocated(vkmesh);
-        //vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
+        vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
         m_vkMeshes.push_back(vkmesh);
         m_meshes.push_back(mesh);
-        return false;
+        vkmesh->AllocateOnGPU();
+        return true;
 }
 
 void Renderer::OnMeshReallocated(VkMesh* /*vkmesh*/)
@@ -692,6 +691,7 @@ bool Renderer::CreateLogicalDevice()
     }
 
     vk::PhysicalDeviceFeatures deviceFeatures;
+    deviceFeatures.samplerAnisotropy = VK_TRUE;
 
     vk::DeviceCreateInfo createInfo;
     createInfo.setPQueueCreateInfos(queueCreateInfos.data());
@@ -1259,6 +1259,9 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
     bool extensionsSupported = CheckDeviceExtensionSupport(device);
     bool swapChainAcceptable = false;
 
+    vk::PhysicalDeviceFeatures deviceFeatures;
+    device.getFeatures(&deviceFeatures);
+
     if(extensionsSupported)
     {
         SwapChainSupportDetails swapChainSupport;
@@ -1269,7 +1272,8 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
         swapChainAcceptable = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
     }
 
-    if(deviceProperties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu && indices.IsComplete() && extensionsSupported && swapChainAcceptable)
+    if(deviceProperties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu && 
+        indices.IsComplete() && extensionsSupported && swapChainAcceptable && deviceFeatures.samplerAnisotropy)
     {
         LOG_INFO("Picked as main GPU : %s", deviceProperties.deviceName);
         m_gpuName = deviceProperties.deviceName;

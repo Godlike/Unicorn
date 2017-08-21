@@ -60,8 +60,8 @@ public:
      */
     virtual void SetDepthTest(bool enabled) = 0;
 
-		virtual bool AddMesh(Mesh* mesh) = 0;
-		virtual bool DeleteMesh(const Mesh* mesh) = 0;
+    virtual bool AddMesh(Mesh* mesh) = 0;
+    virtual bool DeleteMesh(const Mesh* mesh) = 0;
 protected:
     bool m_isInitialized;
 
@@ -74,10 +74,10 @@ protected:
     //! Background filling color
     std::array<float, 4> m_backgroundColor;
     //! Depth test
-		bool m_depthTestEnabled;
+    bool m_depthTestEnabled;
 
-		//! Array of geometry meshes		
-		std::list<Mesh*> m_meshes;
+    //! Array of geometry meshes		
+    std::list<Mesh*> m_meshes;
 };
 }
 }

@@ -104,7 +104,7 @@ public:
     bool Render() override;
     bool RecreateSwapChain();
     bool AddMesh(Mesh* mesh) override;
-        bool DeleteMesh(const Mesh* mesh) override;
+    bool DeleteMesh(const Mesh* mesh) override;
     void SetDepthTest(bool enabled) override;
   private:
     vk::PhysicalDevice m_vkPhysicalDevice;
