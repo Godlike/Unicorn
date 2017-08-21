@@ -30,11 +30,16 @@ public:
     UNICORN_EXPORT int32_t Width() const;
     UNICORN_EXPORT int32_t Height() const;
     UNICORN_EXPORT const char* Path() const;
+    UNICORN_EXPORT uint32_t GetId() const
+    {
+        return m_id;
+    }
 private:
     int32_t m_width;
     int32_t m_height;
     int32_t m_channels;
     int32_t m_size;
+    uint32_t m_id;
     unsigned char* m_data;
     const char* m_path;
     bool m_initialized;

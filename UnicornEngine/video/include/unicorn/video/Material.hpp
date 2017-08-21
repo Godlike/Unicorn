@@ -29,6 +29,10 @@ public:
     {
         return m_color;
     }
+    UNICORN_EXPORT const Texture& GetAlbedo() const
+    {
+        return *m_albedo;
+    }
 private:
     glm::vec3 m_color;
     bool m_isColored;

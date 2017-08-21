@@ -98,6 +98,16 @@ public:
         return m_color;
     }
 
+    void SetTextureHandler(uint32_t handler)
+    {
+        m_textureHandler = handler;
+    }
+
+    uint32_t GetTextureHandler() const
+    {
+        return m_textureHandler;
+    }
+
     /**
      * @brief Signal for command buffer reallocation
      */
@@ -112,6 +122,7 @@ private:
     vk::Queue m_queue;
     bool m_isColored;
     glm::vec3 m_color;
+    uint32_t m_textureHandler;
 };
 }
 }

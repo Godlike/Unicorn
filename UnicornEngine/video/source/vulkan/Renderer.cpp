@@ -74,8 +74,6 @@ bool Renderer::Init()
 
     LOG_INFO("Renderer initialization started.");
 
-    m_tepmTexture = new VkTexture;
-
     if(!CreateSurface() ||
         !PickPhysicalDevice() ||
         !CreateLogicalDevice() ||
@@ -94,11 +92,6 @@ bool Renderer::Init()
     {
         return false;
     }
-
-    m_textureData = new unicorn::video::Texture("data/textures/texture.jpg");
-    m_tepmTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, m_textureData);
-
-    ResizeDynamicUniformBuffer();
 
     m_isInitialized = true;
 
@@ -353,10 +346,19 @@ bool Renderer::RecreateSwapChain()
 bool Renderer::AddMesh(Mesh* mesh)
 {
         auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
+
+        if(!mesh->GetMaterial().IsColored())
+        {
+            VkTexture* vkTexture = new VkTexture;
+            vkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, &mesh->GetMaterial().GetAlbedo());
+            m_textures.insert({ mesh->GetMaterial().GetAlbedo().GetId(), vkTexture });
+            vkmesh->SetTextureHandler(mesh->GetMaterial().GetAlbedo().GetId());
+        }        
         vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
         m_vkMeshes.push_back(vkmesh);
         m_meshes.push_back(mesh);
         vkmesh->AllocateOnGPU();
+
         return true;
 }
 
@@ -571,41 +573,23 @@ bool Renderer::PrepareUniformBuffers()
     return true;
 }
 
-void Renderer::ResizeDynamicUniformBuffer() const
+void Renderer::ResizeDynamicUniformBuffer()
 {
-    std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
+    // View projection uniform
+    m_writeDescriptorSets[0].dstSet = m_descriptorSet;
+    m_writeDescriptorSets[0].descriptorType = vk::DescriptorType::eUniformBuffer;
+    m_writeDescriptorSets[0].dstBinding = 0;
+    m_writeDescriptorSets[0].pBufferInfo = &m_uniformMvp.GetDescriptorInfo();
+    m_writeDescriptorSets[0].descriptorCount = 1;
 
-    vk::WriteDescriptorSet writeDescriptorSetMVP;
-    writeDescriptorSetMVP.dstSet = m_descriptorSet;
-    writeDescriptorSetMVP.descriptorType = vk::DescriptorType::eUniformBuffer;
-    writeDescriptorSetMVP.dstBinding = 0;
-    writeDescriptorSetMVP.pBufferInfo = &m_uniformMvp.GetDescriptorInfo();
-    writeDescriptorSetMVP.descriptorCount = 1;
+    // Model uniform
+    m_writeDescriptorSets[1].dstSet = m_descriptorSet;
+    m_writeDescriptorSets[1].descriptorType = vk::DescriptorType::eUniformBufferDynamic;
+    m_writeDescriptorSets[1].dstBinding = 1;
+    m_writeDescriptorSets[1].pBufferInfo = &m_uniformModel.GetDescriptorInfo();
+    m_writeDescriptorSets[1].descriptorCount = 1;
 
-    vk::WriteDescriptorSet writeDescriptorSetModel;
-    writeDescriptorSetModel.dstSet = m_descriptorSet;
-    writeDescriptorSetModel.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
-    writeDescriptorSetModel.dstBinding = 1;
-    writeDescriptorSetModel.pBufferInfo = &m_uniformModel.GetDescriptorInfo();
-    writeDescriptorSetModel.descriptorCount = 1;
-
-    vk::WriteDescriptorSet imageDescriptorSet;
-    imageDescriptorSet.setDstSet(m_descriptorSet);
-    imageDescriptorSet.setDstBinding(2);
-    imageDescriptorSet.setDstArrayElement(0);
-    imageDescriptorSet.setDescriptorType(vk::DescriptorType::eCombinedImageSampler);
-    imageDescriptorSet.setDescriptorCount(1);
-
-    if(m_tepmTexture->IsInitialized())
-    {
-        imageDescriptorSet.setPImageInfo(&m_tepmTexture->GetDescriptorImageInfo());
-        writeDescriptorSets.push_back(imageDescriptorSet);
-    }
-
-    writeDescriptorSets.push_back(writeDescriptorSetMVP);
-    writeDescriptorSets.push_back(writeDescriptorSetModel);
-
-    m_vkLogicalDevice.updateDescriptorSets(static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
+    m_vkLogicalDevice.updateDescriptorSets(static_cast<uint32_t>(m_writeDescriptorSets.size()), m_writeDescriptorSets.data(), 0, nullptr);
 }
 
 void Renderer::UpdateUniformBuffer()
@@ -1225,6 +1209,29 @@ bool Renderer::CreateCommandBuffers()
                 if(pVkMesh->IsValid())
                 {
                     glm::vec4 colorPush({pVkMesh->GetColor(), pVkMesh->IsColored()}); // xyz - color. w - 1.0 enabled color or 0.0 disabled color
+                    
+                    if(!pVkMesh->IsColored())
+                    {
+                        vk::WriteDescriptorSet imageDescriptorSet;
+                        imageDescriptorSet.setDstSet(m_descriptorSet);
+                        imageDescriptorSet.setDstBinding(2);
+                        imageDescriptorSet.setDstArrayElement(0);
+                        imageDescriptorSet.setDescriptorType(vk::DescriptorType::eCombinedImageSampler);
+                        imageDescriptorSet.setDescriptorCount(1);
+                        imageDescriptorSet.setPImageInfo(&m_textures.at(pVkMesh->GetTextureHandler())->GetDescriptorImageInfo());
+
+                        std::array<vk::WriteDescriptorSet, 3> temparray;
+                        temparray[0] = m_writeDescriptorSets[0];
+                        temparray[1] = m_writeDescriptorSets[1];
+                        temparray[2] = imageDescriptorSet;
+
+                        m_vkLogicalDevice.updateDescriptorSets(static_cast<uint32_t>(temparray.size()), temparray.data(), 0, nullptr);
+                        
+                    }
+                    else
+                    {
+                        ResizeDynamicUniformBuffer();
+                    }
                     m_commandBuffers[i].pushConstants(m_pipelineLayout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(colorPush), glm::value_ptr(colorPush));
                     vk::Buffer vertexBuffer[] = {pVkMesh->GetVertexBuffer()};
                     uint32_t dynamicOffset = j * static_cast<uint32_t>(m_dynamicAlignment);

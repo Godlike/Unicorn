@@ -16,6 +16,7 @@
 
 #include <list>
 #include <vector>
+#include <unordered_map>
 
 namespace unicorn
 {
@@ -131,11 +132,11 @@ public:
     std::vector<vk::ImageView> m_swapChainImageViews;
     std::vector<vk::Framebuffer> m_swapChainFramebuffers;
     std::vector<vk::CommandBuffer> m_commandBuffers;
+    std::array<vk::WriteDescriptorSet, 2> m_writeDescriptorSets;
 
-        std::list<VkMesh*> m_vkMeshes;
+    std::list<VkMesh*> m_vkMeshes;
     Image* m_depthImage;
-    VkTexture* m_tepmTexture;
-    unicorn::video::Texture* m_textureData;
+    std::unordered_map<uint32_t, VkTexture*> m_textures;
 
     ShaderProgram* m_shaderProgram;
     Buffer m_uniformMvp;
@@ -166,7 +167,7 @@ public:
     void FreeDescriptorPoolAndLayouts() const;
 
     bool PrepareUniformBuffers();
-    void ResizeDynamicUniformBuffer() const;
+    void ResizeDynamicUniformBuffer();
     void UpdateUniformBuffer();
     void UpdateDynamicUniformBuffer();
     void UpdateVkMeshMatrices();

@@ -68,21 +68,26 @@ const char* Texture::Path() const
 
 bool Texture::Load(const std::string& path)
 {    
-    m_path = path.c_str();
-    
-    unicorn::utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
-    unicorn::utility::asset::Handler textureHandler = storage.Get(path.c_str());
-    
-    m_data = stbi_load_from_memory(textureHandler.GetContent().GetBuffer().data(), 
-                                   textureHandler.GetContent().GetBuffer().size(),
-                                   &m_width, &m_height, &m_channels, STBI_rgb_alpha);
-    m_size = m_width * m_height * 4;
+     if(!m_initialized)
+     {
+         m_path = path.c_str();
 
-    if (!m_data) {
-        LOG_ERROR("Failed to load texture image with path - ", m_path);
-        return false;
-    }
-    m_initialized = true;
+         unicorn::utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
+         unicorn::utility::asset::Handler textureHandler = storage.Get(path.c_str());
+
+         m_data = stbi_load_from_memory(textureHandler.GetContent().GetBuffer().data(),
+             textureHandler.GetContent().GetBuffer().size(),
+             &m_width, &m_height, &m_channels, STBI_rgb_alpha);
+         m_size = m_width * m_height * 4;
+
+         if (!m_data) {
+             LOG_ERROR("Failed to load texture image with path - ", m_path);
+             return false;
+         }
+         std::hash<std::string> hash_fn;
+         m_id = hash_fn(path);
+         m_initialized = true;
+     }
     return true;
 }
 
