@@ -65,13 +65,13 @@ public:
      * @brief Returns vertex buffer
      * @return vulkan buffer
      */
-    vk::Buffer GetVertexBuffer();
+    vk::Buffer GetVertexBuffer() const;
 
     /**
      * @brief Returns index buffer
      * @return vulkan buffer
      */
-    vk::Buffer GetIndexBuffer();
+    vk::Buffer GetIndexBuffer() const;
     /**
      * @brief Matrix of transformations
      * @return model matrix
@@ -81,16 +81,21 @@ public:
      * @brief Returns vertices size
      * @return size of vertices
      */
-    uint32_t VerticesSize();
+    uint32_t VerticesSize() const;
     /**
     * @briefReturns indices size
     * @return size of indices
     */
-    uint32_t IndicesSize();
+    uint32_t IndicesSize() const;
 
     bool IsColored() const
     {
         return m_isColored;
+    }
+
+    bool IsWired() const
+    {
+        return m_isWired;
     }
 
     glm::vec3 GetColor() const
@@ -108,21 +113,31 @@ public:
         return m_textureHandler;
     }
 
+    vk::DescriptorSet& GetDesctiptionSet()
+    {
+        return m_descriptorSet;
+    }
+
     /**
      * @brief Signal for command buffer reallocation
      */
     wink::signal<wink::slot<void(VkMesh*)>> ReallocatedOnGpu;
 private:
     bool m_valid;
+    bool m_isColored;
+    bool m_isWired;
+
     vk::Device m_device;
     vk::PhysicalDevice m_physicalDevice;
     vulkan::Buffer m_vertexBuffer, m_indexBuffer;
-    Mesh& m_mesh;
     vk::CommandPool m_pool;
     vk::Queue m_queue;
-    bool m_isColored;
+
+    Mesh& m_mesh;
     glm::vec3 m_color;
     uint32_t m_textureHandler;
+
+    vk::DescriptorSet m_descriptorSet;
 };
 }
 }

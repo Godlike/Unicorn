@@ -42,7 +42,6 @@ set(VIDEO_HEADERS
     include/unicorn/video/Material.hpp
     include/unicorn/video/Primitives.hpp
     include/unicorn/video/ModelMatrix.hpp
-    ${VULKAN_HEADERS}
 )
 
 set(VIDEO_SOURCES
@@ -56,14 +55,20 @@ set(VIDEO_SOURCES
     source/Material.cpp
     source/Primitives.cpp
     source/ModelMatrix.cpp
-    ${VULKAN_SOURCES}
 )
 
 add_library(video OBJECT
     ${VIDEO_HEADERS}
     ${VIDEO_SOURCES}
+    ${VULKAN_HEADERS}
+    ${VULKAN_SOURCES}
 )
 
 if (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()
+
+source_group("headers/video/vulkan" FILES ${VULKAN_HEADERS})
+source_group("sources/video/vulkan" FILES ${VULKAN_SOURCES})
+source_group("headers/video" FILES ${VIDEO_HEADERS})
+source_group("sources/video" FILES ${VIDEO_SOURCES})

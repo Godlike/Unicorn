@@ -30,7 +30,6 @@ namespace video
 {
 namespace vulkan
 {
-
 /**
  * @brief Struct for easy check of required queue family indices
  */
@@ -107,7 +106,7 @@ public:
     bool AddMesh(Mesh* mesh) override;
     bool DeleteMesh(const Mesh* mesh) override;
     void SetDepthTest(bool enabled) override;
-  private:
+private:
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;
     vk::SwapchainKHR m_vkSwapChain;
@@ -118,28 +117,38 @@ public:
     vk::Format m_depthImageFormat;
     vk::Extent2D m_swapChainExtent;
     vk::PipelineLayout m_pipelineLayout;
-    vk::Pipeline m_graphicsPipeline;
     vk::RenderPass m_renderPass;
     vk::CommandPool m_commandPool;
     vk::Semaphore m_imageAvailableSemaphore;
     vk::Semaphore m_renderFinishedSemaphore;
     vk::DescriptorPool m_descriptorPool;
-    vk::DescriptorSet m_descriptorSet;
-    vk::DescriptorSetLayout m_descriptorSetLayout;
     vk::PhysicalDeviceProperties m_physicalDeviceProperties;
     std::string m_gpuName;
     std::vector<vk::Image> m_swapChainImages;
     std::vector<vk::ImageView> m_swapChainImageViews;
     std::vector<vk::Framebuffer> m_swapChainFramebuffers;
     std::vector<vk::CommandBuffer> m_commandBuffers;
-    std::array<vk::WriteDescriptorSet, 2> m_writeDescriptorSets;
+    vk::PhysicalDeviceFeatures m_deviceFeatures;
+    vk::PipelineCache pipelineCache;
+
+    struct
+    {
+        vk::Pipeline solid;
+        vk::Pipeline blend;
+        vk::Pipeline wired;
+    } m_pipelines;
 
     std::list<VkMesh*> m_vkMeshes;
     Image* m_depthImage;
+    VkTexture* m_replaceMeTexture;
+
     std::unordered_map<uint32_t, VkTexture*> m_textures;
 
+    std::array<vk::DescriptorSetLayout, 2> m_descriptorSetLayouts; // 0 - mvp, 1 - albedo
+    vk::DescriptorSet m_mvpDescriptorSet;
+
     ShaderProgram* m_shaderProgram;
-    Buffer m_uniformMvp;
+    Buffer m_uniformViewProjection;
     Buffer m_uniformModel;
     size_t m_dynamicAlignment;
     UniformAllMeshesData m_uniformModelsData;
@@ -165,6 +174,8 @@ public:
     void FreeSemaphores();
     void FreeUniforms();
     void FreeDescriptorPoolAndLayouts() const;
+    void FreePipelineCache();
+    void FreeEngineHelpData();
 
     bool PrepareUniformBuffers();
     void ResizeDynamicUniformBuffer();
@@ -185,6 +196,8 @@ public:
     bool CreateDepthBuffer();
     bool CreateCommandBuffers();
     bool CreateSemaphores();
+    bool CreatePipelineCache();
+    bool LoadEngineHelpData();
 
     bool IsDeviceSuitable(const vk::PhysicalDevice& device);
     bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device) const;

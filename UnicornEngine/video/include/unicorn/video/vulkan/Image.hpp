@@ -32,11 +32,11 @@ public:
     * @param height height of image
     */
     Image(vk::PhysicalDevice physicalDevice,
-        vk::Device device,
-        vk::Format format,
-        vk::ImageUsageFlags usage,
-        uint32_t width,
-        uint32_t height);
+          vk::Device device,
+          vk::Format format,
+          vk::ImageUsageFlags usage,
+          uint32_t width,
+          uint32_t height);
     /**
     * @brief Removes image
     */
@@ -93,6 +93,9 @@ public:
                           const vk::ImageLayout& newLayout,
                           const vk::CommandPool& cmdPool,
                           const vk::Queue& queue) const;
+
+    void Delete();
+
 private:
     vk::Device m_device;
     vk::Image m_image;

@@ -13,24 +13,24 @@
 #include <vulkan/vulkan.hpp>
 #include <wink/signal.hpp>
 
-
-
 namespace unicorn
 {
 namespace video
 {
 class Texture;
+
 namespace vulkan
 {
 class VkTexture
 {
 public:
-        VkTexture();
-    
+    VkTexture();
+
     const vk::DescriptorImageInfo& GetDescriptorImageInfo();
     bool Create(const vk::PhysicalDevice& physicalDevice, const vk::Device& device, const vk::CommandPool& commandPool, const vk::Queue& queue, const Texture* texture);
+    void Delete();
     bool IsInitialized() const { return m_isInitialized; }
-    private:
+private:
     vk::DescriptorImageInfo m_imageInfo;
     Image* m_vkImage;
     vk::Sampler m_sampler;

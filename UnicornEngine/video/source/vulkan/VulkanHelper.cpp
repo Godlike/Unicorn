@@ -23,7 +23,7 @@ vk::CommandBuffer BeginSingleTimeCommands(const vk::Device& device,
     vk::CommandBuffer commandBuffer;
     device.allocateCommandBuffers(&allocInfo, &commandBuffer);
 
-    vk::CommandBufferBeginInfo beginInfo = {};
+    vk::CommandBufferBeginInfo beginInfo;
     beginInfo.flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit;
     commandBuffer.begin(&beginInfo);
 

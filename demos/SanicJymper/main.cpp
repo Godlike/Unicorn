@@ -32,36 +32,41 @@ static unicorn::video::Renderer* vkRenderer = nullptr;
 static unicorn::system::Input* pInput = nullptr;
 static bool depthTest = true;
 unicorn::system::Window* pWindow0 = nullptr;
+std::list<unicorn::video::Mesh*> meshes;
 
 float deltaTime = 0.0f; // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
 void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
 {
-    float currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
+    float currentFrame = static_cast<float>( timer->ElapsedMilliseconds().count() ) / 1000;
     float newDeltatime = currentFrame - lastFrame;
-    if (newDeltatime <= 0.0)
+    if( newDeltatime <= 0.0 )
     {
         return;
     }
     deltaTime = newDeltatime;
+    for( auto& mesh : meshes )
+    {
+        mesh->modelMatrix.Rotate( deltaTime, { 0, 0, 0.5 } );
+    }
     lastFrame = currentFrame;
 }
 
 void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonEvent)
 {
-
 }
 
 void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double, double> pos)
 {
-    pCameraController->UpdateView(pos.first, pos.second);
+    pCameraController->UpdateView( pos.first, pos.second );
 }
 
 void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double> pos)
 {
-    pCameraController->Scroll(static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
+    pCameraController->Scroll( static_cast<float>( pos.second / 50 ) ); // 50 is zoom coefficient
 }
+
 void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEvent)
 {
     using unicorn::system::input::Key;
@@ -71,7 +76,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
 
     unicorn::system::input::Action const& action = keyboardEvent.action;
 
-    if (Action::Release == action)
+    if( Action::Release == action )
     {
         return;
     }
@@ -86,130 +91,130 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
 
     float delta = deltaTime * 0.1f;
 
-    if (Modifier::Shift & modifiers)
+    if( Modifier::Shift & modifiers )
     {
         delta *= 10;
     }
 
-    if (Modifier::Alt & modifiers)
+    if( Modifier::Alt & modifiers )
     {
         delta *= 5;
     }
-    switch (key)
+    switch( key )
     {
-    case Key::W:
-    {
-        pCameraController->MoveForward(delta);
-        break;
-    }
-    case Key::S:
-    {
-        pCameraController->MoveBackward(delta);
-        break;
-    }
-    case Key::A:
-    {
-        pCameraController->MoveLeft(delta);
-        break;
-    }
-    case Key::D:
-    {
-        pCameraController->MoveRight(delta);
-        break;
-    }
-    case Key::Q:
-    {
-        pCameraController->MoveUp(delta);
-        break;
-    }
-    case Key::E:
-    {
-        pCameraController->MoveDown(delta);
-        break;
-    }
-    case Key::Up:
-    {
-        position.second -= static_cast<uint32_t>(delta);
-        positionChanged = true;
-        break;
-    }
-    case Key::Down:
-    {
-        position.second += static_cast<uint32_t>(delta);
-        positionChanged = true;
-        break;
-    }
-    case Key::Left:
-    {
-        position.first -= static_cast<uint32_t>(delta);
-        positionChanged = true;
-        break;
-    }
-    case Key::Right:
-    {
-        position.first += static_cast<uint32_t>(delta);
-        positionChanged = true;
-        break;
-    }
-    case Key::C:
-    {
-        pWindow->SetMouseMode(MouseMode::Captured);
-        break;
-    }
-    case Key::V:
-    {
-        if (Action::Repeat == action)
-        {
-            return;
-        }
-        depthTest = !depthTest;
-        pGraphics->SetDepthTest(depthTest);
-        break;
-    }
-    case Key::Escape:
-    {
-        pWindow->SetMouseMode(MouseMode::Normal);
-        break;
-    }
-    case Key::Insert:
-    {
-        if (pInput)
-        {
-            switch (modifiers)
+        case Key::W:
             {
-            case Modifier::Ctrl:
-            {
-                pInput->SetClipboard(std::string("Gotta go fast"));
+                pCameraController->MoveForward( delta );
                 break;
             }
-            case Modifier::Shift:
+        case Key::S:
             {
-                std::cout << "Clipboard data: " << pInput->GetClipboard() << std::endl;
+                pCameraController->MoveBackward( delta );
                 break;
             }
-            default:
+        case Key::A:
+            {
+                pCameraController->MoveLeft( delta );
+                break;
+            }
+        case Key::D:
+            {
+                pCameraController->MoveRight( delta );
+                break;
+            }
+        case Key::Q:
+            {
+                pCameraController->MoveUp( delta );
+                break;
+            }
+        case Key::E:
+            {
+                pCameraController->MoveDown( delta );
+                break;
+            }
+        case Key::Up:
+            {
+                position.second -= static_cast<uint32_t>( delta );
+                positionChanged = true;
+                break;
+            }
+        case Key::Down:
+            {
+                position.second += static_cast<uint32_t>( delta );
+                positionChanged = true;
+                break;
+            }
+        case Key::Left:
+            {
+                position.first -= static_cast<uint32_t>( delta );
+                positionChanged = true;
+                break;
+            }
+        case Key::Right:
+            {
+                position.first += static_cast<uint32_t>( delta );
+                positionChanged = true;
+                break;
+            }
+        case Key::C:
+            {
+                pWindow->SetMouseMode( MouseMode::Captured );
+                break;
+            }
+        case Key::V:
+            {
+                if( Action::Repeat == action )
+                {
+                    return;
+                }
+                depthTest = !depthTest;
+                pGraphics->SetDepthTest( depthTest );
+                break;
+            }
+        case Key::Escape:
+            {
+                pWindow->SetMouseMode( MouseMode::Normal );
+                break;
+            }
+        case Key::Insert:
+            {
+                if( pInput )
+                {
+                    switch( modifiers )
+                    {
+                        case Modifier::Ctrl:
+                            {
+                                pInput->SetClipboard( std::string( "Gotta go fast" ) );
+                                break;
+                            }
+                        case Modifier::Shift:
+                            {
+                                std::cout << "Clipboard data: " << pInput->GetClipboard() << std::endl;
+                                break;
+                            }
+                        default:
+                            {
+                                break;
+                            }
+                    }
+                }
+                break;
+            }
+        default:
             {
                 break;
             }
-            }
-        }
-        break;
-    }
-    default:
-    {
-        break;
-    }
     }
 
-    if (positionChanged)
+    if( positionChanged )
     {
-        pWindow->SetPosition(position);
+        pWindow->SetPosition( position );
     }
 }
 
 void onRendererDestroyed(unicorn::video::Renderer* pRenderer)
 {
-    if (vkRenderer == pRenderer)
+    if( vkRenderer == pRenderer )
     {
         vkRenderer = nullptr;
     }
@@ -219,40 +224,40 @@ int main(int argc, char* argv[])
 {
     unicorn::Settings& settings = unicorn::Settings::Instance();
 
-    settings.Init(argc, argv, "Sanic_Jymper.log");
-    settings.SetApplicationName("SANIC JYMPER");
+    settings.Init( argc, argv, "Sanic_Jymper.log" );
+    settings.SetApplicationName( "SANIC JYMPER" );
     unicorn::UnicornEngine* unicornEngine = new unicorn::UnicornEngine();
-    timer = new unicorn::system::Timer(true);
-    if (unicornEngine->Init())
+    timer = new unicorn::system::Timer( true );
+    if( unicornEngine->Init() )
     {
         pGraphics = unicornEngine->GetGraphics();
         pInput = unicornEngine->GetInput();
 
-        unicornEngine->LogicFrame.connect(&onLogicFrame);
+        unicornEngine->LogicFrame.connect( &onLogicFrame );
 
-        pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
-            unicorn::system::CustomValue::True);
+        pGraphics->SetWindowCreationHint( unicorn::system::WindowHint::Decorated,
+                                          unicorn::system::CustomValue::True );
 
-        pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Resizable,
-            unicorn::system::CustomValue::True);
+        pGraphics->SetWindowCreationHint( unicorn::system::WindowHint::Resizable,
+                                          unicorn::system::CustomValue::True );
 
         auto h = pGraphics->GetMonitors().back()->GetActiveVideoMode().height;
         auto w = pGraphics->GetMonitors().back()->GetActiveVideoMode().width;
-        settings.SetApplicationHeight(h);
-        settings.SetApplicationWidth(w);
+        settings.SetApplicationHeight( h );
+        settings.SetApplicationWidth( w );
 
-        unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(settings.GetApplicationWidth(),
-            settings.GetApplicationHeight(),
-            settings.GetApplicationName(),
-            nullptr,
-            nullptr);
-        pWindow0->SetMouseMode(unicorn::system::MouseMode::Captured);
+        unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow( settings.GetApplicationWidth(),
+                                                                    settings.GetApplicationHeight(),
+                                                                    settings.GetApplicationName(),
+                                                                    nullptr,
+                                                                    nullptr );
+        pWindow0->SetMouseMode( unicorn::system::MouseMode::Captured );
 
-        vkRenderer = pGraphics->SpawnRenderer(pWindow0);
-        vkRenderer->Destroyed.connect(&onRendererDestroyed);
+        vkRenderer = pGraphics->SpawnRenderer( pWindow0 );
+        vkRenderer->Destroyed.connect( &onRendererDestroyed );
 
-        vkRenderer->SetBackgroundColor(unicorn::video::Color::LightPink);
-        pCameraController = new unicorn::video::CameraFpsController(vkRenderer->GetCamera());
+        vkRenderer->SetBackgroundColor( unicorn::video::Color::LightPink );
+        pCameraController = new unicorn::video::CameraFpsController( vkRenderer->GetCamera() );
 
         using unicorn::video::Mesh;
         using unicorn::video::Cube;
@@ -261,37 +266,44 @@ int main(int argc, char* argv[])
             //Loading textures
             unicorn::video::Texture texture, textureMandrill;
 
-            texture.Load("data/textures/texture.jpg");
-            textureMandrill.Load("data/textures/mandrill.png");
+            texture.Load( "data/textures/texture.jpg" );
+            textureMandrill.Load( "data/textures/mandrill.png" );
 
             //Checks data
-            if (!texture.IsLoaded()
-                || !textureMandrill.IsLoaded())
+            if( !texture.IsLoaded()
+                || !textureMandrill.IsLoaded() )
             {
                 return -1;
             }
 
             unicorn::video::Material textureMaterial;
-            textureMaterial.SetAlbedo(texture);
+            textureMaterial.SetAlbedo( texture );
             unicorn::video::Material mandrillMaterial;
-            mandrillMaterial.SetAlbedo(textureMandrill);
+            mandrillMaterial.SetAlbedo( textureMandrill );
             unicorn::video::Material defaultMaterial;
 
-            Quad* texturedQuad = new Quad(textureMaterial);
-            Quad* mandrillQuad = new Quad(mandrillMaterial);
-            Quad* coloredQuad = new Quad(defaultMaterial);
+            unicorn::video::Material blueMaterial;
+            blueMaterial.SetColor( unicorn::video::Color::Blue );
+            blueMaterial.SetWireframe( true );
+            blueMaterial.SetIsColored( false );
 
-            mandrillQuad->modelMatrix.Translate({ 3.0, 0.0, 0.0 });
-            coloredQuad->modelMatrix.Translate({-3.0, 0.0, 0.0});
+            Quad* texturedQuad = new Quad( textureMaterial );
+            Quad* mandrillQuad = new Quad( mandrillMaterial );
+            Quad* coloredQuad = new Quad( blueMaterial );
 
-            vkRenderer->AddMesh(texturedQuad);
-            vkRenderer->AddMesh(mandrillQuad);
-            vkRenderer->AddMesh(coloredQuad);
+            mandrillQuad->modelMatrix.Translate( { 3.0, 0.0, 0.0 } );
+            coloredQuad->modelMatrix.Translate( { -3.0, 0.0, 0.0 } );
 
-            pWindow0->MousePosition.connect(&onCursorPositionChanged);
-            pWindow0->Scroll.connect(&onMouseScrolled);
-            pWindow0->Keyboard.connect(&onWindowKeyboard);
-            pWindow0->MouseButton.connect(&onMouseButton);
+            meshes.push_back( texturedQuad );
+
+            vkRenderer->AddMesh( texturedQuad );
+            vkRenderer->AddMesh( mandrillQuad );
+            vkRenderer->AddMesh( coloredQuad );
+
+            pWindow0->MousePosition.connect( &onCursorPositionChanged );
+            pWindow0->Scroll.connect( &onMouseScrolled );
+            pWindow0->Keyboard.connect( &onWindowKeyboard );
+            pWindow0->MouseButton.connect( &onMouseButton );
 
             unicornEngine->Run();
         }

@@ -3,12 +3,12 @@
 #extension GL_ARB_separate_shader_objects : enable
 #extension GL_ARB_shading_language_420pack : enable
 
-layout(binding = 0) uniform UniformViewProjection {
+layout(set = 0, binding = 0) uniform UniformViewProjection {
     mat4 view;
     mat4 proj;
 } uvp_buffer;
 
-layout(binding = 1) uniform UniformModel {
+layout(set = 0, binding = 1) uniform UniformModel {
     mat4 model;
 } um_buffer;
 

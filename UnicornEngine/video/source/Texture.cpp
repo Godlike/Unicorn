@@ -74,7 +74,11 @@ bool Texture::Load(const std::string& path)
 
          unicorn::utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
          unicorn::utility::asset::Handler textureHandler = storage.Get(path.c_str());
-
+         if(!textureHandler.IsValid())
+         {
+             LOG_ERROR("Can't find texture - ", m_path);
+             return false;
+         }
          m_data = stbi_load_from_memory(textureHandler.GetContent().GetBuffer().data(),
              textureHandler.GetContent().GetBuffer().size(),
              &m_width, &m_height, &m_channels, STBI_rgb_alpha);

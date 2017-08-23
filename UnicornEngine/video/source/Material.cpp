@@ -10,31 +10,66 @@ namespace unicorn
 {
 namespace video
 {
-    Material::Material() : m_isColored(true), m_albedo(nullptr), m_color(Color::Red)
-    {
-       
-    }
+Material::Material() : m_color( Color::Red )
+                     , m_isColored( true )
+                     , m_isWired( false )
+                     , m_isAlbedoExist( false )
+                     , m_albedo( nullptr )
+{
+}
 
-    void Material::SetColor(const glm::vec3 color)
-    {
-        m_color = color;
-    }
+void Material::SetColor(const glm::vec3 color)
+{
+    m_color = color;
+}
 
-    void Material::SetAlbedo(Texture& albedo)
-    {
-        m_albedo = &albedo;
-        m_isColored = false;
-    }
+void Material::SetAlbedo(Texture& albedo)
+{
+    m_albedo = &albedo;
+    m_isColored = false;
+    m_isAlbedoExist = true;
+}
 
-    void Material::RemoveAlbedo()
-    {
-        m_albedo = nullptr;
-        m_isColored = true;
-    }
+void Material::SetWireframe(bool wireframe)
+{
+    m_isWired = wireframe;
+}
 
-    bool Material::IsColored() const
-    {
-        return m_isColored;
-    }
+void Material::SetIsColored(bool colored)
+{
+    m_isColored = colored;
+}
+
+void Material::RemoveAlbedo()
+{
+    m_albedo = nullptr;
+    m_isColored = true;
+    m_isAlbedoExist = false;
+}
+
+bool Material::IsColored() const
+{
+    return m_isColored;
+}
+
+bool Material::IsWired() const
+{
+    return m_isWired;
+}
+
+bool Material::AlbedoExist() const
+{
+    return m_isAlbedoExist;
+}
+
+glm::vec3 Material::GetColor() const
+{
+    return m_color;
+}
+
+const Texture& Material::GetAlbedo() const
+{
+    return *m_albedo;
+}
 }
 }
