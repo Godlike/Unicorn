@@ -27,8 +27,6 @@ set(UNICORN_RENDER_EXTERNAL_INCLUDE_DEPENDENCIES
     ${GLM_INCLUDE_DIR}
     CACHE LIST "List of Unicorn Render external include dependencies")
 
-set(UNICORN_RENDER_LIB ${UNICORN_RENDER_NAME} CACHE STRING "Name of Unicorn Render library")
-
 if (BUILD_SHARED_LIBS)
     add_definitions(-DUNICORN_SHARED)
 endif()

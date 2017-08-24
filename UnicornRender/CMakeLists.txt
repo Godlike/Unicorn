@@ -9,10 +9,6 @@ if (NOT DEFINED UNICORN_RENDER_NAME)
     set(UNICORN_RENDER_NAME "UnicornRender" CACHE STRING "Project name for Unicorn Render library")
 endif()
 
-if (NOT DEFINED UNICORN_RENDER_LIB)
-    set(UNICORN_RENDER_LIB ${UNICORN_RENDER_NAME} CACHE STRING "Name of Unicorn Render library")
-endif()
-
 project(${UNICORN_RENDER_NAME})
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -67,13 +63,13 @@ include(InstallInfo)
 
 install( FILES ${LOGURU_INCLUDE_DIR}/loguru.hpp
     DESTINATION ${UNICORN_INSTALL_INCLUDE_DIR}
-    COMPONENT godlike_headers
+    COMPONENT unicorn_extra
     PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
 )
 
 install( DIRECTORY ${WINK_SIGNALS_INCLUDE_DIR}/wink
     DESTINATION ${UNICORN_INSTALL_INCLUDE_DIR}
-    COMPONENT godlike_headers
+    COMPONENT unicorn_extra
     FILES_MATCHING
         PATTERN "*.hpp"
             PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
@@ -83,7 +79,7 @@ install( DIRECTORY ${WINK_SIGNALS_INCLUDE_DIR}/wink
 
 install( DIRECTORY ${GLM_INCLUDE_DIR}/glm
     DESTINATION ${UNICORN_INSTALL_INCLUDE_DIR}
-    COMPONENT godlike_headers
+    COMPONENT unicorn_extra
     FILES_MATCHING
         PATTERN "*.hpp"
             PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
@@ -138,13 +134,20 @@ add_library(${UNICORN_RENDER_LIB}
     $<TARGET_OBJECTS:${UNICORN_RENDER_SYSTEM_LIB}>
 )
 
+set_target_properties(
+    ${UNICORN_RENDER_LIB}
+    PROPERTIES
+        VERSION ${UNICORN_VERSION}
+        SOVERSION ${UNICORN_SOVERSION}
+)
+
 target_link_libraries(${UNICORN_RENDER_LIB}
     ${WINDOW_MANAGER_LIBS}
     ${VULKAN_LIBRARY}
 )
 
 install( TARGETS ${UNICORN_RENDER_LIB}
-    COMPONENT godlike_libraries
+    COMPONENT unicorn_libraries
     RUNTIME DESTINATION ${UNICORN_INSTALL_LIBRARY_DIR}
     LIBRARY DESTINATION ${UNICORN_INSTALL_LIBRARY_DIR}
     ARCHIVE DESTINATION ${UNICORN_INSTALL_LIBRARY_DIR}
@@ -152,9 +155,17 @@ install( TARGETS ${UNICORN_RENDER_LIB}
 
 install( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
     DESTINATION ${UNICORN_INSTALL_INCLUDE_DIR}
-    COMPONENT godlike_headers
+    COMPONENT unicorn_headers
     FILES_MATCHING PATTERN "*.hpp"
     PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
+)
+
+include(CMakePackageConfigHelpers)
+
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/UnicornRenderConfigVersion.cmake
+    VERSION ${UNICORN_VERSION}
+    COMPATIBILITY SameMajorVersion
 )
 
 configure_file(
@@ -164,9 +175,12 @@ configure_file(
     @ONLY
 )
 
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/UnicornRenderConfig.cmake
+install(
+    FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/UnicornRenderConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/UnicornRenderConfigVersion.cmake
     DESTINATION ${UNICORN_INSTALL_LIBRARY_DIR}
-    COMPONENT godlike_libraries
+    COMPONENT unicorn_libraries
 )
 
 if (UNIX)
@@ -176,7 +190,7 @@ endif()
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # Workaround for a bug regarding __builtin_cpu_supports("sse2") call on GCC 5+
     # Call is made by STB but is not directly a bug in STB
-    target_link_libraries(${PROJECT_NAME} -lgcc_s -lgcc)
+    target_link_libraries(${UNICORN_RENDER_LIB} -lgcc_s -lgcc)
 endif()
 
 if (UNICORN_BUILD_DOCUMENTATION)
@@ -237,5 +251,5 @@ add_dependencies(${UNICORN_RENDER_LIB} Shaders)
 
 install( FILES ${SPIRV_BINARY_FILES}
     DESTINATION ${UNICORN_INSTALL_DATA_DIR}/data/shaders
-    COMPONENT godlike_data
+    COMPONENT unicorn_data
 )
