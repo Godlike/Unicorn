@@ -176,9 +176,10 @@ private:
     void FreeDescriptorPoolAndLayouts() const;
     void FreePipelineCache();
     void FreeEngineHelpData();
+    void FreeTextures();
 
     bool PrepareUniformBuffers();
-    void ResizeDynamicUniformBuffer();
+    void UpdateMVPDescriptorSet();
     void UpdateUniformBuffer();
     void UpdateDynamicUniformBuffer();
     void UpdateVkMeshMatrices();

@@ -131,6 +131,7 @@ void Renderer::Deinit()
             }
         }
 
+        FreeTextures();
         FreeEngineHelpData();
         FreeSemaphores();
         FreeCommandBuffers();
@@ -352,10 +353,15 @@ bool Renderer::AddMesh(Mesh* mesh)
 
     if( mesh->GetMaterial().AlbedoExist() && !mesh->GetMaterial().IsColored() )
     {
-        VkTexture* vkTexture = new VkTexture;
-        vkTexture->Create( m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, &mesh->GetMaterial().GetAlbedo() );
-        m_textures.insert( { mesh->GetMaterial().GetAlbedo().GetId(), vkTexture } );
-        vkmesh->SetTextureHandler( mesh->GetMaterial().GetAlbedo().GetId() );
+        auto meshAlbedo = mesh->GetMaterial().GetAlbedo();
+
+        if( m_textures.find( meshAlbedo.GetId() ) == m_textures.end() )
+        {
+            VkTexture* vkTexture = new VkTexture( m_vkLogicalDevice );
+            vkTexture->Create( m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, &meshAlbedo );
+            m_textures.insert( { meshAlbedo.GetId(), vkTexture } );
+        }
+        vkmesh->SetTextureHandler( meshAlbedo.GetId() );
     }
 
     vkmesh->ReallocatedOnGpu.connect( this, &vulkan::Renderer::OnMeshReallocated );
@@ -376,26 +382,8 @@ bool Renderer::AddMesh(Mesh* mesh)
         LOG_ERROR("Can't allocate descriptor sets!");
         return false;
     }
+    UpdateMVPDescriptorSet();
 
-    std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
-
-    // View projection uniform
-    vk::WriteDescriptorSet viewProjectionWriteSet;
-    viewProjectionWriteSet.dstSet = m_mvpDescriptorSet;
-    viewProjectionWriteSet.descriptorType = vk::DescriptorType::eUniformBuffer;
-    viewProjectionWriteSet.dstBinding = 0;
-    viewProjectionWriteSet.pBufferInfo = &m_uniformViewProjection.GetDescriptorInfo();
-    viewProjectionWriteSet.descriptorCount = 1;
-
-    // Model uniform
-    vk::WriteDescriptorSet modelWriteSet;
-    modelWriteSet.dstSet = m_mvpDescriptorSet;
-    modelWriteSet.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
-    modelWriteSet.dstBinding = 1;
-    modelWriteSet.pBufferInfo = &m_uniformModel.GetDescriptorInfo();
-    modelWriteSet.descriptorCount = 1;
-
-    // Combined image sampler
     vk::WriteDescriptorSet imageDescriptorSet;
     imageDescriptorSet.setDstSet( vkmesh->GetDesctiptionSet() );
     imageDescriptorSet.setDescriptorType( vk::DescriptorType::eCombinedImageSampler );
@@ -410,11 +398,7 @@ bool Renderer::AddMesh(Mesh* mesh)
         imageDescriptorSet.setPImageInfo( &m_replaceMeTexture->GetDescriptorImageInfo() );
     }
 
-    writeDescriptorSets.push_back( viewProjectionWriteSet );
-    writeDescriptorSets.push_back( modelWriteSet );
-    writeDescriptorSets.push_back( imageDescriptorSet );
-
-    m_vkLogicalDevice.updateDescriptorSets( static_cast<uint32_t>( writeDescriptorSets.size() ), writeDescriptorSets.data(), 0, nullptr );
+    m_vkLogicalDevice.updateDescriptorSets( 1, &imageDescriptorSet, 0, nullptr );
 
     CreateCommandBuffers();
 
@@ -439,7 +423,7 @@ void Renderer::OnMeshReallocated(VkMesh* /*vkmesh*/)
     m_uniformModel.Map();
     m_uniformModel.Write( m_uniformModelsData.model );
 
-    ResizeDynamicUniformBuffer();
+    UpdateMVPDescriptorSet();
 }
 
 bool Renderer::DeleteMesh(const Mesh* mesh)
@@ -630,17 +614,20 @@ void Renderer::FreeDescriptorPoolAndLayouts() const
 {
     if( m_vkLogicalDevice )
     {
-        if( m_descriptorPool )
-        {
-            m_vkLogicalDevice.destroyDescriptorPool( m_descriptorPool );
-        }
-        /*if( m_descriptorSetLayout )
-        {
-            m_vkLogicalDevice.destroyDescriptorSetLayout( m_descriptorSetLayout );
-        }*/
         if( m_pipelineLayout )
         {
             m_vkLogicalDevice.destroyPipelineLayout( m_pipelineLayout );
+        }
+        for( auto& descriptorSetLayout : m_descriptorSetLayouts )
+        {
+            if( descriptorSetLayout )
+            {
+                m_vkLogicalDevice.destroyDescriptorSetLayout( descriptorSetLayout );
+            }
+        }
+        if( m_descriptorPool )
+        {
+            m_vkLogicalDevice.destroyDescriptorPool( m_descriptorPool );
         }
     }
 }
@@ -659,11 +646,21 @@ void Renderer::FreePipelineCache()
 void Renderer::FreeEngineHelpData()
 {
     m_replaceMeTexture->Delete();
+    m_replaceMeTexture = nullptr;
+}
+
+void Renderer::FreeTextures()
+{
+    for( auto& vkTexture : m_textures )
+    {
+        vkTexture.second->Delete();
+    }
+    m_textures.clear();
 }
 
 bool Renderer::PrepareUniformBuffers()
 {
-    size_t uboAlignment = m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment;
+    size_t uboAlignment = static_cast<size_t>( m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment );
     m_dynamicAlignment = ( sizeof( glm::mat4) / uboAlignment ) * uboAlignment + ( ( sizeof( glm::mat4) % uboAlignment ) > 0 ? uboAlignment : 0 );
 
     m_uniformCameraData.proj = m_camera.GetProjection();
@@ -677,8 +674,30 @@ bool Renderer::PrepareUniformBuffers()
     return true;
 }
 
-void Renderer::ResizeDynamicUniformBuffer()
+void Renderer::UpdateMVPDescriptorSet()
 {
+    std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
+
+    // View projection uniform
+    vk::WriteDescriptorSet viewProjectionWriteSet;
+    viewProjectionWriteSet.dstSet = m_mvpDescriptorSet;
+    viewProjectionWriteSet.descriptorType = vk::DescriptorType::eUniformBuffer;
+    viewProjectionWriteSet.dstBinding = 0;
+    viewProjectionWriteSet.pBufferInfo = &m_uniformViewProjection.GetDescriptorInfo();
+    viewProjectionWriteSet.descriptorCount = 1;
+
+    // Model uniform
+    vk::WriteDescriptorSet modelWriteSet;
+    modelWriteSet.dstSet = m_mvpDescriptorSet;
+    modelWriteSet.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
+    modelWriteSet.dstBinding = 1;
+    modelWriteSet.pBufferInfo = &m_uniformModel.GetDescriptorInfo();
+    modelWriteSet.descriptorCount = 1;
+
+    writeDescriptorSets.push_back( viewProjectionWriteSet );
+    writeDescriptorSets.push_back( modelWriteSet );
+
+    m_vkLogicalDevice.updateDescriptorSets( static_cast<uint32_t>( writeDescriptorSets.size() ), writeDescriptorSets.data(), 0, nullptr );
 }
 
 void Renderer::UpdateUniformBuffer()
@@ -986,7 +1005,7 @@ bool Renderer::CreateDescriptionSetLayout()
 
     vk::DescriptorPoolSize descriptorSamplerPoolSize;
     descriptorSamplerPoolSize.type = vk::DescriptorType::eCombinedImageSampler;
-    descriptorSamplerPoolSize.descriptorCount = 5; //TODO: expand
+    descriptorSamplerPoolSize.descriptorCount = 500; //TODO: expand
 
     descriptorPoolSizes.push_back( descriptorViewProjectionPoolSize );
     descriptorPoolSizes.push_back( descriptorModelPoolSize );
@@ -995,7 +1014,7 @@ bool Renderer::CreateDescriptionSetLayout()
     vk::DescriptorPoolCreateInfo poolCreateInfo;
     poolCreateInfo.poolSizeCount = static_cast<uint32_t>( descriptorPoolSizes.size() );
     poolCreateInfo.pPoolSizes = descriptorPoolSizes.data();
-    poolCreateInfo.maxSets = 100; //TODO: expand
+    poolCreateInfo.maxSets = 500; //TODO: expand
 
     vk::Result result = m_vkLogicalDevice.createDescriptorPool( &poolCreateInfo, nullptr, &m_descriptorPool );
     if( result != vk::Result::eSuccess )
@@ -1069,7 +1088,7 @@ bool Renderer::CreateDescriptionSetLayout()
     pipelineLayoutInfo.pSetLayouts = m_descriptorSetLayouts.data();
 
     vk::PushConstantRange pushConstanRange;
-    pushConstanRange.setSize( sizeof( glm::vec4 ) );
+    pushConstanRange.setSize( sizeof( glm::vec4) );
     pushConstanRange.setStageFlags( vk::ShaderStageFlagBits::eVertex );
 
     pipelineLayoutInfo.pushConstantRangeCount = 1;
@@ -1113,7 +1132,7 @@ bool Renderer::CreateGraphicsPipeline()
 
     vk::PipelineRasterizationStateCreateInfo rasterizer;
     rasterizer.lineWidth = 1.0f;
-    rasterizer.cullMode = vk::CullModeFlagBits::eNone; // TODO why eBack not working here?
+    rasterizer.cullMode = vk::CullModeFlagBits::eNone;
     rasterizer.frontFace = vk::FrontFace::eClockwise;
     rasterizer.polygonMode = vk::PolygonMode::eFill;
 
@@ -1406,7 +1425,7 @@ bool Renderer::LoadEngineHelpData()
         LOG_ERROR( "Can't find texture with path ", path.c_str() );
         return false;
     }
-    m_replaceMeTexture = new VkTexture;
+    m_replaceMeTexture = new VkTexture( m_vkLogicalDevice );
 
     if( !m_replaceMeTexture->Create( m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, &texture ) )
     {

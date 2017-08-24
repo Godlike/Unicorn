@@ -76,7 +76,7 @@ bool Texture::Load(const std::string& path)
          unicorn::utility::asset::Handler textureHandler = storage.Get(path.c_str());
          if(!textureHandler.IsValid())
          {
-             LOG_ERROR("Can't find texture - ", m_path);
+             LOG_ERROR("Can't find texture - %s", m_path);
              return false;
          }
          m_data = stbi_load_from_memory(textureHandler.GetContent().GetBuffer().data(),
@@ -85,7 +85,7 @@ bool Texture::Load(const std::string& path)
          m_size = m_width * m_height * 4;
 
          if (!m_data) {
-             LOG_ERROR("Failed to load texture image with path - ", m_path);
+             LOG_ERROR("Failed to load texture image with path - %s", m_path);
              return false;
          }
          std::hash<std::string> hash_fn;

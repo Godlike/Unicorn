@@ -18,7 +18,7 @@ namespace video
 class ModelMatrix
 {
 public:
-		ModelMatrix();
+    ModelMatrix();
     /**
     * @brief Rotate mesh
     * @param angle angle in degrees
@@ -36,7 +36,7 @@ public:
     * @brief Scales mesh
     * @param scaleVector vector of scale factors
     */
-    UNICORN_EXPORT void Scale(const glm::vec3& scaleVector);    
+    UNICORN_EXPORT void Scale(const glm::vec3& scaleVector);
     /**
     * @brief Model matrix of this mesh for MVP transformations
     */

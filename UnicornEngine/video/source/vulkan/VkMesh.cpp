@@ -31,6 +31,7 @@ VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::Command
 
 VkMesh::~VkMesh()
 {
+    DeallocateOnGPU();
     //m_mesh.VerticesUpdated.disconnect(this, &VkMesh::AllocateOnGPU);
 }
 

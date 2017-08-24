@@ -48,7 +48,7 @@ void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
     deltaTime = newDeltatime;
     for( auto& mesh : meshes )
     {
-        mesh->modelMatrix.Rotate( deltaTime, { 0, 0, 0.5 } );
+        mesh->modelMatrix.Rotate( deltaTime * 30, { 0, 0, 1 } ); // 30 - speed
     }
     lastFrame = currentFrame;
 }
@@ -265,13 +265,27 @@ int main(int argc, char* argv[])
         {
             //Loading textures
             unicorn::video::Texture texture, textureMandrill;
+            unicorn::video::Texture frontSkyBox, backSkyBox, leftSkyBox, rightSkyBox, topSkyBox, bottomSkyBox;
+
+            frontSkyBox.Load( "data/textures/city_skybox/lmcity_ft.tga" );
+            backSkyBox.Load( "data/textures/city_skybox/lmcity_bk.tga" );
+            leftSkyBox.Load( "data/textures/city_skybox/lmcity_lf.tga" );
+            rightSkyBox.Load( "data/textures/city_skybox/lmcity_rt.tga" );
+            topSkyBox.Load( "data/textures/city_skybox/lmcity_up.tga" );
+            bottomSkyBox.Load( "data/textures/city_skybox/lmcity_dn.tga" );
 
             texture.Load( "data/textures/texture.jpg" );
             textureMandrill.Load( "data/textures/mandrill.png" );
 
             //Checks data
             if( !texture.IsLoaded()
-                || !textureMandrill.IsLoaded() )
+                || !textureMandrill.IsLoaded()
+                || !frontSkyBox.IsLoaded()
+                || !backSkyBox.IsLoaded()
+                || !leftSkyBox.IsLoaded()
+                || !rightSkyBox.IsLoaded()
+                || !topSkyBox.IsLoaded()
+                || !bottomSkyBox.IsLoaded() )
             {
                 return -1;
             }
@@ -285,20 +299,81 @@ int main(int argc, char* argv[])
             unicorn::video::Material blueMaterial;
             blueMaterial.SetColor( unicorn::video::Color::Blue );
             blueMaterial.SetWireframe( true );
-            blueMaterial.SetIsColored( false );
+
+            unicorn::video::Material wrongMaterial;
+            wrongMaterial.SetIsColored( false );
 
             Quad* texturedQuad = new Quad( textureMaterial );
             Quad* mandrillQuad = new Quad( mandrillMaterial );
             Quad* coloredQuad = new Quad( blueMaterial );
+            Cube* texturedCube = new Cube( textureMaterial );
+            Cube* texturedCube2 = new Cube( textureMaterial );
 
-            mandrillQuad->modelMatrix.Translate( { 3.0, 0.0, 0.0 } );
-            coloredQuad->modelMatrix.Translate( { -3.0, 0.0, 0.0 } );
+            mandrillQuad->modelMatrix.Translate( { 3.0, 0.0, 1.0 } );
+            coloredQuad->modelMatrix.Translate( { -3.0, 0.0, 6.0 } );
+            texturedCube->modelMatrix.Translate( { 0.0, 5.0, -5.0 } );
+            texturedCube2->modelMatrix.Translate( { 0.0, -5.0, -5.0 } );
 
             meshes.push_back( texturedQuad );
 
             vkRenderer->AddMesh( texturedQuad );
             vkRenderer->AddMesh( mandrillQuad );
             vkRenderer->AddMesh( coloredQuad );
+            vkRenderer->AddMesh( texturedCube );
+            vkRenderer->AddMesh( texturedCube2 );
+
+            //Skybox
+            float skyBoxScaleFactor = 500;
+            float skyBoxDistance = skyBoxScaleFactor - 1; // Pifagor
+
+            unicorn::video::Material frontTexture;
+            frontTexture.SetAlbedo( frontSkyBox );
+            Quad* frontBox = new Quad( frontTexture );
+            frontBox->modelMatrix.Translate( { 0, 0, skyBoxDistance } );
+            frontBox->modelMatrix.Scale( { skyBoxScaleFactor, skyBoxScaleFactor, 0 } );
+
+            unicorn::video::Material backTexture;
+            backTexture.SetAlbedo( backSkyBox );
+            Quad* backBox = new Quad( backTexture );
+            backBox->modelMatrix.Translate( { 0, 0, -skyBoxDistance } );
+            backBox->modelMatrix.Rotate( 180, { 0, 1, 0 } );
+            backBox->modelMatrix.Scale( { skyBoxScaleFactor, skyBoxScaleFactor, 0 } );
+
+            unicorn::video::Material leftTexture;
+            leftTexture.SetAlbedo( leftSkyBox );
+            Quad* leftBox = new Quad( leftTexture );
+            leftBox->modelMatrix.Translate( { -skyBoxDistance, 0, 0 } );
+            leftBox->modelMatrix.Rotate( -90, { 0, 1, 0 } );
+            leftBox->modelMatrix.Scale( { skyBoxScaleFactor, skyBoxScaleFactor, 0 } );
+
+            unicorn::video::Material rightTexture;
+            rightTexture.SetAlbedo( rightSkyBox );
+            Quad* rightBox = new Quad( rightTexture );
+            rightBox->modelMatrix.Translate( { skyBoxDistance, 0, 0 } );
+            rightBox->modelMatrix.Rotate( 90, { 0, 1, 0 } );
+            rightBox->modelMatrix.Scale( { skyBoxScaleFactor, skyBoxScaleFactor, 0 } );
+
+            unicorn::video::Material upTexture;
+            upTexture.SetAlbedo( topSkyBox );
+            Quad* upBox = new Quad( upTexture );
+            upBox->modelMatrix.Translate( { 0, -skyBoxDistance, 0 } );
+            upBox->modelMatrix.Rotate( 90, { 1, 0, 0 } );
+            upBox->modelMatrix.Rotate( -90, { 0, 0, 1 } );
+            upBox->modelMatrix.Scale( { skyBoxScaleFactor, skyBoxScaleFactor, 0 } );
+
+            unicorn::video::Material bottomTexture;
+            bottomTexture.SetAlbedo( bottomSkyBox );
+            Quad* bottomBox = new Quad( bottomTexture );
+            bottomBox->modelMatrix.Translate( { 0, skyBoxDistance, 0 } );
+            bottomBox->modelMatrix.Rotate( -90, { 1, 0, 0 } );
+            bottomBox->modelMatrix.Scale( { skyBoxScaleFactor, skyBoxScaleFactor, 0 } );
+
+            vkRenderer->AddMesh( frontBox );
+            vkRenderer->AddMesh( backBox );
+            vkRenderer->AddMesh( leftBox );
+            vkRenderer->AddMesh( rightBox );
+            vkRenderer->AddMesh( upBox );
+            vkRenderer->AddMesh( bottomBox );
 
             pWindow0->MousePosition.connect( &onCursorPositionChanged );
             pWindow0->Scroll.connect( &onMouseScrolled );
@@ -313,4 +388,6 @@ int main(int argc, char* argv[])
     delete unicornEngine;
 
     unicorn::Settings::Destroy();
+
+    system( "pause" );
 }

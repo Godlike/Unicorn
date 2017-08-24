@@ -14,12 +14,14 @@ namespace video
 {
 namespace vulkan
 {
-VkTexture::VkTexture() : m_vkImage( nullptr )
-                       , m_isInitialized( false )
+VkTexture::VkTexture(vk::Device device)
+    : m_device( device )
+    , m_vkImage( nullptr )
+    , m_isInitialized( false )
 {
 }
 
-const vk::DescriptorImageInfo& VkTexture::GetDescriptorImageInfo()
+const vk::DescriptorImageInfo& VkTexture::GetDescriptorImageInfo() const
 {
     return m_imageInfo;
 }
@@ -55,9 +57,11 @@ bool VkTexture::Create(const vk::PhysicalDevice& physicalDevice, const vk::Devic
             return false;
         }
 
-        m_vkImage->TransitionLayout( vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal, commandPool, queue );
+        m_vkImage->TransitionLayout( vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eUndefined,
+                                     vk::ImageLayout::eTransferDstOptimal, commandPool, queue );
         imageStagingBuffer.CopyToImage( *m_vkImage, commandPool, queue );
-        m_vkImage->TransitionLayout( vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal, commandPool, queue );
+        m_vkImage->TransitionLayout( vk::Format::eR8G8B8A8Unorm, vk::ImageLayout::eTransferDstOptimal,
+                                     vk::ImageLayout::eShaderReadOnlyOptimal, commandPool, queue );
 
         imageStagingBuffer.Destroy();
 
@@ -95,8 +99,12 @@ bool VkTexture::Create(const vk::PhysicalDevice& physicalDevice, const vk::Devic
 
 void VkTexture::Delete()
 {
-    if(m_isInitialized)
+    if( m_isInitialized )
     {
+        if( m_device && m_sampler )
+        {
+            m_device.destroySampler( m_sampler );
+        }
         m_vkImage->Delete();
         m_isInitialized = false;
     }
