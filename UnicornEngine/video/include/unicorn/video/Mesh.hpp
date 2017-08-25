@@ -27,10 +27,12 @@ class Material;
 struct Vertex
 {
     Vertex(glm::vec3 pos, glm::vec2 tc);
+
     /**
      * @brief Position of vertex
      */
     glm::vec3 pos;
+
     /**
     * @brief Texture coordinates of vertex
     */
@@ -48,8 +50,8 @@ public:
 
     /**
     * @brief Updates vertices and indices geometry
-    * @param vertices vertexes data
-    * @param indices indices data
+    * @param [in] vertices vertexes data
+    * @param [in] indices indices data
     */
     UNICORN_EXPORT void SetMeshData(std::vector<Vertex> const& vertices, std::vector<uint16_t> const& indices);
 
@@ -87,6 +89,7 @@ public:
     */
 
     wink::signal<wink::slot<void(Mesh*)>> MaterialUpdated;
+
     /**
     * @brief Signal for GPU data update
     */

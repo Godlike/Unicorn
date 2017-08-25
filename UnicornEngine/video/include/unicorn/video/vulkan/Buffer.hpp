@@ -52,7 +52,7 @@ public:
      * @brief Writes data to buffer. You need to map it first.
      * @param pData pointer to data content
      */
-    void Write(const void* pData) const;
+    void Write(void const* pData) const;
     /**
      * @brief Maps buffer
      */
@@ -75,7 +75,7 @@ public:
      * @param pool 
      * @param queue 
      */
-    void CopyToImage(const vulkan::Image& dstImage, const vk::CommandPool& pool, const vk::Queue& queue) const;
+    void CopyToImage(vulkan::Image const& dstImage, vk::CommandPool const& pool, vk::Queue const& queue) const;
     /**
      * @brief Getter for size of buffer
      * @return size of buffer

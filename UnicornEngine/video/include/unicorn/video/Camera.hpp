@@ -32,10 +32,10 @@ class Camera
 public:
     /**
      * @brief Camera constuctor
-     * @param position Default position
-     * @param direction Default view direction
+     * @param [in] position Default position
+     * @param [in] direction Default view direction
      */
-    UNICORN_EXPORT Camera(const glm::vec3& position, const glm::vec3& direction);
+    UNICORN_EXPORT Camera(glm::vec3 const& position, glm::vec3 const& direction);
 
     /**
      * @brief Sets perspective projection mode from given frustum description
@@ -45,61 +45,73 @@ public:
      * @param zfar Far frustrum plane
      */
     UNICORN_EXPORT void SetPerspective(float fov, float aspect, float znear, float zfar);
+
     /**
      * @brief Sets aspect ratio
      * @param aspect Aspect value
      */
     UNICORN_EXPORT void SetAspectRatio(float aspect);
+
     /**
      * @brief Changes camera position by given vector
      * @param delta Vector of translation
      */
-    UNICORN_EXPORT void Translate(const glm::vec3& delta);
+    UNICORN_EXPORT void Translate(glm::vec3 const& delta);
+
     /**
      * @brief Sets direction
      * @param direction New direction value
      */
-    UNICORN_EXPORT void SetDirection(const glm::vec3& direction);
+    UNICORN_EXPORT void SetDirection(glm::vec3 const& direction);
+
     /**
      * @brief Sets up vector
      * @param upVector New up vector value
      */
-    UNICORN_EXPORT void SetUpVector(const glm::vec3& upVector);
+    UNICORN_EXPORT void SetUpVector(glm::vec3 const& upVector);
+
     /**
      * @brief Sets position
      * @param position New position value
      */
-    UNICORN_EXPORT void SetPosition(const glm::vec3& position);
+    UNICORN_EXPORT void SetPosition(glm::vec3 const& position);
+
     /**
      * @brief Sets field of view value
      * @param fov New horizontal field of view
      */
     UNICORN_EXPORT void SetFov(float fov);
+
     /**
      * @brief Returns direction
      * @return Direction vector
      */
     UNICORN_EXPORT const glm::vec3& GetDirection() const;
+
     /**
      * @brief Returns up vector
      * @return Up vector value
      */
     UNICORN_EXPORT const glm::vec3& GetUpVector() const;
+
     /**
      * @brief Returns projection matrix
      * @return Projection matrix value
      */
     UNICORN_EXPORT const glm::mat4& GetProjection() const;
+
     /**
      * @brief Returns view matrix
      * @return View matrix value
      */
     UNICORN_EXPORT const glm::mat4& GetView() const;
+
     /**
      * @brief Returns field of view value
      * @return Field of view value
      */
     UNICORN_EXPORT float GetFov() const;
+
     /**
     * @brief Checks if view or projection need to be updated and update it, if needed
     */

@@ -28,6 +28,9 @@ class Timer;
 
 namespace video
 {
+/**
+ * @brief Abstract class for all renderer system
+ */
 class Renderer
 {
 public:
@@ -35,14 +38,15 @@ public:
 
     virtual ~Renderer();
 
-    Renderer(const Renderer& other) = delete;
-    Renderer(const Renderer&& other) = delete;
-    Renderer& operator=(const Renderer& other) = delete;
-    Renderer& operator=(const Renderer&& other) = delete;
+    Renderer(Renderer const& other) = delete;
+    Renderer(Renderer const&& other) = delete;
+    Renderer& operator=(Renderer const& other) = delete;
+    Renderer& operator=(Renderer const&& other) = delete;
 
     virtual bool Init() = 0;
     virtual void Deinit() = 0;
     virtual bool Render() = 0;
+
     UNICORN_EXPORT Camera& GetCamera();
 
     UNICORN_EXPORT void SetBackgroundColor(const glm::vec3& backgroundColor);
@@ -52,16 +56,27 @@ public:
      *  Event is emitted with the following signature:
      *  -# renderer pointer
      */
-    wink::signal< wink::slot<void(Renderer*)> > Destroyed;
+    wink::signal<wink::slot<void(Renderer*)>> Destroyed;
 
     /**
      * @brief Turns on or off depth test
-     * @param enabled if true - depth test is enabled, false - disabled
+     * @param [in] enabled if true - depth test is enabled, false - disabled
      */
     virtual void SetDepthTest(bool enabled) = 0;
 
+    /**
+     * @brief Adds mesh to rendering system
+     * @param [in] mesh pointer to mesh
+     * @return true if mesh was added and false if not
+     */
     virtual bool AddMesh(Mesh* mesh) = 0;
-    virtual bool DeleteMesh(const Mesh* mesh) = 0;
+
+    /**
+    * @brief Removes mesh from rendering system
+    * @param [in] mesh pointer to mesh
+    * @return true if mesh was sucessfully deleted from system and false if not
+    */
+    virtual bool DeleteMesh(Mesh const* mesh) = 0;
 protected:
     bool m_isInitialized;
 

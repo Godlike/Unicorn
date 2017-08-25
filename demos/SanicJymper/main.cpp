@@ -379,7 +379,7 @@ int main(int argc, char* argv[])
 
             mandrillQuad->modelMatrix.Translate( { 3.0, 0.0, 1.0 } );
             coloredQuad->modelMatrix.Translate( { -3.0, 0.0, 6.0 } );
-            texturedCube->modelMatrix.Translate( { 0.0, 5.0, -5.0 } );
+            texturedCube->modelMatrix.SetPosition( { 0.0, 5.0, -5.0 } );
             texturedCube2->modelMatrix.Translate( { 0.0, -5.0, -5.0 } );
 
             meshes.push_back( texturedQuad );

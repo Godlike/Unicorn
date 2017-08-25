@@ -15,16 +15,16 @@ namespace unicorn
 {
 namespace video
 {
-    Texture::Texture() : m_width(0)
-        , m_height(0)
-        , m_channels(0)
-        , m_size(0)
-        , m_data(nullptr)
-        , m_path(nullptr)
-        , m_initialized(false)
-    {
-
-    }
+Texture::Texture() : m_width(0)
+                   , m_height(0)
+                   , m_channels(0)
+                   , m_size(0)
+                   , m_id(0)
+                   , m_data(nullptr)
+                   , m_path(nullptr)
+                   , m_initialized(false)
+{
+}
 
 Texture::Texture(const std::string& path) : Texture()
 {
@@ -33,7 +33,7 @@ Texture::Texture(const std::string& path) : Texture()
 
 void Texture::Delete()
 {
-    if(m_data)
+    if(m_initialized && m_data)
     {
         stbi_image_free(m_data);
         m_data = nullptr;
@@ -66,32 +66,38 @@ const char* Texture::Path() const
     return m_path;
 }
 
+uint32_t Texture::GetId() const
+{
+    return m_id;
+}
+
 bool Texture::Load(const std::string& path)
-{    
-     if(!m_initialized)
-     {
-         m_path = path.c_str();
+{
+    Delete();
 
-         unicorn::utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
-         unicorn::utility::asset::Handler textureHandler = storage.Get(path.c_str());
-         if(!textureHandler.IsValid())
-         {
-             LOG_ERROR("Can't find texture - %s", m_path);
-             return false;
-         }
-         m_data = stbi_load_from_memory(textureHandler.GetContent().GetBuffer().data(),
-             textureHandler.GetContent().GetBuffer().size(),
-             &m_width, &m_height, &m_channels, STBI_rgb_alpha);
-         m_size = m_width * m_height * 4;
+    m_path = path.c_str();
 
-         if (!m_data) {
-             LOG_ERROR("Failed to load texture image with path - %s", m_path);
-             return false;
-         }
-         std::hash<std::string> hash_fn;
-         m_id = hash_fn(path);
-         m_initialized = true;
-     }
+    utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
+    utility::asset::Handler textureHandler = storage.Get(path.c_str());
+    if(!textureHandler.IsValid())
+    {
+        LOG_ERROR("Can't find texture - %s", m_path);
+        return false;
+    }
+    m_data = stbi_load_from_memory(textureHandler.GetContent().GetBuffer().data(),
+                                   textureHandler.GetContent().GetBuffer().size(),
+                                   &m_width, &m_height, &m_channels, STBI_rgb_alpha);
+    m_size = m_width * m_height * 4;
+
+    if(!m_data)
+    {
+        LOG_ERROR("Failed to load texture image with path - %s", m_path);
+        return false;
+    }
+    std::hash<std::string> hash_fn;
+    m_id = hash_fn(path);
+    m_initialized = true;
+
     return true;
 }
 

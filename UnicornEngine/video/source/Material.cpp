@@ -10,15 +10,15 @@ namespace unicorn
 {
 namespace video
 {
-Material::Material() : m_color( Color::Red )
-                     , m_isColored( true )
-                     , m_isWired( false )
-                     , m_isAlbedoExist( false )
-                     , m_albedo( nullptr )
+Material::Material() : m_color(Color::Red)
+                     , m_isColored(true)
+                     , m_isWired(false)
+                     , m_isAlbedoExist(false)
+                     , m_albedo(nullptr)
 {
 }
 
-void Material::SetColor(const glm::vec3 color)
+void Material::SetColor(glm::vec3 const& color)
 {
     m_color = color;
 }

@@ -20,27 +20,36 @@ class ModelMatrix
 public:
     ModelMatrix();
     /**
-    * @brief Rotate mesh
-    * @param angle angle in degrees
-    * @param axis vector of normalized axes, which you need to rotate, for example {1.f, 1.f, 0.f} will rotate by x and y only
+    * @brief Rotate object
+    * @param [in]  angle angle in degrees
+    * @param [in] axis vector of normalized axes, which you need to rotate, for example {1.f, 1.f, 0.f} will rotate by x and y only
     */
-    UNICORN_EXPORT void Rotate(float angle, const glm::vec3& axis);
+    UNICORN_EXPORT void Rotate(float angle, glm::vec3 const& axis);
 
     /**
-    * @brief Moves mesh
-    * @param translateVector vector of deltas by axes
+    * @brief Moves object
+    * @param [in] translateVector vector of deltas by axes
     */
-    UNICORN_EXPORT void Translate(const glm::vec3& translateVector);
+    UNICORN_EXPORT void Translate(glm::vec3 const& translateVector);
 
     /**
-    * @brief Scales mesh
-    * @param scaleVector vector of scale factors
+    * @brief Sets position
+    * @param [in] position new position
     */
-    UNICORN_EXPORT void Scale(const glm::vec3& scaleVector);
+    UNICORN_EXPORT void SetPosition(glm::vec3 const& position);
+
     /**
-    * @brief Model matrix of this mesh for MVP transformations
+    * @brief Scales object
+    * @param [in] scaleVector vector of scale factors
+    */
+
+    UNICORN_EXPORT void Scale(glm::vec3 const& scaleVector);
+    /**
+    * @brief Model matrix for MVP transformations
     */
     glm::mat4 model;
+private:
+    glm::vec3 m_position;
 };
 }
 }
