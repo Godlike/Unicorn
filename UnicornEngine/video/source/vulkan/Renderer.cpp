@@ -1392,7 +1392,7 @@ bool Renderer::LoadEngineHelpData()
 
     if(!replaceMeTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, &texture))
     {
-        LOG_ERROR("Can't create 'replace me' texture ", path.c_str());
+        LOG_ERROR("Can't create 'replace me' texture - %s", path.c_str());
         return false;
     }
 
