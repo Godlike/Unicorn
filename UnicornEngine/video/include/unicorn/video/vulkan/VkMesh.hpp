@@ -101,14 +101,16 @@ public:
      * @brief Material in vulkan is combination of descriptor set and binded data
      * //TODO
      */
-    void SetMaterialHandle(size_t handle);
+    void SetMaterialHandle(uint32_t handle);
 
-    size_t GetMaterialHandle() const;
+    void OnMaterialUpdated(Mesh* mesh);
+
+    uint32_t GetMaterialHandle() const;
     /**
      * @brief Signal for command buffer reallocation
      */
     wink::signal<wink::slot<void(VkMesh*)>> ReallocatedOnGpu;
-    //wink::signal<wink::slot<void(VkMesh*)>> MaterialUpdated;
+    wink::signal<wink::slot<void(Mesh*, VkMesh*)>> MaterialUpdated;
 private:
     bool m_valid;
     bool m_isColored;
@@ -122,7 +124,7 @@ private:
 
     Mesh& m_mesh;
     glm::vec3 m_color;
-    size_t m_materialHandle;
+    uint32_t m_materialHandle;
 };
 }
 }

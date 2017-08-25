@@ -80,6 +80,24 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
             vkRenderer->AddMesh( cube );
             break;
         }
+        case MouseButton::MouseMiddle:
+        {
+            if (meshes.size())
+            {
+                // Get random cube
+                auto meshIt = meshes.begin();
+
+                std::advance(meshIt, std::rand() % meshes.size());
+
+                auto mesh = *meshIt;
+
+                unicorn::video::Material cubeMaterial;
+                cubeMaterial.SetColor({ static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255 });
+                cubeMaterial.SetIsWired(true);
+                mesh->SetMaterial(cubeMaterial);
+            }
+            break;
+        }
         case MouseButton::MouseRight:
         {
             if( meshes.size() )
@@ -348,7 +366,7 @@ int main(int argc, char* argv[])
 
             unicorn::video::Material blueMaterial;
             blueMaterial.SetColor( unicorn::video::Color::Blue );
-            blueMaterial.SetWireframe( true );
+            blueMaterial.SetIsWired( true );
 
             unicorn::video::Material wrongMaterial;
             wrongMaterial.SetIsColored( false );

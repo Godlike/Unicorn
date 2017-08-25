@@ -23,7 +23,7 @@ public:
     UNICORN_EXPORT Material();
     UNICORN_EXPORT void SetColor(const glm::vec3 color);
     UNICORN_EXPORT void SetAlbedo(Texture& texture);
-    UNICORN_EXPORT void SetWireframe(bool wireframe);
+    UNICORN_EXPORT void SetIsWired(bool wireframe);
     UNICORN_EXPORT void SetIsColored(bool colored);
 
     UNICORN_EXPORT void RemoveAlbedo();

@@ -350,51 +350,14 @@ bool Renderer::AddMesh(Mesh* mesh)
 {
     auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
 
-    auto& meshMaterial = mesh->GetMaterial();
-
-    uint32_t meshAlbedoHandle = m_replaceMeTextureHandle;
-
-    if(meshMaterial.AlbedoExist())
+    if(!AllocateMaterial(*mesh, *vkmesh))
     {
-        meshAlbedoHandle = meshMaterial.GetAlbedo().GetId();
-
-        if(m_texturesCache.find(meshAlbedoHandle) == m_texturesCache.end())
-        {
-            VkTexture* vkTexture = new VkTexture(m_vkLogicalDevice);
-            vkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, &meshMaterial.GetAlbedo());
-            m_texturesCache.insert({meshAlbedoHandle, vkTexture});
-
-            vk::DescriptorSetAllocateInfo allocInfo;
-            allocInfo.descriptorPool = m_descriptorPool;
-            allocInfo.descriptorSetCount = 1;
-            allocInfo.pSetLayouts = &m_descriptorSetLayouts[1];
-
-            vk::DescriptorSet descriptorSet;
-
-            auto result = m_vkLogicalDevice.allocateDescriptorSets(&allocInfo, &descriptorSet);
-
-            if(result != vk::Result::eSuccess)
-            {
-                LOG_ERROR("Can't allocate descriptor sets!");
-                return false;
-            }
-
-            vk::WriteDescriptorSet imageDescriptorSet;
-            imageDescriptorSet.setDstSet(descriptorSet);
-            imageDescriptorSet.setDescriptorType(vk::DescriptorType::eCombinedImageSampler);
-            imageDescriptorSet.setDescriptorCount(1);
-            imageDescriptorSet.setPImageInfo(&m_texturesCache.at(meshAlbedoHandle)->GetDescriptorImageInfo());
-
-            m_vkLogicalDevice.updateDescriptorSets(1, &imageDescriptorSet, 0, nullptr);
-
-            m_descriptorSetsCache.insert({meshAlbedoHandle, descriptorSet});
-        }
+        LOG_ERROR("Can't allocate material!");
+        return false;
     }
 
-    vkmesh->SetMaterialHandle(meshAlbedoHandle);
-
     vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
-    //vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
+    vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated); // TODO: return error from here
 
     m_vkMeshes.push_back(vkmesh);
     m_meshes.push_back(mesh);
@@ -426,8 +389,10 @@ void Renderer::OnMeshReallocated(VkMesh* /*vkmesh*/)
     UpdateMVPDescriptorSet();
 }
 
-void Renderer::OnMeshMaterialUpdated(VkMesh* vkMesh)
+void Renderer::OnMeshMaterialUpdated(Mesh* mesh, VkMesh* vkMesh)
 {
+    AllocateMaterial(*mesh, *vkMesh);
+    CreateCommandBuffers();
 }
 
 bool Renderer::DeleteMesh(const Mesh* mesh)
@@ -1494,6 +1459,53 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
         return true;
     }
     return false;
+}
+
+bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
+{
+    auto& meshMaterial = mesh.GetMaterial();
+
+    uint32_t meshAlbedoHandle = m_replaceMeTextureHandle;
+
+    if(meshMaterial.AlbedoExist())
+    {
+        meshAlbedoHandle = meshMaterial.GetAlbedo().GetId();
+
+        if(m_texturesCache.find(meshAlbedoHandle) == m_texturesCache.end())
+        {
+            VkTexture* vkTexture = new VkTexture(m_vkLogicalDevice);
+            vkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, &meshMaterial.GetAlbedo());
+            m_texturesCache.insert({meshAlbedoHandle, vkTexture});
+
+            vk::DescriptorSetAllocateInfo allocInfo;
+            allocInfo.descriptorPool = m_descriptorPool;
+            allocInfo.descriptorSetCount = 1;
+            allocInfo.pSetLayouts = &m_descriptorSetLayouts[1];
+
+            vk::DescriptorSet descriptorSet;
+
+            auto result = m_vkLogicalDevice.allocateDescriptorSets(&allocInfo, &descriptorSet);
+
+            if(result != vk::Result::eSuccess)
+            {
+                LOG_ERROR("Can't allocate descriptor sets!");
+                return false;
+            }
+
+            vk::WriteDescriptorSet imageDescriptorSet;
+            imageDescriptorSet.setDstSet(descriptorSet);
+            imageDescriptorSet.setDescriptorType(vk::DescriptorType::eCombinedImageSampler);
+            imageDescriptorSet.setDescriptorCount(1);
+            imageDescriptorSet.setPImageInfo(&m_texturesCache.at(meshAlbedoHandle)->GetDescriptorImageInfo());
+
+            m_vkLogicalDevice.updateDescriptorSets(1, &imageDescriptorSet, 0, nullptr);
+
+            m_descriptorSetsCache.insert({meshAlbedoHandle, descriptorSet});
+        }
+    }
+
+    vkmesh.SetMaterialHandle(meshAlbedoHandle);
+    return true;
 }
 
 bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device) const

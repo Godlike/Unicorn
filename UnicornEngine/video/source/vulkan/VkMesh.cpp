@@ -14,18 +14,18 @@ namespace video
 namespace vulkan
 {
 VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, Mesh& mesh)
-    : m_valid( false )
-    , m_isColored( mesh.GetMaterial().IsColored() )
-    , m_isWired( mesh.GetMaterial().IsWired() )
-    , m_device( device )
-    , m_physicalDevice( physicalDevice )
-    , m_pool( pool )
-    , m_queue( queue )
-    , m_mesh( mesh )
-    , m_color( mesh.GetMaterial().GetColor() )
-    , m_materialHandle( 0 )
+    : m_valid(false)
+    , m_isColored(mesh.GetMaterial().IsColored())
+    , m_isWired(mesh.GetMaterial().IsWired())
+    , m_device(device)
+    , m_physicalDevice(physicalDevice)
+    , m_pool(pool)
+    , m_queue(queue)
+    , m_mesh(mesh)
+    , m_color(mesh.GetMaterial().GetColor())
+    , m_materialHandle(0)
 {
-    //m_mesh.MaterialUpdated.connect(this, &VkMesh::MaterialUpdated);
+    m_mesh.MaterialUpdated.connect(this, &VkMesh::OnMaterialUpdated);
     m_mesh.VerticesUpdated.connect(this, &VkMesh::AllocateOnGPU);
 }
 
@@ -33,7 +33,7 @@ VkMesh::~VkMesh()
 {
     DeallocateOnGPU();
     m_mesh.VerticesUpdated.disconnect(this, &VkMesh::AllocateOnGPU);
-    //m_mesh.MaterialUpdated.disconnect(this, &VkMesh::MaterialUpdated);
+    m_mesh.MaterialUpdated.disconnect(this, &VkMesh::OnMaterialUpdated);
 }
 
 bool VkMesh::operator==(const Mesh& mesh) const
@@ -52,26 +52,26 @@ void VkMesh::AllocateOnGPU()
     m_indexBuffer.Destroy();
     Buffer stagingBuffer;
     //Vertexes filling
-    auto size = sizeof( m_mesh.GetVertices()[0] ) * m_mesh.GetVertices().size();
-    stagingBuffer.Create( m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, size );
-    m_vertexBuffer.Create( m_physicalDevice, m_device, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, size );
+    auto size = sizeof(m_mesh.GetVertices()[0]) * m_mesh.GetVertices().size();
+    stagingBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, size);
+    m_vertexBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, size);
 
     stagingBuffer.Map();
-    stagingBuffer.Write( m_mesh.GetVertices().data() );
-    stagingBuffer.CopyToBuffer( m_pool, m_queue, m_vertexBuffer, m_vertexBuffer.GetSize() );
+    stagingBuffer.Write(m_mesh.GetVertices().data());
+    stagingBuffer.CopyToBuffer(m_pool, m_queue, m_vertexBuffer, m_vertexBuffer.GetSize());
     stagingBuffer.Destroy();
     //Indexes filling
-    size = sizeof( m_mesh.GetIndices()[0] ) * m_mesh.GetIndices().size();
+    size = sizeof(m_mesh.GetIndices()[0]) * m_mesh.GetIndices().size();
 
-    stagingBuffer.Create( m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, size );
+    stagingBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, size);
     stagingBuffer.Map();
-    m_indexBuffer.Create( m_physicalDevice, m_device, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, size );
-    stagingBuffer.Write( m_mesh.GetIndices().data() );
-    stagingBuffer.CopyToBuffer( m_pool, m_queue, m_indexBuffer, m_indexBuffer.GetSize() );
+    m_indexBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, size);
+    stagingBuffer.Write(m_mesh.GetIndices().data());
+    stagingBuffer.CopyToBuffer(m_pool, m_queue, m_indexBuffer, m_indexBuffer.GetSize());
     stagingBuffer.Destroy();
 
     m_valid = true;
-    ReallocatedOnGpu.emit( this );
+    ReallocatedOnGpu.emit(this);
 }
 
 void VkMesh::DeallocateOnGPU()
@@ -85,9 +85,9 @@ vk::Buffer VkMesh::GetVertexBuffer() const
     return m_vertexBuffer.GetVkBuffer();
 }
 
-std::uint32_t VkMesh::VerticesSize() const
+uint32_t VkMesh::VerticesSize() const
 {
-    return static_cast<uint32_t>( m_mesh.GetVertices().size() );
+    return static_cast<uint32_t>(m_mesh.GetVertices().size());
 }
 
 vk::Buffer VkMesh::GetIndexBuffer() const
@@ -95,9 +95,9 @@ vk::Buffer VkMesh::GetIndexBuffer() const
     return m_indexBuffer.GetVkBuffer();
 }
 
-std::uint32_t VkMesh::IndicesSize() const
+uint32_t VkMesh::IndicesSize() const
 {
-    return static_cast<uint32_t>( m_mesh.GetIndices().size() );
+    return static_cast<uint32_t>(m_mesh.GetIndices().size());
 }
 
 bool VkMesh::IsColored() const
@@ -115,12 +115,20 @@ glm::vec3 VkMesh::GetColor() const
     return m_color;
 }
 
-void VkMesh::SetMaterialHandle(size_t handle)
+void VkMesh::SetMaterialHandle(uint32_t handle)
 {
     m_materialHandle = handle;
 }
 
-size_t VkMesh::GetMaterialHandle() const
+void VkMesh::OnMaterialUpdated(Mesh* mesh)
+{
+    m_color = mesh->GetMaterial().GetColor();
+    m_isColored = mesh->GetMaterial().IsColored();
+    m_isWired = mesh->GetMaterial().IsWired();
+    MaterialUpdated.emit(mesh, this);
+}
+
+uint32_t VkMesh::GetMaterialHandle() const
 {
     return m_materialHandle;
 }

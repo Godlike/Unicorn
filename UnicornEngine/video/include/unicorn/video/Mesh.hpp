@@ -86,7 +86,7 @@ public:
     * @brief Signal for GPU that material was updated
     */
 
-    wink::signal<wink::slot<void()>> MaterialUpdated;
+    wink::signal<wink::slot<void(Mesh*)>> MaterialUpdated;
     /**
     * @brief Signal for GPU data update
     */

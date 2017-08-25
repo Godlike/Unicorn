@@ -30,7 +30,7 @@ void Mesh::SetMaterial(Material& material)
 {
     m_material = &material;
 
-    MaterialUpdated.emit();
+    MaterialUpdated.emit(this);
 }
 
 const std::vector<Vertex>& Mesh::GetVertices() const

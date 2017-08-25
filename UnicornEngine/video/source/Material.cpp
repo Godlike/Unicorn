@@ -30,7 +30,7 @@ void Material::SetAlbedo(Texture& albedo)
     m_isAlbedoExist = true;
 }
 
-void Material::SetWireframe(bool wireframe)
+void Material::SetIsWired(bool wireframe)
 {
     m_isWired = wireframe;
 }

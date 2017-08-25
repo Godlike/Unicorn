@@ -201,10 +201,11 @@ private:
     bool LoadEngineHelpData();
 
     bool IsDeviceSuitable(const vk::PhysicalDevice& device);
+    bool AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh);
     bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device) const;
     bool Frame();
     void OnMeshReallocated(VkMesh*);
-    void OnMeshMaterialUpdated(VkMesh*);
+    void OnMeshMaterialUpdated(Mesh*mesh, VkMesh*);
     QueueFamilyIndices FindQueueFamilies(const vk::PhysicalDevice& device) const;
     bool FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features, vk::Format& returnFormat) const;
     bool FindDepthFormat(vk::Format& desiredFormat) const;
