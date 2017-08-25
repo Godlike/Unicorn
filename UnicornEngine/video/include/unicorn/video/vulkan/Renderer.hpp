@@ -143,6 +143,7 @@ private:
     VkTexture* m_replaceMeTexture;
 
     std::unordered_map<uint32_t, VkTexture*> m_textures;
+    std::unordered_map<uint32_t, vk::DescriptorSet> m_descriptorSetsCache;
 
     std::array<vk::DescriptorSetLayout, 2> m_descriptorSetLayouts; // 0 - mvp, 1 - albedo
     vk::DescriptorSet m_mvpDescriptorSet;

@@ -291,7 +291,7 @@ bool Renderer::Render()
         {
             // Update all related data
             OnMeshReallocated( nullptr );
-
+            CreateCommandBuffers();
             m_hasDirtyMeshes = false;
         }
 

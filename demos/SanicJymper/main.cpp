@@ -20,6 +20,7 @@
 #include <unicorn/video/CameraFpsController.hpp>
 #include <unicorn/video/Material.hpp>
 
+#include <ctime>
 #include <array>
 #include <cstdlib>
 #include <iostream>
@@ -48,13 +49,62 @@ void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
     deltaTime = newDeltatime;
     for( auto& mesh : meshes )
     {
-        mesh->modelMatrix.Rotate( deltaTime * 30, { 0, 0, 1 } ); // 30 - speed
+        mesh->modelMatrix.Rotate(deltaTime * 30, { 1, 1, 0 });
     }
     lastFrame = currentFrame;
 }
 
 void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonEvent)
 {
+    using unicorn::system::input::MouseButton;
+    using unicorn::system::input::Action;
+
+    unicorn::system::input::Action const& action = mouseButtonEvent.action;
+
+    if( action == Action::Release || action == Action::Repeat )
+    {
+        return;
+    }
+
+    unicorn::system::input::MouseButton const& button = mouseButtonEvent.button;
+
+    switch( button )
+    {
+        case MouseButton::MouseLeft:
+        {
+            unicorn::video::Material cubematerial;
+            cubematerial.SetColor( { static_cast<float>( std::rand() % 255 ) / 255, static_cast<float>( std::rand() % 255 ) / 255, static_cast<float>( std::rand() % 255 ) / 255 } );
+            unicorn::video::Cube* cube = new unicorn::video::Cube( cubematerial );
+            cube->modelMatrix.Translate( { std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 } );
+            meshes.push_back( cube );
+            vkRenderer->AddMesh( cube );
+            break;
+        }
+        case MouseButton::MouseRight:
+        {
+            if( meshes.size() )
+            {
+                // Get random cube
+                auto meshIt = meshes.begin();
+
+                std::advance( meshIt, std::rand() % meshes.size() );
+
+                auto mesh = *meshIt;
+
+                // Release cube's mesh
+                vkRenderer->DeleteMesh( mesh );
+
+                //// Erase cube
+                meshes.erase(meshIt);
+            }
+
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
 }
 
 void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double, double> pos)
@@ -103,107 +153,107 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
     switch( key )
     {
         case Key::W:
-            {
-                pCameraController->MoveForward( delta );
-                break;
-            }
+        {
+            pCameraController->MoveForward( delta );
+            break;
+        }
         case Key::S:
-            {
-                pCameraController->MoveBackward( delta );
-                break;
-            }
+        {
+            pCameraController->MoveBackward( delta );
+            break;
+        }
         case Key::A:
-            {
-                pCameraController->MoveLeft( delta );
-                break;
-            }
+        {
+            pCameraController->MoveLeft( delta );
+            break;
+        }
         case Key::D:
-            {
-                pCameraController->MoveRight( delta );
-                break;
-            }
+        {
+            pCameraController->MoveRight( delta );
+            break;
+        }
         case Key::Q:
-            {
-                pCameraController->MoveUp( delta );
-                break;
-            }
+        {
+            pCameraController->MoveUp( delta );
+            break;
+        }
         case Key::E:
-            {
-                pCameraController->MoveDown( delta );
-                break;
-            }
+        {
+            pCameraController->MoveDown( delta );
+            break;
+        }
         case Key::Up:
-            {
-                position.second -= static_cast<uint32_t>( delta );
-                positionChanged = true;
-                break;
-            }
+        {
+            position.second -= static_cast<uint32_t>( delta );
+            positionChanged = true;
+            break;
+        }
         case Key::Down:
-            {
-                position.second += static_cast<uint32_t>( delta );
-                positionChanged = true;
-                break;
-            }
+        {
+            position.second += static_cast<uint32_t>( delta );
+            positionChanged = true;
+            break;
+        }
         case Key::Left:
-            {
-                position.first -= static_cast<uint32_t>( delta );
-                positionChanged = true;
-                break;
-            }
+        {
+            position.first -= static_cast<uint32_t>( delta );
+            positionChanged = true;
+            break;
+        }
         case Key::Right:
-            {
-                position.first += static_cast<uint32_t>( delta );
-                positionChanged = true;
-                break;
-            }
+        {
+            position.first += static_cast<uint32_t>( delta );
+            positionChanged = true;
+            break;
+        }
         case Key::C:
-            {
-                pWindow->SetMouseMode( MouseMode::Captured );
-                break;
-            }
+        {
+            pWindow->SetMouseMode( MouseMode::Captured );
+            break;
+        }
         case Key::V:
+        {
+            if( Action::Repeat == action )
             {
-                if( Action::Repeat == action )
-                {
-                    return;
-                }
-                depthTest = !depthTest;
-                pGraphics->SetDepthTest( depthTest );
-                break;
+                return;
             }
+            depthTest = !depthTest;
+            pGraphics->SetDepthTest( depthTest );
+            break;
+        }
         case Key::Escape:
-            {
-                pWindow->SetMouseMode( MouseMode::Normal );
-                break;
-            }
+        {
+            pWindow->SetMouseMode( MouseMode::Normal );
+            break;
+        }
         case Key::Insert:
+        {
+            if( pInput )
             {
-                if( pInput )
+                switch( modifiers )
                 {
-                    switch( modifiers )
+                    case Modifier::Ctrl:
                     {
-                        case Modifier::Ctrl:
-                            {
-                                pInput->SetClipboard( std::string( "Gotta go fast" ) );
-                                break;
-                            }
-                        case Modifier::Shift:
-                            {
-                                std::cout << "Clipboard data: " << pInput->GetClipboard() << std::endl;
-                                break;
-                            }
-                        default:
-                            {
-                                break;
-                            }
+                        pInput->SetClipboard( std::string( "Gotta go fast" ) );
+                        break;
+                    }
+                    case Modifier::Shift:
+                    {
+                        std::cout << "Clipboard data: " << pInput->GetClipboard() << std::endl;
+                        break;
+                    }
+                    default:
+                    {
+                        break;
                     }
                 }
-                break;
             }
+            break;
+        }
         default:
-            {
-                break;
-            }
+        {
+            break;
+        }
     }
 
     if( positionChanged )
@@ -227,7 +277,7 @@ int main(int argc, char* argv[])
     settings.Init( argc, argv, "Sanic_Jymper.log" );
     settings.SetApplicationName( "SANIC JYMPER" );
     unicorn::UnicornEngine* unicornEngine = new unicorn::UnicornEngine();
-    timer = new unicorn::system::Timer( true );
+    timer = new unicorn::system::Timer( true ); 
     if( unicornEngine->Init() )
     {
         pGraphics = unicornEngine->GetGraphics();
@@ -366,6 +416,7 @@ int main(int argc, char* argv[])
             Quad* bottomBox = new Quad( bottomTexture );
             bottomBox->modelMatrix.Translate( { 0, skyBoxDistance, 0 } );
             bottomBox->modelMatrix.Rotate( -90, { 1, 0, 0 } );
+            bottomBox->modelMatrix.Rotate( 90, { 0, 0, 1 } );
             bottomBox->modelMatrix.Scale( { skyBoxScaleFactor, skyBoxScaleFactor, 0 } );
 
             vkRenderer->AddMesh( frontBox );
@@ -388,6 +439,4 @@ int main(int argc, char* argv[])
     delete unicornEngine;
 
     unicorn::Settings::Destroy();
-
-    system( "pause" );
 }
