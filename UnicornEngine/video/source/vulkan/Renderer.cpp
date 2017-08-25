@@ -1385,7 +1385,7 @@ bool Renderer::LoadEngineHelpData()
     std::string path = "data/textures/replace_me.jpg";
     if(!texture.Load(path))
     {
-        LOG_ERROR( "Can't find texture with path ", path.c_str() );
+        LOG_ERROR( "Can't find texture with path - %s", path.c_str() );
         return false;
     }
     VkTexture* replaceMeTexture = new VkTexture(m_vkLogicalDevice);
