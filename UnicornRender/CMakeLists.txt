@@ -199,7 +199,7 @@ install(
         ${CMAKE_CURRENT_BINARY_DIR}/UnicornRenderConfig.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/UnicornRenderConfigVersion.cmake
     DESTINATION ${UNICORN_INSTALL_LIBRARY_DIR}
-    COMPONENT unicorn_libraries
+    COMPONENT unicorn_headers
 )
 
 if (UNIX)
