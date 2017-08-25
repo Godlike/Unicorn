@@ -61,6 +61,8 @@ include(WinkSignals)
 ## Installation info
 include(InstallInfo)
 
+message(STATUS "Version: ${UNICORN_VERSION}")
+
 install( FILES ${LOGURU_INCLUDE_DIR}/loguru.hpp
     DESTINATION ${UNICORN_INSTALL_INCLUDE_DIR}
     COMPONENT unicorn_extra
@@ -125,9 +127,26 @@ set(UNICORN_RENDER_SOURCES
     source/UnicornRender.cpp
     source/Settings.cpp)
 
+set(UNICORN_RENDER_EXTRA)
+
+if (MSVC)
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/UnicornVersionInfo.rc.in
+        ${CMAKE_CURRENT_BINARY_DIR}/UnicornVersionInfo.rc
+
+        @ONLY
+    )
+
+    set(UNICORN_RENDER_EXTRA
+        ${UNICORN_RENDER_EXTRA}
+        ${CMAKE_CURRENT_BINARY_DIR}/UnicornVersionInfo.rc
+    )
+endif()
+
 add_library(${UNICORN_RENDER_LIB}
     ${UNICORN_RENDER_HEADERS}
     ${UNICORN_RENDER_SOURCES}
+    ${UNICORN_RENDER_EXTRA}
 
     $<TARGET_OBJECTS:${UNICORN_RENDER_UTILITY_LIB}>
     $<TARGET_OBJECTS:${UNICORN_RENDER_VIDEO_LIB}>
