@@ -5,7 +5,6 @@
 */
 
 #include <unicorn/video/vulkan/VkMesh.hpp>
-#include <unicorn/utility/Logger.hpp>
 #include <unicorn/video/Material.hpp>
 
 namespace unicorn
@@ -24,15 +23,17 @@ VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::Command
     , m_queue( queue )
     , m_mesh( mesh )
     , m_color( mesh.GetMaterial().GetColor() )
-    , m_textureHandler( 0 )
+    , m_materialHandle( 0 )
 {
-    //m_mesh.VerticesUpdated.connect(this, &VkMesh::AllocateOnGPU);
+    //m_mesh.MaterialUpdated.connect(this, &VkMesh::MaterialUpdated);
+    m_mesh.VerticesUpdated.connect(this, &VkMesh::AllocateOnGPU);
 }
 
 VkMesh::~VkMesh()
 {
     DeallocateOnGPU();
-    //m_mesh.VerticesUpdated.disconnect(this, &VkMesh::AllocateOnGPU);
+    m_mesh.VerticesUpdated.disconnect(this, &VkMesh::AllocateOnGPU);
+    //m_mesh.MaterialUpdated.disconnect(this, &VkMesh::MaterialUpdated);
 }
 
 bool VkMesh::operator==(const Mesh& mesh) const
@@ -40,7 +41,7 @@ bool VkMesh::operator==(const Mesh& mesh) const
     return &mesh == &m_mesh;
 }
 
-const glm::mat4& VkMesh::GetModel() const
+const glm::mat4& VkMesh::GetModelMatrix() const
 {
     return m_mesh.modelMatrix.model;
 }
@@ -97,6 +98,31 @@ vk::Buffer VkMesh::GetIndexBuffer() const
 std::uint32_t VkMesh::IndicesSize() const
 {
     return static_cast<uint32_t>( m_mesh.GetIndices().size() );
+}
+
+bool VkMesh::IsColored() const
+{
+    return m_isColored;
+}
+
+bool VkMesh::IsWired() const
+{
+    return m_isWired;
+}
+
+glm::vec3 VkMesh::GetColor() const
+{
+    return m_color;
+}
+
+void VkMesh::SetMaterialHandle(size_t handle)
+{
+    m_materialHandle = handle;
+}
+
+size_t VkMesh::GetMaterialHandle() const
+{
+    return m_materialHandle;
 }
 }
 }

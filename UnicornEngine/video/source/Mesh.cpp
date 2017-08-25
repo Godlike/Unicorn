@@ -22,6 +22,15 @@ void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<ui
 {
     m_vertices = vertices;
     m_indices = indices;
+
+    VerticesUpdated.emit();
+}
+
+void Mesh::SetMaterial(Material& material)
+{
+    m_material = &material;
+
+    MaterialUpdated.emit();
 }
 
 const std::vector<Vertex>& Mesh::GetVertices() const
@@ -34,8 +43,13 @@ const std::vector<uint16_t>& Mesh::GetIndices() const
     return m_indices;
 }
 
+const Material& Mesh::GetMaterial() const
+{
+    return *m_material;
+}
 
-Vertex::Vertex(glm::vec3 pos, glm::vec2 tc) : pos(pos), tc(tc)
+Vertex::Vertex(glm::vec3 pos, glm::vec2 tc) : pos(pos)
+                                            , tc(tc)
 {
 }
 }

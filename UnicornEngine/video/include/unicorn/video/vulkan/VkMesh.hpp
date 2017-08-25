@@ -9,7 +9,6 @@
 
 #include <unicorn/video/Mesh.hpp>
 #include <unicorn/video/vulkan/Buffer.hpp>
-#include <unicorn/video/vulkan/VkTexture.hpp>
 
 #include <vulkan/vulkan.hpp>
 #include <wink/signal.hpp>
@@ -57,10 +56,12 @@ public:
      * @brief Allocation on GPU
      */
     void AllocateOnGPU();
+
     /**
      * @brief Deallocation on GPU
      */
     void DeallocateOnGPU();
+
     /**
      * @brief Returns vertex buffer
      * @return vulkan buffer
@@ -76,52 +77,38 @@ public:
      * @brief Matrix of transformations
      * @return model matrix
      */
-    const glm::mat4& GetModel() const;
+    const glm::mat4& GetModelMatrix() const;
+
     /**
      * @brief Returns vertices size
      * @return size of vertices
      */
     uint32_t VerticesSize() const;
+
     /**
     * @briefReturns indices size
     * @return size of indices
     */
     uint32_t IndicesSize() const;
 
-    bool IsColored() const
-    {
-        return m_isColored;
-    }
+    bool IsColored() const;
 
-    bool IsWired() const
-    {
-        return m_isWired;
-    }
+    bool IsWired() const;
 
-    glm::vec3 GetColor() const
-    {
-        return m_color;
-    }
+    glm::vec3 GetColor() const;
 
-    void SetTextureHandler(uint32_t handler)
-    {
-        m_textureHandler = handler;
-    }
+    /*
+     * @brief Material in vulkan is combination of descriptor set and binded data
+     * //TODO
+     */
+    void SetMaterialHandle(size_t handle);
 
-    uint32_t GetTextureHandler() const
-    {
-        return m_textureHandler;
-    }
-
-    vk::DescriptorSet& GetDesctiptionSet()
-    {
-        return m_descriptorSet;
-    }
-
+    size_t GetMaterialHandle() const;
     /**
      * @brief Signal for command buffer reallocation
      */
     wink::signal<wink::slot<void(VkMesh*)>> ReallocatedOnGpu;
+    //wink::signal<wink::slot<void(VkMesh*)>> MaterialUpdated;
 private:
     bool m_valid;
     bool m_isColored;
@@ -135,9 +122,7 @@ private:
 
     Mesh& m_mesh;
     glm::vec3 m_color;
-    uint32_t m_textureHandler;
-
-    vk::DescriptorSet m_descriptorSet;
+    size_t m_materialHandle;
 };
 }
 }

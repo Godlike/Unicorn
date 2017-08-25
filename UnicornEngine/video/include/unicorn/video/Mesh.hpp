@@ -51,24 +51,46 @@ public:
     * @param vertices vertexes data
     * @param indices indices data
     */
-    UNICORN_EXPORT void SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices);
+    UNICORN_EXPORT void SetMeshData(std::vector<Vertex> const& vertices, std::vector<uint16_t> const& indices);
+
+    /**
+    * @brief Sets new material
+    * @param [in] material updated material for current mesh
+    */
+    UNICORN_EXPORT void SetMaterial(Material& material);
+
     /**
      * @brief Returns mesh vertices
      * @return Mesh vertices
      */
     UNICORN_EXPORT const std::vector<Vertex>& GetVertices() const;
+
     /**
     * @brief Returns mesh indices
     * @return Mesh indices
     */
-    UNICORN_EXPORT const std::vector<uint16_t>& GetIndices() const;
+    UNICORN_EXPORT std::vector<uint16_t> const& GetIndices() const;
 
-    UNICORN_EXPORT const Material& GetMaterial() const
-    {
-        return *m_material;
-    }
+    /**
+    * @brief Returns mesh material
+    * @return mesh material data
+    */
+    UNICORN_EXPORT Material const& GetMaterial() const;
 
+    /**
+    * @brief Matrix that contains model transformation
+    */
     ModelMatrix modelMatrix;
+
+    /**
+    * @brief Signal for GPU that material was updated
+    */
+
+    wink::signal<wink::slot<void()>> MaterialUpdated;
+    /**
+    * @brief Signal for GPU data update
+    */
+    wink::signal<wink::slot<void()>> VerticesUpdated;
 private:
     std::vector<Vertex> m_vertices;
     std::vector<uint16_t> m_indices;

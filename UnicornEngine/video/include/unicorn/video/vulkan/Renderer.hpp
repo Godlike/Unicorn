@@ -140,9 +140,9 @@ private:
 
     std::list<VkMesh*> m_vkMeshes;
     Image* m_depthImage;
-    VkTexture* m_replaceMeTexture;
+    uint32_t m_replaceMeTextureHandle;
 
-    std::unordered_map<uint32_t, VkTexture*> m_textures;
+    std::unordered_map<uint32_t, VkTexture*> m_texturesCache;
     std::unordered_map<uint32_t, vk::DescriptorSet> m_descriptorSetsCache;
 
     std::array<vk::DescriptorSetLayout, 2> m_descriptorSetLayouts; // 0 - mvp, 1 - albedo
@@ -176,7 +176,6 @@ private:
     void FreeUniforms();
     void FreeDescriptorPoolAndLayouts() const;
     void FreePipelineCache();
-    void FreeEngineHelpData();
     void FreeTextures();
 
     bool PrepareUniformBuffers();
@@ -205,6 +204,7 @@ private:
     bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device) const;
     bool Frame();
     void OnMeshReallocated(VkMesh*);
+    void OnMeshMaterialUpdated(VkMesh*);
     QueueFamilyIndices FindQueueFamilies(const vk::PhysicalDevice& device) const;
     bool FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features, vk::Format& returnFormat) const;
     bool FindDepthFormat(vk::Format& desiredFormat) const;
