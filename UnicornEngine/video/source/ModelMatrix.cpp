@@ -16,20 +16,20 @@ ModelMatrix::ModelMatrix() : model( glm::mat4( 1.0 ) ), m_position(0, 0, 0)
 {
 }
 
-void ModelMatrix::Rotate(float angle, const glm::vec3& axis)
+void ModelMatrix::Rotate(float angle, glm::vec3 const& axis)
 {
     model = glm::rotate( model, glm::radians( angle ) , axis );
 }
 
 void ModelMatrix::Translate(const glm::vec3& translateVector)
 {
+    m_position += translateVector;
     model = glm::translate( model, translateVector );
 }
 
 void ModelMatrix::SetPosition(glm::vec3 const& position)
 {
-    Translate(m_position + position);
-    m_position = position;
+    Translate(position - m_position);
 }
 
 void ModelMatrix::Scale(const glm::vec3& scaleVector)

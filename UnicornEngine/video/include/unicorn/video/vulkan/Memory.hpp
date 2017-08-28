@@ -29,12 +29,13 @@ public:
      * @param reqMemProperties required memory properties
      * @param allocSize size of allocation
      */
-    Memory(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties, vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize);
+    Memory(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties,
+           vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize);
+
     /**
      * @brief Frees memory
      */
     ~Memory();
-
 
     Memory(const Memory& other) = delete;
     Memory(Memory&& other) = delete;
@@ -56,21 +57,19 @@ public:
      * @param allocSize size of allocation
      * @return result of allocation
      */
-    vk::Result Allocate(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties, vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize);
+    vk::Result Allocate(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties,
+                        vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize);
+
     /**
      * @brief Frees memory
      */
-    void Free();
+    void Free() const;
+
     /**
      * @brief Returns reference to vk::DeviceMemory
      * @return reference to vk::DeviceMemory
      */
     const vk::DeviceMemory& GetMemory() const;
-
-    explicit operator bool() const
-    {
-        return m_memory;
-    }
 private:
     bool m_initialized;
     vk::Device m_device;

@@ -40,16 +40,16 @@ float lastFrame = 0.0f; // Time of last frame
 
 void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
 {
-    float currentFrame = static_cast<float>( timer->ElapsedMilliseconds().count() ) / 1000;
+    float currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
     float newDeltatime = currentFrame - lastFrame;
-    if( newDeltatime <= 0.0 )
+    if(newDeltatime <= 0.0)
     {
         return;
     }
     deltaTime = newDeltatime;
-    for( auto& mesh : meshes )
+    for(auto& mesh : meshes)
     {
-        mesh->modelMatrix.Rotate(deltaTime * 30, { 1, 1, 0 });
+        mesh->modelMatrix.Rotate(deltaTime * 30, {1, 1, 0});
     }
     lastFrame = currentFrame;
 }
@@ -61,28 +61,28 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
 
     unicorn::system::input::Action const& action = mouseButtonEvent.action;
 
-    if( action == Action::Release || action == Action::Repeat )
+    if(action == Action::Release || action == Action::Repeat)
     {
         return;
     }
 
     unicorn::system::input::MouseButton const& button = mouseButtonEvent.button;
 
-    switch( button )
+    switch(button)
     {
         case MouseButton::MouseLeft:
         {
             unicorn::video::Material cubematerial;
-            cubematerial.SetColor( { static_cast<float>( std::rand() % 255 ) / 255, static_cast<float>( std::rand() % 255 ) / 255, static_cast<float>( std::rand() % 255 ) / 255 } );
-            unicorn::video::Cube* cube = new unicorn::video::Cube( cubematerial );
-            cube->modelMatrix.Translate( { std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 } );
-            meshes.push_back( cube );
-            vkRenderer->AddMesh( cube );
+            cubematerial.SetColor({static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255});
+            unicorn::video::Mesh* cube = vkRenderer->SpawnMesh(cubematerial);
+            unicorn::video::Primitives::Cube(*cube);
+            meshes.push_back(cube);
+            cube->modelMatrix.SetPosition({std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20});
             break;
         }
         case MouseButton::MouseMiddle:
         {
-            if (meshes.size())
+            if(meshes.size())
             {
                 // Get random cube
                 auto meshIt = meshes.begin();
@@ -92,7 +92,7 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
                 auto mesh = *meshIt;
 
                 unicorn::video::Material cubeMaterial;
-                cubeMaterial.SetColor({ static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255 });
+                cubeMaterial.SetColor({static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255});
                 cubeMaterial.SetIsWired(true);
                 mesh->SetMaterial(cubeMaterial);
             }
@@ -100,17 +100,17 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
         }
         case MouseButton::MouseRight:
         {
-            if( meshes.size() )
+            if(meshes.size())
             {
                 // Get random cube
                 auto meshIt = meshes.begin();
 
-                std::advance( meshIt, std::rand() % meshes.size() );
+                std::advance(meshIt, std::rand() % meshes.size());
 
                 auto mesh = *meshIt;
 
                 // Release cube's mesh
-                vkRenderer->DeleteMesh( mesh );
+                vkRenderer->DeleteMesh(mesh);
 
                 //// Erase cube
                 meshes.erase(meshIt);
@@ -127,12 +127,12 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
 
 void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double, double> pos)
 {
-    pCameraController->UpdateView( pos.first, pos.second );
+    pCameraController->UpdateView(pos.first, pos.second);
 }
 
 void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double> pos)
 {
-    pCameraController->Scroll( static_cast<float>( pos.second / 50 ) ); // 50 is zoom coefficient
+    pCameraController->Scroll(static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
 }
 
 void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEvent)
@@ -144,7 +144,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
 
     unicorn::system::input::Action const& action = keyboardEvent.action;
 
-    if( Action::Release == action )
+    if(Action::Release == action)
     {
         return;
     }
@@ -159,100 +159,100 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
 
     float delta = deltaTime * 0.1f;
 
-    if( Modifier::Shift & modifiers )
+    if(Modifier::Shift & modifiers)
     {
         delta *= 10;
     }
 
-    if( Modifier::Alt & modifiers )
+    if(Modifier::Alt & modifiers)
     {
         delta *= 5;
     }
-    switch( key )
+    switch(key)
     {
         case Key::W:
         {
-            pCameraController->MoveForward( delta );
+            pCameraController->MoveForward(delta);
             break;
         }
         case Key::S:
         {
-            pCameraController->MoveBackward( delta );
+            pCameraController->MoveBackward(delta);
             break;
         }
         case Key::A:
         {
-            pCameraController->MoveLeft( delta );
+            pCameraController->MoveLeft(delta);
             break;
         }
         case Key::D:
         {
-            pCameraController->MoveRight( delta );
+            pCameraController->MoveRight(delta);
             break;
         }
         case Key::Q:
         {
-            pCameraController->MoveUp( delta );
+            pCameraController->MoveUp(delta);
             break;
         }
         case Key::E:
         {
-            pCameraController->MoveDown( delta );
+            pCameraController->MoveDown(delta);
             break;
         }
         case Key::Up:
         {
-            position.second -= static_cast<uint32_t>( delta );
+            position.second -= static_cast<uint32_t>(delta);
             positionChanged = true;
             break;
         }
         case Key::Down:
         {
-            position.second += static_cast<uint32_t>( delta );
+            position.second += static_cast<uint32_t>(delta);
             positionChanged = true;
             break;
         }
         case Key::Left:
         {
-            position.first -= static_cast<uint32_t>( delta );
+            position.first -= static_cast<uint32_t>(delta);
             positionChanged = true;
             break;
         }
         case Key::Right:
         {
-            position.first += static_cast<uint32_t>( delta );
+            position.first += static_cast<uint32_t>(delta);
             positionChanged = true;
             break;
         }
         case Key::C:
         {
-            pWindow->SetMouseMode( MouseMode::Captured );
+            pWindow->SetMouseMode(MouseMode::Captured);
             break;
         }
         case Key::V:
         {
-            if( Action::Repeat == action )
+            if(Action::Repeat == action)
             {
                 return;
             }
             depthTest = !depthTest;
-            pGraphics->SetDepthTest( depthTest );
+            pGraphics->SetDepthTest(depthTest);
             break;
         }
         case Key::Escape:
         {
-            pWindow->SetMouseMode( MouseMode::Normal );
+            pWindow->SetMouseMode(MouseMode::Normal);
             break;
         }
         case Key::Insert:
         {
-            if( pInput )
+            if(pInput)
             {
-                switch( modifiers )
+                switch(modifiers)
                 {
                     case Modifier::Ctrl:
                     {
-                        pInput->SetClipboard( std::string( "Gotta go fast" ) );
+                        pInput->SetClipboard(std::string("Gotta go fast"));
                         break;
                     }
                     case Modifier::Shift:
@@ -274,15 +274,15 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         }
     }
 
-    if( positionChanged )
+    if(positionChanged)
     {
-        pWindow->SetPosition( position );
+        pWindow->SetPosition(position);
     }
 }
 
 void onRendererDestroyed(unicorn::video::Renderer* pRenderer)
 {
-    if( vkRenderer == pRenderer )
+    if(vkRenderer == pRenderer)
     {
         vkRenderer = nullptr;
     }
@@ -292,162 +292,137 @@ int main(int argc, char* argv[])
 {
     unicorn::Settings& settings = unicorn::Settings::Instance();
 
-    settings.Init( argc, argv, "Sanic_Jymper.log" );
-    settings.SetApplicationName( "SANIC JYMPER" );
+    settings.Init(argc, argv, "Sanic_Jymper.log");
+    settings.SetApplicationName("SANIC JYMPER");
     unicorn::UnicornEngine* unicornEngine = new unicorn::UnicornEngine();
-    timer = new unicorn::system::Timer( true ); 
-    if( unicornEngine->Init() )
+    timer = new unicorn::system::Timer(true);
+    if(unicornEngine->Init())
     {
         pGraphics = unicornEngine->GetGraphics();
         pInput = unicornEngine->GetInput();
 
-        unicornEngine->LogicFrame.connect( &onLogicFrame );
+        unicornEngine->LogicFrame.connect(&onLogicFrame);
 
-        pGraphics->SetWindowCreationHint( unicorn::system::WindowHint::Decorated,
-                                          unicorn::system::CustomValue::True );
+        pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
+                                         unicorn::system::CustomValue::True);
 
-        pGraphics->SetWindowCreationHint( unicorn::system::WindowHint::Resizable,
-                                          unicorn::system::CustomValue::True );
+        pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Resizable,
+                                         unicorn::system::CustomValue::True);
 
         auto h = pGraphics->GetMonitors().back()->GetActiveVideoMode().height;
         auto w = pGraphics->GetMonitors().back()->GetActiveVideoMode().width;
-        settings.SetApplicationHeight( h );
-        settings.SetApplicationWidth( w );
+        settings.SetApplicationHeight(h);
+        settings.SetApplicationWidth(w);
 
-        unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow( settings.GetApplicationWidth(),
-                                                                    settings.GetApplicationHeight(),
-                                                                    settings.GetApplicationName(),
-                                                                    nullptr,
-                                                                    nullptr );
-        pWindow0->SetMouseMode( unicorn::system::MouseMode::Captured );
+        unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(settings.GetApplicationWidth(),
+                                                                   settings.GetApplicationHeight(),
+                                                                   settings.GetApplicationName(),
+                                                                   nullptr,
+                                                                   nullptr);
+        pWindow0->SetMouseMode(unicorn::system::MouseMode::Captured);
 
-        vkRenderer = pGraphics->SpawnRenderer( pWindow0 );
-        vkRenderer->Destroyed.connect( &onRendererDestroyed );
+        vkRenderer = pGraphics->SpawnRenderer(pWindow0);
+        vkRenderer->Destroyed.connect(&onRendererDestroyed);
 
-        vkRenderer->SetBackgroundColor( unicorn::video::Color::LightPink );
-        pCameraController = new unicorn::video::CameraFpsController( vkRenderer->GetCamera() );
+        vkRenderer->SetBackgroundColor(unicorn::video::Color::LightPink);
+        pCameraController = new unicorn::video::CameraFpsController(vkRenderer->GetCamera());
 
-        using unicorn::video::Mesh;
-        using unicorn::video::Cube;
-        using unicorn::video::Quad;
         {
             //Loading textures
             unicorn::video::Texture texture, textureMandrill;
             unicorn::video::Texture frontSkyBox, backSkyBox, leftSkyBox, rightSkyBox, topSkyBox, bottomSkyBox;
 
-            frontSkyBox.Load( "data/textures/city_skybox/lmcity_ft.tga" );
-            backSkyBox.Load( "data/textures/city_skybox/lmcity_bk.tga" );
-            leftSkyBox.Load( "data/textures/city_skybox/lmcity_lf.tga" );
-            rightSkyBox.Load( "data/textures/city_skybox/lmcity_rt.tga" );
-            topSkyBox.Load( "data/textures/city_skybox/lmcity_up.tga" );
-            bottomSkyBox.Load( "data/textures/city_skybox/lmcity_dn.tga" );
+            frontSkyBox.Load("data/textures/city_skybox/lmcity_ft.tga");
+            backSkyBox.Load("data/textures/city_skybox/lmcity_bk.tga");
+            leftSkyBox.Load("data/textures/city_skybox/lmcity_lf.tga");
+            rightSkyBox.Load("data/textures/city_skybox/lmcity_rt.tga");
+            topSkyBox.Load("data/textures/city_skybox/lmcity_up.tga");
+            bottomSkyBox.Load("data/textures/city_skybox/lmcity_dn.tga");
 
-            texture.Load( "data/textures/texture.jpg" );
-            textureMandrill.Load( "data/textures/mandrill.png" );
+            texture.Load("data/textures/texture.jpg");
+            textureMandrill.Load("data/textures/mandrill.png");
 
             //Checks data
-            if( !texture.IsLoaded()
+            if(!texture.IsLoaded()
                 || !textureMandrill.IsLoaded()
                 || !frontSkyBox.IsLoaded()
                 || !backSkyBox.IsLoaded()
                 || !leftSkyBox.IsLoaded()
                 || !rightSkyBox.IsLoaded()
                 || !topSkyBox.IsLoaded()
-                || !bottomSkyBox.IsLoaded() )
+                || !bottomSkyBox.IsLoaded())
             {
                 return -1;
             }
 
-            unicorn::video::Material textureMaterial;
-            textureMaterial.SetAlbedo( texture );
-            unicorn::video::Material mandrillMaterial;
-            mandrillMaterial.SetAlbedo( textureMandrill );
-            unicorn::video::Material defaultMaterial;
+            unicorn::video::Material textureMaterial,
+                                     mandrillMaterial, frontTexture, backTexture,
+                                     leftTexture, rightTexture, upTexture, bottomTexture;
 
-            unicorn::video::Material blueMaterial;
-            blueMaterial.SetColor( unicorn::video::Color::Blue );
-            blueMaterial.SetIsWired( true );
+            textureMaterial.SetAlbedo(texture);
+            mandrillMaterial.SetAlbedo(textureMandrill);
+            frontTexture.SetAlbedo(frontSkyBox);
+            backTexture.SetAlbedo(backSkyBox);
+            leftTexture.SetAlbedo(leftSkyBox);
+            rightTexture.SetAlbedo(rightSkyBox);
+            upTexture.SetAlbedo(topSkyBox);
+            bottomTexture.SetAlbedo(bottomSkyBox);
 
-            unicorn::video::Material wrongMaterial;
-            wrongMaterial.SetIsColored( false );
+            unicorn::video::Mesh* texturedQuad = vkRenderer->SpawnMesh(textureMaterial);
+            unicorn::video::Primitives::Quad(*texturedQuad);
+            unicorn::video::Mesh* mandrillQuad = vkRenderer->SpawnMesh(mandrillMaterial);
+            unicorn::video::Primitives::Quad(*mandrillQuad);
+            unicorn::video::Mesh* texturedCube = vkRenderer->SpawnMesh(textureMaterial);
+            unicorn::video::Primitives::Cube(*texturedCube);
+            unicorn::video::Mesh* frontBox = vkRenderer->SpawnMesh(frontTexture);
+            unicorn::video::Primitives::Quad(*frontBox);
+            unicorn::video::Mesh* backBox = vkRenderer->SpawnMesh(backTexture);
+            unicorn::video::Primitives::Quad(*backBox);
+            unicorn::video::Mesh* leftBox = vkRenderer->SpawnMesh(leftTexture);
+            unicorn::video::Primitives::Quad(*leftBox);
+            unicorn::video::Mesh* rightBox = vkRenderer->SpawnMesh(rightTexture);
+            unicorn::video::Primitives::Quad(*rightBox);
+            unicorn::video::Mesh* upBox = vkRenderer->SpawnMesh(upTexture);
+            unicorn::video::Primitives::Quad(*upBox);
+            unicorn::video::Mesh* bottomBox = vkRenderer->SpawnMesh(bottomTexture);
+            unicorn::video::Primitives::Quad(*bottomBox);
 
-            Quad* texturedQuad = new Quad( textureMaterial );
-            Quad* mandrillQuad = new Quad( mandrillMaterial );
-            Quad* coloredQuad = new Quad( blueMaterial );
-            Cube* texturedCube = new Cube( textureMaterial );
-            Cube* texturedCube2 = new Cube( textureMaterial );
-
-            mandrillQuad->modelMatrix.Translate( { 3.0, 0.0, 1.0 } );
-            coloredQuad->modelMatrix.Translate( { -3.0, 0.0, 6.0 } );
-            texturedCube->modelMatrix.SetPosition( { 0.0, 5.0, -5.0 } );
-            texturedCube2->modelMatrix.Translate( { 0.0, -5.0, -5.0 } );
-
-            meshes.push_back( texturedQuad );
-
-            vkRenderer->AddMesh( texturedQuad );
-            vkRenderer->AddMesh( mandrillQuad );
-            vkRenderer->AddMesh( coloredQuad );
-            vkRenderer->AddMesh( texturedCube );
-            vkRenderer->AddMesh( texturedCube2 );
+            mandrillQuad->modelMatrix.Translate({3.0, 0.0, 1.0});
+            texturedCube->modelMatrix.SetPosition({0.0, 5.0, -5.0});
 
             //Skybox
             float skyBoxScaleFactor = 500;
-            float skyBoxDistance = skyBoxScaleFactor - 1; // Pifagor
+            float skyBoxDistance = skyBoxScaleFactor - 1;
 
-            unicorn::video::Material frontTexture;
-            frontTexture.SetAlbedo( frontSkyBox );
-            Quad* frontBox = new Quad( frontTexture );
-            frontBox->modelMatrix.Translate( { 0, 0, skyBoxDistance } );
-            frontBox->modelMatrix.Scale( { skyBoxScaleFactor, skyBoxScaleFactor, 0 } );
+            frontBox->modelMatrix.Translate({0, 0, skyBoxDistance});
+            frontBox->modelMatrix.Scale({skyBoxScaleFactor, skyBoxScaleFactor, 0});
 
-            unicorn::video::Material backTexture;
-            backTexture.SetAlbedo( backSkyBox );
-            Quad* backBox = new Quad( backTexture );
-            backBox->modelMatrix.Translate( { 0, 0, -skyBoxDistance } );
-            backBox->modelMatrix.Rotate( 180, { 0, 1, 0 } );
-            backBox->modelMatrix.Scale( { skyBoxScaleFactor, skyBoxScaleFactor, 0 } );
+            backBox->modelMatrix.Translate({0, 0, -skyBoxDistance});
+            backBox->modelMatrix.Rotate(180, {0, 1, 0});
+            backBox->modelMatrix.Scale({skyBoxScaleFactor, skyBoxScaleFactor, 0});
 
-            unicorn::video::Material leftTexture;
-            leftTexture.SetAlbedo( leftSkyBox );
-            Quad* leftBox = new Quad( leftTexture );
-            leftBox->modelMatrix.Translate( { -skyBoxDistance, 0, 0 } );
-            leftBox->modelMatrix.Rotate( -90, { 0, 1, 0 } );
-            leftBox->modelMatrix.Scale( { skyBoxScaleFactor, skyBoxScaleFactor, 0 } );
+            leftBox->modelMatrix.Translate({-skyBoxDistance, 0, 0});
+            leftBox->modelMatrix.Rotate(-90, {0, 1, 0});
+            leftBox->modelMatrix.Scale({skyBoxScaleFactor, skyBoxScaleFactor, 0});
 
-            unicorn::video::Material rightTexture;
-            rightTexture.SetAlbedo( rightSkyBox );
-            Quad* rightBox = new Quad( rightTexture );
-            rightBox->modelMatrix.Translate( { skyBoxDistance, 0, 0 } );
-            rightBox->modelMatrix.Rotate( 90, { 0, 1, 0 } );
-            rightBox->modelMatrix.Scale( { skyBoxScaleFactor, skyBoxScaleFactor, 0 } );
+            rightBox->modelMatrix.Translate({skyBoxDistance, 0, 0});
+            rightBox->modelMatrix.Rotate(90, {0, 1, 0});
+            rightBox->modelMatrix.Scale({skyBoxScaleFactor, skyBoxScaleFactor, 0});
 
-            unicorn::video::Material upTexture;
-            upTexture.SetAlbedo( topSkyBox );
-            Quad* upBox = new Quad( upTexture );
-            upBox->modelMatrix.Translate( { 0, -skyBoxDistance, 0 } );
-            upBox->modelMatrix.Rotate( 90, { 1, 0, 0 } );
-            upBox->modelMatrix.Rotate( -90, { 0, 0, 1 } );
-            upBox->modelMatrix.Scale( { skyBoxScaleFactor, skyBoxScaleFactor, 0 } );
+            upBox->modelMatrix.Translate({0, -skyBoxDistance, 0});
+            upBox->modelMatrix.Rotate(90, {1, 0, 0});
+            upBox->modelMatrix.Rotate(-90, {0, 0, 1});
+            upBox->modelMatrix.Scale({skyBoxScaleFactor, skyBoxScaleFactor, 0});
 
-            unicorn::video::Material bottomTexture;
-            bottomTexture.SetAlbedo( bottomSkyBox );
-            Quad* bottomBox = new Quad( bottomTexture );
-            bottomBox->modelMatrix.Translate( { 0, skyBoxDistance, 0 } );
-            bottomBox->modelMatrix.Rotate( -90, { 1, 0, 0 } );
-            bottomBox->modelMatrix.Rotate( 90, { 0, 0, 1 } );
-            bottomBox->modelMatrix.Scale( { skyBoxScaleFactor, skyBoxScaleFactor, 0 } );
+            bottomBox->modelMatrix.Translate({0, skyBoxDistance, 0});
+            bottomBox->modelMatrix.Rotate(-90, {1, 0, 0});
+            bottomBox->modelMatrix.Rotate(90, {0, 0, 1});
+            bottomBox->modelMatrix.Scale({skyBoxScaleFactor, skyBoxScaleFactor, 0});
 
-            vkRenderer->AddMesh( frontBox );
-            vkRenderer->AddMesh( backBox );
-            vkRenderer->AddMesh( leftBox );
-            vkRenderer->AddMesh( rightBox );
-            vkRenderer->AddMesh( upBox );
-            vkRenderer->AddMesh( bottomBox );
-
-            pWindow0->MousePosition.connect( &onCursorPositionChanged );
-            pWindow0->Scroll.connect( &onMouseScrolled );
-            pWindow0->Keyboard.connect( &onWindowKeyboard );
-            pWindow0->MouseButton.connect( &onMouseButton );
+            pWindow0->MousePosition.connect(&onCursorPositionChanged);
+            pWindow0->Scroll.connect(&onMouseScrolled);
+            pWindow0->Keyboard.connect(&onWindowKeyboard);
+            pWindow0->MouseButton.connect(&onMouseButton);
 
             unicornEngine->Run();
         }

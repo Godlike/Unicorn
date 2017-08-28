@@ -14,22 +14,23 @@ namespace unicorn
 {
 namespace video
 {
-class Cube : public Mesh
+/** @brief  Fills meshes with geometric primitive's data */
+class Primitives
 {
 public:
-    UNICORN_EXPORT Cube(Material& material);
-private:
-    //Hide it to prevent data updating
-    void SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices) = delete;
-};
+    /**
+    *  @brief Fills given mesh with cube data
+    *
+    *  @param  mesh    geometry mesh
+    */
+    UNICORN_EXPORT static void Cube(Mesh& mesh);
 
-class Quad : public Mesh
-{
-public:
-    UNICORN_EXPORT Quad(Material& material);
-private:
-    //Hide it to prevent data updating
-    void SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices) = delete;
+    /**
+    *  @brief Fills given mesh with quad data
+    *
+    *  @param  mesh    geometry mesh
+    */
+    UNICORN_EXPORT static void Quad(Mesh& mesh);
 };
 }
 }

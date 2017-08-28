@@ -95,6 +95,8 @@ bool Renderer::Init()
         return false;
     }
 
+    UpdateViewProjectionDescriptorSet();
+
     m_isInitialized = true;
 
     LOG_INFO("Renderer initialized correctly.");
@@ -289,7 +291,7 @@ bool Renderer::Render()
         if(m_hasDirtyMeshes)
         {
             // Update all related data
-            OnMeshReallocated(nullptr);
+            ResizeUnifromModelBuffer(nullptr);
             CreateCommandBuffers();
             m_hasDirtyMeshes = false;
         }
@@ -346,32 +348,35 @@ bool Renderer::RecreateSwapChain()
     return false;
 }
 
-bool Renderer::AddMesh(Mesh* mesh)
+Mesh* Renderer::SpawnMesh(unicorn::video::Material& material)
 {
+    auto mesh = new Mesh(material);
     auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
 
     if(!AllocateMaterial(*mesh, *vkmesh))
     {
         LOG_ERROR("Can't allocate material!");
-        return false;
+        return nullptr;
     }
 
-    vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
+    vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
     vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated); // TODO: return error from here
 
     m_vkMeshes.push_back(vkmesh);
     m_meshes.push_back(mesh);
-    vkmesh->AllocateOnGPU();
 
-    CreateCommandBuffers();
+    ResizeUnifromModelBuffer(vkmesh);
 
-    return true;
+    return mesh;
 }
 
-void Renderer::OnMeshReallocated(VkMesh* /*vkmesh*/)
+void Renderer::ResizeUnifromModelBuffer(VkMesh* /*vkmesh*/)
 {
     m_uniformModel.Destroy();
-    size_t bufferSize = m_vkMeshes.size() * m_dynamicAlignment;
+    auto nMeshes = m_vkMeshes.size();
+
+    size_t bufferSize = nMeshes == 0 ? m_dynamicAlignment : nMeshes * m_dynamicAlignment;
+
     m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, bufferSize);
 
     if(m_uniformModelsData.model)
@@ -386,7 +391,9 @@ void Renderer::OnMeshReallocated(VkMesh* /*vkmesh*/)
     m_uniformModel.Map();
     m_uniformModel.Write(m_uniformModelsData.model);
 
-    UpdateMVPDescriptorSet();
+    UpdateModelDescriptorSet();
+
+    CreateCommandBuffers();
 }
 
 void Renderer::OnMeshMaterialUpdated(Mesh* mesh, VkMesh* vkMesh)
@@ -401,6 +408,17 @@ bool Renderer::DeleteMesh(const Mesh* mesh)
 
     if(vkMeshIt != m_vkMeshes.end())
     {
+        auto handle = (*vkMeshIt)->GetMaterialHandle();
+        auto& pVkMeshMaterial = m_materials.at((*vkMeshIt)->GetMaterialHandle());
+        pVkMeshMaterial.nMeshes--;
+
+        if(pVkMeshMaterial.nMeshes < 1)
+        {
+            m_vkLogicalDevice.freeDescriptorSets(m_descriptorPool, 1, &pVkMeshMaterial.descriptorSet);
+            pVkMeshMaterial.texture->Delete();
+            m_materials.erase(handle);
+        }
+
         DeleteVkMesh(*vkMeshIt);
 
         m_vkMeshes.erase(vkMeshIt);
@@ -417,10 +435,7 @@ bool Renderer::DeleteMesh(const Mesh* mesh)
 
         return true;
     }
-    else
-    {
-        return false;
-    }
+    return false;
 }
 
 void Renderer::SetDepthTest(bool enabled)
@@ -614,11 +629,12 @@ void Renderer::FreePipelineCache()
 
 void Renderer::FreeTextures()
 {
-    for(auto& vkTexture : m_texturesCache)
+    for(auto& material : m_materials)
     {
-        vkTexture.second->Delete();
+        material.second.texture->Delete();
+        m_vkLogicalDevice.freeDescriptorSets(m_descriptorPool, 1, &material.second.descriptorSet);
     }
-    m_texturesCache.clear();
+    m_materials.clear();
 }
 
 bool Renderer::PrepareUniformBuffers()
@@ -637,11 +653,8 @@ bool Renderer::PrepareUniformBuffers()
     return true;
 }
 
-void Renderer::UpdateMVPDescriptorSet()
+void Renderer::UpdateViewProjectionDescriptorSet()
 {
-    std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
-
-    // View projection uniform
     vk::WriteDescriptorSet viewProjectionWriteSet;
     viewProjectionWriteSet.dstSet = m_mvpDescriptorSet;
     viewProjectionWriteSet.descriptorType = vk::DescriptorType::eUniformBuffer;
@@ -649,7 +662,11 @@ void Renderer::UpdateMVPDescriptorSet()
     viewProjectionWriteSet.pBufferInfo = &m_uniformViewProjection.GetDescriptorInfo();
     viewProjectionWriteSet.descriptorCount = 1;
 
-    // Model uniform
+    m_vkLogicalDevice.updateDescriptorSets(1, &viewProjectionWriteSet, 0, nullptr);
+}
+
+void Renderer::UpdateModelDescriptorSet() const
+{
     vk::WriteDescriptorSet modelWriteSet;
     modelWriteSet.dstSet = m_mvpDescriptorSet;
     modelWriteSet.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
@@ -657,10 +674,7 @@ void Renderer::UpdateMVPDescriptorSet()
     modelWriteSet.pBufferInfo = &m_uniformModel.GetDescriptorInfo();
     modelWriteSet.descriptorCount = 1;
 
-    writeDescriptorSets.push_back(viewProjectionWriteSet);
-    writeDescriptorSets.push_back(modelWriteSet);
-
-    m_vkLogicalDevice.updateDescriptorSets(static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
+    m_vkLogicalDevice.updateDescriptorSets(1, &modelWriteSet, 0, nullptr);
 }
 
 void Renderer::UpdateUniformBuffer()
@@ -689,7 +703,6 @@ void Renderer::UpdateVkMeshMatrices()
 {
     glm::mat4* pModelMat = nullptr;
     uint32_t i = 0;
-
     for(auto pVkMesh : m_vkMeshes)
     {
         // Get model matrix location
@@ -1074,6 +1087,12 @@ bool Renderer::CreateGraphicsPipeline()
 
     m_shaderProgram = new ShaderProgram(m_vkLogicalDevice, "data/shaders/UberShader.vert.spv", "data/shaders/UberShader.frag.spv");
 
+    if(!m_shaderProgram->IsCreated())
+    {
+        LOG_ERROR("Vulkan can't create shader program!");
+        return false;
+    }
+
     vk::PipelineInputAssemblyStateCreateInfo inputAssembly;
     inputAssembly.topology = vk::PrimitiveTopology::eTriangleList;
 
@@ -1336,7 +1355,7 @@ bool Renderer::CreateCommandBuffers()
                     // Set 0: Scene descriptor set containing global matrices
                     descriptorSets[0] = m_mvpDescriptorSet;
                     // Set 1: Per-Material descriptor set containing bound images
-                    descriptorSets[1] = m_descriptorSetsCache.at(pVkMesh->GetMaterialHandle());
+                    descriptorSets[1] = m_materials.at(pVkMesh->GetMaterialHandle()).descriptorSet;
 
                     m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout, 0, descriptorSets.size(), descriptorSets.data(), 1, &dynamicOffset);
 
@@ -1396,8 +1415,6 @@ bool Renderer::LoadEngineHelpData()
         return false;
     }
 
-    m_texturesCache.insert({texture.GetId(), replaceMeTexture});
-
     m_replaceMeTextureHandle = texture.GetId();
 
     vk::DescriptorSetAllocateInfo allocInfo;
@@ -1419,11 +1436,16 @@ bool Renderer::LoadEngineHelpData()
     imageDescriptorSet.setDstSet(descriptorSet);
     imageDescriptorSet.setDescriptorType(vk::DescriptorType::eCombinedImageSampler);
     imageDescriptorSet.setDescriptorCount(1);
-    imageDescriptorSet.setPImageInfo(&m_texturesCache.at(m_replaceMeTextureHandle)->GetDescriptorImageInfo());
+    imageDescriptorSet.setPImageInfo(&replaceMeTexture->GetDescriptorImageInfo());
 
     m_vkLogicalDevice.updateDescriptorSets(1, &imageDescriptorSet, 0, nullptr);
 
-    m_descriptorSetsCache.insert({texture.GetId(), descriptorSet});
+    VkMaterial replaceMeMaterial;
+    replaceMeMaterial.texture = replaceMeTexture;
+    replaceMeMaterial.descriptorSet = descriptorSet;
+    replaceMeMaterial.nMeshes += 2; // too hold it until engine shut down
+
+    m_materials.insert({texture.GetId(), replaceMeMaterial});
 
     texture.Delete();
     return true;
@@ -1471,11 +1493,10 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
     {
         meshAlbedoHandle = meshMaterial.GetAlbedo().GetId();
 
-        if(m_texturesCache.find(meshAlbedoHandle) == m_texturesCache.end())
+        if(m_materials.find(meshAlbedoHandle) == m_materials.end())
         {
             VkTexture* vkTexture = new VkTexture(m_vkLogicalDevice);
             vkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, &meshMaterial.GetAlbedo());
-            m_texturesCache.insert({meshAlbedoHandle, vkTexture});
 
             vk::DescriptorSetAllocateInfo allocInfo;
             allocInfo.descriptorPool = m_descriptorPool;
@@ -1496,19 +1517,24 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
             imageDescriptorSet.setDstSet(descriptorSet);
             imageDescriptorSet.setDescriptorType(vk::DescriptorType::eCombinedImageSampler);
             imageDescriptorSet.setDescriptorCount(1);
-            imageDescriptorSet.setPImageInfo(&m_texturesCache.at(meshAlbedoHandle)->GetDescriptorImageInfo());
+            imageDescriptorSet.setPImageInfo(&vkTexture->GetDescriptorImageInfo());
 
             m_vkLogicalDevice.updateDescriptorSets(1, &imageDescriptorSet, 0, nullptr);
 
-            m_descriptorSetsCache.insert({meshAlbedoHandle, descriptorSet});
+            VkMaterial material;
+            material.texture = vkTexture;
+            material.descriptorSet = descriptorSet;
+
+            m_materials.insert({meshAlbedoHandle, material});
         }
     }
 
+    m_materials.at(meshAlbedoHandle).nMeshes++;
     vkmesh.SetMaterialHandle(meshAlbedoHandle);
     return true;
 }
 
-bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device) const
+bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device)
 {
     vk::Result result;
     std::vector<vk::ExtensionProperties> availableExtensions;

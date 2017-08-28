@@ -25,7 +25,7 @@ namespace unicorn
                 if (!simpleVertShaderHandler.IsValid() || !simpleFragShaderHandler.IsValid())
                 {
                     LOG_ERROR("Can't find shaders!");
-                    m_isCreated = false;
+                    return;
                 }
 
                 bool shadersCreatedFailed = !CreateShaderModule(simpleVertShaderHandler.GetContent().GetBuffer(), m_vertShaderModule) ||
@@ -34,7 +34,7 @@ namespace unicorn
                 if (shadersCreatedFailed)
                 {
                     LOG_ERROR("Can't create shader module!");
-                    m_isCreated = false;
+                    return;
                 }
 
                 vk::PipelineShaderStageCreateInfo vertShaderStageInfo = {};

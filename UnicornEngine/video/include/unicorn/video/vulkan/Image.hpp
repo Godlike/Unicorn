@@ -37,12 +37,13 @@ public:
           vk::ImageUsageFlags usage,
           uint32_t width,
           uint32_t height);
+
     /**
     * @brief Removes image
     */
     ~Image();
 
-    Image(const Image& other) = delete;
+    Image(Image const& other) = delete;
     Image(Image&& other) = delete;
     Image& operator=(Image& other) = delete;
     Image& operator=(Image&& other) = delete;
@@ -64,11 +65,13 @@ public:
      * @return image width
      */
     uint32_t GetWidth() const;
+
     /**
      * @brief Returns image height
      * @return image height
      */
     uint32_t GetHeight() const;
+
     /**
      * @brief Returns vulkan raw image
      * @return vulkan raw image

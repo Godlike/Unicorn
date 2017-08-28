@@ -30,21 +30,25 @@ public:
     * @attention Always use 'main' as entry point
     */
     ShaderProgram(vk::Device device, const std::string& vertShaderPath, const std::string& fragShaderPath);
+
     /**
     * @brief Function to check is shader was successfully loaded and created
     * @return true if shader was created and false if not
     */
     bool IsCreated();
+
     /**
     * @brief Getter for shader stage info data
     * @return pointer to all shader stage info data
     */
     vk::PipelineShaderStageCreateInfo* GetShaderStageInfoData();
+
     /**
     * @brief Getter for vertex input info
     * @return pipeline vertex input state create info
     */
     vk::PipelineVertexInputStateCreateInfo GetVertexInputInfo();
+
     /**
     * @brief Destroys shader modules
     */

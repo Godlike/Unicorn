@@ -21,15 +21,41 @@ class Texture;
 
 namespace vulkan
 {
+/**
+ * @brief VkTexture represents texture at Vulkan backend
+ */
 class VkTexture
 {
 public:
     VkTexture(vk::Device device);
 
+    /**
+     * @brief 
+     * @return constant reference to descriptor image info
+     */
     const vk::DescriptorImageInfo& GetDescriptorImageInfo() const;
-    bool Create(const vk::PhysicalDevice& physicalDevice, const vk::Device& device, const vk::CommandPool& commandPool, const vk::Queue& queue, const Texture* texture);
+
+    /**
+     * @brief 
+     * @param physicalDevice 
+     * @param device 
+     * @param commandPool 
+     * @param queue 
+     * @param texture 
+     * @return 
+     */
+    bool Create(vk::PhysicalDevice const& physicalDevice, vk::Device const& device,
+                vk::CommandPool const& commandPool, vk::Queue const& queue, Texture const* texture);
+
+    /**
+     * @brief 
+     */
     void Delete();
-    bool IsInitialized() const { return m_isInitialized; }
+    /**
+     * @brief 
+     * @return 
+     */
+    bool IsInitialized() const;
 private:
     vk::Device m_device;
     vk::DescriptorImageInfo m_imageInfo;

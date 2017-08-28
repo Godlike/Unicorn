@@ -64,6 +64,13 @@ struct UniformCameraData
     glm::mat4 proj;
 };
 
+struct VkMaterial
+{
+    vk::DescriptorSet descriptorSet;
+    VkTexture* texture;
+    uint32_t nMeshes = 0; // Number of meshes, which point to this material
+};
+
 /**
  * @brief Struct which holds all models uniform data for sending to shader
  */
@@ -94,17 +101,17 @@ public:
      */
     ~Renderer();
 
-    Renderer(const Renderer& other) = delete;
-    Renderer(const Renderer&& other) = delete;
-    Renderer& operator=(const Renderer& other) = delete;
-    Renderer& operator=(const Renderer&& other) = delete;
+    Renderer(Renderer const& other) = delete;
+    Renderer(Renderer const&& other) = delete;
+    Renderer& operator=(Renderer const& other) = delete;
+    Renderer& operator=(Renderer const&& other) = delete;
 
     bool Init() override;
     void Deinit() override;
     bool Render() override;
     bool RecreateSwapChain();
-    bool AddMesh(Mesh* mesh) override;
-    bool DeleteMesh(const Mesh* mesh) override;
+    Mesh* SpawnMesh(Material& material) override;
+    bool DeleteMesh(Mesh const* mesh) override;
     void SetDepthTest(bool enabled) override;
 private:
     vk::PhysicalDevice m_vkPhysicalDevice;
@@ -142,8 +149,7 @@ private:
     Image* m_depthImage;
     uint32_t m_replaceMeTextureHandle;
 
-    std::unordered_map<uint32_t, VkTexture*> m_texturesCache;
-    std::unordered_map<uint32_t, vk::DescriptorSet> m_descriptorSetsCache;
+    std::unordered_map<uint32_t, VkMaterial> m_materials;
 
     std::array<vk::DescriptorSetLayout, 2> m_descriptorSetLayouts; // 0 - mvp, 1 - albedo
     vk::DescriptorSet m_mvpDescriptorSet;
@@ -179,7 +185,8 @@ private:
     void FreeTextures();
 
     bool PrepareUniformBuffers();
-    void UpdateMVPDescriptorSet();
+    void UpdateViewProjectionDescriptorSet();
+    void UpdateModelDescriptorSet() const;
     void UpdateUniformBuffer();
     void UpdateDynamicUniformBuffer();
     void UpdateVkMeshMatrices();
@@ -200,20 +207,20 @@ private:
     bool CreatePipelineCache();
     bool LoadEngineHelpData();
 
-    bool IsDeviceSuitable(const vk::PhysicalDevice& device);
-    bool AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh);
-    bool CheckDeviceExtensionSupport(const vk::PhysicalDevice& device) const;
+    bool IsDeviceSuitable(vk::PhysicalDevice const& device);
+    bool AllocateMaterial(Mesh const& mesh, VkMesh& vkmesh);
+    static bool CheckDeviceExtensionSupport(vk::PhysicalDevice const& device);
     bool Frame();
-    void OnMeshReallocated(VkMesh*);
-    void OnMeshMaterialUpdated(Mesh*mesh, VkMesh*);
-    QueueFamilyIndices FindQueueFamilies(const vk::PhysicalDevice& device) const;
-    bool FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features, vk::Format& returnFormat) const;
+    void ResizeUnifromModelBuffer(VkMesh*);
+    void OnMeshMaterialUpdated(Mesh* mesh, VkMesh*);
+    QueueFamilyIndices FindQueueFamilies(vk::PhysicalDevice const& device) const;
+    bool FindSupportedFormat(std::vector<vk::Format> const& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features, vk::Format& returnFormat) const;
     bool FindDepthFormat(vk::Format& desiredFormat) const;
     bool HasStencilComponent(vk::Format format) const;
     bool QuerySwapChainSupport(SwapChainSupportDetails& details, const vk::PhysicalDevice& device) const;
-    vk::SurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& availableFormats) const;
+    vk::SurfaceFormatKHR ChooseSwapSurfaceFormat(std::vector<vk::SurfaceFormatKHR> const& availableFormats) const;
     vk::PresentModeKHR ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& availablePresentModes) const;
-    vk::Extent2D ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities) const;
+    vk::Extent2D ChooseSwapExtent(vk::SurfaceCapabilitiesKHR const& capabilities) const;
     // Callbacks for window events
     void OnWindowDestroyed(system::Window* pWindow);
     void OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, int32_t> size);

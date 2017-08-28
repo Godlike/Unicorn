@@ -21,7 +21,7 @@ Texture::Texture() : m_width(0)
                    , m_size(0)
                    , m_id(0)
                    , m_data(nullptr)
-                   , m_path(nullptr)
+                   , m_path("")
                    , m_initialized(false)
 {
 }
@@ -39,35 +39,61 @@ void Texture::Delete()
         m_data = nullptr;
     }
     m_initialized = false;
+
+    //TODO: free storage handles here
 }
 
 int32_t Texture::Size() const
 {
+    if(!m_initialized)
+    {
+        LOG_WARNING("Asking for size of texture, but texture was not loaded!");
+    }
     return m_size;
 }
 
 unsigned char* Texture::Data() const
 {
+    if(!m_initialized)
+    {
+        LOG_WARNING("Asking for data of texture, but texture was not loaded!");
+    }
     return m_data;
 }
 
 int32_t Texture::Width() const
 {
+    if(!m_initialized)
+    {
+        LOG_WARNING("Asking for width of texture, but texture was not loaded!");
+    }
     return m_width;
 }
 
 int32_t Texture::Height() const
 {
+    if(!m_initialized)
+    {
+        LOG_WARNING("Asking for height of texture, but texture was not loaded!");
+    }
     return m_height;
 }
 
-const char* Texture::Path() const
+std::string Texture::Path() const
 {
+    if(!m_initialized)
+    {
+        LOG_WARNING("Asking for path of texture, but texture was not loaded!");
+    }
     return m_path;
 }
 
 uint32_t Texture::GetId() const
 {
+    if(!m_initialized)
+    {
+        LOG_WARNING("Asking for ID of texture, but texture was not loaded!");
+    }
     return m_id;
 }
 
@@ -75,15 +101,17 @@ bool Texture::Load(const std::string& path)
 {
     Delete();
 
-    m_path = path.c_str();
+    m_path = path;
 
     utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
-    utility::asset::Handler textureHandler = storage.Get(path.c_str());
+    utility::asset::Handler textureHandler = storage.Get(m_path);
+
     if(!textureHandler.IsValid())
     {
         LOG_ERROR("Can't find texture - %s", m_path);
         return false;
     }
+
     m_data = stbi_load_from_memory(textureHandler.GetContent().GetBuffer().data(),
                                    textureHandler.GetContent().GetBuffer().size(),
                                    &m_width, &m_height, &m_channels, STBI_rgb_alpha);
@@ -94,6 +122,7 @@ bool Texture::Load(const std::string& path)
         LOG_ERROR("Failed to load texture image with path - %s", m_path);
         return false;
     }
+
     std::hash<std::string> hash_fn;
     m_id = hash_fn(path);
     m_initialized = true;

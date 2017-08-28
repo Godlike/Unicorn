@@ -26,6 +26,7 @@ class Context : public utility::templates::Singleton<Context>
 {
 public:
     Context();
+
     /**
      * @brief Check if context was initialized
      * @return true if initialized and false if not
@@ -38,27 +39,32 @@ public:
      * @return true if initialized correctly and false if not
      */
     bool Initialize(system::Manager& manager);
+
     /**
      * @brief Destructs context data
      */
     void Deinitialize();
+
     /**
      * @brief Returns raw Vulkan Instance
      * @return copy of vk::Instance
      */
     vk::Instance GetVkInstance();
+
     /*
      * @brief Returns validation layers
      */
-    const std::vector<const char*>& GetValidationLayers();
+    const std::vector<char const*>& GetValidationLayers();
+
     /*
     * @brief Returns device extensions
     */
-    const std::vector<const char*>& GetDeviceExtensions();
+    const std::vector<char const*>& GetDeviceExtensions();
+
     /*
     * @brief Returns instance extensions
     */
-    const std::vector<const char*>& GetInstanceExtensions();
+    const std::vector<char const*>& GetInstanceExtensions();
 private:
     friend class utility::templates::Singleton<Context>;
 

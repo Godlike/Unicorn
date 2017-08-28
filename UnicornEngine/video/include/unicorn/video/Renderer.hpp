@@ -64,12 +64,23 @@ public:
      */
     virtual void SetDepthTest(bool enabled) = 0;
 
-    /**
-     * @brief Adds mesh to rendering system
-     * @param [in] mesh pointer to mesh
-     * @return true if mesh was added and false if not
-     */
-    virtual bool AddMesh(Mesh* mesh) = 0;
+    /** @brief  Creates new geometry mesh
+    *
+    *  Creates and subscribes to mesh.
+    *  Mesh shall be deleted via DeleteMesh().
+    *  
+    *  @param [in] material describes mesh visual representation
+    *  
+    *  @attention  Mesh lifetime is bound by its renderer's lifetime.
+    *              Using meshes after their renderer was destroyed is undefined behaviour.
+    *              If you're storing mesh pointers, consider storing them with a reference
+    *              to their renderer and listening for its Destroyed event for proper cleanup.
+    *
+    *  @return pointer to newly created geometry::Mesh
+    *
+    *  @sa DeleteMesh
+    */
+    virtual Mesh* SpawnMesh(Material& material) = 0;
 
     /**
     * @brief Removes mesh from rendering system
