@@ -1,0 +1,56 @@
+# Copyright (C) 2017 by Godlike
+# This code is licensed under the MIT license (MIT)
+# (http://opensource.org/licenses/MIT)
+
+if (NOT DEFINED UNICORN_RENDER_NAME)
+    set(UNICORN_RENDER_NAME "UnicornRender" CACHE STRING "Project name for Unicorn Render library")
+endif()
+
+if (NOT DEFINED INSTALL_INCLUDE_DIR)
+    set(INSTALL_INCLUDE_DIR "include/godlike" CACHE STRING "Path to directory holding headers")
+endif()
+
+if (NOT DEFINED INSTALL_LIBRARY_DIR)
+    set(INSTALL_LIBRARY_DIR "lib" CACHE STRING "Path to directory holding libraries")
+endif()
+
+if (NOT DEFINED INSTALL_DATA_DIR)
+    set(INSTALL_DATA_DIR "share" CACHE STRING "Path to directory holding additional data")
+endif()
+
+set(UNICORN_RENDER_LIB ${UNICORN_RENDER_NAME} CACHE STRING "Name of Unicorn Render library")
+set(UNICORN_RENDER_LIB_FULL ${UNICORN_RENDER_LIB}.dll CACHE STRING "Full name of Unicorn Render library")
+
+set(UNICORN_INSTALL_INCLUDE_DIR ${INSTALL_INCLUDE_DIR})
+set(UNICORN_INSTALL_LIBRARY_DIR ${INSTALL_LIBRARY_DIR}/${UNICORN_RENDER_NAME})
+set(UNICORN_INSTALL_DATA_DIR ${INSTALL_DATA_DIR}/${UNICORN_RENDER_NAME})
+
+set(UNICORN_VENDOR "Godlike")
+set(UNICORN_DESCRIPTION "Unicorn Render library")
+set(UNICORN_COMMENT "")
+set(UNICORN_COPYRIGHT "Copyright (C) 2017 by Godlike")
+set(UNICORN_LEGAL_TM "Distributed under the MIT license (http://opensource.org/licenses/MIT)")
+
+set(UNICORN_VERSION_MAJOR 0)
+set(UNICORN_VERSION_MINOR 1)
+set(UNICORN_VERSION_PATCH 0)
+set(UNICORN_VERSION_TWEAK 0)
+
+set(UNICORN_VERSION "${UNICORN_VERSION_MAJOR}.${UNICORN_VERSION_MINOR}.${UNICORN_VERSION_PATCH}")
+set(UNICORN_SOVERSION "${UNICORN_VERSION_MAJOR}.${UNICORN_VERSION_MINOR}")
+
+if (NOT DEFINED SLEIPNIR_VERSION_MAJOR)
+    set(SLEIPNIR_VERSION_MAJOR 0)
+endif()
+
+if (NOT DEFINED SLEIPNIR_VERSION_MINOR)
+    set(SLEIPNIR_VERSION_MINOR 0)
+endif()
+
+if (NOT DEFINED SLEIPNIR_VERSION_PATCH)
+    set(SLEIPNIR_VERSION_PATCH 0)
+endif()
+
+if (NOT DEFINED SLEIPNIR_VERSION_TWEAK)
+    set(SLEIPNIR_VERSION_TWEAK 0)
+endif()

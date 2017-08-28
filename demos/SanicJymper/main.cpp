@@ -4,7 +4,7 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#include <unicorn/UnicornEngine.hpp>
+#include <unicorn/UnicornRender.hpp>
 #include <unicorn/video/Graphics.hpp>
 #include <unicorn/system/Window.hpp>
 #include <unicorn/system/WindowHint.hpp>
@@ -35,7 +35,7 @@ std::list<unicorn::video::geometry::MeshDescriptor*> cubes;
 float deltaTime = 0.0f; // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
-void onLogicFrame(unicorn::UnicornEngine* /*engine*/)
+void onLogicFrame(unicorn::UnicornRender* /*render*/)
 {
     float currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
     float newDeltatime = currentFrame - lastFrame;
@@ -275,14 +275,14 @@ int main(int argc, char* argv[])
 
     settings.Init(argc, argv, "Sanic_Jymper.log");
     settings.SetApplicationName("SANIC JYMPER");
-    unicorn::UnicornEngine* unicornEngine = new unicorn::UnicornEngine();
+    unicorn::UnicornRender* unicornRender = new unicorn::UnicornRender();
     timer = new unicorn::system::Timer(true);
-    if (unicornEngine->Init())
+    if (unicornRender->Init())
     {
-        pGraphics = unicornEngine->GetGraphics();
-        pInput = unicornEngine->GetInput();
+        pGraphics = unicornRender->GetGraphics();
+        pInput = unicornRender->GetInput();
 
-        unicornEngine->LogicFrame.connect(&onLogicFrame);
+        unicornRender->LogicFrame.connect(&onLogicFrame);
 
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Decorated,
                                          unicorn::system::CustomValue::True);
@@ -305,12 +305,13 @@ int main(int argc, char* argv[])
         vkRenderer = pGraphics->SpawnRenderer(pWindow0);
         vkRenderer->Destroyed.connect(&onRendererDestroyed);
 
-        vkRenderer->SetBackgroundColor(unicorn::video::Color::LightPink);
-        pCameraController = new unicorn::video::CameraFpsController(vkRenderer->GetCamera());
-
+        using unicorn::video::Color;
         using unicorn::video::geometry::Mesh;
         using unicorn::video::geometry::MeshDescriptor;
         using unicorn::video::geometry::Primitives;
+
+        vkRenderer->SetBackgroundColor(Color::LightPink());
+        pCameraController = new unicorn::video::CameraFpsController(vkRenderer->GetCamera());
 
         std::array<Mesh*, 3> meshes = {
             vkRenderer->SpawnMesh(),
@@ -320,12 +321,12 @@ int main(int argc, char* argv[])
 
         {
             MeshDescriptor triangle1 = Primitives::Triangle(*meshes[0]);
-            triangle1.SetColor(unicorn::video::Color::Red);
+            triangle1.SetColor(Color::Red());
             triangle1.Translate({-2.0f, 0.0f, 0.0f});
             triangle1.Scale({0.5, 0.5, 0.5});
 
             MeshDescriptor triangle2 = Primitives::Triangle(*meshes[1]);
-            triangle2.SetColor(unicorn::video::Color::Green);
+            triangle2.SetColor(Color::Green());
 
             MeshDescriptor cube = Primitives::Cube(*meshes[2]);
             cube.Translate({5.0, 0.0f, 5.0f});
@@ -335,7 +336,7 @@ int main(int argc, char* argv[])
             pWindow0->Keyboard.connect(&onWindowKeyboard);
             pWindow0->MouseButton.connect(&onMouseButton);
 
-            unicornEngine->Run();
+            unicornRender->Run();
         }
 
         if (vkRenderer)
@@ -347,8 +348,8 @@ int main(int argc, char* argv[])
         }
     }
 
-    unicornEngine->Deinit();
-    delete unicornEngine;
+    unicornRender->Deinit();
+    delete unicornRender;
 
     unicorn::Settings::Destroy();
 }
