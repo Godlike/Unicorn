@@ -39,7 +39,7 @@ bool VkTexture::Create(const vk::PhysicalDevice& physicalDevice, const vk::Devic
             texture->Size());
         if(!result)
         {
-            LOG_ERROR("Can't allocate staging buffer for texture - %s", texture->Path());
+            LOG_ERROR("Can't allocate staging buffer for texture - %s", texture->Path().c_str());
             return false;
         }
 
@@ -56,7 +56,7 @@ bool VkTexture::Create(const vk::PhysicalDevice& physicalDevice, const vk::Devic
             texture->Height());
         if(!m_vkImage->IsInitialized())
         {
-            LOG_ERROR("Can't allocate vulkan based image for texture - %s", texture->Path());
+            LOG_ERROR("Can't allocate vulkan based image for texture - %s", texture->Path().c_str());
             return false;
         }
 

@@ -67,8 +67,3 @@ add_library(video OBJECT
 if (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()
-
-source_group("headers/video/vulkan" FILES ${VULKAN_HEADERS})
-source_group("sources/video/vulkan" FILES ${VULKAN_SOURCES})
-source_group("headers/video" FILES ${VIDEO_HEADERS})
-source_group("sources/video" FILES ${VIDEO_SOURCES})

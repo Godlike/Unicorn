@@ -171,12 +171,12 @@ add_dependencies(${UNICORN_ENGINE_LIB} Shaders)
 
 add_custom_command(TARGET ${UNICORN_ENGINE_LIB} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${UNICORN_ENGINE_LIB}>/data/shaders/"
-	COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${UNICORN_ENGINE_LIB}>/data/textures/"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${UNICORN_ENGINE_LIB}>/data/textures/"
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${PROJECT_BINARY_DIR}/data/shaders"
         "$<TARGET_FILE_DIR:${UNICORN_ENGINE_LIB}>/data/shaders"
-	COMMAND ${CMAKE_COMMAND} -E copy_directory
-		"${UNICORN_ENGINE_ROOT}/data/textures"
-		"$<TARGET_FILE_DIR:${UNICORN_ENGINE_LIB}>/data/textures"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${UNICORN_ENGINE_ROOT}/data/textures"
+        "$<TARGET_FILE_DIR:${UNICORN_ENGINE_LIB}>/data/textures"
         )
 

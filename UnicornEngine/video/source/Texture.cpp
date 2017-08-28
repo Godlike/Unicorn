@@ -108,7 +108,7 @@ bool Texture::Load(const std::string& path)
 
     if(!textureHandler.IsValid())
     {
-        LOG_ERROR("Can't find texture - %s", m_path);
+        LOG_ERROR("Can't find texture - %s", m_path.c_str());
         return false;
     }
 
@@ -119,7 +119,7 @@ bool Texture::Load(const std::string& path)
 
     if(!m_data)
     {
-        LOG_ERROR("Failed to load texture image with path - %s", m_path);
+        LOG_ERROR("Failed to load texture image with path - %s", m_path.c_str());
         return false;
     }
 
