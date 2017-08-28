@@ -7,6 +7,7 @@
 #include <unicorn/video/Primitives.hpp>
 
 #include <glm/gtc/constants.hpp>
+#include "unicorn/utility/Logger.hpp"
 
 namespace unicorn
 {
@@ -73,51 +74,52 @@ void Primitives::Quad(Mesh& mesh)
 
 void Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors)
 {
-    float const R = 1. / static_cast<float>(rings - 1);
-    float const S = 1. / static_cast<float>(sectors - 1);
+    if(radius < 0)
+    {
+        LOG_WARNING("Sphere radius less then 0! Sphere vertices will be inversed!");
+    }
+    if(rings < 4 || sectors < 4)
+    {
+        LOG_WARNING("Rings of sectors less then 4! No visible object will appear!");
+    }
 
-    std::vector<float> vertices;
-    std::vector<float> normals;
-    std::vector<float> texcoords;
     std::vector<uint16_t> indices;
-
-    vertices.resize(rings * sectors * 3);
-    normals.resize(rings * sectors * 3);
-    texcoords.resize(rings * sectors * 2);
-    std::vector<float>::iterator v = vertices.begin();
-    std::vector<float>::iterator n = normals.begin();
-    std::vector<float>::iterator t = texcoords.begin();
-
     std::vector<Vertex> temp_vertices;
 
-    for(int r = 0; r < rings; r++)
+    temp_vertices.resize(rings * sectors);
     {
-        for(int s = 0; s < sectors; s++)
+        float const R = 1. / static_cast<float>(rings - 1);
+        float const S = 1. / static_cast<float>(sectors - 1);
+
+        auto vert_iter = temp_vertices.begin();
+        for(uint32_t r = 0; r < rings; r++)
         {
-            float const y = sin(-glm::half_pi<float>() + glm::pi<float>() * r * R);
-            float const x = cos(2 * glm::pi<float>() * s * S) * sin(glm::pi<float>() * r * R);
-            float const z = sin(2 * glm::pi<float>() * s * S) * sin(glm::pi<float>() * r * R);
-            Vertex vrt;
-            vrt.pos = {x * radius , y * radius , z * radius};
-            vrt.tc = {s * S, r * R};
-            temp_vertices.push_back(vrt);
+            for(uint32_t s = 0; s < sectors; s++)
+            {
+                float const y = sin(-glm::half_pi<float>() + glm::pi<float>() * r * R);
+                float const x = cos(2 * glm::pi<float>() * s * S) * sin(glm::pi<float>() * r * R);
+                float const z = sin(2 * glm::pi<float>() * s * S) * sin(glm::pi<float>() * r * R);
+                *vert_iter++ = {{x * radius , y * radius , z * radius}, {s * S, r * R}};
+            }
         }
     }
 
-    for(int x = 0; x < sectors; x++)
+    indices.resize(sectors * rings * 6);
+    auto indices_iter = indices.begin();
+    for(uint32_t x = 0; x < sectors; x++)
     {
-        for(int y = 0; y < rings; y++)
+        for(uint32_t y = 0; y < rings; y++)
         {
             int left = x;
             float right = (x + 1) % sectors;
             float top = y;
             float bottom = (y + 1) % rings;
-            indices.push_back(left + top * sectors);
-            indices.push_back(left + bottom * sectors);
-            indices.push_back(right + top * sectors);
-            indices.push_back(right + top * sectors);
-            indices.push_back(left + bottom * sectors);
-            indices.push_back(right + bottom * sectors);
+            *indices_iter++ = {static_cast<uint16_t>(left + top * sectors)};
+            *indices_iter++ = {static_cast<uint16_t>(left + bottom * sectors)};
+            *indices_iter++ = {static_cast<uint16_t>(right + top * sectors)};
+            *indices_iter++ = {static_cast<uint16_t>(right + top * sectors)};
+            *indices_iter++ = {static_cast<uint16_t>(left + bottom * sectors)};
+            *indices_iter++ = {static_cast<uint16_t>(right + bottom * sectors)};
         }
     }
 
