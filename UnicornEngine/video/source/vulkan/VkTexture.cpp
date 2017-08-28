@@ -89,7 +89,7 @@ bool VkTexture::Create(const vk::PhysicalDevice& physicalDevice, const vk::Devic
 
         if(!result)
         {
-            LOG_ERROR("Can't create sampler for texture - %s", texture->Path());
+            LOG_ERROR("Can't create sampler for texture - %s", texture->Path().c_str());
             return false;
         }
 
