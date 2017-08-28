@@ -340,7 +340,7 @@ int main(int argc, char* argv[])
             bottomSkyBox.Load("data/textures/city_skybox/lmcity_dn.tga");
 
             texture.Load("data/textures/texture.jpg");
-            textureMandrill.Load("data/textures/mandrill.png");
+            textureMandrill.Load("data/textures/earth.jpg");
 
             //Checks data
             if(!texture.IsLoaded()
@@ -355,7 +355,7 @@ int main(int argc, char* argv[])
                 return -1;
             }
 
-            unicorn::video::Material textureMaterial,
+            unicorn::video::Material textureMaterial, blueMaterial,
                                      mandrillMaterial, frontTexture, backTexture,
                                      leftTexture, rightTexture, upTexture, bottomTexture;
 
@@ -367,6 +367,9 @@ int main(int argc, char* argv[])
             rightTexture.SetAlbedo(rightSkyBox);
             upTexture.SetAlbedo(topSkyBox);
             bottomTexture.SetAlbedo(bottomSkyBox);
+
+            blueMaterial.SetColor(unicorn::video::Color::Blue);
+            blueMaterial.SetIsColored(true);
 
             unicorn::video::Mesh* texturedQuad = vkRenderer->SpawnMesh(textureMaterial);
             unicorn::video::Primitives::Quad(*texturedQuad);
@@ -386,7 +389,10 @@ int main(int argc, char* argv[])
             unicorn::video::Primitives::Quad(*upBox);
             unicorn::video::Mesh* bottomBox = vkRenderer->SpawnMesh(bottomTexture);
             unicorn::video::Primitives::Quad(*bottomBox);
+            unicorn::video::Mesh* sphere = vkRenderer->SpawnMesh(mandrillMaterial);
+            unicorn::video::Primitives::Sphere(*sphere, 1, 32, 32);
 
+            sphere->modelMatrix.SetPosition({ -5.0, -1.0, 0.0 });
             mandrillQuad->modelMatrix.Translate({3.0, 0.0, 1.0});
             texturedCube->modelMatrix.SetPosition({0.0, 5.0, -5.0});
 

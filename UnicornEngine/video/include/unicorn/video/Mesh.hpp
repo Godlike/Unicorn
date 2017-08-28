@@ -26,6 +26,7 @@ class Material;
  */
 struct Vertex
 {
+    Vertex() = default;
     Vertex(glm::vec3 pos, glm::vec2 tc);
 
     /**

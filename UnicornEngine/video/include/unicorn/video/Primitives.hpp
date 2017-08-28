@@ -21,16 +21,23 @@ public:
     /**
     *  @brief Fills given mesh with cube data
     *
-    *  @param  mesh    geometry mesh
+    *  @param  mesh geometry mesh
     */
     UNICORN_EXPORT static void Cube(Mesh& mesh);
 
     /**
     *  @brief Fills given mesh with quad data
     *
-    *  @param  mesh    geometry mesh
+    *  @param  mesh geometry mesh
     */
     UNICORN_EXPORT static void Quad(Mesh& mesh);
+
+    /**
+    *  @brief Fills given mesh with sphere data
+    *
+    *  @param  mesh geometry mesh
+    */
+    UNICORN_EXPORT static void Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors);
 };
 }
 }
