@@ -15,20 +15,19 @@ namespace unicorn
 {
 namespace video
 {
-Texture::Texture() : m_width(0)
-                   , m_height(0)
-                   , m_channels(0)
-                   , m_size(0)
-                   , m_id(0)
-                   , m_data(nullptr)
-                   , m_path("")
-                   , m_initialized(false)
+Texture::Texture(const std::string& path) : m_width(0)
+    , m_height(0)
+    , m_channels(0)
+    , m_size(0)
+    , m_id(0)
+    , m_data(nullptr)
+    , m_path(path)
+    , m_initialized(false)
 {
-}
-
-Texture::Texture(const std::string& path) : Texture()
-{
-    Load(path);
+    if(!m_path.empty())
+    {
+        Load(path);
+    }
 }
 
 void Texture::Delete()
@@ -43,38 +42,38 @@ void Texture::Delete()
     //TODO: free storage handles here
 }
 
-int32_t Texture::Size() const
+uint32_t Texture::Size() const
 {
     if(!m_initialized)
     {
-        LOG_WARNING("Asking for size of texture, but texture was not loaded!");
+        LOG_WARNING("Texture not loaded!");
     }
     return m_size;
 }
 
-unsigned char* Texture::Data() const
+uint8_t* Texture::Data() const
 {
     if(!m_initialized)
     {
-        LOG_WARNING("Asking for data of texture, but texture was not loaded!");
+        LOG_WARNING("Texture not loaded!");
     }
     return m_data;
 }
 
-int32_t Texture::Width() const
+uint32_t Texture::Width() const
 {
     if(!m_initialized)
     {
-        LOG_WARNING("Asking for width of texture, but texture was not loaded!");
+        LOG_WARNING("Texture not loaded!");
     }
     return m_width;
 }
 
-int32_t Texture::Height() const
+uint32_t Texture::Height() const
 {
     if(!m_initialized)
     {
-        LOG_WARNING("Asking for height of texture, but texture was not loaded!");
+        LOG_WARNING("Texture not loaded!");
     }
     return m_height;
 }
@@ -83,7 +82,7 @@ std::string Texture::Path() const
 {
     if(!m_initialized)
     {
-        LOG_WARNING("Asking for path of texture, but texture was not loaded!");
+        LOG_WARNING("Texture not loaded!");
     }
     return m_path;
 }
@@ -92,7 +91,7 @@ uint32_t Texture::GetId() const
 {
     if(!m_initialized)
     {
-        LOG_WARNING("Asking for ID of texture, but texture was not loaded!");
+        LOG_WARNING("Texture not loaded!");
     }
     return m_id;
 }
@@ -114,7 +113,11 @@ bool Texture::Load(const std::string& path)
 
     m_data = stbi_load_from_memory(textureHandler.GetContent().GetBuffer().data(),
                                    textureHandler.GetContent().GetBuffer().size(),
-                                   &m_width, &m_height, &m_channels, STBI_rgb_alpha);
+                                   reinterpret_cast<int32_t*>(&m_width),
+                                   reinterpret_cast<int32_t*>(&m_height),
+                                   reinterpret_cast<int32_t*>(&m_channels),
+                                   STBI_rgb_alpha);
+
     m_size = m_width * m_height * 4;
 
     if(!m_data)

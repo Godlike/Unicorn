@@ -11,6 +11,7 @@
 #include <unicorn/video/vulkan/VkMesh.hpp>
 #include <unicorn/video/vulkan/Image.hpp>
 #include <unicorn/video/vulkan/VkTexture.hpp>
+#include <unicorn/video/vulkan/Context.hpp>
 
 #include <vulkan/vulkan.hpp>
 
@@ -102,16 +103,16 @@ public:
     ~Renderer();
 
     Renderer(Renderer const& other) = delete;
-    Renderer(Renderer const&& other) = delete;
+    Renderer(Renderer&& other) = delete;
     Renderer& operator=(Renderer const& other) = delete;
-    Renderer& operator=(Renderer const&& other) = delete;
+    Renderer& operator=(Renderer&& other) = delete;
 
     bool Init() override;
     void Deinit() override;
     bool Render() override;
     bool RecreateSwapChain();
-    Mesh* SpawnMesh(Material& material) override;
-    bool DeleteMesh(Mesh const* mesh) override;
+    Mesh* SpawnMesh(Material const& material) override;
+    bool DeleteMesh(Mesh const* pMesh) override;
     void SetDepthTest(bool enabled) override;
 private:
     vk::PhysicalDevice m_vkPhysicalDevice;
@@ -146,7 +147,7 @@ private:
     } m_pipelines;
 
     std::list<VkMesh*> m_vkMeshes;
-    Image* m_depthImage;
+    Image* m_pDepthImage;
     uint32_t m_replaceMeTextureHandle;
 
     std::unordered_map<uint32_t, VkMaterial> m_materials;
@@ -160,6 +161,8 @@ private:
     size_t m_dynamicAlignment;
     UniformAllMeshesData m_uniformModelsData;
     UniformCameraData m_uniformCameraData;
+
+    vk::Instance const m_contextInstance;
 
     bool m_hasDirtyMeshes;
 

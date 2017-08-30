@@ -73,7 +73,7 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
         case MouseButton::MouseLeft:
         {
             unicorn::video::Material cubematerial;
-            cubematerial.SetColor({static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255});
+            cubematerial.color = {static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255};
             unicorn::video::Mesh* cube = vkRenderer->SpawnMesh(cubematerial);
             unicorn::video::Primitives::Cube(*cube);
             meshes.push_back(cube);
@@ -92,7 +92,7 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
                 auto mesh = *meshIt;
 
                 unicorn::video::Material cubeMaterial;
-                cubeMaterial.SetColor({static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255});
+                cubeMaterial.color = {static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255};
                 cubeMaterial.SetIsWired(true);
                 mesh->SetMaterial(cubeMaterial);
             }
@@ -246,7 +246,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         }
         case Key::Insert:
         {
-            if(pInput)
+            if (pInput)
             {
                 switch(modifiers)
                 {
@@ -359,14 +359,14 @@ int main(int argc, char* argv[])
                                      mandrillMaterial, frontTexture, backTexture,
                                      leftTexture, rightTexture, upTexture, bottomTexture;
 
-            textureMaterial.SetAlbedo(texture);
-            mandrillMaterial.SetAlbedo(textureMandrill);
-            frontTexture.SetAlbedo(frontSkyBox);
-            backTexture.SetAlbedo(backSkyBox);
-            leftTexture.SetAlbedo(leftSkyBox);
-            rightTexture.SetAlbedo(rightSkyBox);
-            upTexture.SetAlbedo(topSkyBox);
-            bottomTexture.SetAlbedo(bottomSkyBox);
+            textureMaterial.SetAlbedo(&texture);
+            mandrillMaterial.SetAlbedo(&textureMandrill);
+            frontTexture.SetAlbedo(&frontSkyBox);
+            backTexture.SetAlbedo(&backSkyBox);
+            leftTexture.SetAlbedo(&leftSkyBox);
+            rightTexture.SetAlbedo(&rightSkyBox);
+            upTexture.SetAlbedo(&topSkyBox);
+            bottomTexture.SetAlbedo(&bottomSkyBox);
 
             unicorn::video::Mesh* texturedQuad = vkRenderer->SpawnMesh(textureMaterial);
             unicorn::video::Primitives::Quad(*texturedQuad);

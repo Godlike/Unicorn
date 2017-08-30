@@ -18,7 +18,7 @@ namespace video
 class Texture;
 
 /*
- * @brief Material class which holds all data which needed to render any object
+ * @brief Material class holds all data which needed to render any object
  */
 class Material
 {
@@ -26,20 +26,15 @@ public:
     UNICORN_EXPORT Material();
 
     /**
-     * @brief Sets color
-     * @param [in] color new material color
-     */
-    UNICORN_EXPORT void SetColor(glm::vec3 const& color);
-
-    /**
      * @brief Sets new albedo texture
-     * @param [in] texture albedo texture
+     * @param[in] texture albedo texture
+     * @attention Updates flags IsColored to false
      */
-    UNICORN_EXPORT void SetAlbedo(Texture& texture);
+    UNICORN_EXPORT void SetAlbedo(Texture const* texture);
 
     /**
      * @brief Sets rendering mode to wireframe
-     * @param [in] wireframe true if wired and false if not
+     * @param[in] wireframe true if wired and false if not
      * 
      * @attention sets IsColored to false to prevent rendering color instead albedo
      */
@@ -47,7 +42,7 @@ public:
 
     /**
      * @brief Sets colored mode
-     * @param [in] colored true if must render with color and false if render with albedo
+     * @param[in] colored true if must render with color and false if render with albedo
      * 
      * @attention if colored mode enabled and no albedo provided, default engine texture will be used
      */
@@ -71,28 +66,19 @@ public:
     UNICORN_EXPORT bool IsWired() const;
 
     /**
-     * @brief Checks if albedo binded
-     * @return true if albedo was set and false if not
-     */
-    UNICORN_EXPORT bool AlbedoExist() const;
-
-    /**
-     * @brief Returns color
-     * @return color of object
-     */
-    UNICORN_EXPORT glm::vec3 GetColor() const;
-
-    /**
      * @brief Returns const reference to albedo texture
      * @return const reference to binded albdeo texture
      */
-    UNICORN_EXPORT Texture const& GetAlbedo() const;
+    UNICORN_EXPORT Texture const* GetAlbedo() const;
+
+    /*
+     * @brief Color of object
+     */
+    glm::vec3 color;
 private:
-    glm::vec3 m_color;
     bool m_isColored;
     bool m_isWired;
-    bool m_isAlbedoExist;
-    Texture* m_albedo;
+    Texture const* m_albedo;
 };
 }
 }

@@ -39,14 +39,18 @@ public:
     virtual ~Renderer();
 
     Renderer(Renderer const& other) = delete;
-    Renderer(Renderer const&& other) = delete;
+    Renderer(Renderer&& other) = delete;
     Renderer& operator=(Renderer const& other) = delete;
-    Renderer& operator=(Renderer const&& other) = delete;
+    Renderer& operator=(Renderer&& other) = delete;
 
     virtual bool Init() = 0;
     virtual void Deinit() = 0;
     virtual bool Render() = 0;
 
+    /**
+     * @brief Returns reference to main camera
+     * @return reference to main camera
+     */
     UNICORN_EXPORT Camera& GetCamera();
 
     UNICORN_EXPORT void SetBackgroundColor(const glm::vec3& backgroundColor);
@@ -62,7 +66,7 @@ public:
      * @brief Turns on or off depth test
      * @param [in] enabled if true - depth test is enabled, false - disabled
      */
-    virtual void SetDepthTest(bool enabled) = 0;
+    UNICORN_EXPORT virtual void SetDepthTest(bool enabled) = 0;
 
     /** @brief  Creates new geometry mesh
     *
@@ -80,14 +84,14 @@ public:
     *
     *  @sa DeleteMesh
     */
-    virtual Mesh* SpawnMesh(Material& material) = 0;
+    UNICORN_EXPORT virtual Mesh* SpawnMesh(Material const& material) = 0;
 
     /**
     * @brief Removes mesh from rendering system
     * @param [in] mesh pointer to mesh
     * @return true if mesh was sucessfully deleted from system and false if not
     */
-    virtual bool DeleteMesh(Mesh const* mesh) = 0;
+    UNICORN_EXPORT virtual bool DeleteMesh(Mesh const* mesh) = 0;
 protected:
     bool m_isInitialized;
 

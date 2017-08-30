@@ -42,7 +42,7 @@ Memory::Memory(vk::Device device, uint32_t typeFilter,
 
 Memory::~Memory()
 {
-    if(m_initialized && m_memory)
+    if(m_device && m_initialized && m_memory)
     {
         m_device.freeMemory(m_memory);
         m_memory = nullptr;
@@ -52,14 +52,6 @@ Memory::~Memory()
 bool Memory::IsInitialized() const
 {
     return m_initialized;
-}
-
-void Memory::Free() const
-{
-    if(m_device && m_initialized)
-    {
-        m_device.freeMemory(m_memory);
-    }
 }
 
 const vk::DeviceMemory& Memory::GetMemory() const

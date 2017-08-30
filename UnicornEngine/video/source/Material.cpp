@@ -5,29 +5,29 @@
 */
 
 #include <unicorn/video/Material.hpp>
+#include <unicorn/video/Texture.hpp>
+#include <unicorn/utility/Logger.hpp>
 
 namespace unicorn
 {
 namespace video
 {
-Material::Material() : m_color(Color::Red)
+Material::Material() : color(Color::Red)
                      , m_isColored(true)
                      , m_isWired(false)
-                     , m_isAlbedoExist(false)
                      , m_albedo(nullptr)
 {
 }
 
-void Material::SetColor(glm::vec3 const& color)
+void Material::SetAlbedo(Texture const* albedo)
 {
-    m_color = color;
-}
-
-void Material::SetAlbedo(Texture& albedo)
-{
-    m_albedo = &albedo;
     m_isColored = false;
-    m_isAlbedoExist = true;
+    if(!albedo->IsLoaded())
+    {
+        LOG_ERROR("Setting not loaded texture to material!");
+        return;
+    }
+    m_albedo = albedo;
 }
 
 void Material::SetIsWired(bool wireframe)
@@ -42,9 +42,8 @@ void Material::SetIsColored(bool colored)
 
 void Material::RemoveAlbedo()
 {
-    m_albedo = nullptr;
+    SetAlbedo(nullptr);
     m_isColored = true;
-    m_isAlbedoExist = false;
 }
 
 bool Material::IsColored() const
@@ -57,19 +56,9 @@ bool Material::IsWired() const
     return m_isWired;
 }
 
-bool Material::AlbedoExist() const
+const Texture* Material::GetAlbedo() const
 {
-    return m_isAlbedoExist;
-}
-
-glm::vec3 Material::GetColor() const
-{
-    return m_color;
-}
-
-const Texture& Material::GetAlbedo() const
-{
-    return *m_albedo;
+    return m_albedo;
 }
 }
 }

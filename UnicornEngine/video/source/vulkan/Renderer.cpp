@@ -46,7 +46,8 @@ bool QueueFamilyIndices::IsComplete() const
 
 Renderer::Renderer(system::Manager& manager, system::Window* window)
     : video::Renderer(manager, window)
-    , m_depthImage(nullptr)
+    , m_pDepthImage(nullptr)
+    , m_contextInstance(Context::Instance().GetVkInstance())
     , m_hasDirtyMeshes(false)
 {
     m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
@@ -348,7 +349,7 @@ bool Renderer::RecreateSwapChain()
     return false;
 }
 
-Mesh* Renderer::SpawnMesh(unicorn::video::Material& material)
+Mesh* Renderer::SpawnMesh(unicorn::video::Material const& material)
 {
     auto mesh = new Mesh(material);
     auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
@@ -360,7 +361,7 @@ Mesh* Renderer::SpawnMesh(unicorn::video::Material& material)
     }
 
     vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
-    vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated); // TODO: return error from here
+    vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
 
     m_vkMeshes.push_back(vkmesh);
     m_meshes.push_back(mesh);
@@ -375,7 +376,7 @@ void Renderer::ResizeUnifromModelBuffer(VkMesh* /*vkmesh*/)
     m_uniformModel.Destroy();
     auto nMeshes = m_vkMeshes.size();
 
-    size_t bufferSize = nMeshes == 0 ? m_dynamicAlignment : nMeshes * m_dynamicAlignment;
+    size_t bufferSize = (nMeshes == 0) ? m_dynamicAlignment : nMeshes * m_dynamicAlignment;
 
     m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, bufferSize);
 
@@ -402,15 +403,15 @@ void Renderer::OnMeshMaterialUpdated(Mesh* mesh, VkMesh* vkMesh)
     CreateCommandBuffers();
 }
 
-bool Renderer::DeleteMesh(const Mesh* mesh)
+bool Renderer::DeleteMesh(const Mesh* pMesh)
 {
-    auto vkMeshIt = std::find_if(m_vkMeshes.begin(), m_vkMeshes.end(), [=](VkMesh* p) ->bool { return *p == *mesh; });
+    auto vkMeshIt = std::find_if(m_vkMeshes.begin(), m_vkMeshes.end(), [=](VkMesh* p) ->bool { return *p == *pMesh; });
 
     if(vkMeshIt != m_vkMeshes.end())
     {
-        auto handle = (*vkMeshIt)->GetMaterialHandle();
-        auto& pVkMeshMaterial = m_materials.at((*vkMeshIt)->GetMaterialHandle());
-        pVkMeshMaterial.nMeshes--;
+        auto handle = (*vkMeshIt)->materialHandle;
+        auto& pVkMeshMaterial = m_materials.at((*vkMeshIt)->materialHandle);
+        --pVkMeshMaterial.nMeshes;
 
         if(pVkMeshMaterial.nMeshes < 1)
         {
@@ -426,7 +427,7 @@ bool Renderer::DeleteMesh(const Mesh* mesh)
         m_hasDirtyMeshes = true;
     }
 
-    auto meshIt = std::find(m_meshes.begin(), m_meshes.end(), mesh);
+    auto meshIt = std::find(m_meshes.begin(), m_meshes.end(), pMesh);
 
     if(meshIt != m_meshes.end())
     {
@@ -452,13 +453,10 @@ void Renderer::DeleteVkMesh(VkMesh* pVkMesh)
 
 void Renderer::FreeSurface()
 {
-    if(m_vkLogicalDevice)
+    if(m_vkLogicalDevice && m_vkWindowSurface)
     {
-        if(m_vkWindowSurface)
-        {
-            Context::Instance().GetVkInstance().destroySurfaceKHR(m_vkWindowSurface);
-            m_vkWindowSurface = nullptr;
-        }
+        m_contextInstance.destroySurfaceKHR(m_vkWindowSurface);
+        m_vkWindowSurface = nullptr;
     }
 }
 
@@ -473,13 +471,10 @@ void Renderer::FreeLogicalDevice()
 
 void Renderer::FreeSwapChain()
 {
-    if(m_vkLogicalDevice)
+    if(m_vkLogicalDevice && m_vkSwapChain)
     {
-        if(m_vkSwapChain)
-        {
-            m_vkLogicalDevice.destroySwapchainKHR(m_vkSwapChain);
-            m_vkSwapChain = nullptr;
-        }
+        m_vkLogicalDevice.destroySwapchainKHR(m_vkSwapChain);
+        m_vkSwapChain = nullptr;
     }
 }
 
@@ -497,22 +492,19 @@ void Renderer::FreeImageViews()
 
 void Renderer::FreeDepthBuffer()
 {
-    if(m_depthImage && m_depthImage->IsInitialized())
+    if(m_pDepthImage && m_pDepthImage->IsInitialized())
     {
-        delete m_depthImage;
-        m_depthImage = nullptr;
+        delete m_pDepthImage;
+        m_pDepthImage = nullptr;
     }
 }
 
 void Renderer::FreeRenderPass()
 {
-    if(m_vkLogicalDevice)
+    if(m_vkLogicalDevice && m_renderPass)
     {
-        if(m_renderPass)
-        {
-            m_vkLogicalDevice.destroyRenderPass(m_renderPass);
-            m_renderPass = nullptr;
-        }
+        m_vkLogicalDevice.destroyRenderPass(m_renderPass);
+        m_renderPass = nullptr;
     }
 }
 
@@ -561,12 +553,9 @@ void Renderer::FreeCommandPool()
 
 void Renderer::FreeCommandBuffers()
 {
-    if(m_vkLogicalDevice)
+    if(m_vkLogicalDevice && !m_commandBuffers.empty())
     {
-        if(!m_commandBuffers.empty())
-        {
-            m_vkLogicalDevice.freeCommandBuffers(m_commandPool, static_cast<uint32_t>(m_commandBuffers.size()), m_commandBuffers.data());
-        }
+        m_vkLogicalDevice.freeCommandBuffers(m_commandPool, static_cast<uint32_t>(m_commandBuffers.size()), m_commandBuffers.data());
     }
 }
 
@@ -602,6 +591,7 @@ void Renderer::FreeDescriptorPoolAndLayouts() const
         {
             m_vkLogicalDevice.destroyPipelineLayout(m_pipelineLayout);
         }
+
         for(auto& descriptorSetLayout : m_descriptorSetLayouts)
         {
             if(descriptorSetLayout)
@@ -609,6 +599,7 @@ void Renderer::FreeDescriptorPoolAndLayouts() const
                 m_vkLogicalDevice.destroyDescriptorSetLayout(descriptorSetLayout);
             }
         }
+
         if(m_descriptorPool)
         {
             m_vkLogicalDevice.destroyDescriptorPool(m_descriptorPool);
@@ -618,12 +609,9 @@ void Renderer::FreeDescriptorPoolAndLayouts() const
 
 void Renderer::FreePipelineCache()
 {
-    if(m_vkLogicalDevice)
+    if(m_vkLogicalDevice && pipelineCache)
     {
-        if(pipelineCache)
-        {
-            m_vkLogicalDevice.destroyPipelineCache(pipelineCache);
-        }
+        m_vkLogicalDevice.destroyPipelineCache(pipelineCache);
     }
 }
 
@@ -721,7 +709,7 @@ bool Renderer::PickPhysicalDevice()
 {
     vk::Result result;
     std::vector<vk::PhysicalDevice> devices;
-    std::tie(result, devices) = Context::Instance().GetVkInstance().enumeratePhysicalDevices();
+    std::tie(result, devices) = m_contextInstance.enumeratePhysicalDevices();
     if(result != vk::Result::eSuccess)
     {
         LOG_ERROR("Failed to enumerate physical devices.");
@@ -794,7 +782,8 @@ bool Renderer::CreateLogicalDevice()
 
 bool Renderer::CreateSurface()
 {
-    if(!m_pWindow || m_systemManager.CreateVulkanSurfaceForWindow(*m_pWindow, Context::Instance().GetVkInstance(), nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
+    if(!m_pWindow || m_systemManager.CreateVulkanSurfaceForWindow(*m_pWindow, m_contextInstance, nullptr,
+                                                                  reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
     {
         LOG_ERROR("Failed to create window surface!");
 
@@ -1004,19 +993,19 @@ bool Renderer::CreateDescriptionSetLayout()
     vk::DescriptorSetLayoutBinding setViewProjection;
     setViewProjection.descriptorType = vk::DescriptorType::eUniformBuffer;
     setViewProjection.stageFlags = vk::ShaderStageFlagBits::eVertex;
-    setViewProjection.binding = 0; //TODO: hardcode descriptor binding
+    setViewProjection.binding = 0;
     setViewProjection.descriptorCount = 1;
 
     vk::DescriptorSetLayoutBinding setModel;
     setModel.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
     setModel.stageFlags = vk::ShaderStageFlagBits::eVertex;
-    setModel.binding = 1; //TODO: hardcode descriptor binding
+    setModel.binding = 1;
     setModel.descriptorCount = 1;
 
     vk::DescriptorSetLayoutBinding textureSampler;
     textureSampler.descriptorType = vk::DescriptorType::eCombinedImageSampler;
     textureSampler.stageFlags = vk::ShaderStageFlagBits::eFragment;
-    textureSampler.binding = 0; //TODO: hardcode descriptor binding
+    textureSampler.binding = 0;
     textureSampler.descriptorCount = 1;
 
     mvpSetLayoutBindings.push_back(setViewProjection);
@@ -1199,7 +1188,6 @@ bool Renderer::CreateGraphicsPipeline()
     // Wire frame rendering pipeline
     if(m_deviceFeatures.fillModeNonSolid)
     {
-        //rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
         colorBlendAttachment.blendEnable = VK_FALSE;
         rasterizer.polygonMode = vk::PolygonMode::eLine;
 
@@ -1223,7 +1211,7 @@ bool Renderer::CreateFramebuffers()
     m_swapChainFramebuffers.resize(m_swapChainImageViews.size());
 
     vk::ImageView attachments[s_swapChainAttachmentsAmount];
-    attachments[1] = m_depthImage->GetVkImageView();
+    attachments[1] = m_pDepthImage->GetVkImageView();
 
     vk::FramebufferCreateInfo framebufferInfo;
     framebufferInfo.renderPass = m_renderPass;
@@ -1273,13 +1261,13 @@ bool Renderer::CreateDepthBuffer()
         LOG_ERROR("Not one of desired depth formats are not compatible!");
         return false;
     }
-    m_depthImage = new Image(m_vkPhysicalDevice,
+    m_pDepthImage = new Image(m_vkPhysicalDevice,
                              m_vkLogicalDevice,
                              m_depthImageFormat,
                              vk::ImageUsageFlagBits::eDepthStencilAttachment,
                              m_swapChainExtent.width,
                              m_swapChainExtent.height);
-    return m_depthImage->IsInitialized();
+    return m_pDepthImage->IsInitialized();
 }
 
 bool Renderer::CreateCommandBuffers()
@@ -1334,7 +1322,7 @@ bool Renderer::CreateCommandBuffers()
             {
                 if(pVkMesh->IsValid())
                 {
-                    glm::vec4 colorPush({pVkMesh->GetColor(), pVkMesh->IsColored()}); // xyz - color. w - 1.0 enabled color or 0.0 disabled color
+                    glm::vec4 colorPush({pVkMesh->GetColor(), pVkMesh->IsColored()}); // xyz - color. w - boolean flag for 1 enabled color or 0 disabled color
 
                     if(pVkMesh->IsWired())
                     {
@@ -1355,7 +1343,7 @@ bool Renderer::CreateCommandBuffers()
                     // Set 0: Scene descriptor set containing global matrices
                     descriptorSets[0] = m_mvpDescriptorSet;
                     // Set 1: Per-Material descriptor set containing bound images
-                    descriptorSets[1] = m_materials.at(pVkMesh->GetMaterialHandle()).descriptorSet;
+                    descriptorSets[1] = m_materials.at(pVkMesh->materialHandle).descriptorSet;
 
                     m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout, 0, descriptorSets.size(), descriptorSets.data(), 1, &dynamicOffset);
 
@@ -1401,7 +1389,7 @@ bool Renderer::CreatePipelineCache()
 bool Renderer::LoadEngineHelpData()
 {
     unicorn::video::Texture texture;
-    std::string path = "data/textures/replace_me.jpg";
+    static std::string const path = "data/textures/replace_me.jpg";
     if(!texture.Load(path))
     {
         LOG_ERROR( "Can't find texture with path - %s", path.c_str() );
@@ -1412,6 +1400,10 @@ bool Renderer::LoadEngineHelpData()
     if(!replaceMeTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, &texture))
     {
         LOG_ERROR("Can't create 'replace me' texture - %s", path.c_str());
+
+        delete replaceMeTexture;
+        replaceMeTexture = nullptr;
+
         return false;
     }
 
@@ -1429,6 +1421,11 @@ bool Renderer::LoadEngineHelpData()
     if(result != vk::Result::eSuccess)
     {
         LOG_ERROR("Can't allocate descriptor sets!");
+
+        replaceMeTexture->Delete();
+        delete replaceMeTexture;
+        replaceMeTexture = nullptr;
+
         return false;
     }
 
@@ -1489,14 +1486,14 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
 
     uint32_t meshAlbedoHandle = m_replaceMeTextureHandle;
 
-    if(meshMaterial.AlbedoExist())
+    if(meshMaterial.GetAlbedo() != nullptr)
     {
-        meshAlbedoHandle = meshMaterial.GetAlbedo().GetId();
+        meshAlbedoHandle = meshMaterial.GetAlbedo()->GetId();
 
         if(m_materials.find(meshAlbedoHandle) == m_materials.end())
         {
             VkTexture* vkTexture = new VkTexture(m_vkLogicalDevice);
-            vkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, &meshMaterial.GetAlbedo());
+            vkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, meshMaterial.GetAlbedo());
 
             vk::DescriptorSetAllocateInfo allocInfo;
             allocInfo.descriptorPool = m_descriptorPool;
@@ -1510,6 +1507,11 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
             if(result != vk::Result::eSuccess)
             {
                 LOG_ERROR("Can't allocate descriptor sets!");
+
+                vkTexture->Delete();
+                delete vkTexture;
+                vkTexture = nullptr;
+
                 return false;
             }
 
@@ -1530,7 +1532,8 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
     }
 
     m_materials.at(meshAlbedoHandle).nMeshes++;
-    vkmesh.SetMaterialHandle(meshAlbedoHandle);
+    vkmesh.materialHandle = meshAlbedoHandle;
+
     return true;
 }
 

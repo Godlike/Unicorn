@@ -85,11 +85,11 @@ public:
     const vk::ImageView& GetVkImageView() const;
 
     /**
-     * @brief TODO
-     * @param format 
-     * @param oldLayout 
-     * @param newLayout 
-     * @return 
+     * @brief Transit between layout for effective GPU usage
+     * @param format format of image
+     * @param oldLayout type of old layout
+     * @param newLayout type of new layout
+     * @return true if transtion was successful and false if not
      */
     bool TransitionLayout(const vk::Format& format,
                           const vk::ImageLayout& oldLayout,
@@ -97,7 +97,6 @@ public:
                           const vk::CommandPool& cmdPool,
                           const vk::Queue& queue) const;
 
-    void Delete();
 
 private:
     vk::Device m_device;

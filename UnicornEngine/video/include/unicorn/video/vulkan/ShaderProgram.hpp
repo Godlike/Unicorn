@@ -38,13 +38,13 @@ public:
     bool IsCreated();
 
     /**
-    * @brief Getter for shader stage info data
+    * @brief Getter for shader stage create info data
     * @return pointer to all shader stage info data
     */
     vk::PipelineShaderStageCreateInfo* GetShaderStageInfoData();
 
     /**
-    * @brief Getter for vertex input info
+    * @brief Getter for pipeline vertex input info
     * @return pipeline vertex input state create info
     */
     vk::PipelineVertexInputStateCreateInfo GetVertexInputInfo();

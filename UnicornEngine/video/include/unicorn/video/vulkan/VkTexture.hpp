@@ -27,33 +27,38 @@ namespace vulkan
 class VkTexture
 {
 public:
+    /**
+     * @brief Default constructor for VkTexture
+     * @param device device which allocate from
+     */
     VkTexture(vk::Device device);
 
     /**
-     * @brief 
+     * @brief Getter for descriptor image info
      * @return constant reference to descriptor image info
      */
     const vk::DescriptorImageInfo& GetDescriptorImageInfo() const;
 
     /**
-     * @brief 
-     * @param physicalDevice 
-     * @param device 
-     * @param commandPool 
-     * @param queue 
-     * @param texture 
-     * @return 
+     * @brief Creates vulkan render texture
+     * @param physicalDevice physical device for staging buffer
+     * @param device device which allocate from 
+     * @param commandPool pool which allocate commands from
+     * @param queue queue where push commands
+     * @param texture texture data
+     * @return true if creation was successful and false if not
      */
     bool Create(vk::PhysicalDevice const& physicalDevice, vk::Device const& device,
                 vk::CommandPool const& commandPool, vk::Queue const& queue, Texture const* texture);
 
     /**
-     * @brief 
+     * @brief Removes texture from GPU and destroys sampler
      */
     void Delete();
+
     /**
-     * @brief 
-     * @return 
+     * @brief Checks if vulkan texture was initialized
+     * @return true if was initialized successful and false if not
      */
     bool IsInitialized() const;
 private:

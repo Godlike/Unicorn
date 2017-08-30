@@ -15,85 +15,86 @@ namespace video
 namespace vulkan
 {
 Image::Image(vk::PhysicalDevice physicalDevice,
-             vk::Device device,
-             vk::Format format,
-             vk::ImageUsageFlags usage,
-             uint32_t width,
-             uint32_t height) : m_device( device )
-                              , m_image( nullptr )
-                              , m_deviceMemory( nullptr )
-                              , m_format( format )
-                              , m_width( width )
-                              , m_height( height )
-                              , m_initialized( false )
+    vk::Device device,
+    vk::Format format,
+    vk::ImageUsageFlags usage,
+    uint32_t width,
+    uint32_t height
+) : m_device(device)
+    , m_image(nullptr)
+    , m_deviceMemory(nullptr)
+    , m_format(format)
+    , m_width(width)
+    , m_height(height)
+    , m_initialized(false)
 {
     m_usage = usage;
 
     vk::ImageCreateInfo imageInfo;
-    imageInfo.setImageType( vk::ImageType::e2D );
-    imageInfo.setFormat( m_format );
-    imageInfo.extent.setWidth( m_width );
-    imageInfo.extent.setHeight( m_height );
-    imageInfo.extent.setDepth( 1 );
-    imageInfo.setMipLevels( 1 );
-    imageInfo.setArrayLayers( 1 );
-    imageInfo.setSamples( vk::SampleCountFlagBits::e1 );
-    imageInfo.setUsage( m_usage );
-    imageInfo.setSharingMode( vk::SharingMode::eExclusive );
-    imageInfo.setQueueFamilyIndexCount( 0 );
-    imageInfo.setPQueueFamilyIndices( nullptr );
-    imageInfo.setInitialLayout( vk::ImageLayout::eUndefined );
+    imageInfo.setImageType(vk::ImageType::e2D);
+    imageInfo.setFormat(m_format);
+    imageInfo.extent.setWidth(m_width);
+    imageInfo.extent.setHeight(m_height);
+    imageInfo.extent.setDepth(1);
+    imageInfo.setMipLevels(1);
+    imageInfo.setArrayLayers(1);
+    imageInfo.setSamples(vk::SampleCountFlagBits::e1);
+    imageInfo.setUsage(m_usage);
+    imageInfo.setSharingMode(vk::SharingMode::eExclusive);
+    imageInfo.setQueueFamilyIndexCount(0);
+    imageInfo.setPQueueFamilyIndices(nullptr);
+    imageInfo.setInitialLayout(vk::ImageLayout::eUndefined);
 
-    vk::Result result = m_device.createImage( &imageInfo, nullptr, &m_image );
-    if( result != vk::Result::eSuccess )
+    vk::Result result = m_device.createImage(&imageInfo, nullptr, &m_image);
+    if(result != vk::Result::eSuccess)
     {
         LOG_ERROR("Can't create Vulkan image!");
         return;
     }
 
     vk::MemoryRequirements req;
-    m_device.getImageMemoryRequirements( m_image, &req );
+    m_device.getImageMemoryRequirements(m_image, &req);
 
     vk::PhysicalDeviceMemoryProperties memoryProperties;
-    physicalDevice.getMemoryProperties( &memoryProperties );
+    physicalDevice.getMemoryProperties(&memoryProperties);
 
-    m_deviceMemory = new Memory( m_device, req.memoryTypeBits, memoryProperties, vk::MemoryPropertyFlagBits::eDeviceLocal, req.size );
+    m_deviceMemory = new Memory(m_device, req.memoryTypeBits, memoryProperties, vk::MemoryPropertyFlagBits::eDeviceLocal, req.size);
 
-    if( !m_deviceMemory->IsInitialized() )
+    if(!m_deviceMemory->IsInitialized())
     {
         LOG_ERROR("Can't allocate memory for image!");
         return;
     }
 
-    m_device.bindImageMemory( m_image, m_deviceMemory->GetMemory(), 0 );
+    m_device.bindImageMemory(m_image, m_deviceMemory->GetMemory(), 0);
 
     vk::ImageAspectFlags aspect;
-    if( m_usage & vk::ImageUsageFlagBits::eColorAttachment )
+    if(m_usage & vk::ImageUsageFlagBits::eColorAttachment)
     {
         aspect |= vk::ImageAspectFlagBits::eColor;
     }
-    if( m_usage & vk::ImageUsageFlagBits::eDepthStencilAttachment )
+    if(m_usage & vk::ImageUsageFlagBits::eDepthStencilAttachment)
     {
         aspect |= vk::ImageAspectFlagBits::eDepth;
     }
 
     vk::ImageViewCreateInfo imageViewInfo;
-    imageViewInfo.setFlags( vk::ImageViewCreateFlagBits() );
-    imageViewInfo.setImage( m_image );
-    imageViewInfo.setFormat( m_format );
-    imageViewInfo.components.setR( vk::ComponentSwizzle::eR );
-    imageViewInfo.components.setG( vk::ComponentSwizzle::eG );
-    imageViewInfo.components.setB( vk::ComponentSwizzle::eB );
-    imageViewInfo.components.setA( vk::ComponentSwizzle::eA );
-    imageViewInfo.subresourceRange.setAspectMask( aspect );
-    imageViewInfo.subresourceRange.setBaseMipLevel( 0 );
-    imageViewInfo.subresourceRange.setLevelCount( 1 );
-    imageViewInfo.subresourceRange.setBaseArrayLayer( 0 );
-    imageViewInfo.subresourceRange.setLayerCount( 1 );
-    imageViewInfo.setViewType( vk::ImageViewType::e2D );
+    imageViewInfo.setFlags(vk::ImageViewCreateFlagBits());
+    imageViewInfo.setImage(m_image);
+    imageViewInfo.setFormat(m_format);
+    imageViewInfo.components.setR(vk::ComponentSwizzle::eR);
+    imageViewInfo.components.setG(vk::ComponentSwizzle::eG);
+    imageViewInfo.components.setB(vk::ComponentSwizzle::eB);
+    imageViewInfo.components.setA(vk::ComponentSwizzle::eA);
+    imageViewInfo.subresourceRange.setAspectMask(aspect);
+    imageViewInfo.subresourceRange.setBaseMipLevel(0);
+    imageViewInfo.subresourceRange.setLevelCount(1);
+    imageViewInfo.subresourceRange.setBaseArrayLayer(0);
+    imageViewInfo.subresourceRange.setLayerCount(1);
+    imageViewInfo.setViewType(vk::ImageViewType::e2D);
 
-    result = m_device.createImageView( &imageViewInfo, nullptr, &m_imageView );
-    if( result != vk::Result::eSuccess )
+    result = m_device.createImageView(&imageViewInfo, nullptr, &m_imageView);
+    if(result != vk::Result::eSuccess)
     {
         LOG_ERROR("Can't create Vulkan image view!");
         return;
@@ -103,19 +104,19 @@ Image::Image(vk::PhysicalDevice physicalDevice,
 
 Image::~Image()
 {
-    if( m_imageView )
+    if(m_imageView)
     {
-        m_device.destroyImageView( m_imageView, nullptr );
+        m_device.destroyImageView(m_imageView, nullptr);
         m_imageView = nullptr;
     }
-    if( m_deviceMemory )
+    if(m_deviceMemory)
     {
         delete m_deviceMemory;
         m_deviceMemory = nullptr;
     }
-    if( m_image )
+    if(m_image)
     {
-        m_device.destroyImage( m_image, nullptr );
+        m_device.destroyImage(m_image, nullptr);
         m_image = nullptr;
     }
 }
@@ -151,12 +152,12 @@ const vk::ImageView& Image::GetVkImageView() const
 }
 
 bool Image::TransitionLayout(const vk::Format& format,
-                             const vk::ImageLayout& oldLayout,
-                             const vk::ImageLayout& newLayout,
-                             const vk::CommandPool& cmdPool,
-                             const vk::Queue& queue) const
+    const vk::ImageLayout& oldLayout,
+    const vk::ImageLayout& newLayout,
+    const vk::CommandPool& cmdPool,
+    const vk::Queue& queue) const
 {
-    vk::CommandBuffer commandBuffer = BeginSingleTimeCommands( m_device, cmdPool );
+    vk::CommandBuffer commandBuffer = BeginSingleTimeCommands(m_device, cmdPool);
 
     vk::ImageMemoryBarrier barrier;
     barrier.oldLayout = oldLayout;
@@ -173,15 +174,14 @@ bool Image::TransitionLayout(const vk::Format& format,
     vk::PipelineStageFlags sourceStage;
     vk::PipelineStageFlags destinationStage;
 
-    if( oldLayout == vk::ImageLayout::eUndefined && newLayout == vk::ImageLayout::eTransferDstOptimal )
+    if(oldLayout == vk::ImageLayout::eUndefined && newLayout == vk::ImageLayout::eTransferDstOptimal)
     {
-        //barrier.srcAccessMask = vk::AccessFlagBits::eHostWrite;
         barrier.dstAccessMask = vk::AccessFlagBits::eTransferWrite;
 
         sourceStage = vk::PipelineStageFlagBits::eTopOfPipe;
         destinationStage = vk::PipelineStageFlagBits::eTransfer;
     }
-    else if( oldLayout == vk::ImageLayout::eTransferDstOptimal && newLayout == vk::ImageLayout::eShaderReadOnlyOptimal )
+    else if(oldLayout == vk::ImageLayout::eTransferDstOptimal && newLayout == vk::ImageLayout::eShaderReadOnlyOptimal)
     {
         barrier.srcAccessMask = vk::AccessFlagBits::eTransferWrite;
         barrier.dstAccessMask = vk::AccessFlagBits::eShaderRead;
@@ -195,29 +195,15 @@ bool Image::TransitionLayout(const vk::Format& format,
         return false;
     }
 
-    commandBuffer.pipelineBarrier( sourceStage,
-                                   destinationStage,
-                                   vk::DependencyFlagBits::eByRegion, 0,
-                                   nullptr, 0,
-                                   nullptr, 1,
-                                   &barrier );
+    commandBuffer.pipelineBarrier(sourceStage,
+                                  destinationStage,
+                                  vk::DependencyFlagBits::eByRegion, 0,
+                                  nullptr, 0,
+                                  nullptr, 1,
+                                  &barrier);
 
-    EndSingleTimeCommands( commandBuffer, queue, m_device, cmdPool );
+    EndSingleTimeCommands(commandBuffer, queue, m_device, cmdPool);
     return true;
-}
-
-void Image::Delete()
-{
-    if( m_initialized )
-    {
-        m_deviceMemory->Free();
-        if( m_device )
-        {
-            m_device.destroyImageView( m_imageView );
-            m_device.destroyImage( m_image );            
-        }
-        m_initialized = false;
-    }
 }
 }
 }

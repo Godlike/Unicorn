@@ -17,13 +17,16 @@ namespace unicorn
 namespace video
 {
 /**
- * @brief Texture class holds data of loaded texture
+ * @brief Holds loaded texture data
  */
 class Texture
 {
 public:
-    UNICORN_EXPORT Texture();
-    UNICORN_EXPORT Texture(std::string const& path);
+    /**
+     * @brief Constructor which load data from path
+     * @param path path to texture
+     */
+    UNICORN_EXPORT Texture(std::string const& path = std::string());
 
     /**
      * @brief Loading texture from provided path
@@ -45,44 +48,44 @@ public:
 
     /**
      * @brief Returns size of texture
-     * @return size of texture, 0 if was not loaded, also shows warning
+     * @return size of texture, 0 if was not loaded
      */
-    UNICORN_EXPORT int32_t Size() const;
+    UNICORN_EXPORT uint32_t Size() const;
 
     /**
      * @brief Returns pointer to texture data
-     * @return pointer to texture data, nullptr if was not loaded, also shows warning
+     * @return pointer to texture data, nullptr if was not loaded
      */
-    UNICORN_EXPORT unsigned char* Data() const;
+    UNICORN_EXPORT uint8_t* Data() const;
 
     /**
      * @brief Returns width of texture
-     * @return width of texture, 0 if was not loaded, also shows warning
+     * @return width of texture, 0 if was not loaded
      */
-    UNICORN_EXPORT int32_t Width() const;
+    UNICORN_EXPORT uint32_t Width() const;
 
     /**
      * @brief Returns height of texture
-     * @return height of texture, 0 if was not loaded, also shows warning
+     * @return height of texture, 0 if was not loaded
      */
-    UNICORN_EXPORT int32_t Height() const;
+    UNICORN_EXPORT uint32_t Height() const;
 
     /**
      * @brief Returns path of loaded texture
-     * @return path of texture or empty line, if texture was not loaded, also shows warning
+     * @return path of texture or empty line, if texture was not loaded
      */
     UNICORN_EXPORT std::string Path() const;
 
     /**
      * @brief Returns Id of loaded texture
-     * @return id of texture, 0 if was not loaded, also shows warning
+     * @return id of texture, 0 if was not loaded
      */
     UNICORN_EXPORT uint32_t GetId() const;
 private:
-    int32_t m_width;
-    int32_t m_height;
-    int32_t m_channels;
-    int32_t m_size;
+    uint32_t m_width;
+    uint32_t m_height;
+    uint32_t m_channels;
+    uint32_t m_size;
     uint32_t m_id;
     unsigned char* m_data;
     std::string m_path;

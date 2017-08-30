@@ -33,9 +33,9 @@ public:
 
     /**
      * @brief Creates new command buffers
-     * @param [in] device device to allocate from
-     * @param [in] count command buffer size
-     * @return [in] true if was allocated successfully and false if not
+     * @param[in] device device to allocate from
+     * @param[in] count command buffer size
+     * @return true if was allocated successfully and false if not
      */
     vk::Result Create(vk::Device device, uint32_t count);
 
@@ -52,7 +52,7 @@ public:
 
     /**
      * @brief Returns command buffer
-     * @param index Index of needed command buffer
+     * @param[in] index Index of needed command buffer
      * @return reference for needed command buffer
      */
     vk::CommandBuffer& GetVkCommandBuffer(uint32_t index);

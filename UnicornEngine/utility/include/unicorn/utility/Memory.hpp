@@ -13,14 +13,14 @@ namespace unicorn
 namespace utility
 {
 /* @brief Allocates memory on a specified alignment boundary
- * @param [in] size size of the requested memory allocation
- * @param [in] alignment the alignment value, which must be an integer power of 2
+ * @param[in] size size of the requested memory allocation
+ * @param[in] alignment the alignment value, which must be an integer power of 2
  * @return a pointer to the memory block that was allocated or NULL if the operation failed, the pointer is a multiple of alignment
  */
 void* AlignedAlloc(size_t size, size_t alignment);
 
 /* @brief Frees a block of memory that was align allocated
-* @param [in] data a pointer to the memory block
+*  @param[in] data a pointer to the memory block
 */
 void AlignedFree(void* data);
 }

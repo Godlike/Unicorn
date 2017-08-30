@@ -57,6 +57,8 @@ bool VkTexture::Create(const vk::PhysicalDevice& physicalDevice, const vk::Devic
         if(!m_vkImage->IsInitialized())
         {
             LOG_ERROR("Can't allocate vulkan based image for texture - %s", texture->Path().c_str());
+            delete m_vkImage;
+            m_vkImage = nullptr;
             return false;
         }
 
@@ -85,11 +87,13 @@ bool VkTexture::Create(const vk::PhysicalDevice& physicalDevice, const vk::Devic
         samplerInfo.setMinLod(0.0f);
         samplerInfo.setMaxLod(0.0f);
 
-        result = (device.createSampler(&samplerInfo, nullptr, &m_sampler) == vk::Result::eSuccess);
+        result = device.createSampler(&samplerInfo, nullptr, &m_sampler) == vk::Result::eSuccess;
 
         if(!result)
         {
             LOG_ERROR("Can't create sampler for texture - %s", texture->Path().c_str());
+            delete m_vkImage;
+            m_vkImage = nullptr;
             return false;
         }
 
@@ -108,7 +112,9 @@ void VkTexture::Delete()
         {
             m_device.destroySampler(m_sampler);
         }
-        m_vkImage->Delete();
+
+        delete m_vkImage;
+        m_vkImage = nullptr;
         m_isInitialized = false;
     }
 }

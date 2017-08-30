@@ -9,6 +9,7 @@
 
 #include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/video/ModelMatrix.hpp>
+#include <unicorn/video/Material.hpp>
 
 #include <wink/signal.hpp>
 #include <glm/glm.hpp>
@@ -19,15 +20,11 @@ namespace unicorn
 {
 namespace video
 {
-class Material;
-
 /**
  * @brief Vertex information
  */
 struct Vertex
 {
-    Vertex(glm::vec3 pos, glm::vec2 tc);
-
     /**
      * @brief Position of vertex
      */
@@ -45,8 +42,8 @@ struct Vertex
 class Mesh
 {
 public:
-    UNICORN_EXPORT Mesh(Material& material);
-    UNICORN_EXPORT ~Mesh();
+    UNICORN_EXPORT Mesh(Material const& material);
+    UNICORN_EXPORT ~Mesh() = default;
 
     /**
     * @brief Updates vertices and indices geometry
@@ -59,7 +56,7 @@ public:
     * @brief Sets new material
     * @param [in] material updated material for current mesh
     */
-    UNICORN_EXPORT void SetMaterial(Material& material);
+    UNICORN_EXPORT void SetMaterial(Material const& material);
 
     /**
      * @brief Returns mesh vertices
@@ -87,8 +84,7 @@ public:
     /**
     * @brief Signal for GPU that material was updated
     */
-
-    wink::signal<wink::slot<void(Mesh*)>> MaterialUpdated;
+    wink::signal<wink::slot<void()>> MaterialUpdated;
 
     /**
     * @brief Signal for GPU data update
@@ -97,7 +93,7 @@ public:
 private:
     std::vector<Vertex> m_vertices;
     std::vector<uint16_t> m_indices;
-    Material* m_material;
+    Material m_material;
 };
 }
 }

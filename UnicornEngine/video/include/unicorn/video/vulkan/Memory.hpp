@@ -29,8 +29,10 @@ public:
      * @param reqMemProperties required memory properties
      * @param allocSize size of allocation
      */
-    Memory(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties,
-           vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize);
+    Memory(vk::Device device, uint32_t typeFilter,
+           vk::PhysicalDeviceMemoryProperties physMemProperties,
+           vk::MemoryPropertyFlagBits reqMemProperties,
+           uint64_t allocSize);
 
     /**
      * @brief Frees memory
@@ -59,11 +61,6 @@ public:
      */
     vk::Result Allocate(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties,
                         vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize);
-
-    /**
-     * @brief Frees memory
-     */
-    void Free() const;
 
     /**
      * @brief Returns reference to vk::DeviceMemory

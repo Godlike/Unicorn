@@ -18,9 +18,11 @@ namespace unicorn
             ShaderProgram::ShaderProgram(vk::Device device, const std::string& vertShader, const std::string& fragShader)
                 : m_isCreated(false), m_device(device)
             {
-                unicorn::utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
-                unicorn::utility::asset::Handler simpleVertShaderHandler = storage.Get(vertShader);
-                unicorn::utility::asset::Handler simpleFragShaderHandler = storage.Get(fragShader);
+                using namespace unicorn::utility::asset;
+
+                SimpleStorage& storage = SimpleStorage::Instance();
+                Handler simpleVertShaderHandler = storage.Get(vertShader);
+                Handler simpleFragShaderHandler = storage.Get(fragShader);
 
                 if (!simpleVertShaderHandler.IsValid() || !simpleFragShaderHandler.IsValid())
                 {

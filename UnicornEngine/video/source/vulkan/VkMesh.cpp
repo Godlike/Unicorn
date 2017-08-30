@@ -14,16 +14,13 @@ namespace video
 namespace vulkan
 {
 VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, Mesh& mesh)
-    : m_valid(false)
-    , m_isColored(mesh.GetMaterial().IsColored())
-    , m_isWired(mesh.GetMaterial().IsWired())
+    : materialHandle(0)
+    , m_valid(false)
     , m_device(device)
     , m_physicalDevice(physicalDevice)
     , m_pool(pool)
     , m_queue(queue)
     , m_mesh(mesh)
-    , m_color(mesh.GetMaterial().GetColor())
-    , m_materialHandle(0)
 {
     m_mesh.MaterialUpdated.connect(this, &VkMesh::OnMaterialUpdated);
     m_mesh.VerticesUpdated.connect(this, &VkMesh::AllocateOnGPU);
@@ -102,36 +99,24 @@ uint32_t VkMesh::IndicesSize() const
 
 bool VkMesh::IsColored() const
 {
-    return m_isColored;
+    return m_mesh.GetMaterial().IsColored();
 }
 
 bool VkMesh::IsWired() const
 {
-    return m_isWired;
+    return m_mesh.GetMaterial().IsWired();
 }
 
 glm::vec3 VkMesh::GetColor() const
 {
-    return m_color;
+    return m_mesh.GetMaterial().color;
 }
 
-void VkMesh::SetMaterialHandle(uint32_t handle)
+void VkMesh::OnMaterialUpdated()
 {
-    m_materialHandle = handle;
+    MaterialUpdated.emit(&m_mesh, this);
 }
 
-void VkMesh::OnMaterialUpdated(Mesh* mesh)
-{
-    m_color = mesh->GetMaterial().GetColor();
-    m_isColored = mesh->GetMaterial().IsColored();
-    m_isWired = mesh->GetMaterial().IsWired();
-    MaterialUpdated.emit(mesh, this);
-}
-
-uint32_t VkMesh::GetMaterialHandle() const
-{
-    return m_materialHandle;
-}
 }
 }
 }

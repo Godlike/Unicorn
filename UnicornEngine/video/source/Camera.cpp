@@ -19,7 +19,7 @@ Camera::Camera(const glm::vec3& position, const glm::vec3& direction) :
     , m_direction(direction)
     , m_fov(45.0f)
     , m_znear(0.1f)
-    , m_zfar(1000.f)
+    , m_zfar(1000.0f)
     , m_dirtyView(false)
     , m_fovLowerBound(44.0f)
     , m_fovUpperBound(45.0f)
