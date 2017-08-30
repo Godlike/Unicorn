@@ -62,6 +62,10 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device,
     if(!m_deviceMemory->IsInitialized())
     {
         LOG_ERROR("Can't allocate memory on gpu!");
+
+        delete m_deviceMemory;
+        m_deviceMemory = nullptr;
+
         return false;
     }
     m_descriptor.offset = 0;

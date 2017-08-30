@@ -980,6 +980,7 @@ bool Renderer::CreateDescriptionSetLayout()
     poolCreateInfo.poolSizeCount = static_cast<uint32_t>(descriptorPoolSizes.size());
     poolCreateInfo.pPoolSizes = descriptorPoolSizes.data();
     poolCreateInfo.maxSets = 3000; //TODO: expand 
+    poolCreateInfo.flags = vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet;
 
     vk::Result result = m_vkLogicalDevice.createDescriptorPool(&poolCreateInfo, nullptr, &m_descriptorPool);
     if(result != vk::Result::eSuccess)

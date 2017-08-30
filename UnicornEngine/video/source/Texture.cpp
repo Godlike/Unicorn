@@ -38,8 +38,6 @@ void Texture::Delete()
         m_data = nullptr;
     }
     m_initialized = false;
-
-    //TODO: free storage handles here
 }
 
 uint32_t Texture::Size() const
