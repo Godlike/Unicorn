@@ -21,7 +21,7 @@ install:
   - cmake -G "Visual Studio 15 2017 Win64" ..
 
 build:
-  project: "build\\Godlike.sln"
+  project: "build\\Unicorn.sln"
   parallel: true
   verbosity: minimal
 
