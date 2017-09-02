@@ -33,10 +33,7 @@ public:
      */
     VkTexture(vk::Device device);
 
-    /**
-     * @brief Getter for descriptor image info
-     * @return constant reference to descriptor image info
-     */
+    /** @brief Returns descriptor image info */
     const vk::DescriptorImageInfo& GetDescriptorImageInfo() const;
 
     /**

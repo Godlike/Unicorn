@@ -16,6 +16,7 @@ set(VULKAN_HEADERS
     include/unicorn/video/vulkan/Image.hpp
     include/unicorn/video/vulkan/Memory.hpp
     include/unicorn/video/vulkan/VulkanHelper.hpp
+    include/unicorn/video/vulkan/VkMaterial.hpp
 )
 
 set(VULKAN_SOURCES
@@ -41,7 +42,6 @@ set(VIDEO_HEADERS
     include/unicorn/video/Mesh.hpp
     include/unicorn/video/Material.hpp
     include/unicorn/video/Primitives.hpp
-    include/unicorn/video/ModelMatrix.hpp
 )
 
 set(VIDEO_SOURCES
@@ -54,7 +54,6 @@ set(VIDEO_SOURCES
     source/Mesh.cpp
     source/Material.cpp
     source/Primitives.cpp
-    source/ModelMatrix.cpp
 )
 
 add_library(video OBJECT

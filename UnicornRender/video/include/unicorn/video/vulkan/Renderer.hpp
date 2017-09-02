@@ -17,7 +17,7 @@
 
 #include <list>
 #include <vector>
-#include <unordered_map>
+#include <functional>
 
 namespace unicorn
 {
@@ -46,9 +46,7 @@ struct QueueFamilyIndices
     bool IsComplete() const;
 };
 
-/**
- * @brief Swapchain creation details
- */
+/** @brief Swapchain creation details */
 struct SwapChainSupportDetails
 {
     vk::SurfaceCapabilitiesKHR capabilities;
@@ -56,25 +54,14 @@ struct SwapChainSupportDetails
     std::vector<vk::PresentModeKHR> presentModes;
 };
 
-/**
- * @brief Camera data
- */
+/** @brief Camera data */
 struct UniformCameraData
 {
     glm::mat4 view;
     glm::mat4 proj;
 };
 
-struct VkMaterial
-{
-    vk::DescriptorSet descriptorSet;
-    VkTexture* texture;
-    uint32_t nMeshes = 0; // Number of meshes, which point to this material
-};
-
-/**
- * @brief Struct which holds all models uniform data for sending to shader
- */
+/** @brief Struct which holds all models uniform data for sending to shader */
 struct UniformAllMeshesData
 {
     glm::mat4* model = nullptr;
@@ -84,9 +71,7 @@ class ShaderProgram;
 class UniformObject;
 class Image;
 
-/**
- * @brief Vulkan renderer backend
- */
+/** @brief Vulkan renderer backend */
 class Renderer : public video::Renderer
 {
 public:
@@ -148,9 +133,9 @@ private:
 
     std::list<VkMesh*> m_vkMeshes;
     Image* m_pDepthImage;
-    uint32_t m_replaceMeTextureHandle;
+    std::shared_ptr<VkMaterial> m_pReplaceMeMaterial;
 
-    std::unordered_map<uint32_t, VkMaterial> m_materials;
+    std::list<std::weak_ptr<VkMaterial>> m_materials;
 
     std::array<vk::DescriptorSetLayout, 2> m_descriptorSetLayouts; // 0 - mvp, 1 - albedo
     vk::DescriptorSet m_mvpDescriptorSet;
@@ -185,7 +170,7 @@ private:
     void FreeUniforms();
     void FreeDescriptorPoolAndLayouts() const;
     void FreePipelineCache();
-    void FreeTextures();
+    void FreeEngineHelpData();
 
     bool PrepareUniformBuffers();
     void UpdateViewProjectionDescriptorSet();

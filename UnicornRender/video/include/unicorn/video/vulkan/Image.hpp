@@ -89,6 +89,8 @@ public:
      * @param format format of image
      * @param oldLayout type of old layout
      * @param newLayout type of new layout
+     * @param cmdPool pool which allocate command buffers from
+     * @param queue queue which aggregate this command buffers for execution
      * @return true if transtion was successful and false if not
      */
     bool TransitionLayout(const vk::Format& format,

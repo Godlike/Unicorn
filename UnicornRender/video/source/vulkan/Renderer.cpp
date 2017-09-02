@@ -134,7 +134,7 @@ void Renderer::Deinit()
             }
         }
 
-        FreeTextures();
+        FreeEngineHelpData();
         FreeSemaphores();
         FreeCommandBuffers();
         FreeCommandPool();
@@ -294,6 +294,8 @@ bool Renderer::Render()
             // Update all related data
             ResizeUnifromModelBuffer(nullptr);
             CreateCommandBuffers();
+
+            m_materials.remove_if([](const std::weak_ptr<VkMaterial>& pVkMaterial) { return pVkMaterial.expired(); });
             m_hasDirtyMeshes = false;
         }
 
@@ -409,17 +411,6 @@ bool Renderer::DeleteMesh(const Mesh* pMesh)
 
     if(vkMeshIt != m_vkMeshes.end())
     {
-        auto handle = (*vkMeshIt)->materialHandle;
-        auto& pVkMeshMaterial = m_materials.at((*vkMeshIt)->materialHandle);
-        --pVkMeshMaterial.nMeshes;
-
-        if(pVkMeshMaterial.nMeshes < 1)
-        {
-            m_vkLogicalDevice.freeDescriptorSets(m_descriptorPool, 1, &pVkMeshMaterial.descriptorSet);
-            pVkMeshMaterial.texture->Delete();
-            m_materials.erase(handle);
-        }
-
         DeleteVkMesh(*vkMeshIt);
 
         m_vkMeshes.erase(vkMeshIt);
@@ -436,6 +427,7 @@ bool Renderer::DeleteMesh(const Mesh* pMesh)
 
         return true;
     }
+
     return false;
 }
 
@@ -615,13 +607,9 @@ void Renderer::FreePipelineCache()
     }
 }
 
-void Renderer::FreeTextures()
+void Renderer::FreeEngineHelpData()
 {
-    for(auto& material : m_materials)
-    {
-        material.second.texture->Delete();
-        m_vkLogicalDevice.freeDescriptorSets(m_descriptorPool, 1, &material.second.descriptorSet);
-    }
+    m_pReplaceMeMaterial.reset();
     m_materials.clear();
 }
 
@@ -1263,11 +1251,11 @@ bool Renderer::CreateDepthBuffer()
         return false;
     }
     m_pDepthImage = new Image(m_vkPhysicalDevice,
-                             m_vkLogicalDevice,
-                             m_depthImageFormat,
-                             vk::ImageUsageFlagBits::eDepthStencilAttachment,
-                             m_swapChainExtent.width,
-                             m_swapChainExtent.height);
+                              m_vkLogicalDevice,
+                              m_depthImageFormat,
+                              vk::ImageUsageFlagBits::eDepthStencilAttachment,
+                              m_swapChainExtent.width,
+                              m_swapChainExtent.height);
     return m_pDepthImage->IsInitialized();
 }
 
@@ -1324,8 +1312,8 @@ bool Renderer::CreateCommandBuffers()
                 if(pVkMesh->IsValid())
                 {
                     glm::vec4 colorPush(
-                        pVkMesh->GetColor(),    // xyz - color
-                        pVkMesh->IsColored()    // w - boolean flag for 1 enabled color or 0 disabled color
+                        pVkMesh->GetColor(), // xyz - color
+                        pVkMesh->IsColored() // w - boolean flag for 1 enabled color or 0 disabled color
                     );
 
                     if(pVkMesh->IsWired())
@@ -1347,7 +1335,7 @@ bool Renderer::CreateCommandBuffers()
                     // Set 0: Scene descriptor set containing global matrices
                     descriptorSets[0] = m_mvpDescriptorSet;
                     // Set 1: Per-Material descriptor set containing bound images
-                    descriptorSets[1] = m_materials.at(pVkMesh->materialHandle).descriptorSet;
+                    descriptorSets[1] = pVkMesh->pMaterial->descriptorSet;
 
                     m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout, 0, descriptorSets.size(), descriptorSets.data(), 1, &dynamicOffset);
 
@@ -1406,12 +1394,9 @@ bool Renderer::LoadEngineHelpData()
         LOG_ERROR("Can't create 'replace me' texture - %s", path.c_str());
 
         delete replaceMeTexture;
-        replaceMeTexture = nullptr;
 
         return false;
     }
-
-    m_replaceMeTextureHandle = texture.GetId();
 
     vk::DescriptorSetAllocateInfo allocInfo;
     allocInfo.descriptorPool = m_descriptorPool;
@@ -1428,7 +1413,6 @@ bool Renderer::LoadEngineHelpData()
 
         replaceMeTexture->Delete();
         delete replaceMeTexture;
-        replaceMeTexture = nullptr;
 
         return false;
     }
@@ -1441,12 +1425,20 @@ bool Renderer::LoadEngineHelpData()
 
     m_vkLogicalDevice.updateDescriptorSets(1, &imageDescriptorSet, 0, nullptr);
 
-    VkMaterial replaceMeMaterial;
-    replaceMeMaterial.texture = replaceMeTexture;
-    replaceMeMaterial.descriptorSet = descriptorSet;
-    replaceMeMaterial.nMeshes += 2; // too hold it until engine shut down
+    m_pReplaceMeMaterial = std::shared_ptr<VkMaterial>(new VkMaterial, [](VkMaterial* p)
+    {
+        p->texture->Delete();
+        p->device.freeDescriptorSets(p->pool, p->descriptorSet);
+        delete p;
+    });
 
-    m_materials.insert({texture.GetId(), replaceMeMaterial});
+    m_pReplaceMeMaterial->texture = replaceMeTexture;
+    m_pReplaceMeMaterial->descriptorSet = descriptorSet;
+    m_pReplaceMeMaterial->handle = texture.GetId();
+    m_pReplaceMeMaterial->device = m_vkLogicalDevice;
+    m_pReplaceMeMaterial->pool = m_descriptorPool;
+
+    m_materials.push_back(m_pReplaceMeMaterial);
 
     texture.Delete();
     return true;
@@ -1488,13 +1480,13 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
 {
     auto& meshMaterial = mesh.GetMaterial();
 
-    uint32_t meshAlbedoHandle = m_replaceMeTextureHandle;
-
     if(meshMaterial.GetAlbedo() != nullptr)
     {
-        meshAlbedoHandle = meshMaterial.GetAlbedo()->GetId();
+        uint32_t meshAlbedoHandle = meshMaterial.GetAlbedo()->GetId();
 
-        if(m_materials.find(meshAlbedoHandle) == m_materials.end())
+        auto meshMaterialIt = std::find_if(m_materials.begin(), m_materials.end(), [=](std::weak_ptr<VkMaterial> material) ->bool { return material.lock()->handle == meshAlbedoHandle; });
+
+        if(meshMaterialIt == m_materials.end())
         {
             VkTexture* vkTexture = new VkTexture(m_vkLogicalDevice);
             vkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, meshMaterial.GetAlbedo());
@@ -1514,7 +1506,6 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
 
                 vkTexture->Delete();
                 delete vkTexture;
-                vkTexture = nullptr;
 
                 return false;
             }
@@ -1527,16 +1518,30 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
 
             m_vkLogicalDevice.updateDescriptorSets(1, &imageDescriptorSet, 0, nullptr);
 
-            VkMaterial material;
-            material.texture = vkTexture;
-            material.descriptorSet = descriptorSet;
+            vkmesh.pMaterial = std::shared_ptr<VkMaterial>(new VkMaterial, [](VkMaterial* p)
+                                                   {
+                                                       p->texture->Delete();
+                                                       p->device.freeDescriptorSets(p->pool, p->descriptorSet);
+                                                       delete p;
+                                                   });
 
-            m_materials.insert({meshAlbedoHandle, material});
+            vkmesh.pMaterial->texture = vkTexture;
+            vkmesh.pMaterial->descriptorSet = descriptorSet;
+            vkmesh.pMaterial->handle = meshAlbedoHandle;
+            vkmesh.pMaterial->device = m_vkLogicalDevice;
+            vkmesh.pMaterial->pool = m_descriptorPool;
+
+            m_materials.push_back(vkmesh.pMaterial);
+        }
+        else
+        {
+            vkmesh.pMaterial = (*meshMaterialIt).lock();;
         }
     }
-
-    m_materials.at(meshAlbedoHandle).nMeshes++;
-    vkmesh.materialHandle = meshAlbedoHandle;
+    else
+    {
+        vkmesh.pMaterial = m_pReplaceMeMaterial;
+    }
 
     return true;
 }

@@ -8,7 +8,6 @@
 #define UNICORN_VIDEO_MESH_HPP
 
 #include <unicorn/utility/SharedMacros.hpp>
-#include <unicorn/video/ModelMatrix.hpp>
 #include <unicorn/video/Material.hpp>
 
 #include <wink/signal.hpp>
@@ -77,9 +76,9 @@ public:
     UNICORN_EXPORT Material const& GetMaterial() const;
 
     /**
-    * @brief Matrix that contains model transformation
+    * @brief Matrix for model transformations
     */
-    ModelMatrix modelMatrix;
+    glm::mat4 modelMatrix;
 
     /**
     * @brief Signal for GPU that material was updated

@@ -22,7 +22,7 @@ Material::Material() : color(Color::Red())
 void Material::SetAlbedo(Texture const* albedo)
 {
     m_isColored = false;
-    if(!albedo->IsLoaded())
+    if(albedo == nullptr || !albedo->IsLoaded())
     {
         LOG_ERROR("Setting not loaded texture to material!");
         return;

@@ -20,6 +20,9 @@
 #include <unicorn/video/CameraFpsController.hpp>
 #include <unicorn/video/Material.hpp>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <ctime>
 #include <array>
 #include <cstdlib>
@@ -49,7 +52,7 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     deltaTime = newDeltatime;
     for(auto& mesh : meshes)
     {
-        mesh->modelMatrix.Rotate(deltaTime * 30, {1, 1, 0});
+        mesh->modelMatrix = glm::rotate(mesh->modelMatrix, glm::radians(deltaTime * 30), { 1, 1, 0 });
     }
     lastFrame = currentFrame;
 }
@@ -77,7 +80,7 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
             unicorn::video::Mesh* cube = vkRenderer->SpawnMesh(cubematerial);
             unicorn::video::Primitives::Cube(*cube);
             meshes.push_back(cube);
-            cube->modelMatrix.SetPosition({std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20});
+            cube->modelMatrix = glm::translate(cube->modelMatrix, { std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 });
             break;
         }
         case MouseButton::MouseMiddle:
@@ -369,7 +372,9 @@ int main(int argc, char* argv[])
 
             unicorn::video::Mesh* texturedQuad = vkRenderer->SpawnMesh(textureMaterial);
             unicorn::video::Primitives::Quad(*texturedQuad);
-            unicorn::video::Mesh* mandrillQuad = vkRenderer->SpawnMesh(mandrillMaterial);
+            unicorn::video::Mesh* texturedQuad2 = vkRenderer->SpawnMesh(textureMaterial);
+            unicorn::video::Primitives::Quad(*texturedQuad2);
+           /* unicorn::video::Mesh* mandrillQuad = vkRenderer->SpawnMesh(mandrillMaterial);
             unicorn::video::Primitives::Quad(*mandrillQuad);
             unicorn::video::Mesh* texturedCube = vkRenderer->SpawnMesh(textureMaterial);
             unicorn::video::Primitives::Cube(*texturedCube);
@@ -384,16 +389,19 @@ int main(int argc, char* argv[])
             unicorn::video::Mesh* upBox = vkRenderer->SpawnMesh(upTexture);
             unicorn::video::Primitives::Quad(*upBox);
             unicorn::video::Mesh* bottomBox = vkRenderer->SpawnMesh(bottomTexture);
-            unicorn::video::Primitives::Quad(*bottomBox);
+            unicorn::video::Primitives::Quad(*bottomBox);*/
 
-            mandrillQuad->modelMatrix.Translate({3.0, 0.0, 1.0});
-            texturedCube->modelMatrix.SetPosition({0.0, 5.0, -5.0});
+            //mandrillQuad->modelMatrix.Translate({3.0, 0.0, 1.0});
+            //texturedCube->modelMatrix.SetPosition({0.0, 5.0, -5.0});
+
+            meshes.push_back(texturedQuad);
+            meshes.push_back(texturedQuad2);
 
             //Skybox
             float skyBoxScaleFactor = 500;
             float skyBoxDistance = skyBoxScaleFactor - 1;
 
-            frontBox->modelMatrix.Translate({0, 0, skyBoxDistance});
+           /* frontBox->modelMatrix.Translate({0, 0, skyBoxDistance});
             frontBox->modelMatrix.Scale({skyBoxScaleFactor, skyBoxScaleFactor, 0});
 
             backBox->modelMatrix.Translate({0, 0, -skyBoxDistance});
@@ -416,7 +424,7 @@ int main(int argc, char* argv[])
             bottomBox->modelMatrix.Translate({0, skyBoxDistance, 0});
             bottomBox->modelMatrix.Rotate(-90, {1, 0, 0});
             bottomBox->modelMatrix.Rotate(90, {0, 0, 1});
-            bottomBox->modelMatrix.Scale({skyBoxScaleFactor, skyBoxScaleFactor, 0});
+            bottomBox->modelMatrix.Scale({skyBoxScaleFactor, skyBoxScaleFactor, 0});*/
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);

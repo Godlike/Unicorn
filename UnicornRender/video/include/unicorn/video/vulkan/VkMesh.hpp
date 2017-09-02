@@ -9,6 +9,7 @@
 
 #include <unicorn/video/Mesh.hpp>
 #include <unicorn/video/vulkan/Buffer.hpp>
+#include <unicorn/video/vulkan/VkMaterial.hpp>
 
 #include <vulkan/vulkan.hpp>
 #include <wink/signal.hpp>
@@ -92,20 +93,20 @@ public:
     uint32_t IndicesSize() const;
 
     /**
-     * @brief Checks if needed to render colored mesh
-     * @return true if mesh colored and false if not
+     * @brief Checks if needed to be rendered only in color
+     * @return true if mesh is colored and false if not
      */
     bool IsColored() const;
 
     /**
-     * @brief Checks if wireframe mode enabled for this mesh
-     * @return true if mesh needs to render in wireframe mode, false if not
+     * @brief Checks if wireframe mode is enabled for this mesh
+     * @return true if mesh needs to be rendered in wireframe mode, false if not
      */
     bool IsWired() const;
 
     /**
-     * @brief Returns color of mesh
-     * @return color of mesh
+     * @brief Returns color of mesh in RGB format
+     * @return color of mesh in RGB format
      */
     glm::vec3 GetColor() const;
 
@@ -117,7 +118,7 @@ public:
     /**
      * @brief Material in vulkan is combination of descriptor set and binded data   
      */
-    uint32_t materialHandle;
+    std::shared_ptr<VkMaterial> pMaterial;
 
     /**
      * @brief Signal for command buffer reallocation
@@ -125,7 +126,7 @@ public:
     wink::signal<wink::slot<void(VkMesh*)>> ReallocatedOnGpu;
 
     /**
-    * @brief Signal for uniform update and commnd buffer reallocation
+    * @brief Signal for material update
     */
     wink::signal<wink::slot<void(Mesh*, VkMesh*)>> MaterialUpdated;
 private:

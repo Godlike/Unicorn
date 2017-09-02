@@ -14,8 +14,7 @@ namespace video
 namespace vulkan
 {
 VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, Mesh& mesh)
-    : materialHandle(0)
-    , m_valid(false)
+    : m_valid(false)
     , m_device(device)
     , m_physicalDevice(physicalDevice)
     , m_pool(pool)
@@ -40,7 +39,7 @@ bool VkMesh::operator==(const Mesh& mesh) const
 
 const glm::mat4& VkMesh::GetModelMatrix() const
 {
-    return m_mesh.modelMatrix.model;
+    return m_mesh.modelMatrix;
 }
 
 void VkMesh::AllocateOnGPU()
@@ -116,7 +115,6 @@ void VkMesh::OnMaterialUpdated()
 {
     MaterialUpdated.emit(&m_mesh, this);
 }
-
 }
 }
 }
