@@ -390,7 +390,7 @@ int main(int argc, char* argv[])
             unicorn::video::Mesh* bottomBox = vkRenderer->SpawnMesh(bottomTexture);
             unicorn::video::Primitives::Quad(*bottomBox);
             unicorn::video::Mesh* sphere = vkRenderer->SpawnMesh(mandrillMaterial);
-            unicorn::video::Primitives::Sphere(*sphere, 1, 10, 10);
+            unicorn::video::Primitives::Sphere(*sphere, 1, 65000, 65000);
 
             sphere->modelMatrix.SetPosition({ -5.0, -1.0, 0.0 });
             mandrillQuad->modelMatrix.Translate({3.0, 0.0, 1.0});
