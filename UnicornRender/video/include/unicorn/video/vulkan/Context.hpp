@@ -26,6 +26,7 @@ class Context : public utility::templates::Singleton<Context>
 {
 public:
     Context();
+
     /**
      * @brief Check if context was initialized
      * @return true if initialized and false if not
@@ -38,32 +39,37 @@ public:
      * @return true if initialized correctly and false if not
      */
     bool Initialize(system::Manager& manager);
+
     /**
      * @brief Destructs context data
      */
     void Deinitialize();
+
     /**
      * @brief Returns raw Vulkan Instance
      * @return copy of vk::Instance
      */
     vk::Instance GetVkInstance();
+
     /*
      * @brief Returns validation layers
      */
-    const std::vector<const char*>& GetValidationLayers();
+    std::vector<char const*> const& GetValidationLayers();
+
     /*
     * @brief Returns device extensions
     */
-    const std::vector<const char*>& GetDeviceExtensions();
+    std::vector<char const*> const& GetDeviceExtensions();
+
     /*
     * @brief Returns instance extensions
     */
-    const std::vector<const char*>& GetInstanceExtensions();
+    std::vector<char const*> const& GetInstanceExtensions();
 private:
     friend class utility::templates::Singleton<Context>;
 
-    Context(const Context& other) = delete;
-    Context& operator=(const Context& other) = delete;
+    Context(Context const& other) = delete;
+    Context& operator=(Context const& other) = delete;
     Context(Context&& other) = delete;
     Context& operator=(Context&& other) = delete;
     ~Context() = delete;
@@ -78,13 +84,13 @@ private:
      * @param manager system manager which produce it
      * @return All required extensions
      */
-    std::vector<const char*> FillRequiredExtensions(system::Manager& manager);
+    std::vector<char const*> FillRequiredExtensions(system::Manager& manager);
     /**
      * @brief Creates debug report callback
      * @param pCreateInfo filled create info
      * @return VkResult true if was created successfully and false if not
      */
-    VkResult CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreateInfoEXT* pCreateInfo);
+    VkResult CreateDebugReportCallbackEXT(VkDebugReportCallbackCreateInfoEXT const* pCreateInfo);
     /**
      * @brief Destroys callback
      */
@@ -100,19 +106,19 @@ private:
     /**
     * @brief Validation layers for Vulkan API
     */
-    std::vector<const char*> m_validationLayers;
+    std::vector<char const*> m_validationLayers;
     /**
     * @brief Extensions for Vulkan logical device
     */
-    std::vector<const char*> m_deviceExtensions;
+    std::vector<char const*> m_deviceExtensions;
     /**
     * @brief Extensions for Vulkan Instance
     */
-    std::vector<const char*> m_instanceExtensions;
+    std::vector<char const*> m_instanceExtensions;
 
     vk::Instance m_vkInstance;
     VkDebugReportCallbackEXT m_vulkanCallback;
-    static const bool s_enableValidationLayers;
+    static bool const s_enableValidationLayers;
 };
 }
 }

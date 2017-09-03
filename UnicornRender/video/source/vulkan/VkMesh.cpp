@@ -5,7 +5,7 @@
 */
 
 #include <unicorn/video/vulkan/VkMesh.hpp>
-#include <unicorn/utility/Logger.hpp>
+#include <unicorn/video/Material.hpp>
 
 namespace unicorn
 {
@@ -13,30 +13,33 @@ namespace video
 {
 namespace vulkan
 {
-VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, geometry::Mesh& mesh)
+VkMesh::VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, Mesh& mesh)
     : m_valid(false)
     , m_device(device)
     , m_physicalDevice(physicalDevice)
-    , m_mesh(mesh)
     , m_pool(pool)
     , m_queue(queue)
+    , m_mesh(mesh)
 {
+    m_mesh.MaterialUpdated.connect(this, &VkMesh::OnMaterialUpdated);
     m_mesh.VerticesUpdated.connect(this, &VkMesh::AllocateOnGPU);
 }
 
 VkMesh::~VkMesh()
 {
+    DeallocateOnGPU();
     m_mesh.VerticesUpdated.disconnect(this, &VkMesh::AllocateOnGPU);
+    m_mesh.MaterialUpdated.disconnect(this, &VkMesh::OnMaterialUpdated);
 }
 
-bool VkMesh::operator==(const geometry::Mesh& mesh) const
+bool VkMesh::operator==(const Mesh& mesh) const
 {
     return &mesh == &m_mesh;
 }
 
-const glm::mat4& VkMesh::GetModel() const
+const glm::mat4& VkMesh::GetModelMatrix() const
 {
-    return m_mesh.model;
+    return m_mesh.modelMatrix;
 }
 
 void VkMesh::AllocateOnGPU()
@@ -73,24 +76,44 @@ void VkMesh::DeallocateOnGPU()
     m_indexBuffer.Destroy();
 }
 
-vk::Buffer VkMesh::GetVertexBuffer()
+vk::Buffer VkMesh::GetVertexBuffer() const
 {
     return m_vertexBuffer.GetVkBuffer();
 }
 
-std::uint32_t VkMesh::VerticesSize()
+uint32_t VkMesh::VerticesSize() const
 {
     return static_cast<uint32_t>(m_mesh.GetVertices().size());
 }
 
-vk::Buffer VkMesh::GetIndexBuffer()
+vk::Buffer VkMesh::GetIndexBuffer() const
 {
     return m_indexBuffer.GetVkBuffer();
 }
 
-std::uint32_t VkMesh::IndicesSize()
+uint32_t VkMesh::IndicesSize() const
 {
     return static_cast<uint32_t>(m_mesh.GetIndices().size());
+}
+
+bool VkMesh::IsColored() const
+{
+    return m_mesh.GetMaterial().IsColored();
+}
+
+bool VkMesh::IsWired() const
+{
+    return m_mesh.GetMaterial().IsWired();
+}
+
+glm::vec3 VkMesh::GetColor() const
+{
+    return m_mesh.GetMaterial().color;
+}
+
+void VkMesh::OnMaterialUpdated()
+{
+    MaterialUpdated.emit(&m_mesh, this);
 }
 }
 }

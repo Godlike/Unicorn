@@ -51,7 +51,7 @@ public:
     */
     ~Graphics();
 
-    Graphics(const Graphics& other) = delete;
+    Graphics(Graphics const& other) = delete;
     Graphics(Graphics&& other) = delete;
     Graphics& operator=(Graphics& other) = delete;
     Graphics& operator=(Graphics&& other) = delete;
@@ -64,7 +64,7 @@ public:
     *
     *  @return @c true if initialization was successful, @c false otherwise
     */
-    bool Init(const DriverType& driver);
+    bool Init(DriverType const& driver);
 
     /** @brief  Deinitializes the graphics system
     *
@@ -91,7 +91,7 @@ public:
     */
     UNICORN_EXPORT system::Window* SpawnWindow(int32_t width,
                                                int32_t height,
-                                               const std::string& name,
+                                               std::string const& name,
                                                system::Monitor* pMonitor = nullptr,
                                                system::Window* pSharedWindow = nullptr);
 
@@ -118,7 +118,7 @@ public:
     *          or @c nullptr if something went wrong or the window is not in
     *          fullscreen mode
     */
-    UNICORN_EXPORT system::Monitor* GetWindowMonitor(const system::Window& window) const;
+    UNICORN_EXPORT system::Monitor* GetWindowMonitor(system::Window const& window) const;
 
     /** @brief  Sets monitor to be used by @p  window for fullscreen mode
     *
@@ -128,10 +128,10 @@ public:
     *  @param  size        desired size as (width, height)
     *  @param  refreshRate desired refresh rate
     */
-    UNICORN_EXPORT void SetWindowMonitor(const system::Window& window,
+    UNICORN_EXPORT void SetWindowMonitor(system::Window const& window,
                                          system::Monitor* pMonitor,
-                                         const std::pair<int32_t, int32_t>& position,
-                                         const std::pair<int32_t, int32_t>& size,
+                                         std::pair<int32_t, int32_t> const& position,
+                                         std::pair<int32_t, int32_t> const& size,
                                          int32_t refreshRate) const;
 
     /** @brief  Sets window creation hints
@@ -158,7 +158,7 @@ private:
     struct RendererWindowPairHash
     {
         /** @brief  Calculates hash */
-        std::size_t operator()(const RendererWindowPair& pair) const
+        std::size_t operator()(RendererWindowPair const& pair) const
         {
             return std::hash<Renderer*>()(pair.first) ^
                     std::hash<system::Window*>()(pair.second);

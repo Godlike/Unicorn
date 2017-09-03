@@ -25,6 +25,7 @@ public:
      * @brief Default constructor
      */
     CommandBuffers();
+
     /**
      * @brief Destructor which calls Destroy()
      */
@@ -32,11 +33,12 @@ public:
 
     /**
      * @brief Creates new command buffers
-     * @param device device to allocate from
-     * @param count command buffer size
+     * @param[in] device device to allocate from
+     * @param[in] count command buffer size
      * @return true if was allocated successfully and false if not
      */
     vk::Result Create(vk::Device device, uint32_t count);
+
     /**
      * @brief Destroys all data
      */
@@ -47,12 +49,14 @@ public:
      * @return reference to vk::CommandPool
      */
     vk::CommandPool& GetVkCommandPool();
+
     /**
      * @brief Returns command buffer
-     * @param index Index of needed command buffer
+     * @param[in] index Index of needed command buffer
      * @return reference for needed command buffer
      */
     vk::CommandBuffer& GetVkCommandBuffer(uint32_t index);
+
     /**
      * @brief Returns all command buffers
      * @return vector of all command buffer

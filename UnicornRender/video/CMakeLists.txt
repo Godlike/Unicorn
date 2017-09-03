@@ -5,19 +5,6 @@
 cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.0)
 
-
-set(GEOMETRY_HEADERS
-    include/unicorn/video/geometry/Mesh.hpp
-    include/unicorn/video/geometry/Primitives.hpp
-    include/unicorn/video/geometry/MeshDescriptor.hpp
-)
-
-set(GEOMETRY_SOURCES
-    source/geometry/Mesh.cpp
-    source/geometry/Primitives.cpp
-    source/geometry/MeshDescriptor.cpp
-)
-
 set(VULKAN_HEADERS
     include/unicorn/video/vulkan/Context.hpp
     include/unicorn/video/vulkan/Renderer.hpp
@@ -25,8 +12,11 @@ set(VULKAN_HEADERS
     include/unicorn/video/vulkan/CommandBuffers.hpp
     include/unicorn/video/vulkan/ShaderProgram.hpp
     include/unicorn/video/vulkan/VkMesh.hpp
+    include/unicorn/video/vulkan/VkTexture.hpp
     include/unicorn/video/vulkan/Image.hpp
     include/unicorn/video/vulkan/Memory.hpp
+    include/unicorn/video/vulkan/VulkanHelper.hpp
+    include/unicorn/video/vulkan/VkMaterial.hpp
 )
 
 set(VULKAN_SOURCES
@@ -36,8 +26,10 @@ set(VULKAN_SOURCES
     source/vulkan/CommandBuffers.cpp
     source/vulkan/ShaderProgram.cpp
     source/vulkan/VkMesh.cpp
+    source/vulkan/VkTexture.cpp
     source/vulkan/Image.cpp
     source/vulkan/Memory.cpp
+    source/vulkan/VulkanHelper.cpp
 )
 
 set(VIDEO_HEADERS
@@ -46,8 +38,10 @@ set(VIDEO_HEADERS
     include/unicorn/video/Camera.hpp
     include/unicorn/video/CameraFpsController.hpp
     include/unicorn/video/Color.hpp
-    ${VULKAN_HEADERS}
-    ${GEOMETRY_HEADERS}
+    include/unicorn/video/Texture.hpp
+    include/unicorn/video/Mesh.hpp
+    include/unicorn/video/Material.hpp
+    include/unicorn/video/Primitives.hpp
 )
 
 set(VIDEO_SOURCES
@@ -56,13 +50,17 @@ set(VIDEO_SOURCES
     source/Camera.cpp
     source/CameraFpsController.cpp
     source/Color.cpp
-    ${VULKAN_SOURCES}
-    ${GEOMETRY_SOURCES}
+    source/Texture.cpp
+    source/Mesh.cpp
+    source/Material.cpp
+    source/Primitives.cpp
 )
 
 add_library(video OBJECT
     ${VIDEO_HEADERS}
     ${VIDEO_SOURCES}
+    ${VULKAN_HEADERS}
+    ${VULKAN_SOURCES}
 )
 
 include(InstallInfo)

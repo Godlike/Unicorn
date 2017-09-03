@@ -7,8 +7,9 @@
 #ifndef UNICORN_VIDEO_COLOR_HPP
 #define UNICORN_VIDEO_COLOR_HPP
 
-#include <glm/glm.hpp>
 #include <unicorn/utility/SharedMacros.hpp>
+
+#include <glm/glm.hpp>
 
 namespace unicorn
 {

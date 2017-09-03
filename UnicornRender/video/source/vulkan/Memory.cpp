@@ -12,7 +12,10 @@ namespace video
 {
 namespace vulkan
 {
-Memory::Memory(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryProperties physMemProperties, vk::MemoryPropertyFlagBits reqMemProperties, uint64_t allocSize) : m_initialized(false)
+Memory::Memory(vk::Device device, uint32_t typeFilter,
+               vk::PhysicalDeviceMemoryProperties physMemProperties,
+               vk::MemoryPropertyFlagBits reqMemProperties,
+               uint64_t allocSize) : m_initialized(false)
                                    , m_device(device)
                                    , m_memory(nullptr)
 {
@@ -39,7 +42,7 @@ Memory::Memory(vk::Device device, uint32_t typeFilter, vk::PhysicalDeviceMemoryP
 
 Memory::~Memory()
 {
-    if(m_initialized && m_memory)
+    if(m_device && m_initialized && m_memory)
     {
         m_device.freeMemory(m_memory);
         m_memory = nullptr;
@@ -55,7 +58,6 @@ const vk::DeviceMemory& Memory::GetMemory() const
 {
     return m_memory;
 }
-
 }
 }
 }

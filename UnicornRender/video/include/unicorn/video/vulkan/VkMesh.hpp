@@ -7,9 +7,11 @@
 #ifndef UNICORN_VIDEO_VULKAN_MESH_HPP
 #define UNICORN_VIDEO_VULKAN_MESH_HPP
 
-#include <vulkan/vulkan.hpp>
-#include <unicorn/video/geometry/Mesh.hpp>
+#include <unicorn/video/Mesh.hpp>
 #include <unicorn/video/vulkan/Buffer.hpp>
+#include <unicorn/video/vulkan/VkMaterial.hpp>
+
+#include <vulkan/vulkan.hpp>
 #include <wink/signal.hpp>
 
 namespace unicorn
@@ -32,7 +34,7 @@ public:
      * @param queue Which queue to use to buffer copying
      * @param mesh Geometry data
      */
-    VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, geometry::Mesh& mesh);
+    VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, Mesh& mesh);
     ~VkMesh();
 
     /**
@@ -42,7 +44,7 @@ public:
      *
      *  @return @c true if object operates on given mesh, @c false otherwise
      */
-    bool operator==(const geometry::Mesh& mesh) const;
+    bool operator==(const Mesh& mesh) const;
 
     /**
      *  @brief  Returns if VkMesh is valid to use
@@ -55,47 +57,74 @@ public:
      * @brief Allocation on GPU
      */
     void AllocateOnGPU();
+
     /**
      * @brief Deallocation on GPU
      */
     void DeallocateOnGPU();
+
     /**
      * @brief Returns vertex buffer
      * @return vulkan buffer
      */
-    vk::Buffer GetVertexBuffer();
+    vk::Buffer GetVertexBuffer() const;
+
     /**
      * @brief Returns index buffer
      * @return vulkan buffer
      */
-    vk::Buffer GetIndexBuffer();
+    vk::Buffer GetIndexBuffer() const;
+
+    /** @brief Returns model matrix */
+    const glm::mat4& GetModelMatrix() const;
+
+    /** @brief Returns vertices count */
+    uint32_t VerticesSize() const;
+
+    /** @brief Returns indices count */
+    uint32_t IndicesSize() const;
+
+    /** @brief Returns @c true if mesh is colored and @c false otherwise */
+    bool IsColored() const;
+
+    /** @brief Returns @c true if mesh is in wired mode and @c false otherwise */
+    bool IsWired() const;
+
     /**
-     * @brief Matrix of transformations
-     * @return model matrix
+     * @brief Returns color of mesh in RGB format
+     * @return color of mesh in RGB format
      */
-    const glm::mat4& GetModel() const;
+    glm::vec3 GetColor() const;
+
     /**
-     * @brief Returns vertices size
-     * @return size of vertices
+     * @brief Updates data if material of mesh was updated
      */
-    uint32_t VerticesSize();
+    void OnMaterialUpdated();
+
     /**
-    * @briefReturns indices size
-    * @return size of indices
-    */
-    uint32_t IndicesSize();
+     * @brief Material in vulkan is combination of descriptor set and binded data   
+     */
+    std::shared_ptr<VkMaterial> pMaterial;
+
     /**
      * @brief Signal for command buffer reallocation
      */
     wink::signal<wink::slot<void(VkMesh*)>> ReallocatedOnGpu;
+
+    /**
+    * @brief Signal for material update
+    */
+    wink::signal<wink::slot<void(Mesh*, VkMesh*)>> MaterialUpdated;
 private:
     bool m_valid;
+
     vk::Device m_device;
     vk::PhysicalDevice m_physicalDevice;
     vulkan::Buffer m_vertexBuffer, m_indexBuffer;
-    geometry::Mesh& m_mesh;
     vk::CommandPool m_pool;
     vk::Queue m_queue;
+
+    Mesh& m_mesh;
 };
 }
 }

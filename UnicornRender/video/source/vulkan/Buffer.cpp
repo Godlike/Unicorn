@@ -6,6 +6,8 @@
 
 #include <unicorn/video/vulkan/Buffer.hpp>
 #include <unicorn/utility/Logger.hpp>
+#include <unicorn/video/vulkan/VulkanHelper.hpp>
+#include <unicorn/video/vulkan/Image.hpp>
 
 namespace unicorn
 {
@@ -13,9 +15,9 @@ namespace video
 {
 namespace vulkan
 {
-Buffer::Buffer() : m_size(0),
-    m_deviceMemory(nullptr),
-    m_mappedMemory(nullptr)
+Buffer::Buffer() : m_size(0)
+                 , m_deviceMemory(nullptr)
+                 , m_mappedMemory(nullptr)
 {
 }
 
@@ -24,9 +26,10 @@ Buffer::~Buffer()
     Destroy();
 }
 
-bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags memoryPropertyFlags, size_t size)
+bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device,
+                    vk::BufferUsageFlags usage, vk::MemoryPropertyFlags memoryPropertyFlags, size_t size)
 {
-    if (size == 0)
+    if(size == 0)
     {
         LOG_ERROR("Can't allocate zero Vulkan buffer on gpu!");
         return false;
@@ -43,7 +46,7 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
     bufferInfo.setSharingMode(vk::SharingMode::eExclusive);
 
     vk::Result result = m_device.createBuffer(&bufferInfo, nullptr, &m_buffer);
-    if (result != vk::Result::eSuccess)
+    if(result != vk::Result::eSuccess)
     {
         LOG_ERROR("Can't create vulkan buffer!");
         return false;
@@ -54,10 +57,15 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
 
     vk::MemoryRequirements req;
     m_device.getBufferMemoryRequirements(m_buffer, &req);
-    m_deviceMemory = new Memory(m_device, req.memoryTypeBits, memoryProperties, vk::MemoryPropertyFlagBits::eHostVisible, req.size);
-    if (!m_deviceMemory->IsInitialized())
+    m_deviceMemory = new Memory(m_device, req.memoryTypeBits, memoryProperties,
+                                vk::MemoryPropertyFlagBits::eHostVisible, req.size);
+    if(!m_deviceMemory->IsInitialized())
     {
         LOG_ERROR("Can't allocate memory on gpu!");
+
+        delete m_deviceMemory;
+        m_deviceMemory = nullptr;
+
         return false;
     }
     m_descriptor.offset = 0;
@@ -71,12 +79,12 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::Bu
 void Buffer::Destroy()
 {
     Unmap();
-    if (m_deviceMemory)
+    if(m_deviceMemory)
     {
         delete m_deviceMemory;
         m_deviceMemory = nullptr;
     }
-    if (m_buffer)
+    if(m_buffer)
     {
         m_device.destroyBuffer(m_buffer);
         m_buffer = nullptr;
@@ -105,7 +113,7 @@ void Buffer::Map()
 
 void Buffer::Unmap()
 {
-    if (m_mappedMemory)
+    if(m_mappedMemory)
     {
         m_device.unmapMemory(m_deviceMemory->GetMemory());
         m_mappedMemory = nullptr;
@@ -114,34 +122,39 @@ void Buffer::Unmap()
 
 void Buffer::CopyToBuffer(vk::CommandPool pool, vk::Queue queue, vulkan::Buffer& dstBuffer, vk::DeviceSize size) const
 {
-    vk::CommandBufferAllocateInfo allocInfo;
-    allocInfo.level = vk::CommandBufferLevel::ePrimary;
-    allocInfo.commandPool = pool;
-    allocInfo.commandBufferCount = 1;
-
-    vk::CommandBuffer commandBuffer;
-    m_device.allocateCommandBuffers(&allocInfo, &commandBuffer);
-
-    vk::CommandBufferBeginInfo beginInfo;
-    beginInfo.flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit;
-
-    commandBuffer.begin(&beginInfo);
+    vk::CommandBuffer commandBuffer = BeginSingleTimeCommands(m_device, pool);
 
     vk::BufferCopy copyRegion;
     copyRegion.srcOffset = 0;
     copyRegion.dstOffset = 0;
     copyRegion.size = size;
+
     commandBuffer.copyBuffer(m_buffer, dstBuffer.GetVkBuffer(), 1, &copyRegion);
 
-    commandBuffer.end();
+    EndSingleTimeCommands(commandBuffer, queue, m_device, pool);
+}
 
-    vk::SubmitInfo submitInfo;
-    submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &commandBuffer;
+void Buffer::CopyToImage(const vulkan::Image& dstImage, const vk::CommandPool& pool, const vk::Queue& queue) const
+{
+    vk::CommandBuffer commandBuffer = BeginSingleTimeCommands(m_device, pool);
 
-    queue.submit(1, &submitInfo, nullptr); // TODO: parallelize this, move to another queue
-    queue.waitIdle();
-    m_device.freeCommandBuffers(pool, 1, &commandBuffer);
+    vk::BufferImageCopy region;
+    region.bufferOffset = 0;
+    region.bufferRowLength = 0;
+    region.bufferImageHeight = 0;
+    region.imageSubresource.aspectMask = vk::ImageAspectFlagBits::eColor;
+    region.imageSubresource.mipLevel = 0;
+    region.imageSubresource.baseArrayLayer = 0;
+    region.imageSubresource.layerCount = 1;
+    region.imageOffset = vk::Offset3D{0, 0, 0};
+    region.imageExtent = vk::Extent3D{
+        dstImage.GetWidth(),
+        dstImage.GetHeight(),
+        1
+    };
+    commandBuffer.copyBufferToImage(m_buffer, dstImage.GetVkImage(), vk::ImageLayout::eTransferDstOptimal, 1, &region);
+
+    EndSingleTimeCommands(commandBuffer, queue, m_device, pool);
 }
 
 size_t Buffer::GetSize() const

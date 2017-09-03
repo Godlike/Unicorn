@@ -12,8 +12,13 @@
 #include <unicorn/system/Window.hpp>
 #include <unicorn/video/vulkan/Context.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
+#include <unicorn/video/vulkan/VkTexture.hpp>
 #include <unicorn/video/Camera.hpp>
 #include <unicorn/utility/Memory.hpp>
+#include <unicorn/video/Texture.hpp>
+#include <unicorn/video/Material.hpp>
+
+#include <glm/gtc/type_ptr.hpp>
 
 #include <set>
 #include <algorithm>
@@ -41,7 +46,8 @@ bool QueueFamilyIndices::IsComplete() const
 
 Renderer::Renderer(system::Manager& manager, system::Window* window)
     : video::Renderer(manager, window)
-    , m_depthImage(nullptr)
+    , m_pDepthImage(nullptr)
+    , m_contextInstance(Context::Instance().GetVkInstance())
     , m_hasDirtyMeshes(false)
 {
     m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
@@ -84,10 +90,13 @@ bool Renderer::Init()
         !CreateFramebuffers() ||
         !CreateCommandPool() ||
         !CreateSemaphores() ||
-        !CreateCommandBuffers())
+        !CreateCommandBuffers() ||
+        !LoadEngineHelpData())
     {
         return false;
     }
+
+    UpdateViewProjectionDescriptorSet();
 
     m_isInitialized = true;
 
@@ -102,7 +111,7 @@ void Renderer::Deinit()
     {
         {
             // Create a copy of mesh list to delete all meshes
-            std::list<geometry::Mesh*> meshes(m_meshes);
+            std::list<Mesh*> meshes(m_meshes);
 
             for(auto& pMesh : meshes)
             {
@@ -125,6 +134,7 @@ void Renderer::Deinit()
             }
         }
 
+        FreeEngineHelpData();
         FreeSemaphores();
         FreeCommandBuffers();
         FreeCommandPool();
@@ -282,8 +292,10 @@ bool Renderer::Render()
         if(m_hasDirtyMeshes)
         {
             // Update all related data
-            OnMeshReallocated(nullptr);
+            ResizeUnifromModelBuffer(nullptr);
+            CreateCommandBuffers();
 
+            m_materials.remove_if([](const std::weak_ptr<VkMaterial>& pVkMaterial) { return pVkMaterial.expired(); });
             m_hasDirtyMeshes = false;
         }
 
@@ -339,11 +351,35 @@ bool Renderer::RecreateSwapChain()
     return false;
 }
 
-void Renderer::OnMeshReallocated(VkMesh* /*vkmesh*/)
+Mesh* Renderer::SpawnMesh(unicorn::video::Material const& material)
+{
+    auto mesh = new Mesh(material);
+    auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
+
+    if(!AllocateMaterial(*mesh, *vkmesh))
+    {
+        LOG_ERROR("Can't allocate material!");
+        return nullptr;
+    }
+
+    vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
+    vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
+
+    m_vkMeshes.push_back(vkmesh);
+    m_meshes.push_back(mesh);
+
+    ResizeUnifromModelBuffer(vkmesh);
+
+    return mesh;
+}
+
+void Renderer::ResizeUnifromModelBuffer(VkMesh* /*vkmesh*/)
 {
     m_uniformModel.Destroy();
+    auto nMeshes = m_vkMeshes.size();
 
-    size_t bufferSize = m_vkMeshes.size() * m_dynamicAlignment;
+    size_t bufferSize = (nMeshes == 0) ? m_dynamicAlignment : (nMeshes * m_dynamicAlignment);
+
     m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, bufferSize);
 
     if(m_uniformModelsData.model)
@@ -358,23 +394,20 @@ void Renderer::OnMeshReallocated(VkMesh* /*vkmesh*/)
     m_uniformModel.Map();
     m_uniformModel.Write(m_uniformModelsData.model);
 
-    ResizeDynamicUniformBuffer();
+    UpdateModelDescriptorSet();
+
     CreateCommandBuffers();
 }
 
-geometry::Mesh* Renderer::SpawnMesh()
+void Renderer::OnMeshMaterialUpdated(Mesh* mesh, VkMesh* vkMesh)
 {
-    auto mesh = new geometry::Mesh();
-    auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
-    vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::OnMeshReallocated);
-    m_vkMeshes.push_back(vkmesh);
-    m_meshes.push_back(mesh);
-    return mesh;
+    AllocateMaterial(*mesh, *vkMesh);
+    CreateCommandBuffers();
 }
 
-bool Renderer::DeleteMesh(const geometry::Mesh* pMesh)
+bool Renderer::DeleteMesh(const Mesh* pMesh)
 {
-    auto vkMeshIt = std::find_if(m_vkMeshes.begin(), m_vkMeshes.end(), [=](VkMesh* p) -> bool { return *p == *pMesh; });
+    auto vkMeshIt = std::find_if(m_vkMeshes.begin(), m_vkMeshes.end(), [=](VkMesh* p) ->bool { return *p == *pMesh; });
 
     if(vkMeshIt != m_vkMeshes.end())
     {
@@ -394,9 +427,7 @@ bool Renderer::DeleteMesh(const geometry::Mesh* pMesh)
 
         return true;
     }
-    else
-    {
-    }
+
     return false;
 }
 
@@ -414,9 +445,9 @@ void Renderer::DeleteVkMesh(VkMesh* pVkMesh)
 
 void Renderer::FreeSurface()
 {
-    if(m_vkWindowSurface && m_vkLogicalDevice)
+    if(m_vkLogicalDevice && m_vkWindowSurface)
     {
-        Context::Instance().GetVkInstance().destroySurfaceKHR(m_vkWindowSurface);
+        m_contextInstance.destroySurfaceKHR(m_vkWindowSurface);
         m_vkWindowSurface = nullptr;
     }
 }
@@ -432,7 +463,7 @@ void Renderer::FreeLogicalDevice()
 
 void Renderer::FreeSwapChain()
 {
-    if(m_vkSwapChain && m_vkLogicalDevice)
+    if(m_vkLogicalDevice && m_vkSwapChain)
     {
         m_vkLogicalDevice.destroySwapchainKHR(m_vkSwapChain);
         m_vkSwapChain = nullptr;
@@ -453,16 +484,16 @@ void Renderer::FreeImageViews()
 
 void Renderer::FreeDepthBuffer()
 {
-    if(m_depthImage && m_depthImage->IsInitialized())
+    if(m_pDepthImage && m_pDepthImage->IsInitialized())
     {
-        delete m_depthImage;
-        m_depthImage = nullptr;
+        delete m_pDepthImage;
+        m_pDepthImage = nullptr;
     }
 }
 
 void Renderer::FreeRenderPass()
 {
-    if(m_renderPass && m_vkLogicalDevice)
+    if(m_vkLogicalDevice && m_renderPass)
     {
         m_vkLogicalDevice.destroyRenderPass(m_renderPass);
         m_renderPass = nullptr;
@@ -471,10 +502,23 @@ void Renderer::FreeRenderPass()
 
 void Renderer::FreeGraphicsPipeline()
 {
-    if(m_graphicsPipeline && m_vkLogicalDevice)
+    if(m_vkLogicalDevice)
     {
-        m_vkLogicalDevice.destroyPipeline(m_graphicsPipeline);
-        m_graphicsPipeline = nullptr;
+        if(m_pipelines.solid)
+        {
+            m_vkLogicalDevice.destroyPipeline(m_pipelines.solid);
+            m_pipelines.solid = nullptr;
+        }
+        if(m_pipelines.blend)
+        {
+            m_vkLogicalDevice.destroyPipeline(m_pipelines.blend);
+            m_pipelines.blend = nullptr;
+        }
+        if(m_pipelines.wired)
+        {
+            m_vkLogicalDevice.destroyPipeline(m_pipelines.wired);
+            m_pipelines.wired = nullptr;
+        }
     }
 }
 
@@ -501,7 +545,7 @@ void Renderer::FreeCommandPool()
 
 void Renderer::FreeCommandBuffers()
 {
-    if(!m_commandBuffers.empty() && m_vkLogicalDevice)
+    if(m_vkLogicalDevice && !m_commandBuffers.empty())
     {
         m_vkLogicalDevice.freeCommandBuffers(m_commandPool, static_cast<uint32_t>(m_commandBuffers.size()), m_commandBuffers.data());
     }
@@ -509,79 +553,104 @@ void Renderer::FreeCommandBuffers()
 
 void Renderer::FreeSemaphores()
 {
-    if(m_imageAvailableSemaphore && m_vkLogicalDevice)
+    if(m_vkLogicalDevice)
     {
-        m_vkLogicalDevice.destroySemaphore(m_imageAvailableSemaphore);
-        m_imageAvailableSemaphore = nullptr;
-    }
+        if(m_imageAvailableSemaphore)
+        {
+            m_vkLogicalDevice.destroySemaphore(m_imageAvailableSemaphore);
+            m_imageAvailableSemaphore = nullptr;
+        }
 
-    if(m_renderFinishedSemaphore && m_vkLogicalDevice)
-    {
-        m_vkLogicalDevice.destroySemaphore(m_renderFinishedSemaphore);
-        m_renderFinishedSemaphore = nullptr;
+        if(m_renderFinishedSemaphore)
+        {
+            m_vkLogicalDevice.destroySemaphore(m_renderFinishedSemaphore);
+            m_renderFinishedSemaphore = nullptr;
+        }
     }
 }
 
 void Renderer::FreeUniforms()
 {
-    m_uniformMvp.Destroy();
+    m_uniformViewProjection.Destroy();
     m_uniformModel.Destroy();
 }
 
 void Renderer::FreeDescriptorPoolAndLayouts() const
 {
-    if(m_descriptorPool)
+    if(m_vkLogicalDevice)
     {
-        m_vkLogicalDevice.destroyDescriptorPool(m_descriptorPool);
+        if(m_pipelineLayout)
+        {
+            m_vkLogicalDevice.destroyPipelineLayout(m_pipelineLayout);
+        }
+
+        for(auto& descriptorSetLayout : m_descriptorSetLayouts)
+        {
+            if(descriptorSetLayout)
+            {
+                m_vkLogicalDevice.destroyDescriptorSetLayout(descriptorSetLayout);
+            }
+        }
+
+        if(m_descriptorPool)
+        {
+            m_vkLogicalDevice.destroyDescriptorPool(m_descriptorPool);
+        }
     }
-    if(m_descriptorSetLayout)
+}
+
+void Renderer::FreePipelineCache()
+{
+    if(m_vkLogicalDevice && pipelineCache)
     {
-        m_vkLogicalDevice.destroyDescriptorSetLayout(m_descriptorSetLayout);
+        m_vkLogicalDevice.destroyPipelineCache(pipelineCache);
     }
-    if(m_pipelineLayout)
-    {
-        m_vkLogicalDevice.destroyPipelineLayout(m_pipelineLayout);
-    }
+}
+
+void Renderer::FreeEngineHelpData()
+{
+    m_pReplaceMeMaterial.reset();
+    m_materials.clear();
 }
 
 bool Renderer::PrepareUniformBuffers()
 {
-    size_t uboAlignment = m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment;
+    size_t uboAlignment = static_cast<size_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
     m_dynamicAlignment = (sizeof(glm::mat4) / uboAlignment) * uboAlignment + ((sizeof(glm::mat4) % uboAlignment) > 0 ? uboAlignment : 0);
 
     m_uniformCameraData.proj = m_camera.GetProjection();
     m_uniformCameraData.view = m_camera.GetView();
 
-    m_uniformMvp.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, sizeof(UniformCameraData));
-    m_uniformMvp.Map();
-    m_uniformMvp.Write(&m_uniformCameraData);
+    m_uniformViewProjection.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, sizeof(UniformCameraData));
+    m_uniformViewProjection.Map();
+    m_uniformViewProjection.Write(&m_uniformCameraData);
 
     m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, m_dynamicAlignment);
     return true;
 }
 
-void Renderer::ResizeDynamicUniformBuffer() const
+void Renderer::UpdateViewProjectionDescriptorSet()
 {
-    std::vector<vk::WriteDescriptorSet> writeDescriptorSets;
+    vk::WriteDescriptorSet viewProjectionWriteSet;
+    viewProjectionWriteSet.dstSet = m_mvpDescriptorSet;
+    viewProjectionWriteSet.descriptorType = vk::DescriptorType::eUniformBuffer;
+    viewProjectionWriteSet.dstBinding = 0;
+    viewProjectionWriteSet.pBufferInfo = &m_uniformViewProjection.GetDescriptorInfo();
+    viewProjectionWriteSet.descriptorCount = 1;
 
-    vk::WriteDescriptorSet writeDescriptorSetMVP;
-    writeDescriptorSetMVP.dstSet = m_descriptorSet;
-    writeDescriptorSetMVP.descriptorType = vk::DescriptorType::eUniformBuffer;
-    writeDescriptorSetMVP.dstBinding = 0;
-    writeDescriptorSetMVP.pBufferInfo = &m_uniformMvp.GetDescriptorInfo();
-    writeDescriptorSetMVP.descriptorCount = 1;
+    m_vkLogicalDevice.updateDescriptorSets(1, &viewProjectionWriteSet, 0, nullptr);
+}
 
-    vk::WriteDescriptorSet writeDescriptorSetModel;
-    writeDescriptorSetModel.dstSet = m_descriptorSet;
-    writeDescriptorSetModel.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
-    writeDescriptorSetModel.dstBinding = 1;
-    writeDescriptorSetModel.pBufferInfo = &m_uniformModel.GetDescriptorInfo();
-    writeDescriptorSetModel.descriptorCount = 1;
+void Renderer::UpdateModelDescriptorSet() const
+{
+    vk::WriteDescriptorSet modelWriteSet;
+    modelWriteSet.dstSet = m_mvpDescriptorSet;
+    modelWriteSet.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
+    modelWriteSet.dstBinding = 1;
+    modelWriteSet.pBufferInfo = &m_uniformModel.GetDescriptorInfo();
+    modelWriteSet.descriptorCount = 1;
 
-    writeDescriptorSets.push_back(writeDescriptorSetMVP);
-    writeDescriptorSets.push_back(writeDescriptorSetModel);
-
-    m_vkLogicalDevice.updateDescriptorSets(static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
+    m_vkLogicalDevice.updateDescriptorSets(1, &modelWriteSet, 0, nullptr);
 }
 
 void Renderer::UpdateUniformBuffer()
@@ -590,7 +659,7 @@ void Renderer::UpdateUniformBuffer()
     {
         m_uniformCameraData.proj = m_camera.GetProjection();
         m_uniformCameraData.view = m_camera.GetView();
-        m_uniformMvp.Write(&m_uniformCameraData);
+        m_uniformViewProjection.Write(&m_uniformCameraData);
     }
 }
 
@@ -610,7 +679,6 @@ void Renderer::UpdateVkMeshMatrices()
 {
     glm::mat4* pModelMat = nullptr;
     uint32_t i = 0;
-
     for(auto pVkMesh : m_vkMeshes)
     {
         // Get model matrix location
@@ -619,7 +687,7 @@ void Renderer::UpdateVkMeshMatrices()
         );
 
         // Fill model matrix
-        *pModelMat = pVkMesh->GetModel();
+        *pModelMat = pVkMesh->GetModelMatrix();
 
         ++i;
     }
@@ -629,7 +697,7 @@ bool Renderer::PickPhysicalDevice()
 {
     vk::Result result;
     std::vector<vk::PhysicalDevice> devices;
-    std::tie(result, devices) = Context::Instance().GetVkInstance().enumeratePhysicalDevices();
+    std::tie(result, devices) = m_contextInstance.enumeratePhysicalDevices();
     if(result != vk::Result::eSuccess)
     {
         LOG_ERROR("Failed to enumerate physical devices.");
@@ -667,12 +735,13 @@ bool Renderer::CreateLogicalDevice()
         queueCreateInfos.push_back(queueCreateInfo);
     }
 
-    vk::PhysicalDeviceFeatures deviceFeatures;
+    m_deviceFeatures.setSamplerAnisotropy(VK_TRUE);
+    m_deviceFeatures.setFillModeNonSolid(VK_TRUE);
 
     vk::DeviceCreateInfo createInfo;
     createInfo.setPQueueCreateInfos(queueCreateInfos.data());
     createInfo.setQueueCreateInfoCount(static_cast<uint32_t>(queueCreateInfos.size()));
-    createInfo.setPEnabledFeatures(&deviceFeatures);
+    createInfo.setPEnabledFeatures(&m_deviceFeatures);
     createInfo.setEnabledExtensionCount(static_cast<uint32_t>(Context::Instance().GetDeviceExtensions().size()));
     createInfo.setPpEnabledExtensionNames(Context::Instance().GetDeviceExtensions().data());
 
@@ -701,7 +770,8 @@ bool Renderer::CreateLogicalDevice()
 
 bool Renderer::CreateSurface()
 {
-    if(!m_pWindow || m_systemManager.CreateVulkanSurfaceForWindow(*m_pWindow, Context::Instance().GetVkInstance(), nullptr, reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
+    if(!m_pWindow || m_systemManager.CreateVulkanSurfaceForWindow(*m_pWindow, m_contextInstance, nullptr,
+                                                                  reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
     {
         LOG_ERROR("Failed to create window surface!");
 
@@ -735,7 +805,7 @@ bool Renderer::CreateSwapChain()
     createInfo.imageColorSpace = surfaceFormat.colorSpace;
     createInfo.imageExtent = extent;
     createInfo.imageArrayLayers = 1;
-    createInfo.imageUsage = vk::ImageUsageFlagBits::eColorAttachment; // VK_IMAGE_USAGE_TRANSFER_DST_BIT for post processing.
+    createInfo.imageUsage = vk::ImageUsageFlagBits::eColorAttachment;
 
     QueueFamilyIndices indices = FindQueueFamilies(m_vkPhysicalDevice);
     uint32_t queueFamilyIndices[] = {static_cast<uint32_t>(indices.graphicsFamily), static_cast<uint32_t>(indices.presentFamily)};
@@ -877,21 +947,28 @@ bool Renderer::CreateRenderPass()
 bool Renderer::CreateDescriptionSetLayout()
 {
     std::vector<vk::DescriptorPoolSize> descriptorPoolSizes;
-    vk::DescriptorPoolSize descriptorMVPPoolSize;
-    descriptorMVPPoolSize.type = vk::DescriptorType::eUniformBuffer;
-    descriptorMVPPoolSize.descriptorCount = 1;
+
+    vk::DescriptorPoolSize descriptorViewProjectionPoolSize;
+    descriptorViewProjectionPoolSize.type = vk::DescriptorType::eUniformBuffer;
+    descriptorViewProjectionPoolSize.descriptorCount = 1;
 
     vk::DescriptorPoolSize descriptorModelPoolSize;
     descriptorModelPoolSize.type = vk::DescriptorType::eUniformBufferDynamic;
     descriptorModelPoolSize.descriptorCount = 1;
 
-    descriptorPoolSizes.push_back(descriptorMVPPoolSize);
+    vk::DescriptorPoolSize descriptorSamplerPoolSize;
+    descriptorSamplerPoolSize.type = vk::DescriptorType::eCombinedImageSampler;
+    descriptorSamplerPoolSize.descriptorCount = m_physicalDeviceProperties.limits.maxDescriptorSetSampledImages;
+
+    descriptorPoolSizes.push_back(descriptorViewProjectionPoolSize);
     descriptorPoolSizes.push_back(descriptorModelPoolSize);
+    descriptorPoolSizes.push_back(descriptorSamplerPoolSize);
 
     vk::DescriptorPoolCreateInfo poolCreateInfo;
     poolCreateInfo.poolSizeCount = static_cast<uint32_t>(descriptorPoolSizes.size());
     poolCreateInfo.pPoolSizes = descriptorPoolSizes.data();
-    poolCreateInfo.maxSets = 2;
+    poolCreateInfo.maxSets = 3000; //TODO: expand
+    poolCreateInfo.flags = vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet;
 
     vk::Result result = m_vkLogicalDevice.createDescriptorPool(&poolCreateInfo, nullptr, &m_descriptorPool);
     if(result != vk::Result::eSuccess)
@@ -900,28 +977,34 @@ bool Renderer::CreateDescriptionSetLayout()
         return false;
     }
 
-    std::vector<vk::DescriptorSetLayoutBinding> descriptorSetLayoutBindings;
+    std::vector<vk::DescriptorSetLayoutBinding> mvpSetLayoutBindings;
 
-    vk::DescriptorSetLayoutBinding setMVP;
-    setMVP.descriptorType = vk::DescriptorType::eUniformBuffer;
-    setMVP.stageFlags = vk::ShaderStageFlagBits::eVertex;
-    setMVP.binding = 0; //TODO: hardcode description binding
-    setMVP.descriptorCount = 1;
+    vk::DescriptorSetLayoutBinding setViewProjection;
+    setViewProjection.descriptorType = vk::DescriptorType::eUniformBuffer;
+    setViewProjection.stageFlags = vk::ShaderStageFlagBits::eVertex;
+    setViewProjection.binding = 0;
+    setViewProjection.descriptorCount = 1;
 
-    vk::DescriptorSetLayoutBinding setMODEL;
-    setMODEL.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
-    setMODEL.stageFlags = vk::ShaderStageFlagBits::eVertex;
-    setMODEL.binding = 1; //TODO: hardcode description binding
-    setMODEL.descriptorCount = 1;
+    vk::DescriptorSetLayoutBinding setModel;
+    setModel.descriptorType = vk::DescriptorType::eUniformBufferDynamic;
+    setModel.stageFlags = vk::ShaderStageFlagBits::eVertex;
+    setModel.binding = 1;
+    setModel.descriptorCount = 1;
 
-    descriptorSetLayoutBindings.push_back(setMVP);
-    descriptorSetLayoutBindings.push_back(setMODEL);
+    vk::DescriptorSetLayoutBinding textureSampler;
+    textureSampler.descriptorType = vk::DescriptorType::eCombinedImageSampler;
+    textureSampler.stageFlags = vk::ShaderStageFlagBits::eFragment;
+    textureSampler.binding = 0;
+    textureSampler.descriptorCount = 1;
 
-    vk::DescriptorSetLayoutCreateInfo descriptorLayout;
-    descriptorLayout.pBindings = descriptorSetLayoutBindings.data();
-    descriptorLayout.bindingCount = static_cast<uint32_t>(descriptorSetLayoutBindings.size());
+    mvpSetLayoutBindings.push_back(setViewProjection);
+    mvpSetLayoutBindings.push_back(setModel);
 
-    result = m_vkLogicalDevice.createDescriptorSetLayout(&descriptorLayout, nullptr, &m_descriptorSetLayout);
+    vk::DescriptorSetLayoutCreateInfo mvpLayoutInfo;
+    mvpLayoutInfo.pBindings = mvpSetLayoutBindings.data();
+    mvpLayoutInfo.bindingCount = static_cast<uint32_t>(mvpSetLayoutBindings.size());
+
+    result = m_vkLogicalDevice.createDescriptorSetLayout(&mvpLayoutInfo, nullptr, &m_descriptorSetLayouts[0]);
 
     if(result != vk::Result::eSuccess)
     {
@@ -929,23 +1012,24 @@ bool Renderer::CreateDescriptionSetLayout()
         return false;
     }
 
-    vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
-    pipelineLayoutInfo.setLayoutCount = 1;
-    pipelineLayoutInfo.pSetLayouts = &m_descriptorSetLayout;
+    vk::DescriptorSetLayoutCreateInfo albedoLayoutInfo;
+    albedoLayoutInfo.pBindings = &textureSampler;
+    albedoLayoutInfo.bindingCount = 1;
 
-    result = m_vkLogicalDevice.createPipelineLayout(&pipelineLayoutInfo, nullptr, &m_pipelineLayout);
+    result = m_vkLogicalDevice.createDescriptorSetLayout(&albedoLayoutInfo, nullptr, &m_descriptorSetLayouts[1]);
+
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Failed to create pipeline layout!");
+        LOG_ERROR("Can't create descriptor set layout!");
         return false;
     }
 
     vk::DescriptorSetAllocateInfo allocInfo;
     allocInfo.descriptorPool = m_descriptorPool;
-    allocInfo.pSetLayouts = &m_descriptorSetLayout;
     allocInfo.descriptorSetCount = 1;
+    allocInfo.pSetLayouts = &m_descriptorSetLayouts[0];
 
-    result = m_vkLogicalDevice.allocateDescriptorSets(&allocInfo, &m_descriptorSet);
+    result = m_vkLogicalDevice.allocateDescriptorSets(&allocInfo, &m_mvpDescriptorSet);
 
     if(result != vk::Result::eSuccess)
     {
@@ -953,7 +1037,23 @@ bool Renderer::CreateDescriptionSetLayout()
         return false;
     }
 
-    ResizeDynamicUniformBuffer();
+    vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
+    pipelineLayoutInfo.setLayoutCount = m_descriptorSetLayouts.size();
+    pipelineLayoutInfo.pSetLayouts = m_descriptorSetLayouts.data();
+
+    vk::PushConstantRange pushConstanRange;
+    pushConstanRange.setSize(sizeof( glm::vec4));
+    pushConstanRange.setStageFlags(vk::ShaderStageFlagBits::eVertex);
+
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstanRange;
+
+    result = m_vkLogicalDevice.createPipelineLayout(&pipelineLayoutInfo, nullptr, &m_pipelineLayout);
+    if(result != vk::Result::eSuccess)
+    {
+        LOG_ERROR("Failed to create pipeline layout!");
+        return false;
+    }
 
     return true;
 }
@@ -963,7 +1063,13 @@ bool Renderer::CreateGraphicsPipeline()
     vk::Result result;
     FreeGraphicsPipeline();
 
-    m_shaderProgram = new ShaderProgram(m_vkLogicalDevice, "data/shaders/shader.vert.spv", "data/shaders/shader.frag.spv");
+    m_shaderProgram = new ShaderProgram(m_vkLogicalDevice, "data/shaders/UberShader.vert.spv", "data/shaders/UberShader.frag.spv");
+
+    if(!m_shaderProgram->IsCreated())
+    {
+        LOG_ERROR("Vulkan can't create shader program!");
+        return false;
+    }
 
     vk::PipelineInputAssemblyStateCreateInfo inputAssembly;
     inputAssembly.topology = vk::PrimitiveTopology::eTriangleList;
@@ -1017,14 +1123,8 @@ bool Renderer::CreateGraphicsPipeline()
     colorBlendAttachment.blendEnable = VK_FALSE;
 
     vk::PipelineColorBlendStateCreateInfo colorBlending;
-    colorBlending.logicOpEnable = VK_FALSE;
-    colorBlending.logicOp = vk::LogicOp::eCopy;
     colorBlending.attachmentCount = 1;
     colorBlending.pAttachments = &colorBlendAttachment;
-    colorBlending.blendConstants[0] = 0.0f;
-    colorBlending.blendConstants[1] = 0.0f;
-    colorBlending.blendConstants[2] = 0.0f;
-    colorBlending.blendConstants[3] = 0.0f;
 
     if(!m_shaderProgram->IsCreated())
     {
@@ -1051,12 +1151,43 @@ bool Renderer::CreateGraphicsPipeline()
     pipelineInfo.basePipelineHandle = nullptr;
     pipelineInfo.basePipelineIndex = -1; // Optional
 
-    std::tie(result, m_graphicsPipeline) = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo);
+    //Solid pipeline
+
+    std::tie(result, m_pipelines.solid) = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo);
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Can't create graphics pipeline.");
+        LOG_ERROR("Can't create solid pipeline.");
         return false;
     }
+
+    // Alpha blended pipeline
+
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorBlendOp = vk::BlendOp::eAdd;
+    colorBlendAttachment.srcColorBlendFactor = vk::BlendFactor::eSrcColor;
+    colorBlendAttachment.dstColorBlendFactor = vk::BlendFactor::eOneMinusSrcColor;
+
+    std::tie(result, m_pipelines.blend) = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo);
+    if(result != vk::Result::eSuccess)
+    {
+        LOG_ERROR("Can't create blend pipeline.");
+        return false;
+    }
+
+    // Wire frame rendering pipeline
+    if(m_deviceFeatures.fillModeNonSolid)
+    {
+        colorBlendAttachment.blendEnable = VK_FALSE;
+        rasterizer.polygonMode = vk::PolygonMode::eLine;
+
+        std::tie(result, m_pipelines.wired) = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo);
+        if(result != vk::Result::eSuccess)
+        {
+            LOG_ERROR("Can't create blend pipeline.");
+            return false;
+        }
+    }
+
     m_shaderProgram->DestroyShaderModules();
 
     return true;
@@ -1069,7 +1200,7 @@ bool Renderer::CreateFramebuffers()
     m_swapChainFramebuffers.resize(m_swapChainImageViews.size());
 
     vk::ImageView attachments[s_swapChainAttachmentsAmount];
-    attachments[1] = m_depthImage->GetVkImageView();
+    attachments[1] = m_pDepthImage->GetVkImageView();
 
     vk::FramebufferCreateInfo framebufferInfo;
     framebufferInfo.renderPass = m_renderPass;
@@ -1113,13 +1244,19 @@ bool Renderer::CreateCommandPool()
 bool Renderer::CreateDepthBuffer()
 {
     FreeDepthBuffer();
-    m_depthImage = new Image(m_vkPhysicalDevice,
-                               m_vkLogicalDevice,
-                               m_depthImageFormat,
-                               vk::ImageUsageFlagBits::eDepthStencilAttachment,
-                               m_swapChainExtent.width,
-                               m_swapChainExtent.height);
-    return m_depthImage->IsInitialized();
+
+    if(!FindDepthFormat(m_depthImageFormat))
+    {
+        LOG_ERROR("Not one of desired depth formats are not compatible!");
+        return false;
+    }
+    m_pDepthImage = new Image(m_vkPhysicalDevice,
+                              m_vkLogicalDevice,
+                              m_depthImageFormat,
+                              vk::ImageUsageFlagBits::eDepthStencilAttachment,
+                              m_swapChainExtent.width,
+                              m_swapChainExtent.height);
+    return m_pDepthImage->IsInitialized();
 }
 
 bool Renderer::CreateCommandBuffers()
@@ -1164,7 +1301,6 @@ bool Renderer::CreateCommandBuffers()
         renderPassInfo.pClearValues = clearValues.data();
 
         m_commandBuffers[i].beginRenderPass(&renderPassInfo, vk::SubpassContents::eInline);
-        m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_graphicsPipeline);
 
         vk::DeviceSize offsets[] = {0};
 
@@ -1175,11 +1311,34 @@ bool Renderer::CreateCommandBuffers()
             {
                 if(pVkMesh->IsValid())
                 {
+                    glm::vec4 colorPush(
+                        pVkMesh->GetColor(), // xyz - color
+                        pVkMesh->IsColored() // w - boolean flag for 1 enabled color or 0 disabled color
+                    );
+
+                    if(pVkMesh->IsWired())
+                    {
+                        m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_pipelines.wired);
+                    }
+                    else
+                    {
+                        m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_pipelines.solid);
+                    }
+
+                    m_commandBuffers[i].pushConstants(m_pipelineLayout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(colorPush), glm::value_ptr(colorPush));
                     vk::Buffer vertexBuffer[] = {pVkMesh->GetVertexBuffer()};
                     uint32_t dynamicOffset = j * static_cast<uint32_t>(m_dynamicAlignment);
                     m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);
                     m_commandBuffers[i].bindIndexBuffer(pVkMesh->GetIndexBuffer(), 0, vk::IndexType::eUint16);
-                    m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout, 0, 1, &m_descriptorSet, 1, &dynamicOffset);
+
+                    std::array<vk::DescriptorSet, 2> descriptorSets;
+                    // Set 0: Scene descriptor set containing global matrices
+                    descriptorSets[0] = m_mvpDescriptorSet;
+                    // Set 1: Per-Material descriptor set containing bound images
+                    descriptorSets[1] = pVkMesh->pMaterial->descriptorSet;
+
+                    m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout, 0, descriptorSets.size(), descriptorSets.data(), 1, &dynamicOffset);
+
                     m_commandBuffers[i].drawIndexed(pVkMesh->IndicesSize(), 1, 0, 0, 0);
 
                     ++j;
@@ -1208,6 +1367,83 @@ bool Renderer::CreateSemaphores()
     return false;
 }
 
+bool Renderer::CreatePipelineCache()
+{
+    vk::PipelineCacheCreateInfo pipelineCacheCreateInfo;
+    if(m_vkLogicalDevice.createPipelineCache(&pipelineCacheCreateInfo, nullptr, &pipelineCache) != vk::Result::eSuccess)
+    {
+        LOG_ERROR( "Can't create pipeline cache!" );
+        return false;
+    }
+    return true;
+}
+
+bool Renderer::LoadEngineHelpData()
+{
+    unicorn::video::Texture texture;
+    static std::string const path = "data/textures/replace_me.jpg";
+    if(!texture.Load(path))
+    {
+        LOG_ERROR( "Can't find texture with path - %s", path.c_str() );
+        return false;
+    }
+    VkTexture* replaceMeTexture = new VkTexture(m_vkLogicalDevice);
+
+    if(!replaceMeTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, &texture))
+    {
+        LOG_ERROR("Can't create 'replace me' texture - %s", path.c_str());
+
+        delete replaceMeTexture;
+
+        return false;
+    }
+
+    vk::DescriptorSetAllocateInfo allocInfo;
+    allocInfo.descriptorPool = m_descriptorPool;
+    allocInfo.descriptorSetCount = 1;
+    allocInfo.pSetLayouts = &m_descriptorSetLayouts[1];
+
+    vk::DescriptorSet descriptorSet;
+
+    auto result = m_vkLogicalDevice.allocateDescriptorSets(&allocInfo, &descriptorSet);
+
+    if(result != vk::Result::eSuccess)
+    {
+        LOG_ERROR("Can't allocate descriptor sets!");
+
+        replaceMeTexture->Delete();
+        delete replaceMeTexture;
+
+        return false;
+    }
+
+    vk::WriteDescriptorSet imageDescriptorSet;
+    imageDescriptorSet.setDstSet(descriptorSet);
+    imageDescriptorSet.setDescriptorType(vk::DescriptorType::eCombinedImageSampler);
+    imageDescriptorSet.setDescriptorCount(1);
+    imageDescriptorSet.setPImageInfo(&replaceMeTexture->GetDescriptorImageInfo());
+
+    m_vkLogicalDevice.updateDescriptorSets(1, &imageDescriptorSet, 0, nullptr);
+
+    m_pReplaceMeMaterial = std::shared_ptr<VkMaterial>(new VkMaterial, [](VkMaterial* p)
+    {
+        p->texture->Delete();
+        p->device.freeDescriptorSets(p->pool, p->descriptorSet);
+        delete p;
+    });
+
+    m_pReplaceMeMaterial->texture = replaceMeTexture;
+    m_pReplaceMeMaterial->descriptorSet = descriptorSet;
+    m_pReplaceMeMaterial->handle = texture.GetId();
+    m_pReplaceMeMaterial->device = m_vkLogicalDevice;
+    m_pReplaceMeMaterial->pool = m_descriptorPool;
+
+    m_materials.push_back(m_pReplaceMeMaterial);
+
+    texture.Delete();
+    return true;
+}
+
 bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
 {
     vk::PhysicalDeviceProperties deviceProperties = device.getProperties();
@@ -1216,6 +1452,9 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
     QueueFamilyIndices indices = FindQueueFamilies(device);
     bool extensionsSupported = CheckDeviceExtensionSupport(device);
     bool swapChainAcceptable = false;
+
+    vk::PhysicalDeviceFeatures deviceFeatures;
+    device.getFeatures(&deviceFeatures);
 
     if(extensionsSupported)
     {
@@ -1227,7 +1466,8 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
         swapChainAcceptable = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
     }
 
-    if(deviceProperties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu && indices.IsComplete() && extensionsSupported && swapChainAcceptable)
+    if(deviceProperties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu &&
+        indices.IsComplete() && extensionsSupported && swapChainAcceptable && deviceFeatures.samplerAnisotropy)
     {
         LOG_INFO("Picked as main GPU : %s", deviceProperties.deviceName);
         m_gpuName = deviceProperties.deviceName;
@@ -1236,7 +1476,77 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
     return false;
 }
 
-bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device) const
+bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
+{
+    auto& meshMaterial = mesh.GetMaterial();
+
+    if(meshMaterial.GetAlbedo() != nullptr)
+    {
+        uint32_t meshAlbedoHandle = meshMaterial.GetAlbedo()->GetId();
+
+        auto meshMaterialIt = std::find_if(m_materials.begin(), m_materials.end(), [=](std::weak_ptr<VkMaterial> material) ->bool { return material.lock()->handle == meshAlbedoHandle; });
+
+        if(meshMaterialIt == m_materials.end())
+        {
+            VkTexture* vkTexture = new VkTexture(m_vkLogicalDevice);
+            vkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, meshMaterial.GetAlbedo());
+
+            vk::DescriptorSetAllocateInfo allocInfo;
+            allocInfo.descriptorPool = m_descriptorPool;
+            allocInfo.descriptorSetCount = 1;
+            allocInfo.pSetLayouts = &m_descriptorSetLayouts[1];
+
+            vk::DescriptorSet descriptorSet;
+
+            auto result = m_vkLogicalDevice.allocateDescriptorSets(&allocInfo, &descriptorSet);
+
+            if(result != vk::Result::eSuccess)
+            {
+                LOG_ERROR("Can't allocate descriptor sets!");
+
+                vkTexture->Delete();
+                delete vkTexture;
+
+                return false;
+            }
+
+            vk::WriteDescriptorSet imageDescriptorSet;
+            imageDescriptorSet.setDstSet(descriptorSet);
+            imageDescriptorSet.setDescriptorType(vk::DescriptorType::eCombinedImageSampler);
+            imageDescriptorSet.setDescriptorCount(1);
+            imageDescriptorSet.setPImageInfo(&vkTexture->GetDescriptorImageInfo());
+
+            m_vkLogicalDevice.updateDescriptorSets(1, &imageDescriptorSet, 0, nullptr);
+
+            vkmesh.pMaterial = std::shared_ptr<VkMaterial>(new VkMaterial, [](VkMaterial* p)
+                                                   {
+                                                       p->texture->Delete();
+                                                       p->device.freeDescriptorSets(p->pool, p->descriptorSet);
+                                                       delete p;
+                                                   });
+
+            vkmesh.pMaterial->texture = vkTexture;
+            vkmesh.pMaterial->descriptorSet = descriptorSet;
+            vkmesh.pMaterial->handle = meshAlbedoHandle;
+            vkmesh.pMaterial->device = m_vkLogicalDevice;
+            vkmesh.pMaterial->pool = m_descriptorPool;
+
+            m_materials.push_back(vkmesh.pMaterial);
+        }
+        else
+        {
+            vkmesh.pMaterial = (*meshMaterialIt).lock();;
+        }
+    }
+    else
+    {
+        vkmesh.pMaterial = m_pReplaceMeMaterial;
+    }
+
+    return true;
+}
+
+bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device)
 {
     vk::Result result;
     std::vector<vk::ExtensionProperties> availableExtensions;

@@ -28,10 +28,6 @@ endif()
 
 add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS -DVULKAN_HPP_TYPESAFE_CONVERSION)
 
-## Should be uncommented when TinyObjLoader library is used
-# include(TinyObjLoaderConfig)
-# add_subdirectory(${TINYOBJLOADER_ROOT_DIR})
-
 ## GLM
 include(GlmConfig)
 find_package(GLM)
@@ -105,7 +101,6 @@ include_directories(
 
 include_directories( SYSTEM
     ${WINK_SIGNALS_INCLUDE_DIR}
-    ${TINYOBJLOADER_INCLUDE_DIR}
     ${GLM_INCLUDE_DIR}
     ${LOGURU_INCLUDE_DIR}
     ${STB_INCLUDE_DIR}
@@ -256,7 +251,11 @@ foreach(GLSL ${GLSL_SOURCE_FILES})
     add_custom_command(
         OUTPUT ${SPIRV}
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/shaders/"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/textures/"
         COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${UNICORN_RENDER_ROOT}/data/textures"
+            "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/textures"
         DEPENDS ${GLSL})
     list(APPEND SPIRV_BINARY_FILES ${SPIRV})
 endforeach(GLSL)

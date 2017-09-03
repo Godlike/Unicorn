@@ -17,37 +17,35 @@ namespace video
 namespace vulkan
 {
 /**
- * @brief Abstraction for shader program, which renderer uses for rendering meshes
- */
+* @brief Abstraction for shader program, which renderer uses for rendering meshes
+*/
 class ShaderProgram
 {
 public:
     /**
-     * @brief Constructor
-     * @param device device to allocate from
-     * @param vertShaderPath pth to vertex shader path
-     * @param fragShaderPath path to fragment shader 
-     * @attention Always use 'main' as entry point
-     */
+    * @brief Constructor
+    * @param device device to allocate from
+    * @param vertShaderPath pth to vertex shader path
+    * @param fragShaderPath path to fragment shader
+    * @attention Always use 'main' as entry point
+    */
     ShaderProgram(vk::Device device, const std::string& vertShaderPath, const std::string& fragShaderPath);
+
     /**
-     * @brief Function to check is shader was successfully loaded and created
-     * @return true if shader was created and false if not
-     */
+    * @brief Function to check is shader was successfully loaded and created
+    * @return true if shader was created and false if not
+    */
     bool IsCreated();
-    /**
-     * @brief Getter for shader stage info data
-     * @return pointer to all shader stage info data
-     */
+
+    /** @brief Returns pointer to shader stage creation information */
     vk::PipelineShaderStageCreateInfo* GetShaderStageInfoData();
-    /**
-     * @brief Getter for vertex input info
-     * @return pipeline vertex input state create info
-     */
+
+    /** @brief Returns pointer to vertex input state creation information */
     vk::PipelineVertexInputStateCreateInfo GetVertexInputInfo();
+
     /**
-     * @brief Destroys shader modules
-     */
+    * @brief Destroys shader modules
+    */
     void DestroyShaderModules();
 private:
     bool m_isCreated;

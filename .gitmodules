@@ -10,9 +10,6 @@
 [submodule "UnicornRender/external/stb"]
 	path = UnicornRender/external/stb
 	url = https://github.com/nothings/stb.git
-[submodule "UnicornRender/external/tinyobjloader"]
-	path = UnicornRender/external/tinyobjloader
-	url = https://github.com/syoyo/tinyobjloader.git
 [submodule "UnicornRender/external/Wink-Signals"]
 	path = UnicornRender/external/Wink-Signals
 	url = https://github.com/Godlike/Wink-Signals.git

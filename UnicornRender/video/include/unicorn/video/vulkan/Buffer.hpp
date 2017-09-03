@@ -17,6 +17,8 @@ namespace video
 {
 namespace vulkan
 {
+class Image;
+
 /**
  * @brief Wrapper for vk::Buffer item in Vulkan API
  */
@@ -27,6 +29,7 @@ public:
      * @brief Constructor for buffer
      */
     Buffer();
+
     /**
      * @brief Desctructor which calls Destroy
      */
@@ -34,54 +37,71 @@ public:
 
     /**
      * @brief Creates new buffer
-     * @param physicalDevice GPU for memory allocation
-     * @param device device for allocation
-     * @param usage buffer specific usage
-     * @param memoryPropertyFlags flags for memory usage
-     * @param size size of buffer
+     * @param[in] physicalDevice GPU for memory allocation
+     * @param[in] device device for allocation
+     * @param[in] usage buffer specific usage
+     * @param[in] memoryPropertyFlags flags for memory usage
+     * @param[in] size size of buffer
      * @return true if buffer was allocated correctly, false if some error occured
      */
     bool Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags memoryPropertyFlags, size_t size);
+
     /**
      * @brief Destroys all buffer data
      */
     void Destroy();
+
     /**
      * @brief Writes data to buffer. You need to map it first.
-     * @param pData pointer to data content
+     * @param[in] pData pointer to data content
      */
-    void Write(const void* pData) const;
+    void Write(void const* pData) const;
+
     /**
      * @brief Maps buffer
      */
     void Map();
+
     /**
      * @brief Unmaps buffer
      */
     void Unmap();
+
     /**
      * @brief Copies buffer to another buffer. Useful for staging buffering
-     * @param pool pool for allocating commands from
-     * @param queue queue for processing
-     * @param dstBuffer destination buffer
-     * @param size size of copyable data
+     * @param[out] pool pool for allocating commands from
+     * @param[out] queue queue for processing
+     * @param[in,out] dstBuffer destination buffer
+     * @param[in] size size of copyable data
      */
     void CopyToBuffer(vk::CommandPool pool, vk::Queue queue, vulkan::Buffer& dstBuffer, vk::DeviceSize size) const;
+
+    /**
+     * @brief Copies buffer to image buffer
+     * @param[out] dstImage destination image
+     * @param[out] pool pool where commands are allocated
+     * @param[out] queue queue for command buffers pushing
+     */
+    void CopyToImage(vulkan::Image const& dstImage, vk::CommandPool const& pool, vk::Queue const& queue) const;
+
     /**
      * @brief Getter for size of buffer
      * @return size of buffer
      */
     size_t GetSize() const;
+
     /**
      * @brief Getter for usage of this buffer
      * @return buffer usage flags
      */
     vk::BufferUsageFlags GetUsage() const;
+
     /**
      * @brief Getter for memory where this buffer was allocated
      * @return device memory
      */
     vk::DeviceMemory GetMemory() const;
+
     /**
     * @brief Getter for raw vk::Buffer
     * @return reference to vk::Buffer

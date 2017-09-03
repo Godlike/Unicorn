@@ -7,12 +7,12 @@
 #ifndef UNICORN_VIDEO_RENDERER_HPP
 #define UNICORN_VIDEO_RENDERER_HPP
 
-#include <unicorn/video/geometry/Mesh.hpp>
+#include <unicorn/video/Mesh.hpp>
 #include <unicorn/video/Color.hpp>
+#include <unicorn/video/Camera.hpp>
 
 #include <glm/glm.hpp>
 
-#include <unicorn/video/Camera.hpp>
 #include <cstdint>
 #include <memory>
 #include <array>
@@ -28,7 +28,9 @@ class Timer;
 
 namespace video
 {
-
+/**
+ * @brief Abstract class for all renderer system
+ */
 class Renderer
 {
 public:
@@ -36,41 +38,20 @@ public:
 
     virtual ~Renderer();
 
-    Renderer(const Renderer& other) = delete;
-    Renderer(const Renderer&& other) = delete;
-    Renderer& operator=(const Renderer& other) = delete;
-    Renderer& operator=(const Renderer&& other) = delete;
+    Renderer(Renderer const& other) = delete;
+    Renderer(Renderer&& other) = delete;
+    Renderer& operator=(Renderer const& other) = delete;
+    Renderer& operator=(Renderer&& other) = delete;
 
     virtual bool Init() = 0;
     virtual void Deinit() = 0;
     virtual bool Render() = 0;
+
+    /**
+     * @brief Returns reference to main camera
+     * @return reference to main camera
+     */
     UNICORN_EXPORT Camera& GetCamera();
-
-    /** @brief  Creates new geometry mesh
-     *
-     *  Creates and subscribes to mesh.
-     *  Mesh shall be deleted via DeleteMesh().
-     *
-     *  @attention  Mesh lifetime is bound by its renderer's lifetime.
-     *              Using meshes after their renderer was destroyed is undefined behaviour.
-     *              If you're storing mesh pointers, consider storing them with a reference
-     *              to their renderer and listening for its Destroyed event for proper cleanup.
-     *
-     *  @return pointer to newly created geometry::Mesh
-     *
-     *  @sa DeleteMesh
-     */
-    virtual geometry::Mesh* SpawnMesh() = 0;
-
-    /** @brief  Deletes geometry mesh
-     *
-     *  Checks if given mesh is associated with this renderer and deletes it cleaning up
-     *  all associated resources within Renderer.
-     *  Does nothing if given mesh is not associated with this renderer.
-     *
-     *  @return @c true if mesh was deleted, @c false otherwise
-     */
-    virtual bool DeleteMesh(const geometry::Mesh* pMesh) = 0;
 
     UNICORN_EXPORT void SetBackgroundColor(const glm::vec3& backgroundColor);
 
@@ -79,14 +60,38 @@ public:
      *  Event is emitted with the following signature:
      *  -# renderer pointer
      */
-    wink::signal< wink::slot<void(Renderer*)> > Destroyed;
+    wink::signal<wink::slot<void(Renderer*)>> Destroyed;
 
     /**
      * @brief Turns on or off depth test
-     * @param enabled if true - depth test is enabled, false - disabled
+     * @param [in] enabled if true - depth test is enabled, false - disabled
      */
-    virtual void SetDepthTest(bool enabled) = 0;
+    UNICORN_EXPORT virtual void SetDepthTest(bool enabled) = 0;
 
+    /** @brief  Creates new geometry mesh
+    *
+    *  Creates and subscribes to mesh.
+    *  Mesh shall be deleted via DeleteMesh().
+    *  
+    *  @param [in] material describes mesh visual representation
+    *  
+    *  @attention  Mesh lifetime is bound by its renderer's lifetime.
+    *              Using meshes after their renderer was destroyed is undefined behaviour.
+    *              If you're storing mesh pointers, consider storing them with a reference
+    *              to their renderer and listening for its Destroyed event for proper cleanup.
+    *
+    *  @return pointer to newly created geometry::Mesh
+    *
+    *  @sa DeleteMesh
+    */
+    UNICORN_EXPORT virtual Mesh* SpawnMesh(Material const& material) = 0;
+
+    /**
+    * @brief Removes mesh from rendering system
+    * @param [in] mesh pointer to mesh
+    * @return true if mesh was sucessfully deleted from system and false if not
+    */
+    UNICORN_EXPORT virtual bool DeleteMesh(Mesh const* mesh) = 0;
 protected:
     bool m_isInitialized;
 
