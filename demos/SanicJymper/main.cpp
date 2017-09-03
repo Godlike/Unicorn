@@ -397,7 +397,7 @@ int main(int argc, char* argv[])
             meshes.push_back(texturedQuad);
             meshes.push_back(texturedQuad2);
 
-            ////Skybox
+            //Skybox
             float skyBoxScaleFactor = 500;
             float skyBoxDistance = skyBoxScaleFactor - 1;
 
