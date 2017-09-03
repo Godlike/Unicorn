@@ -23,13 +23,13 @@ class Texture
 {
 public:
     /**
-     * @brief Constructor which load data from path
+     * @brief Constructor which loads data from path
      * @param path path to texture
      */
     UNICORN_EXPORT Texture(std::string const& path = std::string());
 
     /**
-     * @brief Loading texture from provided path
+     * @brief Loads texture from provided path
      * @param path path to texture
      * @return true if loaded successful and false if not
      */
@@ -72,9 +72,9 @@ public:
 
     /**
      * @brief Returns path of loaded texture
-     * @return path of texture or empty line, if texture was not loaded
+     * @return const reference to path of texture or empty line, if texture was not loaded
      */
-    UNICORN_EXPORT std::string Path() const;
+    UNICORN_EXPORT std::string const& Path() const;
 
     /**
      * @brief Returns Id of loaded texture

@@ -105,9 +105,6 @@ protected:
     std::array<float, 4> m_backgroundColor;
     //! Depth test
     bool m_depthTestEnabled;
-
-    //! Array of geometry meshes		
-    std::list<Mesh*> m_meshes;
 };
 }
 }

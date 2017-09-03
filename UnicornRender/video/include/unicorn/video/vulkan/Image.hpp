@@ -45,7 +45,7 @@ public:
 
     Image(Image const& other) = delete;
     Image(Image&& other) = delete;
-    Image& operator=(Image& other) = delete;
+    Image& operator=(Image const& other) = delete;
     Image& operator=(Image&& other) = delete;
 
     /**

@@ -53,10 +53,7 @@ public:
      */
     void Delete();
 
-    /**
-     * @brief Checks if vulkan texture was initialized
-     * @return true if was initialized successful and false if not
-     */
+    /** @brief Returns @c true if texture is initialized and @c false otherwise */
     bool IsInitialized() const;
 private:
     vk::Device m_device;

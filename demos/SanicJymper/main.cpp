@@ -374,7 +374,7 @@ int main(int argc, char* argv[])
             unicorn::video::Primitives::Quad(*texturedQuad);
             unicorn::video::Mesh* texturedQuad2 = vkRenderer->SpawnMesh(textureMaterial);
             unicorn::video::Primitives::Quad(*texturedQuad2);
-           /* unicorn::video::Mesh* mandrillQuad = vkRenderer->SpawnMesh(mandrillMaterial);
+            unicorn::video::Mesh* mandrillQuad = vkRenderer->SpawnMesh(mandrillMaterial);
             unicorn::video::Primitives::Quad(*mandrillQuad);
             unicorn::video::Mesh* texturedCube = vkRenderer->SpawnMesh(textureMaterial);
             unicorn::video::Primitives::Cube(*texturedCube);
@@ -389,42 +389,42 @@ int main(int argc, char* argv[])
             unicorn::video::Mesh* upBox = vkRenderer->SpawnMesh(upTexture);
             unicorn::video::Primitives::Quad(*upBox);
             unicorn::video::Mesh* bottomBox = vkRenderer->SpawnMesh(bottomTexture);
-            unicorn::video::Primitives::Quad(*bottomBox);*/
+            unicorn::video::Primitives::Quad(*bottomBox);
 
-            //mandrillQuad->modelMatrix.Translate({3.0, 0.0, 1.0});
-            //texturedCube->modelMatrix.SetPosition({0.0, 5.0, -5.0});
+            mandrillQuad->modelMatrix = glm::translate(mandrillQuad->modelMatrix, {3.0, 0.0, 1.0});
+            texturedCube->modelMatrix = glm::translate(texturedCube->modelMatrix, {0.0, 5.0, -5.0});
 
             meshes.push_back(texturedQuad);
             meshes.push_back(texturedQuad2);
 
-            //Skybox
+            ////Skybox
             float skyBoxScaleFactor = 500;
             float skyBoxDistance = skyBoxScaleFactor - 1;
 
-           /* frontBox->modelMatrix.Translate({0, 0, skyBoxDistance});
-            frontBox->modelMatrix.Scale({skyBoxScaleFactor, skyBoxScaleFactor, 0});
+            frontBox->modelMatrix = glm::translate(frontBox->modelMatrix, {0, 0, skyBoxDistance});
+            frontBox->modelMatrix = glm::scale(frontBox->modelMatrix, {skyBoxScaleFactor, skyBoxScaleFactor, 0});
 
-            backBox->modelMatrix.Translate({0, 0, -skyBoxDistance});
-            backBox->modelMatrix.Rotate(180, {0, 1, 0});
-            backBox->modelMatrix.Scale({skyBoxScaleFactor, skyBoxScaleFactor, 0});
+            backBox->modelMatrix = glm::translate(backBox->modelMatrix, {0, 0, -skyBoxDistance});
+            backBox->modelMatrix = glm::rotate(backBox->modelMatrix, glm::radians(180.f), {0, 1, 0});
+            backBox->modelMatrix = glm::scale(backBox->modelMatrix, {skyBoxScaleFactor, skyBoxScaleFactor, 0});
 
-            leftBox->modelMatrix.Translate({-skyBoxDistance, 0, 0});
-            leftBox->modelMatrix.Rotate(-90, {0, 1, 0});
-            leftBox->modelMatrix.Scale({skyBoxScaleFactor, skyBoxScaleFactor, 0});
+            leftBox->modelMatrix = glm::translate(leftBox->modelMatrix, {-skyBoxDistance, 0, 0});
+            leftBox->modelMatrix = glm::rotate(leftBox->modelMatrix, glm::radians(-90.f), {0, 1, 0});
+            leftBox->modelMatrix = glm::scale(leftBox->modelMatrix, {skyBoxScaleFactor, skyBoxScaleFactor, 0});
 
-            rightBox->modelMatrix.Translate({skyBoxDistance, 0, 0});
-            rightBox->modelMatrix.Rotate(90, {0, 1, 0});
-            rightBox->modelMatrix.Scale({skyBoxScaleFactor, skyBoxScaleFactor, 0});
+            rightBox->modelMatrix = glm::translate(rightBox->modelMatrix, {skyBoxDistance, 0, 0});
+            rightBox->modelMatrix = glm::rotate(rightBox->modelMatrix, glm::radians(90.f), {0, 1, 0});
+            rightBox->modelMatrix = glm::scale(rightBox->modelMatrix, {skyBoxScaleFactor, skyBoxScaleFactor, 0});
 
-            upBox->modelMatrix.Translate({0, -skyBoxDistance, 0});
-            upBox->modelMatrix.Rotate(90, {1, 0, 0});
-            upBox->modelMatrix.Rotate(-90, {0, 0, 1});
-            upBox->modelMatrix.Scale({skyBoxScaleFactor, skyBoxScaleFactor, 0});
+            upBox->modelMatrix = glm::translate(upBox->modelMatrix, {0, -skyBoxDistance, 0});
+            upBox->modelMatrix = glm::rotate(upBox->modelMatrix, glm::radians(90.f), {1, 0, 0});
+            upBox->modelMatrix = glm::rotate(upBox->modelMatrix, glm::radians(-90.f), {0, 0, 1});
+            upBox->modelMatrix = glm::scale(upBox->modelMatrix, {skyBoxScaleFactor, skyBoxScaleFactor, 0});
 
-            bottomBox->modelMatrix.Translate({0, skyBoxDistance, 0});
-            bottomBox->modelMatrix.Rotate(-90, {1, 0, 0});
-            bottomBox->modelMatrix.Rotate(90, {0, 0, 1});
-            bottomBox->modelMatrix.Scale({skyBoxScaleFactor, skyBoxScaleFactor, 0});*/
+            bottomBox->modelMatrix = glm::translate(bottomBox->modelMatrix, {0, skyBoxDistance, 0});
+            bottomBox->modelMatrix = glm::rotate(bottomBox->modelMatrix, glm::radians(-90.f), {1, 0, 0});
+            bottomBox->modelMatrix = glm::rotate(bottomBox->modelMatrix, glm::radians(90.f), {0, 0, 1});
+            bottomBox->modelMatrix = glm::scale(bottomBox->modelMatrix, {skyBoxScaleFactor, skyBoxScaleFactor, 0});
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);

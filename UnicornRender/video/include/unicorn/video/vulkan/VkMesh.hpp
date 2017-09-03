@@ -87,21 +87,15 @@ public:
     uint32_t VerticesSize() const;
 
     /**
-    * @briefReturns indices size
+    * @brief Returns indices size
     * @return size of indices
     */
     uint32_t IndicesSize() const;
 
-    /**
-     * @brief Checks if needed to be rendered only in color
-     * @return true if mesh is colored and false if not
-     */
+    /** @brief Returns @c true if mesh is colored and @c false otherwise */
     bool IsColored() const;
 
-    /**
-     * @brief Checks if wireframe mode is enabled for this mesh
-     * @return true if mesh needs to be rendered in wireframe mode, false if not
-     */
+    /** @brief Returns @c true if mesh is in wired mode and @c false otherwise */
     bool IsWired() const;
 
     /**

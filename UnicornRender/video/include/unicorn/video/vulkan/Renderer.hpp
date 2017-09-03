@@ -137,6 +137,9 @@ private:
 
     std::list<std::weak_ptr<VkMaterial>> m_materials;
 
+    //! Array of geometry meshes
+    std::list<Mesh*> m_meshes;
+
     std::array<vk::DescriptorSetLayout, 2> m_descriptorSetLayouts; // 0 - mvp, 1 - albedo
     vk::DescriptorSet m_mvpDescriptorSet;
 

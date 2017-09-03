@@ -80,14 +80,10 @@ public:
     */
     glm::mat4 modelMatrix;
 
-    /**
-    * @brief Signal for GPU that material was updated
-    */
+    /** @brief Event triggered when material is changed */
     wink::signal<wink::slot<void()>> MaterialUpdated;
 
-    /**
-    * @brief Signal for GPU data update
-    */
+    /** @brief Event triggered when vertices are changed */
     wink::signal<wink::slot<void()>> VerticesUpdated;
 private:
     std::vector<Vertex> m_vertices;

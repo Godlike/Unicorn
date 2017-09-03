@@ -37,11 +37,11 @@ public:
 
     /**
      * @brief Creates new buffer
-     * @param [in] physicalDevice GPU for memory allocation
-     * @param [in] device device for allocation
-     * @param [in] usage buffer specific usage
-     * @param [in] memoryPropertyFlags flags for memory usage
-     * @param [in] size size of buffer
+     * @param[in] physicalDevice GPU for memory allocation
+     * @param[in] device device for allocation
+     * @param[in] usage buffer specific usage
+     * @param[in] memoryPropertyFlags flags for memory usage
+     * @param[in] size size of buffer
      * @return true if buffer was allocated correctly, false if some error occured
      */
     bool Create(vk::PhysicalDevice physicalDevice, vk::Device device, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags memoryPropertyFlags, size_t size);
@@ -53,7 +53,7 @@ public:
 
     /**
      * @brief Writes data to buffer. You need to map it first.
-     * @param [in] pData pointer to data content
+     * @param[in] pData pointer to data content
      */
     void Write(void const* pData) const;
 
@@ -69,18 +69,18 @@ public:
 
     /**
      * @brief Copies buffer to another buffer. Useful for staging buffering
-     * @param [in] pool pool for allocating commands from
-     * @param [in] queue queue for processing
-     * @param [in] dstBuffer destination buffer
-     * @param [in] size size of copyable data
+     * @param[in] pool pool for allocating commands from
+     * @param[in] queue queue for processing
+     * @param[in] dstBuffer destination buffer
+     * @param[in] size size of copyable data
      */
     void CopyToBuffer(vk::CommandPool pool, vk::Queue queue, vulkan::Buffer& dstBuffer, vk::DeviceSize size) const;
 
     /**
      * @brief Copies buffer to image buffer
-     * @param [in] dstImage destination image
-     * @param [in] pool pool for allocating commands from
-     * @param [in] queue queue for command buffers pushing
+     * @param[out] dstImage destination image
+     * @param[in] pool pool where commands are allocated
+     * @param[in] queue queue for command buffers pushing
      */
     void CopyToImage(vulkan::Image const& dstImage, vk::CommandPool const& pool, vk::Queue const& queue) const;
 

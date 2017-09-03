@@ -36,7 +36,7 @@ public:
      * @brief Sets rendering mode to wireframe
      * @param[in] wireframe true if wired and false if not
      * 
-     * @attention sets IsColored to false to prevent rendering color instead albedo
+     * @attention sets IsColored to false
      */
     UNICORN_EXPORT void SetIsWired(bool wireframe);
 
@@ -44,7 +44,7 @@ public:
      * @brief Sets colored mode
      * @param[in] colored true if must render with color and false if render with albedo
      * 
-     * @attention if colored mode enabled and no albedo provided, default engine texture will be used
+     * @attention if colored mode enabled and no albedo provided, default engine texture is used
      */
     UNICORN_EXPORT void SetIsColored(bool colored);
 
@@ -53,20 +53,14 @@ public:
      */
     UNICORN_EXPORT void RemoveAlbedo();
 
-    /**
-     * @brief Returns state of object rendering mode
-     * @return true if colored mode enabled and false if not
-     */
+    /** Returns @c true if colored mode is enabled and @false otherwise */
     UNICORN_EXPORT bool IsColored() const;
 
-    /**
-     * @brief Returns state of object rendering mode
-     * @return true if wired mode enabled and false if not
-     */
+    /** Returns @c true if wired mode is enabled and @false otherwise */
     UNICORN_EXPORT bool IsWired() const;
 
     /**
-     * @brief Returns const reference to albedo texture
+     * @brief Returns pointer to albedo texture
      * @return const reference to binded albdeo texture
      */
     UNICORN_EXPORT Texture const* GetAlbedo() const;
