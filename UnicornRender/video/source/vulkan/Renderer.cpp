@@ -616,7 +616,7 @@ void Renderer::FreeEngineHelpData()
 bool Renderer::PrepareUniformBuffers()
 {
     size_t uboAlignment = static_cast<size_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
-    m_dynamicAlignment = (sizeof(glm::mat4) / uboAlignment) * uboAlignment + ((sizeof( glm::mat4) % uboAlignment) > 0 ? uboAlignment : 0);
+    m_dynamicAlignment = (sizeof(glm::mat4) / uboAlignment) * uboAlignment + ((sizeof(glm::mat4) % uboAlignment) > 0 ? uboAlignment : 0);
 
     m_uniformCameraData.proj = m_camera.GetProjection();
     m_uniformCameraData.view = m_camera.GetView();

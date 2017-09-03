@@ -69,9 +69,9 @@ public:
 
     /**
      * @brief Copies buffer to another buffer. Useful for staging buffering
-     * @param[in] pool pool for allocating commands from
-     * @param[in] queue queue for processing
-     * @param[in] dstBuffer destination buffer
+     * @param[out] pool pool for allocating commands from
+     * @param[out] queue queue for processing
+     * @param[in,out] dstBuffer destination buffer
      * @param[in] size size of copyable data
      */
     void CopyToBuffer(vk::CommandPool pool, vk::Queue queue, vulkan::Buffer& dstBuffer, vk::DeviceSize size) const;
@@ -79,8 +79,8 @@ public:
     /**
      * @brief Copies buffer to image buffer
      * @param[out] dstImage destination image
-     * @param[in] pool pool where commands are allocated
-     * @param[in] queue queue for command buffers pushing
+     * @param[out] pool pool where commands are allocated
+     * @param[out] queue queue for command buffers pushing
      */
     void CopyToImage(vulkan::Image const& dstImage, vk::CommandPool const& pool, vk::Queue const& queue) const;
 

@@ -74,22 +74,14 @@ public:
      * @return vulkan buffer
      */
     vk::Buffer GetIndexBuffer() const;
-    /**
-     * @brief Matrix of transformations
-     * @return model matrix
-     */
+
+    /** @brief Returns model matrix */
     const glm::mat4& GetModelMatrix() const;
 
-    /**
-     * @brief Returns vertices size
-     * @return size of vertices
-     */
+    /** @brief Returns vertices count */
     uint32_t VerticesSize() const;
 
-    /**
-    * @brief Returns indices size
-    * @return size of indices
-    */
+    /** @brief Returns indices count */
     uint32_t IndicesSize() const;
 
     /** @brief Returns @c true if mesh is colored and @c false otherwise */

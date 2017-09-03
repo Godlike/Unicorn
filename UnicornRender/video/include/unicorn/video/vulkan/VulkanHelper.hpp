@@ -17,7 +17,7 @@ namespace vulkan
 {
 /*
  * @brief Begin recording commands
- * @param[in] @param[in] device used to create command buffers
+ * @param[in] device used to create command buffers
  * @param[out] commandPool pool where command buffers are allocated
  */
 vk::CommandBuffer BeginSingleTimeCommands(const vk::Device& device,
@@ -27,7 +27,7 @@ vk::CommandBuffer BeginSingleTimeCommands(const vk::Device& device,
 * @brief Stops recording commands end executing queue
 * @param[in] commandBuffer command buffer which needs to be executed
 * @param[out] queue used to store commands for execution
-* @param[in] @param[in] device used when creating @p commandBuffer
+* @param[in] device used when creating @p commandBuffer
 * @param[out] commandPool holds command buffers
 */
 void EndSingleTimeCommands(const vk::CommandBuffer& commandBuffer,

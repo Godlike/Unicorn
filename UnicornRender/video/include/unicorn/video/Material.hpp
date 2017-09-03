@@ -61,7 +61,7 @@ public:
 
     /**
      * @brief Returns pointer to albedo texture
-     * @return const reference to binded albdeo texture
+     * @return pointer to binded albdeo texture
      */
     UNICORN_EXPORT Texture const* GetAlbedo() const;
 
