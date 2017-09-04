@@ -17,9 +17,9 @@ void Primitives::Cube(Mesh& mesh)
 {
     std::vector<Vertex> vertices{{
         //front
-        {{0.5f, -0.5f, 0.5f},{1.0f, 0.0f}},
+        {{-0.5f, -0.5f, 0.5f},{1.0f, 0.0f}},
         {{0.5f, -0.5f, 0.5f},{0.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.5f},{0.0f, 0.0f}},
+        {{0.5f, 0.5f, 0.5f},{0.0f, 1.0f}},
         {{-0.5f, 0.5f, 0.5f},{1.0f, 1.0f}},
 
         //right
@@ -27,6 +27,7 @@ void Primitives::Cube(Mesh& mesh)
         {{0.5f, 0.5f, -0.5f},{0.0f, 1.0f}},
         {{0.5f, -0.5f, -0.5f},{0.0f, 0.0f}},
         {{0.5f, -0.5f, 0.5f},{1.0f, 0.0f}},
+
         //back
         {{-0.5f, -0.5f, -0.5f},{1.0f, 0.0f}},
         {{0.5f, -0.5f, -0.5f},{0.0f, 0.0f}},
@@ -98,8 +99,8 @@ void Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t secto
 
     temp_vertices.resize(rings * sectors);
     {
-        float const R = 1. / static_cast<float>(rings - 1);
-        float const S = 1. / static_cast<float>(sectors - 1);
+        float const R = 1.f / static_cast<float>(rings - 1);
+        float const S = 1.f / static_cast<float>(sectors - 1);
 
         auto vert_iter = temp_vertices.begin();
         for(uint32_t r = 0; r < rings; r++)
@@ -120,10 +121,10 @@ void Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t secto
     {
         for(uint32_t y = 0; y < rings; y++)
         {
-            int left = x;
-            float right = (x + 1) % sectors;
-            float top = y;
-            float bottom = (y + 1) % rings;
+            uint32_t left = x;
+            float right = static_cast<float>((x + 1) % sectors);
+            float top = static_cast<float>(y);
+            float bottom = static_cast<float>((y + 1) % rings);
             *indices_iter++ = {static_cast<uint32_t>(left + top * sectors)};
             *indices_iter++ = {static_cast<uint32_t>(left + bottom * sectors)};
             *indices_iter++ = {static_cast<uint32_t>(right + top * sectors)};
