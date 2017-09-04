@@ -21,25 +21,25 @@ public:
     /**
     *  @brief Fills given mesh with cube data
     *
-    *  @param[in] mesh    geometry mesh
+    *  @param[out] mesh    geometry mesh
     */
     UNICORN_EXPORT static void Cube(Mesh& mesh);
 
     /**
     *  @brief Fills given mesh with quad data
     *
-    *  @param[in] mesh    geometry mesh
+    *  @param[out] mesh    geometry mesh
     */
     UNICORN_EXPORT static void Quad(Mesh& mesh);
 
     /**
     *  @brief Fills given mesh with sphere data
     *
-    *  @param[in] mesh geometry mesh
+    *  @param[out] mesh geometry mesh
     *  @param[in] radius radius of sphere
     *  @param[in] rings horizontal slices count
     *  @param[in] sectors vertical slices count
-    *  @attention rings * sectors must be higher then 16, less then std::vector::max_size() and less then sizeof(uint32_t)
+    *  @attention `rings * sectors` must be greater than 16 and less than `sizeof(uint32_t)`
     */
     UNICORN_EXPORT static void Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors);
 };

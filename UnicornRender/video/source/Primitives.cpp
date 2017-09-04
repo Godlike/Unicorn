@@ -78,11 +78,11 @@ void Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t secto
 {
     if(radius < 0)
     {
-        LOG_WARNING("Sphere radius less then 0! UV will be inverted!");
+        LOG_WARNING("Sphere radius less than 0! UV will be inverted!");
     }
     if(rings < 4 || sectors < 4)
     {
-        LOG_WARNING("Rings or sectors are less then 4, sphere will not be generated!");
+        LOG_WARNING("Rings or sectors are less than 4, sphere will not be generated!");
         return;
     }
 
