@@ -52,8 +52,10 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     deltaTime = newDeltatime;
     for(auto& mesh : meshes)
     {
-        mesh->modelMatrix = glm::rotate(mesh->modelMatrix, glm::radians(deltaTime * 30), { 1, 1, 0 });
+        mesh->modelMatrix = glm::rotate(mesh->modelMatrix, glm::radians(deltaTime * 30), { 1, 1, 1 });
+        mesh->modelMatrix = glm::translate(mesh->modelMatrix, { 0.001, 0, 0 });
     }
+
     lastFrame = currentFrame;
 }
 
@@ -77,10 +79,10 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
         {
             unicorn::video::Material cubematerial;
             cubematerial.color = {static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255};
-            unicorn::video::Mesh* cube = vkRenderer->SpawnMesh(cubematerial);
-            unicorn::video::Primitives::Cube(*cube);
-            meshes.push_back(cube);
-            cube->modelMatrix = glm::translate(cube->modelMatrix, { std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 });
+            unicorn::video::Mesh* mesh = vkRenderer->SpawnMesh(cubematerial);
+            unicorn::video::Primitives::Sphere(*mesh, 1, 32, 32);
+            meshes.push_back(mesh);
+            mesh->modelMatrix = glm::translate(mesh->modelMatrix, { std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 });
             break;
         }
         case MouseButton::MouseMiddle:
@@ -372,8 +374,6 @@ int main(int argc, char* argv[])
 
             unicorn::video::Mesh* texturedQuad = vkRenderer->SpawnMesh(textureMaterial);
             unicorn::video::Primitives::Quad(*texturedQuad);
-            unicorn::video::Mesh* texturedQuad2 = vkRenderer->SpawnMesh(textureMaterial);
-            unicorn::video::Primitives::Quad(*texturedQuad2);
             unicorn::video::Mesh* mandrillQuad = vkRenderer->SpawnMesh(mandrillMaterial);
             unicorn::video::Primitives::Quad(*mandrillQuad);
             unicorn::video::Mesh* texturedCube = vkRenderer->SpawnMesh(textureMaterial);
@@ -391,15 +391,23 @@ int main(int argc, char* argv[])
             unicorn::video::Mesh* bottomBox = vkRenderer->SpawnMesh(bottomTexture);
             unicorn::video::Primitives::Quad(*bottomBox);
 
+            unicorn::video::Mesh* leftSphere = vkRenderer->SpawnMesh(textureMaterial);
+            unicorn::video::Primitives::Sphere(*leftSphere, 1, 32, 32);
+
+            unicorn::video::Mesh* rightSphere = vkRenderer->SpawnMesh(mandrillMaterial);
+            unicorn::video::Primitives::Sphere(*rightSphere, 2, 32, 32);
+
+            leftSphere->modelMatrix = glm::translate(leftSphere->modelMatrix, { -3.0, 0.0, -1.0 });
+            rightSphere->modelMatrix = glm::translate(rightSphere->modelMatrix, { 3.0, 0.0, 1.0 });
+
             mandrillQuad->modelMatrix = glm::translate(mandrillQuad->modelMatrix, {3.0, 0.0, 1.0});
             texturedCube->modelMatrix = glm::translate(texturedCube->modelMatrix, {0.0, 5.0, -5.0});
 
             meshes.push_back(texturedQuad);
-            meshes.push_back(texturedQuad2);
 
             //Skybox
             float skyBoxScaleFactor = 500;
-            float skyBoxDistance = skyBoxScaleFactor - 1;
+            float skyBoxDistance = skyBoxScaleFactor / 2 - 1;
 
             frontBox->modelMatrix = glm::translate(frontBox->modelMatrix, {0, 0, skyBoxDistance});
             frontBox->modelMatrix = glm::scale(frontBox->modelMatrix, {skyBoxScaleFactor, skyBoxScaleFactor, 0});
