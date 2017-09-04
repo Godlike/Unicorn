@@ -49,7 +49,7 @@ public:
     * @param [in] vertices vertexes data
     * @param [in] indices indices data
     */
-    UNICORN_EXPORT void SetMeshData(std::vector<Vertex> const& vertices, std::vector<uint16_t> const& indices);
+    UNICORN_EXPORT void SetMeshData(std::vector<Vertex> const& vertices, std::vector<uint32_t> const& indices);
 
     /**
     * @brief Sets new material
@@ -67,7 +67,7 @@ public:
     * @brief Returns mesh indices
     * @return Mesh indices
     */
-    UNICORN_EXPORT std::vector<uint16_t> const& GetIndices() const;
+    UNICORN_EXPORT std::vector<uint32_t> const& GetIndices() const;
 
     /**
     * @brief Returns mesh material
@@ -87,7 +87,7 @@ public:
     wink::signal<wink::slot<void()>> VerticesUpdated;
 private:
     std::vector<Vertex> m_vertices;
-    std::vector<uint16_t> m_indices;
+    std::vector<uint32_t> m_indices;
     Material m_material;
 };
 }

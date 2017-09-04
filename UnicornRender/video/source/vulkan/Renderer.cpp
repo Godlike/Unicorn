@@ -1329,7 +1329,7 @@ bool Renderer::CreateCommandBuffers()
                     vk::Buffer vertexBuffer[] = {pVkMesh->GetVertexBuffer()};
                     uint32_t dynamicOffset = j * static_cast<uint32_t>(m_dynamicAlignment);
                     m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);
-                    m_commandBuffers[i].bindIndexBuffer(pVkMesh->GetIndexBuffer(), 0, vk::IndexType::eUint16);
+                    m_commandBuffers[i].bindIndexBuffer(pVkMesh->GetIndexBuffer(), 0, vk::IndexType::eUint32);
 
                     std::array<vk::DescriptorSet, 2> descriptorSets;
                     // Set 0: Scene descriptor set containing global matrices

@@ -14,7 +14,7 @@ Mesh::Mesh(Material const& material) : modelMatrix(glm::mat4(1.0)), m_material(m
 {
 }
 
-void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint16_t>& indices)
+void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
 {
     m_vertices = vertices;
     m_indices = indices;
@@ -34,7 +34,7 @@ const std::vector<Vertex>& Mesh::GetVertices() const
     return m_vertices;
 }
 
-const std::vector<uint16_t>& Mesh::GetIndices() const
+const std::vector<uint32_t>& Mesh::GetIndices() const
 {
     return m_indices;
 }
