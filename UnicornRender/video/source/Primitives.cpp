@@ -78,8 +78,10 @@ void Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t secto
 {
     if(radius < 0)
     {
-        LOG_WARNING("Sphere radius less than 0! UV will be inverted!");
+        LOG_WARNING("Sphere radius less than 0, sphere will not be generated!");
+        return;
     }
+
     if(rings < 4 || sectors < 4)
     {
         LOG_WARNING("Rings or sectors are less than 4, sphere will not be generated!");
@@ -87,54 +89,53 @@ void Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t secto
     }
 
     std::vector<uint32_t> indices;
-    std::vector<Vertex> temp_vertices;
+    std::vector<Vertex> vertices;
 
     uint32_t vectorSize = rings * sectors;
 
-    if(vectorSize > temp_vertices.max_size())
+    if(vectorSize > vertices.max_size())
     {
         LOG_WARNING("Number of vertices is too big, sphere will not be generated!");
         return;
     }
 
-    temp_vertices.resize(rings * sectors);
+    vertices.resize(vectorSize);
+
     {
         float const R = 1.f / static_cast<float>(rings - 1);
         float const S = 1.f / static_cast<float>(sectors - 1);
 
-        auto vert_iter = temp_vertices.begin();
-        for(uint32_t r = 0; r < rings; r++)
+        auto vert_iter = vertices.begin();
+        for(uint32_t r = 0; r < rings; ++r)
         {
             for(uint32_t s = 0; s < sectors; s++)
             {
-                float const y = sin(-glm::half_pi<float>() + glm::pi<float>() * r * R);
-                float const x = cos(2 * glm::pi<float>() * s * S) * sin(glm::pi<float>() * r * R);
-                float const z = sin(2 * glm::pi<float>() * s * S) * sin(glm::pi<float>() * r * R);
-                *vert_iter++ = {{x * radius , y * radius , z * radius},{s * S, r * R}};
+                float const y = glm::sin(-glm::half_pi<float>() + glm::pi<float>() * r * R);
+                float const x = glm::cos(2 * glm::pi<float>() * s * S) * glm::sin(glm::pi<float>() * r * R);
+                float const z = glm::sin(2 * glm::pi<float>() * s * S) * glm::sin(glm::pi<float>() * r * R);
+                *vert_iter++ = {{x * radius, y * radius, z * radius}, {s * S, r * R}};
             }
         }
     }
 
     indices.resize(sectors * rings * 6);
-    auto indices_iter = indices.begin();
-    for(uint32_t x = 0; x < sectors; x++)
+    auto indicesIt = indices.begin();
+    for(uint32_t x = 0; x < sectors; ++x)
     {
-        for(uint32_t y = 0; y < rings; y++)
+        uint32_t const right = (x + 1) % sectors;
+        for(uint32_t y = 0; y < rings; ++y)
         {
-            uint32_t left = x;
-            float right = static_cast<float>((x + 1) % sectors);
-            float top = static_cast<float>(y);
-            float bottom = static_cast<float>((y + 1) % rings);
-            *indices_iter++ = {static_cast<uint32_t>(left + top * sectors)};
-            *indices_iter++ = {static_cast<uint32_t>(left + bottom * sectors)};
-            *indices_iter++ = {static_cast<uint32_t>(right + top * sectors)};
-            *indices_iter++ = {static_cast<uint32_t>(right + top * sectors)};
-            *indices_iter++ = {static_cast<uint32_t>(left + bottom * sectors)};
-            *indices_iter++ = {static_cast<uint32_t>(right + bottom * sectors)};
+            uint32_t bottom = (y + 1) % rings;
+            *indicesIt++ = x + y * sectors;
+            *indicesIt++ = x + bottom * sectors;
+            *indicesIt++ = right + y * sectors;
+            *indicesIt++ = right + y * sectors;
+            *indicesIt++ = x + bottom * sectors;
+            *indicesIt++ = right + bottom * sectors;
         }
     }
 
-    mesh.SetMeshData(temp_vertices, indices);
+    mesh.SetMeshData(vertices, indices);
 }
 }
 }
