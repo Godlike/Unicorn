@@ -51,6 +51,7 @@ Renderer::Renderer(system::Manager& manager, system::Window* window)
     , m_hasDirtyMeshes(false)
 {
     m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
+    m_pWindow->SizeChanged.connect(this, &Renderer::OnWindowSizeChanged); 
 }
 
 Renderer::~Renderer()
@@ -325,13 +326,13 @@ void Renderer::OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, i
         return;
     }
 
+    if (!CreateDepthBuffer())
+    {
+        LOG_ERROR("Can't recreate depth buffer!");
+    }
     if(!RecreateSwapChain())
     {
         LOG_ERROR("Can't recreate swapchain!");
-    }
-    if(!CreateDepthBuffer())
-    {
-        LOG_ERROR("Can't recreate depth buffer!");
     }
 }
 
@@ -618,8 +619,8 @@ bool Renderer::PrepareUniformBuffers()
     size_t uboAlignment = static_cast<size_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
     m_dynamicAlignment = (sizeof(glm::mat4) / uboAlignment) * uboAlignment + ((sizeof(glm::mat4) % uboAlignment) > 0 ? uboAlignment : 0);
 
-    m_uniformCameraData.proj = m_camera.GetProjection();
-    m_uniformCameraData.view = m_camera.GetView();
+    m_uniformCameraData.proj = m_mainCamera->projection;
+    m_uniformCameraData.view = m_mainCamera->GetView();
 
     m_uniformViewProjection.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, sizeof(UniformCameraData));
     m_uniformViewProjection.Map();
@@ -655,12 +656,9 @@ void Renderer::UpdateModelDescriptorSet() const
 
 void Renderer::UpdateUniformBuffer()
 {
-    if(m_uniformCameraData.view != m_camera.GetView() || m_uniformCameraData.proj != m_camera.GetProjection())
-    {
-        m_uniformCameraData.proj = m_camera.GetProjection();
-        m_uniformCameraData.view = m_camera.GetView();
-        m_uniformViewProjection.Write(&m_uniformCameraData);
-    }
+    m_uniformCameraData.proj = m_mainCamera->projection;
+    m_uniformCameraData.view = m_mainCamera->GetView();
+    m_uniformViewProjection.Write(&m_uniformCameraData);
 }
 
 void Renderer::UpdateDynamicUniformBuffer()
@@ -1605,7 +1603,7 @@ bool Renderer::Frame()
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
-    m_camera.Frame();
+    m_mainCamera->Frame();
     UpdateUniformBuffer();
     UpdateDynamicUniformBuffer();
 

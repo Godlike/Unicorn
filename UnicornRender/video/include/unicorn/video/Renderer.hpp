@@ -48,10 +48,10 @@ public:
     virtual bool Render() = 0;
 
     /**
-     * @brief Returns reference to main camera
-     * @return reference to main camera
+     * @brief Returns pointer to main camera
+     * @return pointer to main camera
      */
-    UNICORN_EXPORT Camera& GetCamera();
+    UNICORN_EXPORT Camera* GetMainCamera();
 
     UNICORN_EXPORT void SetBackgroundColor(const glm::vec3& backgroundColor);
 
@@ -92,6 +92,22 @@ public:
     * @return true if mesh was sucessfully deleted from system and false if not
     */
     UNICORN_EXPORT virtual bool DeleteMesh(Mesh const* mesh) = 0;
+
+    UNICORN_EXPORT Camera* SpawnCamera(glm::vec3 const& position, glm::vec3 const& direction)
+    {
+        Camera* anotherCamera = new Camera();
+
+        anotherCamera->SetPosition(position);
+        anotherCamera->SetDirection(direction);
+        
+        m_cameras.push_back(anotherCamera);
+        return anotherCamera;
+    }
+
+    UNICORN_EXPORT void SetMainCamera(Camera* camera)
+    {
+        m_mainCamera = camera;
+    }
 protected:
     bool m_isInitialized;
 
@@ -100,11 +116,13 @@ protected:
     //! Pointer to associated window
     system::Window* m_pWindow;
     //! Main view camera
-    Camera m_camera;
+    Camera* m_mainCamera;
     //! Background filling color
     std::array<float, 4> m_backgroundColor;
     //! Depth test
     bool m_depthTestEnabled;
+
+    std::list<Camera*> m_cameras;
 };
 }
 }

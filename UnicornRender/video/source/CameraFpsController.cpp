@@ -84,7 +84,7 @@ void CameraFpsController::UpdateView(double posX, double posY)
 
 void CameraFpsController::Scroll(float yoffset) const
 {
-    m_camera.SetFov(m_camera.GetFov() - yoffset);
+    //m_camera.SetFov(m_camera.GetFov() - yoffset);
 }
 
 }

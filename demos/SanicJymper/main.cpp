@@ -329,8 +329,15 @@ int main(int argc, char* argv[])
         vkRenderer = pGraphics->SpawnRenderer(pWindow0);
         vkRenderer->Destroyed.connect(&onRendererDestroyed);
 
-        pCameraController = new unicorn::video::CameraFpsController(vkRenderer->GetCamera());
+        auto camera = vkRenderer->GetMainCamera();
 
+        camera->SetDirection({ 0.0f, 0.0f, 1.0f });
+        camera->SetPosition({ 0.0f, 0.0f, -5.0f });
+        
+        unicorn::video::OrthographicCamera projController(pWindow0, camera->projection);
+
+        pCameraController = new unicorn::video::CameraFpsController(*camera);
+        
         {
             //Loading textures
             unicorn::video::Texture texture, textureMandrill;

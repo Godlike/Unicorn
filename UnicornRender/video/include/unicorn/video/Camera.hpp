@@ -8,20 +8,75 @@
 #define UNICORN_VIDEO_CAMERA_HPP
 
 #include <unicorn/utility/SharedMacros.hpp>
+#include <unicorn/system/Window.hpp>
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <wink/slot.hpp>
+
+#include <utility>
 
 namespace unicorn
 {
 namespace video
 {
-/**
- * @brief Type of camera projection
- */
-enum class ProjectionType
+
+class PerspectiveCamera
 {
-    Perspective
+public:
+    UNICORN_EXPORT PerspectiveCamera(system::Window* window, glm::mat4& cameraProj) : m_cameraProjection(cameraProj), m_pWindow(window)
+    {
+        m_pWindow->SizeChanged.connect(this, &unicorn::video::PerspectiveCamera::OnWindowSizeChanged);
+        float aspect = static_cast<float>(m_pWindow->GetSize().first) / m_pWindow->GetSize().second;
+        m_cameraProjection = glm::perspective(45.0f,
+                                              aspect,
+                                              1.0f,
+                                              1000.f);
+    }
+
+    UNICORN_EXPORT ~PerspectiveCamera()
+    {
+        //m_pWindow->SizeChanged.disconnect(this, &unicorn::video::PerspectiveCamera::OnWindowSizeChanged);
+    }
+
+    UNICORN_EXPORT void OnWindowSizeChanged(system::Window*, std::pair<int32_t, int32_t> windowSize)
+    {
+        m_cameraProjection = glm::perspective(45.0f,
+            static_cast<float>(windowSize.first) / windowSize.second,
+                                              1.0f,
+            1000.f);
+    }
+private:
+    glm::mat4& m_cameraProjection;
+    system::Window* m_pWindow;
+};
+
+class OrthographicCamera
+{
+public:
+    UNICORN_EXPORT OrthographicCamera(system::Window* window, glm::mat4& cameraProj) : m_cameraProjection(cameraProj), m_pWindow(window)
+    {
+        m_pWindow->SizeChanged.connect(this, &unicorn::video::OrthographicCamera::OnWindowSizeChanged);
+        m_cameraProjection = glm::ortho(0.0f, static_cast<float>(m_pWindow->GetSize().first),
+                                        static_cast<float>(m_pWindow->GetSize().second), 0.0f,
+                                        -100.0f, 10000.0f);
+    }
+
+    UNICORN_EXPORT ~OrthographicCamera()
+    {
+        //m_pWindow->SizeChanged.disconnect(this, &unicorn::video::OrthographicCamera::OnWindowSizeChanged);
+    }
+
+    UNICORN_EXPORT void OnWindowSizeChanged(system::Window*, std::pair<int32_t, int32_t> windowSize)
+    {
+        m_cameraProjection = glm::ortho(0.0f, static_cast<float>(windowSize.first), 
+                                        static_cast<float>(windowSize.second), 0.0f,
+                                        -100.0f, 10000.0f);
+    }
+private:
+    glm::mat4& m_cameraProjection;
+    system::Window* m_pWindow;
 };
 
 /**
@@ -30,27 +85,7 @@ enum class ProjectionType
 class Camera
 {
 public:
-    /**
-     * @brief Camera constuctor
-     * @param [in] position Default position
-     * @param [in] direction Default view direction
-     */
-    UNICORN_EXPORT Camera(glm::vec3 const& position, glm::vec3 const& direction);
-
-    /**
-     * @brief Sets perspective projection mode from given frustum description
-     * @param fov Field of view
-     * @param aspect Aspect ratio
-     * @param znear Near frustrum plane
-     * @param zfar Far frustrum plane
-     */
-    UNICORN_EXPORT void SetPerspective(float fov, float aspect, float znear, float zfar);
-
-    /**
-     * @brief Sets aspect ratio
-     * @param aspect Aspect value
-     */
-    UNICORN_EXPORT void SetAspectRatio(float aspect);
+    UNICORN_EXPORT Camera();
 
     /**
      * @brief Changes camera position by given vector
@@ -77,12 +112,6 @@ public:
     UNICORN_EXPORT void SetPosition(glm::vec3 const& position);
 
     /**
-     * @brief Sets field of view value
-     * @param fov New horizontal field of view
-     */
-    UNICORN_EXPORT void SetFov(float fov);
-
-    /**
      * @brief Returns direction
      * @return Direction vector
      */
@@ -95,53 +124,30 @@ public:
     UNICORN_EXPORT const glm::vec3& GetUpVector() const;
 
     /**
-     * @brief Returns projection matrix
-     * @return Projection matrix value
-     */
-    UNICORN_EXPORT const glm::mat4& GetProjection() const;
-
-    /**
      * @brief Returns view matrix
      * @return View matrix value
      */
     UNICORN_EXPORT const glm::mat4& GetView() const;
 
     /**
-     * @brief Returns field of view value
-     * @return Field of view value
-     */
-    UNICORN_EXPORT float GetFov() const;
-
-    /**
     * @brief Checks if view or projection need to be updated and update it, if needed
     */
     UNICORN_EXPORT void Frame();
+
+    glm::mat4 projection = glm::mat4();
+    glm::mat4 view;
+
 private:
     float m_aspect;
     glm::vec3 m_position;
     glm::vec3 m_upVector;
     glm::vec3 m_direction;
 
-    struct
-    {
-        glm::mat4 m_projection;
-        glm::mat4 m_view;
-    } m_matrices;
-
-    float m_fov;
-    float m_znear, m_zfar;
     bool m_dirtyView;
-    float m_fovLowerBound;
-    float m_fovUpperBound;
-    bool m_dirtyProjection;
     /**
      * @brief Calculates view matrix
      */
     void UpdateViewMatrix();
-    /**
-     * @brief Calculates projection matrix
-     */
-    void UpdateProjectionMatrix();
 };
 }
 }
