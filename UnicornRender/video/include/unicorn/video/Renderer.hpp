@@ -34,7 +34,7 @@ namespace video
 class Renderer
 {
 public:
-    Renderer(system::Manager& manager, system::Window* window);
+    Renderer(system::Manager& manager, system::Window* window, Camera* camera);
 
     virtual ~Renderer();
 

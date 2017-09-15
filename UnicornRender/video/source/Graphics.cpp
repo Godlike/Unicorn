@@ -6,6 +6,7 @@
 
 #include <unicorn/video/Graphics.hpp>
 #include <unicorn/video/Renderer.hpp>
+#include <unicorn/video/Camera.hpp>
 #include <unicorn/utility/Logger.hpp>
 
 #include <unicorn/system/Manager.hpp>
@@ -187,19 +188,19 @@ void Graphics::ProcessExpiredRenderers()
     }
 }
 
-Renderer* Graphics::SpawnRenderer(system::Window* window)
+Renderer* Graphics::SpawnRenderer(system::Window* window, Camera* camera)
 {
     vulkan::Renderer* renderer = nullptr;
     switch (m_driver)
     {
-    case DriverType::Vulkan:
-        renderer = new vulkan::Renderer(m_systemManager, window);
-        renderer->Init();
-        BindWindowRenderer(window, renderer);
-        break;
-    default:
-        LOG_ERROR("This render type not exist");
-        break;
+        case DriverType::Vulkan:
+            renderer = new vulkan::Renderer(m_systemManager, window, camera);
+            renderer->Init();
+            BindWindowRenderer(window, renderer);
+            break;
+        default:
+            LOG_ERROR("This render type not exist");
+            break;
     }
     return renderer;
 }

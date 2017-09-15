@@ -12,10 +12,10 @@ namespace unicorn
 {
 namespace video
 {
-Renderer::Renderer(system::Manager& manager, system::Window* window) : m_isInitialized(false)
+Renderer::Renderer(system::Manager& manager, system::Window* window, Camera* camera) : m_isInitialized(false)
                                                                      , m_systemManager(manager)
                                                                      , m_pWindow(window)
-                                                                     , m_camera(new Camera)
+                                                                     , camera(camera)
                                                                      , m_backgroundColor({{0.0f, 0.0f, 0.0f, 0.0f}})
                                                                      , m_depthTestEnabled(true)
 {

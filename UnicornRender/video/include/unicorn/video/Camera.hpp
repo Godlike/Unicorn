@@ -41,9 +41,18 @@ public:
     void SetUpVector(glm::vec3 const& upVector);
     void SetPosition(glm::vec3 const& position);
 
-    void GetDirection() const;
-    void GetUpVector() const;
-    void GetPosition() const;
+    glm::vec3 const& GetDirection() const
+    {
+        return m_direction;
+    }
+    glm::vec3 const& GetUpVector() const
+    {
+        return m_upVector;
+    }
+    glm::vec3 const& GetPosition() const
+    {
+        return m_position;
+    }
 protected:
     CameraController(glm::mat4& cameraView);
 

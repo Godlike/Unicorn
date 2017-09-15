@@ -80,7 +80,7 @@ public:
      * @param manager Describes required extensions
      * @param window Render into
      */
-    Renderer(system::Manager& manager, system::Window* window);
+    Renderer(system::Manager& manager, system::Window* window, Camera* camera);
 
     /**
      * @brief Destructor which calls Deinit()

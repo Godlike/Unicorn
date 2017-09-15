@@ -393,13 +393,13 @@ int main(int argc, char* argv[])
            nullptr);
         pWindow0->SetMouseMode(unicorn::system::MouseMode::Captured);
 
-        vkRenderer = pGraphics->SpawnRenderer(pWindow0);
+        perspective = new unicorn::video::Camera;
+        ortho = new unicorn::video::Camera;
+
+        vkRenderer = pGraphics->SpawnRenderer(pWindow0, perspective);
         vkRenderer->Destroyed.connect(&onRendererDestroyed);
 
         // Configuring cameras
-        perspective = vkRenderer->camera;
-        ortho = new unicorn::video::Camera;
-
         pPerspectiveProjection = new unicorn::video::PerspectiveCamera(pWindow0, perspective->projection);
         pOrthoProjection = new unicorn::video::OrthographicCamera(pWindow0, ortho->projection);
 
