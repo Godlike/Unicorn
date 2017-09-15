@@ -17,7 +17,6 @@
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/video/Primitives.hpp>
 #include <unicorn/video/Texture.hpp>
-#include <unicorn/video/CameraFpsController.hpp>
 #include <unicorn/video/Material.hpp>
 
 #include <glm/glm.hpp>
@@ -30,7 +29,6 @@
 #include <list>
 
 static unicorn::video::Graphics* pGraphics = nullptr;
-static unicorn::video::CameraFpsController* pCameraController = nullptr;
 static unicorn::system::Timer* timer = nullptr;
 static unicorn::video::Renderer* vkRenderer = nullptr;
 static unicorn::system::Input* pInput = nullptr;
@@ -41,15 +39,27 @@ std::list<unicorn::video::Mesh*> meshes;
 float deltaTime = 0.0f; // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
+//Camera settings
+bool isPerspective = true;
+unicorn::video::Camera* perspective = nullptr;
+unicorn::video::Camera* ortho = nullptr;
+unicorn::video::CameraFpsController* pCameraFpsController = nullptr;
+unicorn::video::Camera2DController* pCamera2DController = nullptr;
+unicorn::video::PerspectiveCamera* pPerspectiveProjection = nullptr;
+unicorn::video::OrthographicCamera* pOrthoProjection = nullptr;
+
 void onLogicFrame(unicorn::UnicornRender* /*render*/)
 {
     float currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
     float newDeltatime = currentFrame - lastFrame;
+
     if(newDeltatime <= 0.0)
     {
         return;
     }
+
     deltaTime = newDeltatime;
+
     for(auto& mesh : meshes)
     {
         mesh->modelMatrix = glm::rotate(mesh->modelMatrix, glm::radians(deltaTime * 30), { 1, 1, 1 });
@@ -132,12 +142,22 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
 
 void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double, double> pos)
 {
-    pCameraController->UpdateView(pos.first, pos.second);
+    if (isPerspective)
+    {
+        pCameraFpsController->UpdateView(pos.first, pos.second);
+    }
 }
 
 void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double> pos)
 {
-    pCameraController->Scroll(static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
+    if (isPerspective)
+    {
+        pPerspectiveProjection->Scroll(static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
+    }
+    else
+    {
+        pOrthoProjection->Scroll(static_cast<float>(pos.second * 10)); // 10 is scale speed
+    }
 }
 
 void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEvent)
@@ -173,36 +193,83 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
     {
         delta *= 5;
     }
+
     switch(key)
     {
+        case Key::Normal_1:
+        {
+            isPerspective = true;
+            vkRenderer->camera = perspective;
+            break;
+        }
+        case Key::Normal_2:
+        {
+            isPerspective = false;
+            vkRenderer->camera = ortho;
+            break;
+        }
         case Key::W:
         {
-            pCameraController->MoveForward(delta);
+            if (isPerspective)
+            {
+                pCameraFpsController->MoveForward(delta);
+            }
+            else
+            {
+                pCamera2DController->MoveUp(delta);
+            }
             break;
         }
         case Key::S:
         {
-            pCameraController->MoveBackward(delta);
+            if (isPerspective)
+            {
+                pCameraFpsController->MoveBackward(delta);
+            }
+            else
+            {
+                pCamera2DController->MoveDown(delta);
+            }
             break;
         }
         case Key::A:
         {
-            pCameraController->MoveLeft(delta);
+            if (isPerspective)
+            {
+                pCameraFpsController->MoveLeft(delta);
+            }
+            else
+            {
+                pCamera2DController->MoveLeft(delta);
+            }
             break;
         }
         case Key::D:
         {
-            pCameraController->MoveRight(delta);
+            if (isPerspective)
+            {
+                pCameraFpsController->MoveRight(delta);
+            }
+            else
+            {
+                pCamera2DController->MoveRight(delta);
+            }
             break;
         }
         case Key::Q:
         {
-            pCameraController->MoveUp(delta);
+            if (isPerspective)
+            {
+                pCameraFpsController->MoveUp(delta);
+            }
             break;
         }
         case Key::E:
         {
-            pCameraController->MoveDown(delta);
+            if (isPerspective)
+            {
+                pCameraFpsController->MoveDown(delta);
+            }
             break;
         }
         case Key::Up:
@@ -329,15 +396,21 @@ int main(int argc, char* argv[])
         vkRenderer = pGraphics->SpawnRenderer(pWindow0);
         vkRenderer->Destroyed.connect(&onRendererDestroyed);
 
-        auto camera = vkRenderer->GetMainCamera();
+        // Configuring cameras
+        perspective = vkRenderer->camera;
+        ortho = new unicorn::video::Camera;
 
-        camera->SetDirection({ 0.0f, 0.0f, 1.0f });
-        camera->SetPosition({ 0.0f, 0.0f, -5.0f });
-        
-        unicorn::video::OrthographicCamera projController(pWindow0, camera->projection);
+        pPerspectiveProjection = new unicorn::video::PerspectiveCamera(pWindow0, perspective->projection);
+        pOrthoProjection = new unicorn::video::OrthographicCamera(pWindow0, ortho->projection);
 
-        pCameraController = new unicorn::video::CameraFpsController(*camera);
-        
+        pCameraFpsController = new unicorn::video::CameraFpsController(perspective->view);
+        pCameraFpsController->SetPosition({ 0.0f, 0.0f, -5.0f });
+        pCameraFpsController->SetDirection({ 0.0f, 0.0f, 1.0f });
+
+        pCamera2DController = new unicorn::video::Camera2DController(ortho->view);
+        pCamera2DController->SetPosition({ 0.0f, 0.0f, -5.0f });
+        pCamera2DController->SetDirection({ 0.0f, 0.0f, 1.0f });
+
         {
             //Loading textures
             unicorn::video::Texture texture, textureMandrill;
@@ -449,6 +522,12 @@ int main(int argc, char* argv[])
             unicornRender->Run();
         }
     }
+
+    delete pCameraFpsController;
+    delete pCamera2DController;
+    delete pPerspectiveProjection;
+    delete pOrthoProjection; 
+    delete ortho;
 
     unicornRender->Deinit();
     delete unicornRender;

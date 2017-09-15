@@ -15,22 +15,16 @@ namespace video
 Renderer::Renderer(system::Manager& manager, system::Window* window) : m_isInitialized(false)
                                                                      , m_systemManager(manager)
                                                                      , m_pWindow(window)
-                                                                     , m_mainCamera(new Camera)
+                                                                     , m_camera(new Camera)
                                                                      , m_backgroundColor({{0.0f, 0.0f, 0.0f, 0.0f}})
                                                                      , m_depthTestEnabled(true)
 {
-    m_cameras.push_back(m_mainCamera);
 }
 
 Renderer::~Renderer()
 {
     Destroyed.emit(this);
     Destroyed.clear();
-}
-
-Camera* Renderer::GetMainCamera()
-{
-    return m_mainCamera;
 }
 
 void Renderer::SetBackgroundColor(const glm::vec3& backgroundColor)

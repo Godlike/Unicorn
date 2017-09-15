@@ -57,8 +57,8 @@ struct SwapChainSupportDetails
 /** @brief Camera data */
 struct UniformCameraData
 {
-    glm::mat4 view = glm::mat4(1.0);
-    glm::mat4 proj = glm::mat4(1.0);
+    glm::mat4 view = glm::mat4();
+    glm::mat4 proj = glm::mat4();
 };
 
 /** @brief Struct which holds all models uniform data for sending to shader */

@@ -36,7 +36,6 @@ set(VIDEO_HEADERS
     include/unicorn/video/Graphics.hpp
     include/unicorn/video/Renderer.hpp
     include/unicorn/video/Camera.hpp
-    include/unicorn/video/CameraFpsController.hpp
     include/unicorn/video/Color.hpp
     include/unicorn/video/Texture.hpp
     include/unicorn/video/Mesh.hpp
@@ -48,7 +47,6 @@ set(VIDEO_SOURCES
     source/Graphics.cpp
     source/Renderer.cpp
     source/Camera.cpp
-    source/CameraFpsController.cpp
     source/Color.cpp
     source/Texture.cpp
     source/Mesh.cpp

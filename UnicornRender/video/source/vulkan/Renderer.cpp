@@ -620,7 +620,7 @@ bool Renderer::PrepareUniformBuffers()
     m_dynamicAlignment = (sizeof(glm::mat4) / uboAlignment) * uboAlignment + ((sizeof(glm::mat4) % uboAlignment) > 0 ? uboAlignment : 0);
 
     m_uniformCameraData.proj = m_mainCamera->projection;
-    m_uniformCameraData.view = m_mainCamera->GetView();
+    m_uniformCameraData.view = m_mainCamera->view;
 
     m_uniformViewProjection.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, sizeof(UniformCameraData));
     m_uniformViewProjection.Map();
@@ -657,7 +657,7 @@ void Renderer::UpdateModelDescriptorSet() const
 void Renderer::UpdateUniformBuffer()
 {
     m_uniformCameraData.proj = m_mainCamera->projection;
-    m_uniformCameraData.view = m_mainCamera->GetView();
+    m_uniformCameraData.view = m_mainCamera->view;
     m_uniformViewProjection.Write(&m_uniformCameraData);
 }
 
@@ -1603,7 +1603,6 @@ bool Renderer::Frame()
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
-    m_mainCamera->Frame();
     UpdateUniformBuffer();
     UpdateDynamicUniformBuffer();
 
