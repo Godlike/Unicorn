@@ -149,6 +149,7 @@ void CameraFpsController::UpdateView(double posX, double posY)
     front.y = static_cast<float>(sin(glm::radians(m_pitch)));
     front.z = static_cast<float>(sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
     m_direction = glm::normalize(front);
+    m_rightVector = glm::normalize(glm::cross(m_direction, m_upVector));
 
     m_isDirty = true;
 }

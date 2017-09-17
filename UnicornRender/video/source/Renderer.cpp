@@ -13,9 +13,9 @@ namespace unicorn
 namespace video
 {
 Renderer::Renderer(system::Manager& manager, system::Window* window, Camera* camera) : 
-    m_isInitialized(false)
+    camera(camera)
+    , m_isInitialized(false)
     , m_systemManager(manager)
-    , camera(camera)
     , m_pWindow(window)
     , m_backgroundColor({ {0.0f, 0.0f, 0.0f, 0.0f} })
     , m_depthTestEnabled(true)

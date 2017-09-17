@@ -326,10 +326,6 @@ void Renderer::OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, i
         return;
     }
 
-    if (!CreateDepthBuffer())
-    {
-        LOG_ERROR("Can't recreate depth buffer!");
-    }
     if(!RecreateSwapChain())
     {
         LOG_ERROR("Can't recreate swapchain!");
@@ -342,6 +338,7 @@ bool Renderer::RecreateSwapChain()
 
     if(CreateSwapChain() &&
         CreateImageViews() &&
+        CreateDepthBuffer() &&
         CreateRenderPass() &&
         CreateGraphicsPipeline() &&
         CreateFramebuffers() &&
