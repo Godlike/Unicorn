@@ -53,6 +53,11 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     float currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
     float newDeltatime = currentFrame - lastFrame;
 
+    pCameraFpsController->Frame();
+    pCamera2DController->Frame();
+    pPerspectiveProjection->Frame();
+    pOrthoProjection->Frame();
+
     if(newDeltatime <= 0.0)
     {
         return;
@@ -145,6 +150,10 @@ void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double,
     if (isPerspective)
     {
         pCameraFpsController->UpdateView(pos.first, pos.second);
+    }
+    else
+    {
+        pCameraFpsController->UpdateViewPositions(pos.first, pos.second);
     }
 }
 

@@ -27,7 +27,7 @@ class Window;
 namespace video
 {
 class Renderer;
-class Camera;
+struct Camera;
 
 enum class DriverType
 {
