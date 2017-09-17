@@ -16,12 +16,14 @@ namespace video
 void CameraController::SetDirection(const glm::vec3& direction)
 {
     m_direction = direction;
+    m_rightVector = glm::normalize(glm::cross(m_direction, m_upVector));
     m_isDirty = true;
 }
 
 void CameraController::SetUpVector(const glm::vec3& upVector)
 {
-    m_upVector = upVector;
+    m_upVector = upVector; 
+    m_rightVector = glm::normalize(glm::cross(m_direction, m_upVector));
     m_isDirty = true;
 }
 
@@ -55,11 +57,12 @@ void CameraController::Frame()
     }
 }
 
-CameraController::CameraController(glm::mat4 & cameraView) :
+CameraController::CameraController(glm::mat4& cameraView) :
     m_cameraView(cameraView),
     m_position(0.0),
-    m_direction(0.0),
     m_upVector(0.0f, -1.0f, 0.0f),
+    m_direction(0.0),
+    m_rightVector(glm::cross(m_direction, m_upVector)),
     speed(100.f),
     m_isDirty(true)
 {
@@ -97,13 +100,13 @@ void CameraFpsController::MoveDown(float deltaTime)
 
 void CameraFpsController::MoveLeft(float deltaTime)
 {
-    m_position -= glm::normalize(glm::cross(m_direction, m_upVector)) * speed * deltaTime; //TODO: optimize crossproduct
+    m_position -= m_rightVector * speed * deltaTime;
     m_isDirty = true;
 }
 
 void CameraFpsController::MoveRight(float deltaTime)
 {
-    m_position += glm::normalize(glm::cross(m_direction, m_upVector)) * speed * deltaTime;
+    m_position +=m_rightVector * speed * deltaTime;
     m_isDirty = true;
 }
 
@@ -170,7 +173,7 @@ CameraProjection::~CameraProjection()
     Disconnect(nullptr);
 }
 
-void CameraProjection::Disconnect(system::Window *)
+void CameraProjection::Disconnect(system::Window*)
 {
     if (m_pWindow != nullptr)
     {
@@ -195,9 +198,9 @@ void CameraProjection::Frame()
 
 PerspectiveCamera::PerspectiveCamera(system::Window* window, glm::mat4& cameraProj) :
     CameraProjection(window, cameraProj),
+    m_fov(45.f),
     m_fovLowerBound(44.f),
     m_fovUpperBound(45.f),
-    m_fov(45.f),
     m_znear(0.1f),
     m_zfar(1000.f)
 {
@@ -219,6 +222,18 @@ void PerspectiveCamera::Scroll(float yoffset)
 void PerspectiveCamera::SetFov(float fov)
 {
     m_fov = std::max(std::min(fov, m_fovUpperBound), m_fovLowerBound);
+    m_isDirty = true;
+}
+
+UNICORN_EXPORT void PerspectiveCamera::SetZNear(float znear)
+{
+    m_znear = znear;
+    m_isDirty = true;
+}
+
+UNICORN_EXPORT void PerspectiveCamera::SetZFar(float zfar)
+{
+    m_zfar = zfar;
     m_isDirty = true;
 }
 
@@ -268,7 +283,7 @@ UNICORN_EXPORT float OrthographicCamera::GetScale() const
     return m_orthoScale;
 }
 
-Camera2DController::Camera2DController(glm::mat4 & cameraView) : CameraController(cameraView)
+Camera2DController::Camera2DController(glm::mat4& cameraView) : CameraController(cameraView)
 {
 }
 
@@ -286,13 +301,13 @@ UNICORN_EXPORT void Camera2DController::MoveDown(float deltaTime)
 
 UNICORN_EXPORT void Camera2DController::MoveLeft(float deltaTime)
 {
-    m_position -= glm::normalize(glm::cross(m_direction, m_upVector)) * speed * deltaTime; //TODO: optimize crossproduct
+    m_position -= m_rightVector * speed * deltaTime;
     m_isDirty = true;
 }
 
 UNICORN_EXPORT void Camera2DController::MoveRight(float deltaTime)
 {
-    m_position += glm::normalize(glm::cross(m_direction, m_upVector)) * speed * deltaTime;
+    m_position += m_rightVector * speed * deltaTime;
     m_isDirty = true;
 }
 

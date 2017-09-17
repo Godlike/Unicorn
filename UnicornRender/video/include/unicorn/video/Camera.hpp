@@ -60,7 +60,7 @@ protected:
     void UpdateViewMatrix();
 
     glm::mat4& m_cameraView;
-    glm::vec3 m_position, m_upVector, m_direction;
+    glm::vec3 m_position, m_upVector, m_direction, m_rightVector;
     float speed;
 
     bool m_isDirty;
@@ -103,6 +103,12 @@ public:
 
     /** @brief Sets fov */
     UNICORN_EXPORT void SetFov(float fov);
+
+    /** @brief Sets near Z plane */
+    UNICORN_EXPORT void SetZNear(float znear);
+
+    /** @brief Sets far Z plane */
+    UNICORN_EXPORT void SetZFar(float zfar);
 
     /** @brief Returns fov */
     UNICORN_EXPORT float GetFov() const;
