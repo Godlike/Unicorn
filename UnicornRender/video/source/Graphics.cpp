@@ -19,9 +19,12 @@ namespace unicorn
 {
 namespace video
 {
-Graphics::Graphics(system::Manager& manager) : m_isInitialized(false)
-                                             , m_systemManager(manager)
-                                             , m_driver(DriverType::Vulkan)
+Graphics::Graphics(system::Manager& manager)
+    : WindowCreated(manager.WindowCreated)
+    , MonitorCreated(manager.MonitorCreated)
+    , m_isInitialized(false)
+    , m_systemManager(manager)
+    , m_driver(DriverType::Vulkan)
 {
 }
 

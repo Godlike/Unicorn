@@ -10,6 +10,9 @@
 #include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/system/WindowHint.hpp>
 
+#include <wink/signal.hpp>
+#include <wink/event_queue.hpp>
+
 #include <string>
 #include <unordered_set>
 #include <utility>
@@ -151,6 +154,20 @@ public:
 
     /** @brief Binds renderer to window. */
     UNICORN_EXPORT void BindWindowRenderer(system::Window* pWindow, Renderer* pRenderer);
+
+    /** @brief  Event triggered every time new window is created
+     *
+     *  Event is emitted with the following signature:
+     *  -# newly created window pointer
+     */
+    wink::signal< wink::slot<void(system::Window*)> >& WindowCreated;
+
+    /** @brief  Event queue triggered every time new batch of monitors is created
+     *
+     *  Event is emitted with the following signature:
+     *  -# newly created monitor pointer
+     */
+    wink::event_queue<system::Monitor*>& MonitorCreated;
 
 private:
     //! Renderer-Window pair type
