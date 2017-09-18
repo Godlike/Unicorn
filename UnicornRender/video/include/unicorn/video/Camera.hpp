@@ -33,26 +33,26 @@ struct Camera
 class CameraController
 {
 public:
-    /** @brief Sets direction of camera */
+    /** @brief Sets direction of the camera */
     UNICORN_EXPORT void SetDirection(glm::vec3 const& direction);
 
-    /** @brief Sets up vector of camera */
+    /** @brief Sets up vector of the camera */
     UNICORN_EXPORT void SetUpVector(glm::vec3 const& upVector);
 
-    /** @brief Sets position of camera */
+    /** @brief Sets position of the camera */
     UNICORN_EXPORT void SetPosition(glm::vec3 const& position);
 
-    /** @brief Returns direction of camera */
+    /** @brief Returns direction of the camera */
     UNICORN_EXPORT glm::vec3 const& GetDirection() const;
 
-    /** @brief Returns up vector of camera */
+    /** @brief Returns up vector of the camera */
     UNICORN_EXPORT glm::vec3 const& GetUpVector() const;
 
-    /** @brief Returns position of camera */
+    /** @brief Returns position of the camera */
     UNICORN_EXPORT glm::vec3 const& GetPosition() const;
 
-    /** @brief Checks if camera view matrix must be updated and do it */
-    UNICORN_EXPORT void Frame();
+    /** @brief Checks if camera view matrix must be recalculated and does it */
+    UNICORN_EXPORT void Recalculate();
 protected:
     CameraController(glm::mat4& cameraView);
 
@@ -61,7 +61,7 @@ protected:
 
     glm::mat4& m_cameraView;
     glm::vec3 m_position, m_upVector, m_direction, m_rightVector;
-    float speed;
+    float m_speed;
 
     bool m_isDirty;
 };
@@ -70,8 +70,8 @@ protected:
 class CameraProjection
 {
 public:
-    /** @brief Checks if camera projection matrix must be updated and do it */
-    UNICORN_EXPORT void Frame();
+    /** @brief Updates camera projection */
+    virtual void UpdateProjection() = 0;
 protected:
     CameraProjection(system::Window* window, glm::mat4& cameraProj);
     virtual ~CameraProjection();
@@ -84,16 +84,14 @@ protected:
 
     /** @brief Wheel scroll action */
     virtual void Scroll(float yoffset) = 0;
-    virtual void UpdateProjection() = 0;
 
     float m_aspect;
     glm::mat4& m_cameraProjection;
     system::Window* m_pWindow;
-    bool m_isDirty;
 };
 
 /** @brief Perspective camera projection controller */
-class PerspectiveCamera : public CameraProjection
+class PerspectiveCamera final : public CameraProjection
 {
 public:
     UNICORN_EXPORT PerspectiveCamera(system::Window* window, glm::mat4& cameraProj);
@@ -115,19 +113,25 @@ public:
 private:
     float m_fov, m_fovLowerBound, m_fovUpperBound, m_znear, m_zfar;
 
-    void UpdateProjection() override final;
+    void UpdateProjection() override;
 };
 
 /** @brief Orthographic camera projection controller */
-class OrthographicCamera : public CameraProjection
+class OrthographicCamera final : public CameraProjection
 {
 public:
     UNICORN_EXPORT OrthographicCamera(system::Window* window, glm::mat4& cameraProj);
-    
-    UNICORN_EXPORT void UpdateProjection() override final;
+
+    /** @brief Recalculates projection matrix */
+    UNICORN_EXPORT void UpdateProjection() override;
+
+    /** @brief Changes zoom by adding yoffset to it */
     UNICORN_EXPORT void Scroll(float yoffset) override;
+
+    /** @brief Sets scale */
     UNICORN_EXPORT void SetScale(float scale);
 
+    /** @brief Returns scale */
     UNICORN_EXPORT float GetScale() const;
 private:
     float m_orthoScale;
@@ -146,14 +150,13 @@ public:
     UNICORN_EXPORT void MoveDown(float deltaTime);
     UNICORN_EXPORT void MoveLeft(float deltaTime);
     UNICORN_EXPORT void MoveRight(float deltaTime);
-private:
 };
 
 /** @brief FPS style camera controller */
 class CameraFpsController : public CameraController
 {
 public:
-    UNICORN_EXPORT CameraFpsController(glm::mat4& cameraView);
+    UNICORN_EXPORT CameraFpsController(glm::mat4& cameraView, double posX, double posY);
     UNICORN_EXPORT void MoveUp(float deltaTime);
     UNICORN_EXPORT void MoveDown(float deltaTime);
     UNICORN_EXPORT void MoveLeft(float deltaTime);

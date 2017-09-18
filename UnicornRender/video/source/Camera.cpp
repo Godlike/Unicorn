@@ -48,7 +48,7 @@ glm::vec3 const& CameraController::GetPosition() const
     return m_position;
 }
 
-void CameraController::Frame()
+void CameraController::Recalculate()
 {
     if (m_isDirty)
     {
@@ -63,7 +63,7 @@ CameraController::CameraController(glm::mat4& cameraView) :
     m_upVector(0.0f, -1.0f, 0.0f),
     m_direction(0.0),
     m_rightVector(glm::cross(m_direction, m_upVector)),
-    speed(100.f),
+    m_speed(100.f),
     m_isDirty(true)
 {
 }
@@ -75,62 +75,54 @@ void CameraController::UpdateViewMatrix()
                                m_upVector);
 }
 
-CameraFpsController::CameraFpsController(glm::mat4& cameraView)
+CameraFpsController::CameraFpsController(glm::mat4& cameraView, double posX, double posY)
     : CameraController(cameraView),
     sensitivity(0.1f),
-    m_lastX(0.0),
-    m_lastY(0.0),
+    m_lastX(posX),
+    m_lastY(posY),
     m_yaw(90.0),
-    m_pitch(0.0),
-    m_isDirtyMousePosition(true)
+    m_pitch(0.0)
 {
 }
 
 void CameraFpsController::MoveUp(float deltaTime)
 {
-    m_position += glm::vec3(0.0f, -deltaTime * speed, 0.0f);
+    m_position += glm::vec3(0.0f, -deltaTime * m_speed, 0.0f);
     m_isDirty = true;
 }
 
 void CameraFpsController::MoveDown(float deltaTime)
 {
-    m_position += glm::vec3(0.0f, speed * deltaTime, 0.0);
+    m_position += glm::vec3(0.0f, m_speed * deltaTime, 0.0);
     m_isDirty = true;
 }
 
 void CameraFpsController::MoveLeft(float deltaTime)
 {
-    m_position -= m_rightVector * speed * deltaTime;
+    m_position -= m_rightVector * m_speed * deltaTime;
     m_isDirty = true;
 }
 
 void CameraFpsController::MoveRight(float deltaTime)
 {
-    m_position +=m_rightVector * speed * deltaTime;
+    m_position +=m_rightVector * m_speed * deltaTime;
     m_isDirty = true;
 }
 
 void CameraFpsController::MoveForward(float deltaTime)
 {
-    m_position += m_direction * speed * deltaTime;
+    m_position += m_direction * m_speed * deltaTime;
     m_isDirty = true;
 }
 
 void CameraFpsController::MoveBackward(float deltaTime)
 {
-    m_position -= m_direction * speed * deltaTime;
+    m_position -= m_direction * m_speed * deltaTime;
     m_isDirty = true;
 }
 
 void CameraFpsController::UpdateView(double posX, double posY)
 {
-    if (!m_isDirtyMousePosition)
-    {
-        m_lastX = posX;
-        m_lastY = posY;
-        m_isDirtyMousePosition = true;
-    }
-
     double xoffset = m_lastX - posX;
     double yoffset = posY - m_lastY;
     m_lastX = posX;
@@ -186,15 +178,6 @@ void CameraProjection::Disconnect(system::Window*)
 void CameraProjection::OnWindowSizeChanged(system::Window*, std::pair<int32_t, int32_t> size)
 {
     m_aspect = static_cast<float>(size.first) / size.second;
-    m_isDirty = true;
-}
-
-void CameraProjection::Frame()
-{
-    if (m_isDirty)
-    {
-        UpdateProjection();
-    }
 }
 
 PerspectiveCamera::PerspectiveCamera(system::Window* window, glm::mat4& cameraProj) :
@@ -205,6 +188,7 @@ PerspectiveCamera::PerspectiveCamera(system::Window* window, glm::mat4& cameraPr
     m_znear(0.1f),
     m_zfar(1000.f)
 {
+    UpdateProjection();
 }
 
 void PerspectiveCamera::UpdateProjection()
@@ -223,19 +207,19 @@ void PerspectiveCamera::Scroll(float yoffset)
 void PerspectiveCamera::SetFov(float fov)
 {
     m_fov = std::max(std::min(fov, m_fovUpperBound), m_fovLowerBound);
-    m_isDirty = true;
+    UpdateProjection();
 }
 
 UNICORN_EXPORT void PerspectiveCamera::SetZNear(float znear)
 {
     m_znear = znear;
-    m_isDirty = true;
+    UpdateProjection();
 }
 
 UNICORN_EXPORT void PerspectiveCamera::SetZFar(float zfar)
 {
-    m_zfar = zfar;
-    m_isDirty = true;
+    m_zfar = zfar; 
+    UpdateProjection();
 }
 
 UNICORN_EXPORT float PerspectiveCamera::GetFov() const
@@ -252,6 +236,7 @@ OrthographicCamera::OrthographicCamera(system::Window* window, glm::mat4& camera
     m_back(-1000.f),
     m_front(1000.f)
 {
+    UpdateProjection();
 }
 
 void OrthographicCamera::UpdateProjection()
@@ -276,7 +261,7 @@ void OrthographicCamera::SetScale(float scale)
 {
     m_orthoScale = std::max(scale, 0.1f);
     m_scaledAspect = m_aspect / m_orthoScale;
-    m_isDirty = true;
+    UpdateProjection();
 }
 
 UNICORN_EXPORT float OrthographicCamera::GetScale() const
@@ -290,25 +275,25 @@ Camera2DController::Camera2DController(glm::mat4& cameraView) : CameraController
 
 UNICORN_EXPORT void Camera2DController::MoveUp(float deltaTime)
 {
-    m_position += glm::vec3(0.0f, -deltaTime * speed, 0.0f);
+    m_position += glm::vec3(0.0f, -deltaTime * m_speed, 0.0f);
     m_isDirty = true;
 }
 
 UNICORN_EXPORT void Camera2DController::MoveDown(float deltaTime)
 {
-    m_position += glm::vec3(0.0f, speed * deltaTime, 0.0);
+    m_position += glm::vec3(0.0f, m_speed * deltaTime, 0.0f);
     m_isDirty = true;
 }
 
 UNICORN_EXPORT void Camera2DController::MoveLeft(float deltaTime)
 {
-    m_position -= m_rightVector * speed * deltaTime;
+    m_position -= m_rightVector * m_speed * deltaTime;
     m_isDirty = true;
 }
 
 UNICORN_EXPORT void Camera2DController::MoveRight(float deltaTime)
 {
-    m_position += m_rightVector * speed * deltaTime;
+    m_position += m_rightVector * m_speed * deltaTime;
     m_isDirty = true;
 }
 

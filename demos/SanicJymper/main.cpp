@@ -53,10 +53,8 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     float currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
     float newDeltatime = currentFrame - lastFrame;
 
-    pCameraFpsController->Frame();
-    pCamera2DController->Frame();
-    pPerspectiveProjection->Frame();
-    pOrthoProjection->Frame();
+    pCameraFpsController->Recalculate();
+    pCamera2DController->Recalculate();
 
     if(newDeltatime <= 0.0)
     {
@@ -94,10 +92,9 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
         {
             unicorn::video::Material cubematerial;
             cubematerial.color = {static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255};
-            unicorn::video::Mesh* mesh = vkRenderer->SpawnMesh(cubematerial);
-            unicorn::video::Primitives::Sphere(*mesh, 1, 32, 32);
-            meshes.push_back(mesh);
+            unicorn::video::Mesh* mesh = unicorn::video::Primitives::Sphere(*vkRenderer->SpawnMesh(cubematerial), 1, 32, 32);
             mesh->modelMatrix = glm::translate(mesh->modelMatrix, { std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 });
+            meshes.push_back(mesh);
             break;
         }
         case MouseButton::MouseMiddle:
@@ -412,7 +409,9 @@ int main(int argc, char* argv[])
         pPerspectiveProjection = new unicorn::video::PerspectiveCamera(pWindow0, perspective->projection);
         pOrthoProjection = new unicorn::video::OrthographicCamera(pWindow0, ortho->projection);
 
-        pCameraFpsController = new unicorn::video::CameraFpsController(perspective->view);
+        pCameraFpsController = new unicorn::video::CameraFpsController(perspective->view, 
+                                                                       pWindow0->GetPosition().first, 
+                                                                       pWindow0->GetPosition().second);
         pCameraFpsController->SetPosition({ 0.0f, 0.0f, -5.0f });
         pCameraFpsController->SetDirection({ 0.0f, 0.0f, 1.0f });
 
@@ -461,30 +460,18 @@ int main(int argc, char* argv[])
             upTexture.SetAlbedo(&topSkyBox);
             bottomTexture.SetAlbedo(&bottomSkyBox);
 
-            unicorn::video::Mesh* texturedQuad = vkRenderer->SpawnMesh(textureMaterial);
-            unicorn::video::Primitives::Quad(*texturedQuad);
-            unicorn::video::Mesh* mandrillQuad = vkRenderer->SpawnMesh(mandrillMaterial);
-            unicorn::video::Primitives::Quad(*mandrillQuad);
-            unicorn::video::Mesh* texturedCube = vkRenderer->SpawnMesh(textureMaterial);
-            unicorn::video::Primitives::Cube(*texturedCube);
-            unicorn::video::Mesh* frontBox = vkRenderer->SpawnMesh(frontTexture);
-            unicorn::video::Primitives::Quad(*frontBox);
-            unicorn::video::Mesh* backBox = vkRenderer->SpawnMesh(backTexture);
-            unicorn::video::Primitives::Quad(*backBox);
-            unicorn::video::Mesh* leftBox = vkRenderer->SpawnMesh(leftTexture);
-            unicorn::video::Primitives::Quad(*leftBox);
-            unicorn::video::Mesh* rightBox = vkRenderer->SpawnMesh(rightTexture);
-            unicorn::video::Primitives::Quad(*rightBox);
-            unicorn::video::Mesh* upBox = vkRenderer->SpawnMesh(upTexture);
-            unicorn::video::Primitives::Quad(*upBox);
-            unicorn::video::Mesh* bottomBox = vkRenderer->SpawnMesh(bottomTexture);
-            unicorn::video::Primitives::Quad(*bottomBox);
+            unicorn::video::Mesh* texturedQuad = unicorn::video::Primitives::Quad(*vkRenderer->SpawnMesh(textureMaterial));
+            unicorn::video::Mesh* mandrillQuad = unicorn::video::Primitives::Quad(*vkRenderer->SpawnMesh(mandrillMaterial));
+            unicorn::video::Mesh* texturedCube = unicorn::video::Primitives::Cube(*vkRenderer->SpawnMesh(textureMaterial));
+            unicorn::video::Mesh* frontBox = unicorn::video::Primitives::Quad(*vkRenderer->SpawnMesh(frontTexture));
+            unicorn::video::Mesh* backBox = unicorn::video::Primitives::Quad(*vkRenderer->SpawnMesh(backTexture));
+            unicorn::video::Mesh* leftBox = unicorn::video::Primitives::Quad(*vkRenderer->SpawnMesh(leftTexture));
+            unicorn::video::Mesh* rightBox = unicorn::video::Primitives::Quad(*vkRenderer->SpawnMesh(rightTexture));
+            unicorn::video::Mesh* upBox = unicorn::video::Primitives::Quad(*vkRenderer->SpawnMesh(upTexture));
+            unicorn::video::Mesh* bottomBox = unicorn::video::Primitives::Quad(*vkRenderer->SpawnMesh(bottomTexture));
 
-            unicorn::video::Mesh* leftSphere = vkRenderer->SpawnMesh(textureMaterial);
-            unicorn::video::Primitives::Sphere(*leftSphere, 1, 32, 32);
-
-            unicorn::video::Mesh* rightSphere = vkRenderer->SpawnMesh(mandrillMaterial);
-            unicorn::video::Primitives::Sphere(*rightSphere, 2, 32, 32);
+            unicorn::video::Mesh* leftSphere = unicorn::video::Primitives::Sphere(*vkRenderer->SpawnMesh(textureMaterial), 1, 32, 32);
+            unicorn::video::Mesh* rightSphere = unicorn::video::Primitives::Sphere(*vkRenderer->SpawnMesh(mandrillMaterial), 2, 32, 32);
 
             leftSphere->modelMatrix = glm::translate(leftSphere->modelMatrix, { -3.0, 0.0, -1.0 });
             rightSphere->modelMatrix = glm::translate(rightSphere->modelMatrix, { 3.0, 0.0, 1.0 });
