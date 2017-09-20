@@ -26,6 +26,7 @@ add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS
 include(GlmConfig)
 include(Utils)
 include(loguru)
+
 include(stb)
 include(utility)
 include(system)
@@ -244,6 +245,8 @@ elseif(WIN32)
     endif()
 endif()
 
+set(UNICORN_TEXTURE_DIRECTORY ${UNICORN_RENDER_ROOT}/data/textures)
+
 file(GLOB_RECURSE GLSL_SOURCE_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/data/shaders/*.frag"
     "${CMAKE_CURRENT_SOURCE_DIR}/data/shaders/*.vert"
@@ -259,7 +262,7 @@ foreach(GLSL ${GLSL_SOURCE_FILES})
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/models/"
         COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${UNICORN_RENDER_ROOT}/data/textures"
+            "${UNICORN_TEXTURE_DIRECTORY}"
             "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/textures"
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${UNICORN_RENDER_ROOT}/data/models"
@@ -295,11 +298,6 @@ add_custom_target(
 
 add_dependencies(${UNICORN_RENDER_LIB} CompileEngineData)
 
-install( FILES ${SPIRV_BINARY_FILES}
-    DESTINATION ${UNICORN_INSTALL_DATA_DIR}/data/shaders
-    COMPONENT unicorn_data
-)
-
 source_group("Shaders" FILES ${GLSL_SOURCE_FILES})
 source_group("Textures" FILES ${TEXTURES_FILES})
 source_group("Models" FILES ${MODELS_FILES})
@@ -323,3 +321,13 @@ if(WIN32)
         PROPERTIES FOLDER Unicorn
 )
 endif()
+
+install( FILES ${SPIRV_BINARY_FILES}
+    DESTINATION ${UNICORN_INSTALL_DATA_DIR}/data/shaders
+    COMPONENT unicorn_data
+)
+
+install( DIRECTORY ${UNICORN_TEXTURE_DIRECTORY}/
+    DESTINATION ${UNICORN_INSTALL_DATA_DIR}/data/textures
+    COMPONENT unicorn_data
+)
