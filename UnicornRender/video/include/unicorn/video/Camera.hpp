@@ -174,7 +174,6 @@ public:
     float sensitivity;
 private:
     double m_lastX, m_lastY, m_yaw, m_pitch;
-    bool m_isDirtyMousePosition;
 };
 
 }
