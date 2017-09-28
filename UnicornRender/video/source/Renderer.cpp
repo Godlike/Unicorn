@@ -12,8 +12,8 @@ namespace unicorn
 {
 namespace video
 {
-Renderer::Renderer(system::Manager& manager, system::Window* window, Camera* camera) : 
-    camera(camera)
+Renderer::Renderer(system::Manager& manager, system::Window* window, Camera& camera) :
+    camera(&camera)
     , m_isInitialized(false)
     , m_systemManager(manager)
     , m_pWindow(window)

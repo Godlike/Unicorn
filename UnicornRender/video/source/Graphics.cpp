@@ -188,14 +188,19 @@ void Graphics::ProcessExpiredRenderers()
     }
 }
 
-Renderer* Graphics::SpawnRenderer(system::Window* window, Camera* camera)
+Renderer* Graphics::SpawnRenderer(system::Window* window, Camera& camera)
 {
     vulkan::Renderer* renderer = nullptr;
     switch (m_driver)
     {
         case DriverType::Vulkan:
             renderer = new vulkan::Renderer(m_systemManager, window, camera);
-            renderer->Init();
+            if(!renderer->Init())
+            {
+                LOG_ERROR("Can't Create Vulkan renderer!");
+                delete renderer;
+                return nullptr;
+            }
             BindWindowRenderer(window, renderer);
             break;
         default:

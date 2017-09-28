@@ -9,11 +9,13 @@
 
 #include <glm/gtc/constants.hpp>
 
+#include <cassert>
+
 namespace unicorn
 {
 namespace video
 {
-Mesh* Primitives::Cube(Mesh& mesh)
+Mesh& Primitives::Cube(Mesh& mesh)
 {
     std::vector<Vertex> vertices{{
         //front
@@ -61,10 +63,10 @@ Mesh* Primitives::Cube(Mesh& mesh)
                          16, 17, 18, 16, 18, 19,
                          20, 21, 22, 20, 22, 23});
 
-    return &mesh;
+    return mesh;
 }
 
-Mesh* Primitives::Quad(Mesh& mesh)
+Mesh& Primitives::Quad(Mesh& mesh)
 {
     std::vector<Vertex> vertices{{
         {{-0.5f , -0.5f , 0.0f},{1.0f , 0.0f}} ,
@@ -75,33 +77,20 @@ Mesh* Primitives::Quad(Mesh& mesh)
 
     mesh.SetMeshData(vertices, {0, 1, 2, 2, 3, 0});
 
-    return &mesh;
+    return mesh;
 }
 
-Mesh* Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors)
+Mesh& Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors)
 {
-    if(radius < 0)
-    {
-        LOG_WARNING("Sphere radius less than 0, sphere will not be generated!");
-        return nullptr;
-    }
-
-    if(rings < 4 || sectors < 4)
-    {
-        LOG_WARNING("Rings or sectors are less than 4, sphere will not be generated!");
-        return nullptr;
-    }
+    assert(radius > 0);
+    assert(rings > 4 || sectors > 4);
 
     std::vector<uint32_t> indices;
     std::vector<Vertex> vertices;
 
     uint32_t vectorSize = rings * sectors;
 
-    if(vectorSize > vertices.max_size())
-    {
-        LOG_WARNING("Number of vertices is too big, sphere will not be generated!");
-        return nullptr;
-    }
+    assert(vectorSize < vertices.max_size());
 
     vertices.resize(vectorSize);
 
@@ -141,7 +130,7 @@ Mesh* Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sect
 
     mesh.SetMeshData(vertices, indices);
 
-    return &mesh;
+    return mesh;
 }
 }
 }

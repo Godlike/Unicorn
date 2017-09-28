@@ -34,7 +34,7 @@ namespace video
 class Renderer
 {
 public:
-    Renderer(system::Manager& manager, system::Window* window, Camera* camera);
+    Renderer(system::Manager& manager, system::Window* window, Camera& camera);
 
     virtual ~Renderer();
 
@@ -66,9 +66,9 @@ public:
     *
     *  Creates and subscribes to mesh.
     *  Mesh shall be deleted via DeleteMesh().
-    *  
+    *
     *  @param [in] material describes mesh visual representation
-    *  
+    *
     *  @attention  Mesh lifetime is bound by its renderer's lifetime.
     *              Using meshes after their renderer was destroyed is undefined behaviour.
     *              If you're storing mesh pointers, consider storing them with a reference

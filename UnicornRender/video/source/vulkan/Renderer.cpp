@@ -44,14 +44,14 @@ bool QueueFamilyIndices::IsComplete() const
     return graphicsFamily >= 0 && presentFamily >= 0;
 }
 
-Renderer::Renderer(system::Manager& manager, system::Window* window, Camera* camera)
+Renderer::Renderer(system::Manager& manager, system::Window* window, Camera& camera)
     : video::Renderer(manager, window, camera)
     , m_pDepthImage(nullptr)
     , m_contextInstance(Context::Instance().GetVkInstance())
     , m_hasDirtyMeshes(false)
 {
     m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
-    m_pWindow->SizeChanged.connect(this, &Renderer::OnWindowSizeChanged); 
+    m_pWindow->SizeChanged.connect(this, &Renderer::OnWindowSizeChanged);
 }
 
 Renderer::~Renderer()
@@ -953,7 +953,7 @@ bool Renderer::CreateDescriptionSetLayout()
 
     vk::DescriptorPoolSize descriptorSamplerPoolSize;
     descriptorSamplerPoolSize.type = vk::DescriptorType::eCombinedImageSampler;
-    descriptorSamplerPoolSize.descriptorCount = m_physicalDeviceProperties.limits.maxDescriptorSetSampledImages;
+    descriptorSamplerPoolSize.descriptorCount = 3000; //TODO: task [#101] Custom vulkan allocator must enhance this
 
     descriptorPoolSizes.push_back(descriptorViewProjectionPoolSize);
     descriptorPoolSizes.push_back(descriptorModelPoolSize);
@@ -962,7 +962,7 @@ bool Renderer::CreateDescriptionSetLayout()
     vk::DescriptorPoolCreateInfo poolCreateInfo;
     poolCreateInfo.poolSizeCount = static_cast<uint32_t>(descriptorPoolSizes.size());
     poolCreateInfo.pPoolSizes = descriptorPoolSizes.data();
-    poolCreateInfo.maxSets = 3000; //TODO: expand
+    poolCreateInfo.maxSets = 3000; //TODO: task [#101] Custom vulkan allocator must enhance this
     poolCreateInfo.flags = vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet;
 
     vk::Result result = m_vkLogicalDevice.createDescriptorPool(&poolCreateInfo, nullptr, &m_descriptorPool);
@@ -1033,7 +1033,7 @@ bool Renderer::CreateDescriptionSetLayout()
     }
 
     vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
-    pipelineLayoutInfo.setLayoutCount = m_descriptorSetLayouts.size();
+    pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(m_descriptorSetLayouts.size());
     pipelineLayoutInfo.pSetLayouts = m_descriptorSetLayouts.data();
 
     vk::PushConstantRange pushConstanRange;
@@ -1332,7 +1332,9 @@ bool Renderer::CreateCommandBuffers()
                     // Set 1: Per-Material descriptor set containing bound images
                     descriptorSets[1] = pVkMesh->pMaterial->descriptorSet;
 
-                    m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout, 0, descriptorSets.size(), descriptorSets.data(), 1, &dynamicOffset);
+                    m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout,
+                        0, static_cast<uint32_t>(descriptorSets.size()),
+                        descriptorSets.data(), 1, &dynamicOffset);
 
                     m_commandBuffers[i].drawIndexed(pVkMesh->IndicesSize(), 1, 0, 0, 0);
 

@@ -24,7 +24,7 @@ public:
     *  @param[out] mesh    geometry mesh
     *  @return pointer to updated mesh
     */
-    UNICORN_EXPORT static Mesh* Cube(Mesh& mesh);
+    UNICORN_EXPORT static Mesh& Cube(Mesh& mesh);
 
     /**
     *  @brief Fills given mesh with quad data
@@ -32,7 +32,7 @@ public:
     *  @param[out] mesh    geometry mesh
     *  @return pointer to updated mesh
     */
-    UNICORN_EXPORT static Mesh* Quad(Mesh& mesh);
+    UNICORN_EXPORT static Mesh& Quad(Mesh& mesh);
 
     /**
     *  @brief Fills given mesh with sphere data
@@ -44,7 +44,7 @@ public:
     *  @attention `rings * sectors` must be less than `std::vector<Vertex>::max_size()`
     *  @return pointer to updated mesh
     */
-    UNICORN_EXPORT static Mesh* Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors);
+    UNICORN_EXPORT static Mesh& Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors);
 };
 }
 }
