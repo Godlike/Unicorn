@@ -13,14 +13,14 @@ namespace unicorn
 namespace video
 {
 
-OrthographicCamera::OrthographicCamera(system::Window* window, glm::mat4& cameraProj) :
-    CameraProjection(window, cameraProj),
-    m_orthoScale(100.f),
-    m_scaledAspect(m_aspect / m_orthoScale),
-    m_right(static_cast<float>(window->GetSize().first) / 2),
-    m_top(static_cast<float>(m_pWindow->GetSize().second) / 2),
-    m_back(-1000.f),
-    m_front(1000.f)
+OrthographicCamera::OrthographicCamera(system::Window* window, glm::mat4& cameraProj)
+    : CameraProjection(window, cameraProj)
+    , m_orthoScale(100.f)
+    , m_scaledAspect(m_aspect / m_orthoScale)
+    , m_right(static_cast<float>(window->GetSize().first) / 2)
+    , m_top(static_cast<float>(m_pWindow->GetSize().second) / 2)
+    , m_back(-1000.f)
+    , m_front(1000.f)
 {
     UpdateProjection();
 }
@@ -38,9 +38,9 @@ void OrthographicCamera::UpdateProjection()
                                     m_back, m_front);
 }
 
-void OrthographicCamera::Scroll(float yoffset)
+void OrthographicCamera::Scale(float scaleOffset)
 {
-    SetScale(m_orthoScale + yoffset);
+    SetScale(m_orthoScale + scaleOffset);
 }
 
 void OrthographicCamera::SetScale(float scale)

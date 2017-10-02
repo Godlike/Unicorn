@@ -23,7 +23,7 @@ public:
     UNICORN_EXPORT PerspectiveCamera(system::Window* window, glm::mat4& cameraProj);
 
     /** @brief Changes fov */
-    UNICORN_EXPORT void Scroll(float yoffset);
+    UNICORN_EXPORT void Zoom(float zoomOffset);
 
     /** @brief Sets fov */
     UNICORN_EXPORT void SetFov(float fov);
@@ -36,14 +36,14 @@ public:
 
     /** @brief Returns fov */
     UNICORN_EXPORT float GetFov() const;
+
+    void UpdateProjection() override;
 private:
     float m_fov;
     float m_fovLowerBound;
     float m_fovUpperBound;
     float m_znear;
     float m_zfar;
-
-    void UpdateProjection() override;
 };
 
 } // namespace video

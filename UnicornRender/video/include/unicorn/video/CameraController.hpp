@@ -39,12 +39,12 @@ public:
     /** @brief Returns position of the camera */
     UNICORN_EXPORT glm::vec3 const& GetPosition() const;
 
-    /** @brief Checks if camera view matrix must be recalculated and does it */
+    /** @brief Recalculates view matrix if needed */
     UNICORN_EXPORT void Recalculate();
 protected:
     CameraController(glm::mat4& cameraView);
 
-    /** @brief Updates view matrix */
+    /** @brief Recalculates view matrix */
     void UpdateViewMatrix();
 
     glm::mat4& m_cameraView;

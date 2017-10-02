@@ -24,14 +24,10 @@ namespace video
  */
 struct Vertex
 {
-    /**
-     * @brief Position of vertex
-     */
+    /** @brief Position of vertex */
     glm::vec3 pos;
 
-    /**
-    * @brief Texture coordinates of vertex
-    */
+    /** @brief Texture coordinates of vertex */
     glm::vec2 tc;
 };
 
@@ -46,7 +42,7 @@ public:
 
     /**
     * @brief Updates vertices and indices geometry
-    * @param [in] vertices vertexes data
+    * @param [in] vertices vertices data
     * @param [in] indices indices data
     */
     UNICORN_EXPORT void SetMeshData(std::vector<Vertex> const& vertices, std::vector<uint32_t> const& indices);

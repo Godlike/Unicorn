@@ -22,13 +22,12 @@ class OrthographicCamera final : public CameraProjection
 public:
     UNICORN_EXPORT OrthographicCamera(system::Window* window, glm::mat4& cameraProj);
 
-    /** @brief Recalculates projection matrix */
     UNICORN_EXPORT void UpdateProjection() override;
 
-    /** @brief Changes zoom by adding yoffset to it */
-    UNICORN_EXPORT void Scroll(float yoffset);
+    /** @brief Changes scale by adding scaleOffset to it */
+    UNICORN_EXPORT void Scale(float scaleOffset);
 
-    /** @brief Sets scale */
+    /** @brief Sets scale which scaling ortho box */
     UNICORN_EXPORT void SetScale(float scale);
 
     /** @brief Returns scale */

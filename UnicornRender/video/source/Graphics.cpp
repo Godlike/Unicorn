@@ -204,7 +204,7 @@ Renderer* Graphics::SpawnRenderer(system::Window* window, Camera& camera)
             BindWindowRenderer(window, renderer);
             break;
         default:
-            LOG_ERROR("This render type not exist");
+            LOG_ERROR("Unexpected render type!");
             break;
     }
     return renderer;

@@ -164,11 +164,11 @@ void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double>
 {
     if (isPerspective)
     {
-        pPerspectiveProjection->Scroll(static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
+        pPerspectiveProjection->Zoom(static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
     }
     else
     {
-        pOrthoProjection->Scroll(static_cast<float>(pos.second * 10)); // 10 is scale speed
+        pOrthoProjection->Scale(static_cast<float>(pos.second * 10)); // 10 is scale speed
     }
 }
 
@@ -273,7 +273,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->MoveUp(time * speed);
+                pCameraFpsController->RotateLeft(1);
             }
             break;
         }
@@ -281,10 +281,26 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->MoveDown(time * speed);
+                pCameraFpsController->RotateRight(1);
             }
             break;
         }
+         case Key::Space:
+         {
+             if (isPerspective)
+             {
+                 pCameraFpsController->MoveUp(time * speed);
+             }
+             break;
+         }
+         case Key::LeftControl:
+         {
+             if (isPerspective)
+             {
+                 pCameraFpsController->MoveDown(time * speed);
+             }
+             break;
+         }
         case Key::Up:
         {
             position.second -= static_cast<uint32_t>(time * speed);

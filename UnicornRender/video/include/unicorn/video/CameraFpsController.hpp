@@ -20,6 +20,8 @@ class CameraFpsController : public CameraController
 {
 public:
     UNICORN_EXPORT CameraFpsController(glm::mat4& cameraView);
+    UNICORN_EXPORT void RotateLeft(float degrees);
+    UNICORN_EXPORT void RotateRight(float degrees);
     UNICORN_EXPORT void MoveUp(float distance);
     UNICORN_EXPORT void MoveDown(float distance);
     UNICORN_EXPORT void MoveLeft(float distance);
@@ -33,14 +35,14 @@ public:
     /** @brief Sets mouse coordinates without updating view matrix */
     UNICORN_EXPORT void UpdateViewPositions(double posX, double posY);
 
-    //! Sensitivity of mouse
+    //! Mouse sensitivity
     float sensitivity;
 private:
     double m_lastX;
     double m_lastY;
     double m_yaw;
     double m_pitch;
-    bool m_dirty;
+    bool m_dirtyViewPosition;
 };
 
 } // namespace video

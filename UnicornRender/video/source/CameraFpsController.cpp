@@ -6,6 +6,9 @@
 
 #include <unicorn/video/CameraFpsController.hpp>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/rotate_vector.hpp>
+
 #include <algorithm>
 
 namespace unicorn
@@ -14,49 +17,61 @@ namespace video
 {
 
 CameraFpsController::CameraFpsController(glm::mat4& cameraView)
-    : CameraController(cameraView),
-    sensitivity(0.1f),
-    m_lastX(0.f),
-    m_lastY(0.f),
-    m_yaw(90.0),
-    m_pitch(0.0),
-    m_dirty(true)
+    : CameraController(cameraView)
+    , sensitivity(0.1f)
+    , m_lastX(0.f)
+    , m_lastY(0.f)
+    , m_yaw(90.0)
+    , m_pitch(0.0)
+    , m_dirtyViewPosition(true)
 {
 }
 
-void CameraFpsController::MoveUp(float deltaTime)
+void CameraFpsController::RotateLeft(float angle)
 {
-    m_position += glm::vec3(0.0f, -deltaTime, 0.0f);
+    m_upVector = glm::rotateZ(m_upVector, angle);
     m_isDirty = true;
 }
 
-void CameraFpsController::MoveDown(float deltaTime)
+void CameraFpsController::RotateRight(float angle)
 {
-    m_position += glm::vec3(0.0f, deltaTime, 0.0);
+    m_upVector = glm::rotateZ(m_upVector, -angle);
     m_isDirty = true;
 }
 
-void CameraFpsController::MoveLeft(float deltaTime)
+void CameraFpsController::MoveUp(float distance)
 {
-    m_position -= m_rightVector * deltaTime;
+    m_position += glm::vec3(0.0f, -distance, 0.0f);
     m_isDirty = true;
 }
 
-void CameraFpsController::MoveRight(float deltaTime)
+void CameraFpsController::MoveDown(float distance)
 {
-    m_position +=m_rightVector * deltaTime;
+    m_position += glm::vec3(0.0f, distance, 0.0);
     m_isDirty = true;
 }
 
-void CameraFpsController::MoveForward(float deltaTime)
+void CameraFpsController::MoveLeft(float distance)
 {
-    m_position += m_direction * deltaTime;
+    m_position -= m_rightVector * distance;
     m_isDirty = true;
 }
 
-void CameraFpsController::MoveBackward(float deltaTime)
+void CameraFpsController::MoveRight(float distance)
 {
-    m_position -= m_direction * deltaTime;
+    m_position +=m_rightVector * distance;
+    m_isDirty = true;
+}
+
+void CameraFpsController::MoveForward(float distance)
+{
+    m_position += m_direction * distance;
+    m_isDirty = true;
+}
+
+void CameraFpsController::MoveBackward(float distance)
+{
+    m_position -= m_direction * distance;
     m_isDirty = true;
 }
 
@@ -67,11 +82,13 @@ void CameraFpsController::UpdateView(double posX, double posY)
 
     m_lastX = posX;
     m_lastY = posY;
-    if(m_dirty)
+
+    if(m_dirtyViewPosition)
     {
-        m_dirty = false;
+        m_dirtyViewPosition = false;
         return;
     }
+
     m_yaw += xoffset;
     m_pitch += yoffset;
 

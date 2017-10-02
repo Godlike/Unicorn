@@ -13,21 +13,21 @@ namespace unicorn
 namespace video
 {
 
-void CameraController::SetDirection(const glm::vec3& direction)
+void CameraController::SetDirection(glm::vec3 const& direction)
 {
     m_direction = direction;
     m_rightVector = glm::normalize(glm::cross(m_direction, m_upVector));
     m_isDirty = true;
 }
 
-void CameraController::SetUpVector(const glm::vec3& upVector)
+void CameraController::SetUpVector(glm::vec3 const& upVector)
 {
     m_upVector = upVector;
     m_rightVector = glm::normalize(glm::cross(m_direction, m_upVector));
     m_isDirty = true;
 }
 
-void CameraController::SetPosition(const glm::vec3& position)
+void CameraController::SetPosition(glm::vec3 const& position)
 {
     m_position = position;
     m_isDirty = true;
@@ -57,13 +57,13 @@ void CameraController::Recalculate()
     }
 }
 
-CameraController::CameraController(glm::mat4& cameraView) :
-    m_cameraView(cameraView),
-    m_position(0.0),
-    m_upVector(0.0f, -1.0f, 0.0f),
-    m_direction(0.0),
-    m_rightVector(glm::cross(m_direction, m_upVector)),
-    m_isDirty(true)
+CameraController::CameraController(glm::mat4& cameraView)
+    : m_cameraView(cameraView)
+    , m_position(0.0)
+    , m_upVector(0.0f, -1.0f, 0.0f)
+    , m_direction(0.0)
+    , m_rightVector(glm::cross(m_direction, m_upVector))
+    , m_isDirty(true)
 {
 }
 

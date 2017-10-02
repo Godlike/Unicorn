@@ -20,20 +20,29 @@ namespace video
 class CameraProjection
 {
 public:
-    /** @brief Updates camera projection */
-    virtual void UpdateProjection() = 0;
-protected:
+    /**
+    * @brief Constructs CameraProjection
+    * @param [in] window holds pointer to window to update aspect ratio
+    * @param [in] cameraProj camera projection matrix
+    */
     CameraProjection(system::Window* window, glm::mat4& cameraProj);
+    /** @brief Disconnects from window signals */
     virtual ~CameraProjection();
 
+    /** @brief Recalculates projection matrix */
+    virtual void UpdateProjection() = 0;
+protected:
     /** @brief Disconnects from window signals */
-    void Disconnect(system::Window*);
+    void OnWindowDestroyed(system::Window*);
 
-    /** @brief Recalculates aspect ratio on window size changed signal */
+    /** @brief Recalculates aspect ratio */
     void OnWindowSizeChanged(system::Window*, std::pair<int32_t, int32_t> windowSize);
 
+    //! Aspect ratio
     float m_aspect;
+    //! Reference to camera projection matrix
     glm::mat4& m_cameraProjection;
+    //! Pointer to window
     system::Window* m_pWindow;
 };
 

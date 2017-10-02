@@ -13,13 +13,13 @@ namespace unicorn
 namespace video
 {
 
-PerspectiveCamera::PerspectiveCamera(system::Window* window, glm::mat4& cameraProj) :
-    CameraProjection(window, cameraProj),
-    m_fov(45.f),
-    m_fovLowerBound(44.f),
-    m_fovUpperBound(45.f),
-    m_znear(0.1f),
-    m_zfar(1000.f)
+PerspectiveCamera::PerspectiveCamera(system::Window* window, glm::mat4& cameraProj)
+    : CameraProjection(window, cameraProj)
+    , m_fov(45.f)
+    , m_fovLowerBound(44.f)
+    , m_fovUpperBound(45.f)
+    , m_znear(0.1f)
+    , m_zfar(1000.f)
 {
     UpdateProjection();
 }
@@ -32,9 +32,9 @@ void PerspectiveCamera::UpdateProjection()
                                           m_zfar);
 }
 
-void PerspectiveCamera::Scroll(float yoffset)
+void PerspectiveCamera::Zoom(float zoomOffset)
 {
-    SetFov(m_fov - yoffset);
+    SetFov(m_fov - zoomOffset);
 }
 
 void PerspectiveCamera::SetFov(float fov)
