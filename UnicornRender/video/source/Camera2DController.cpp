@@ -7,6 +7,7 @@
 #include <unicorn/video/Camera2DController.hpp>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace unicorn
 {
@@ -40,6 +41,13 @@ void Camera2DController::MoveRight(float distance)
 {
     m_position += m_rightVector * distance;
     m_isDirty = true;
+}
+
+void Camera2DController::UpdateViewMatrix()
+{    
+    m_cameraView = glm::lookAt(m_position,
+        m_position + m_direction,
+        m_upVector);    
 }
 
 } // namespace video

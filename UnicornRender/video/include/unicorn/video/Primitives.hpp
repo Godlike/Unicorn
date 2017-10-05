@@ -24,7 +24,8 @@ public:
     *  @param[out] mesh    geometry mesh
     *  @return reference to updated mesh
     */
-    UNICORN_EXPORT static Mesh& Cube(Mesh& mesh);
+    UNICORN_EXPORT static Mesh& Box(Mesh& mesh, glm::vec3 position = glm::vec3(0),
+        glm::vec3 rotation = glm::vec3(0), glm::vec3 scale = glm::vec3(0));
 
     /**
     *  @brief Fills given mesh with quad data
@@ -32,7 +33,8 @@ public:
     *  @param[out] mesh    geometry mesh
     *  @return reference to updated mesh
     */
-    UNICORN_EXPORT static Mesh& Quad(Mesh& mesh);
+    UNICORN_EXPORT static Mesh& Quad(Mesh& mesh, glm::vec3 position = glm::vec3(0), 
+        glm::vec3 rotation = glm::vec3(0), glm::vec3 scale = glm::vec3(0));
 
     /**
     *  @brief Fills given mesh with sphere data
@@ -44,7 +46,8 @@ public:
     *  @attention `rings * sectors` must be less than `std::vector<Vertex>::max_size()`
     *  @return reference to updated mesh
     */
-    UNICORN_EXPORT static Mesh& Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors);
+    UNICORN_EXPORT static Mesh& Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors,
+        glm::vec3 position = glm::vec3(0), glm::vec3 rotation = glm::vec3(0), glm::vec3 scale = glm::vec3(0));
 };
 }
 }

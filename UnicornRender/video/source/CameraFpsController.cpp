@@ -18,36 +18,32 @@ namespace video
 
 CameraFpsController::CameraFpsController(glm::mat4& cameraView)
     : CameraController(cameraView)
-    , sensitivity(0.1f)
-    , m_lastX(0.f)
-    , m_lastY(0.f)
-    , m_yaw(90.0)
-    , m_pitch(0.0)
+    , sensitivityX(0.005f)
+    , sensitivityY(0.005f)
+    , m_mousePosition(0)
+    , m_quat(0.0, 0.0, 0.0, 0.0)
+    , m_pitch(0)
+    , m_roll(0)
+    , m_yaw(0)
     , m_dirtyViewPosition(true)
 {
 }
 
-void CameraFpsController::RotateLeft(float angle)
+void CameraFpsController::Roll(float degrees)
 {
-    m_upVector = glm::rotateZ(m_upVector, angle);
-    m_isDirty = true;
-}
-
-void CameraFpsController::RotateRight(float angle)
-{
-    m_upVector = glm::rotateZ(m_upVector, -angle);
+    m_roll += degrees;
     m_isDirty = true;
 }
 
 void CameraFpsController::MoveUp(float distance)
 {
-    m_position += glm::vec3(0.0f, -distance, 0.0f);
+    m_position += glm::vec3(0.0f, distance, 0.0f);
     m_isDirty = true;
 }
 
 void CameraFpsController::MoveDown(float distance)
 {
-    m_position += glm::vec3(0.0f, distance, 0.0);
+    m_position += glm::vec3(0.0f, -distance, 0.0);
     m_isDirty = true;
 }
 
@@ -75,13 +71,10 @@ void CameraFpsController::MoveBackward(float distance)
     m_isDirty = true;
 }
 
-void CameraFpsController::UpdateView(double posX, double posY)
+void CameraFpsController::UpdateView(double x, double y)
 {
-    const double xoffset = (m_lastX - posX) * sensitivity;
-    const double yoffset = (posY - m_lastY) * sensitivity;
-
-    m_lastX = posX;
-    m_lastY = posY;
+    glm::vec2 mouseDelta = glm::vec2(x, y) - m_mousePosition;
+    m_mousePosition = glm::vec2(x, y);
 
     if(m_dirtyViewPosition)
     {
@@ -89,25 +82,34 @@ void CameraFpsController::UpdateView(double posX, double posY)
         return;
     }
 
-    m_yaw += xoffset;
-    m_pitch += yoffset;
-
-    m_pitch = std::max(std::min(m_pitch, 89.0), -89.0);
-
-    glm::vec3 front;
-    front.x = static_cast<float>(cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
-    front.y = static_cast<float>(sin(glm::radians(m_pitch)));
-    front.z = static_cast<float>(sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
-    m_direction = glm::normalize(front);
-    m_rightVector = glm::normalize(glm::cross(m_direction, m_upVector));
+    m_yaw = mouseDelta.x * sensitivityX;
+    m_pitch = mouseDelta.y * sensitivityY;
 
     m_isDirty = true;
 }
 
-void CameraFpsController::UpdateViewPositions(double posX, double posY)
+void CameraFpsController::SetViewPositions(double x, double y)
 {
-    m_lastX = posX;
-    m_lastY = posY;
+    m_mousePosition = glm::vec2(x, y);
+}
+
+void CameraFpsController::UpdateViewMatrix()
+{
+    glm::quat quat = glm::quat(glm::vec3(m_pitch, m_yaw, m_roll));
+
+    m_pitch = m_yaw = m_roll = 0;
+
+    m_quat = quat * m_quat;
+    m_quat = glm::normalize(m_quat);
+
+    m_direction = m_direction * m_quat;
+
+    glm::mat4 rotate = glm::mat4_cast(m_quat);
+
+    glm::mat4 translate = glm::mat4(1.0f);
+    translate = glm::translate(translate, m_position);
+
+    m_cameraView = rotate * translate;
 }
 
 } // namespace video

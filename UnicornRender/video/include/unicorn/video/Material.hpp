@@ -72,6 +72,7 @@ public:
 private:
     bool m_isColored;
     bool m_isWired;
+    bool m_isVisible;
     Texture const* m_albedo;
 };
 }

@@ -156,7 +156,7 @@ void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double,
     }
     else
     {
-        pCameraFpsController->UpdateViewPositions(pos.first, pos.second);
+        pCameraFpsController->SetViewPositions(pos.first, pos.second);
     }
 }
 
@@ -273,7 +273,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateLeft(1);
+                pCameraFpsController->Roll(1);
             }
             break;
         }
@@ -281,7 +281,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateRight(1);
+                pCameraFpsController->Roll(-1);
             }
             break;
         }
@@ -489,7 +489,7 @@ int main(int argc, char* argv[])
 
             unicorn::video::Mesh* texturedQuad = &Primitives::Quad(*vkRenderer->SpawnMesh(textureMaterial));
             unicorn::video::Mesh* mandrillQuad = &Primitives::Quad(*vkRenderer->SpawnMesh(mandrillMaterial));
-            unicorn::video::Mesh* texturedCube = &Primitives::Cube(*vkRenderer->SpawnMesh(textureMaterial));
+            unicorn::video::Mesh* texturedCube = &Primitives::Box(*vkRenderer->SpawnMesh(textureMaterial));
             unicorn::video::Mesh* frontBox = &Primitives::Quad(*vkRenderer->SpawnMesh(frontTexture));
             unicorn::video::Mesh* backBox = &Primitives::Quad(*vkRenderer->SpawnMesh(backTexture));
             unicorn::video::Mesh* leftBox = &Primitives::Quad(*vkRenderer->SpawnMesh(leftTexture));

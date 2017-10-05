@@ -6,8 +6,6 @@
 
 #include <unicorn/video/CameraController.hpp>
 
-#include <glm/gtc/matrix_transform.hpp>
-
 namespace unicorn
 {
 namespace video
@@ -65,13 +63,6 @@ CameraController::CameraController(glm::mat4& cameraView)
     , m_rightVector(glm::cross(m_direction, m_upVector))
     , m_isDirty(true)
 {
-}
-
-void CameraController::UpdateViewMatrix()
-{
-    m_cameraView = glm::lookAt(m_position,
-                               m_position + m_direction,
-                               m_upVector);
 }
 
 } // namespace video

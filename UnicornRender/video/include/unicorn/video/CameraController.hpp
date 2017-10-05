@@ -11,6 +11,7 @@
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 namespace unicorn
 {
@@ -45,14 +46,14 @@ protected:
     CameraController(glm::mat4& cameraView);
 
     /** @brief Recalculates view matrix */
-    void UpdateViewMatrix();
+    virtual void UpdateViewMatrix() = 0;
 
     glm::mat4& m_cameraView;
     glm::vec3 m_position;
     glm::vec3 m_upVector;
     glm::vec3 m_direction;
     glm::vec3 m_rightVector;
-
+    glm::quat m_rotation;
     bool m_isDirty;
 };
 
