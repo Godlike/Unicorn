@@ -12,6 +12,8 @@
 
 #include <wink/signal.hpp>
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <list>
 
@@ -19,9 +21,8 @@ namespace unicorn
 {
 namespace video
 {
-/**
- * @brief Vertex information
- */
+
+/** @brief Vertex information */
 struct Vertex
 {
     /** @brief Position of vertex */
@@ -31,9 +32,7 @@ struct Vertex
     glm::vec2 tc;
 };
 
-/**
-* @brief Mesh data
-*/
+/** @brief Mesh data */
 class Mesh
 {
 public:
@@ -71,20 +70,71 @@ public:
     */
     UNICORN_EXPORT Material const& GetMaterial() const;
 
-    /**
-    * @brief Matrix for model transformations
-    */
-    glm::mat4 modelMatrix;
+    UNICORN_EXPORT void Translate(glm::vec3 translation)
+    {
+        m_transform.translation += translation;
+    }
+
+    UNICORN_EXPORT glm::vec3 GetTranslate() const
+    {
+        return m_transform.translation;
+    }
+
+    // Counter clockwise
+    UNICORN_EXPORT void Rotate(float angleRadians, glm::vec3 axis) {
+        glm::quat q = glm::angleAxis(angleRadians, axis);
+        Rotate(q);
+    }
+
+    UNICORN_EXPORT void Rotate(glm::quat rotation) {
+        m_transform.orientation = rotation * m_transform.orientation;
+    }
+
+    UNICORN_EXPORT void RotateAroundPoint(float angleRadians, glm::vec3 axis, glm::vec3 origin)
+    {
+        glm::vec3 dir = origin - m_transform.translation;
+        Translate(dir);
+        glm::quat q = angleAxis(angleRadians, axis);
+        Translate(q * -dir);
+    }
+
+    UNICORN_EXPORT void Scale(glm::vec3 scale)
+    {
+        m_transform.scale = scale;
+    }
+
+    UNICORN_EXPORT void Shear()
+    {
+
+    }
+
+    UNICORN_EXPORT void Update()
+    {
+        auto T = glm::translate(glm::mat4(1.0), m_transform.translation);
+        auto R = mat4_cast(m_transform.orientation) * glm::mat4(1.0);
+        auto S = scale(glm::mat4(1.0), { m_transform.scale });
+        modelMatrix = T * R * S;
+    }
 
     /** @brief Event triggered when material is changed */
     wink::signal<wink::slot<void()>> MaterialUpdated;
 
     /** @brief Event triggered when vertices are changed */
     wink::signal<wink::slot<void()>> VerticesUpdated;
+
+    glm::mat4 modelMatrix;
 private:
     std::vector<Vertex> m_vertices;
     std::vector<uint32_t> m_indices;
     Material m_material;
+    
+    struct Transformations
+    {
+        Transformations();
+        glm::vec3 scale;
+        glm::vec3 translation;
+        glm::quat orientation;
+    } m_transform;
 };
 }
 }

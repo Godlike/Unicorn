@@ -20,28 +20,17 @@ class CameraFpsController : public CameraController
 {
 public:
     UNICORN_EXPORT CameraFpsController(glm::mat4& cameraView);
-    UNICORN_EXPORT void RotateLeft(float degrees);
-    UNICORN_EXPORT void RotateRight(float degrees);
-    UNICORN_EXPORT void MoveUp(float distance);
-    UNICORN_EXPORT void MoveDown(float distance);
-    UNICORN_EXPORT void MoveLeft(float distance);
-    UNICORN_EXPORT void MoveRight(float distance);
-    UNICORN_EXPORT void MoveForward(float distance);
-    UNICORN_EXPORT void MoveBackward(float distance);
 
     /** @brief Updates view matrix by taking diff between past and new mouse coordinates */
-    UNICORN_EXPORT void UpdateView(double posX, double posY);
+    UNICORN_EXPORT void UpdateView(float x, float y);
 
     /** @brief Sets mouse coordinates without updating view matrix */
-    UNICORN_EXPORT void UpdateViewPositions(double posX, double posY);
+    UNICORN_EXPORT void SetViewPositions(double x, double y);
 
-    //! Mouse sensitivity
-    float sensitivity;
+    UNICORN_EXPORT void ResetView();
 private:
-    double m_lastX;
-    double m_lastY;
-    double m_yaw;
-    double m_pitch;
+    //virtual void CalculateOrientation() override;
+    glm::vec2 m_mousePosition;
     bool m_dirtyViewPosition;
 };
 

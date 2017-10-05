@@ -11,6 +11,7 @@
 
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 namespace unicorn
 {
@@ -22,37 +23,68 @@ class CameraController
 {
 public:
     /** @brief Sets direction of the camera */
-    UNICORN_EXPORT void SetDirection(glm::vec3 const& direction);
+    UNICORN_EXPORT void SetDirection(glm::vec3 direction);
 
     /** @brief Sets up vector of the camera */
-    UNICORN_EXPORT void SetUpVector(glm::vec3 const& upVector);
+    UNICORN_EXPORT void SetUpVector(glm::vec3 upVector);
 
     /** @brief Sets position of the camera */
-    UNICORN_EXPORT void SetPosition(glm::vec3 const& position);
+    UNICORN_EXPORT void SetPosition(glm::vec3 position);
 
-    /** @brief Returns direction of the camera */
-    UNICORN_EXPORT glm::vec3 const& GetDirection() const;
+    UNICORN_EXPORT glm::vec3 GetDirection() const;
 
-    /** @brief Returns up vector of the camera */
-    UNICORN_EXPORT glm::vec3 const& GetUpVector() const;
+    UNICORN_EXPORT glm::vec3 GetRight() const;
 
-    /** @brief Returns position of the camera */
-    UNICORN_EXPORT glm::vec3 const& GetPosition() const;
+    UNICORN_EXPORT glm::vec3 GetUp() const;
+
+    UNICORN_EXPORT glm::vec3 GetPosition() const;
+
+    UNICORN_EXPORT void Translate(glm::vec3 translate);
+
+    UNICORN_EXPORT void TranslateLocalX(float distance);
+
+    UNICORN_EXPORT void TranslateLocalY(float distance);
+
+    UNICORN_EXPORT void TranslateLocalZ(float distance);
+
+    UNICORN_EXPORT void TranslateWorldX(float distance);
+
+    UNICORN_EXPORT void TranslateWorldY(float distance);
+
+    UNICORN_EXPORT void TranslateWorldZ(float distance);
+
+    UNICORN_EXPORT void RotateX(float radians);
+
+    UNICORN_EXPORT void RotateY(float radians);
+
+    UNICORN_EXPORT void RotateZ(float radians);
+
+    UNICORN_EXPORT void Rotate(glm::vec3 rotation);
+
+    UNICORN_EXPORT void RotateAroundPoint(float radians, glm::vec3 axis, glm::vec3 point);
 
     /** @brief Recalculates view matrix if needed */
-    UNICORN_EXPORT void Recalculate();
+    UNICORN_EXPORT void Update();
+
+    /** @brief Recalculates view matrix even if not needed */
+    UNICORN_EXPORT void ForceUpdate();
 protected:
     CameraController(glm::mat4& cameraView);
 
     /** @brief Recalculates view matrix */
     void UpdateViewMatrix();
+    virtual void CalculateOrientation();
 
     glm::mat4& m_cameraView;
+    glm::vec3 m_rotation;
     glm::vec3 m_position;
     glm::vec3 m_upVector;
     glm::vec3 m_direction;
+    const glm::vec3 m_worldX;
+    const glm::vec3 m_worldY;
+    const glm::vec3 m_worldZ;
     glm::vec3 m_rightVector;
-
+    glm::quat m_orientation;
     bool m_isDirty;
 };
 

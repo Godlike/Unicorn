@@ -106,6 +106,11 @@ bool VkMesh::IsWired() const
     return m_mesh.GetMaterial().IsWired();
 }
 
+bool VkMesh::isVisible() const
+{
+    return m_mesh.GetMaterial().IsVisible();
+}
+
 glm::vec3 VkMesh::GetColor() const
 {
     return m_mesh.GetMaterial().color;

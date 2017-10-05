@@ -40,6 +40,17 @@ public:
      */
     UNICORN_EXPORT void SetIsWired(bool wireframe);
 
+
+    UNICORN_EXPORT void SetIsVisible(bool visible)
+    {
+        m_isVisible = visible;
+    }
+
+    UNICORN_EXPORT bool IsVisible() const
+    {
+        return m_isVisible;
+    }
+
     /**
      * @brief Sets colored mode
      * @param[in] colored true if must render with color and false if render with albedo
@@ -72,6 +83,7 @@ public:
 private:
     bool m_isColored;
     bool m_isWired;
+    bool m_isVisible;
     Texture const* m_albedo;
 };
 }

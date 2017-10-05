@@ -1088,7 +1088,7 @@ bool Renderer::CreateGraphicsPipeline()
     vk::PipelineRasterizationStateCreateInfo rasterizer;
     rasterizer.lineWidth = 1.0f;
     rasterizer.cullMode = vk::CullModeFlagBits::eNone;
-    rasterizer.frontFace = vk::FrontFace::eClockwise;
+    rasterizer.frontFace = vk::FrontFace::eCounterClockwise;
     rasterizer.polygonMode = vk::PolygonMode::eFill;
 
     vk::PipelineMultisampleStateCreateInfo multisampling; // TODO: configure MSAA at global level.
@@ -1304,6 +1304,12 @@ bool Renderer::CreateCommandBuffers()
 
             for(auto pVkMesh : m_vkMeshes)
             {
+                if (!pVkMesh->isVisible())
+                {
+                    ++j;
+                    continue;
+                }
+
                 if(pVkMesh->IsValid())
                 {
                     glm::vec4 colorPush(

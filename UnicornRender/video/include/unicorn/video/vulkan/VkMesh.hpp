@@ -89,7 +89,7 @@ public:
 
     /** @brief Returns @c true if mesh is in wired mode and @c false otherwise */
     bool IsWired() const;
-
+    bool isVisible() const;
     /**
      * @brief Returns color of mesh in RGB format
      * @return color of mesh in RGB format
