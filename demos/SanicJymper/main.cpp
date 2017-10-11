@@ -215,6 +215,26 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
             vkRenderer->camera = perspective;
             break;
         }
+        case Key::Right:
+        {
+            pCameraFpsController->Yaw(1);
+            break;
+        }
+        case Key::Left:
+        {
+            pCameraFpsController->Yaw(-1);
+            break;
+        }
+        case Key::Up:
+        {
+            pCameraFpsController->Pitch(1);
+            break;
+        }
+        case Key::Down:
+        {
+            pCameraFpsController->Pitch(-1);
+            break;
+        }
         case Key::Normal_2:
         {
             isPerspective = false;
@@ -301,7 +321,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
              }
              break;
          }
-        case Key::Up:
+        /*case Key::Up:
         {
             position.second -= static_cast<uint32_t>(time * speed);
             positionChanged = true;
@@ -324,7 +344,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
             position.first += static_cast<uint32_t>(time * speed);
             positionChanged = true;
             break;
-        }
+        }*/
         case Key::C:
         {
             pWindow->SetMouseMode(MouseMode::Captured);

@@ -58,7 +58,7 @@ void CameraController::Recalculate()
 CameraController::CameraController(glm::mat4& cameraView)
     : m_cameraView(cameraView)
     , m_position(0.0)
-    , m_upVector(0.0f, -1.0f, 0.0f)
+    , m_upVector(0.0f, -1.0f, 0.0f) // TODO: -1 because in Vulkan Y axis looks down. Don't forget to abstract it with new renderer.
     , m_direction(0.0)
     , m_rightVector(glm::cross(m_direction, m_upVector))
     , m_isDirty(true)
