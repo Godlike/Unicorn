@@ -69,10 +69,10 @@ Mesh& Primitives::Box(Mesh& mesh, glm::vec3 position, glm::vec3 rotation, glm::v
 Mesh& Primitives::Quad(Mesh& mesh, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
     std::vector<Vertex> vertices{{
-        {{-0.5f , -0.5f , 0.0f},{1.0f , 0.0f}} ,
-        {{0.5f , -0.5f , 0.0f},{0.0f , 0.0f}} ,
-        {{0.5f , 0.5f , 0.0f},{0.0f , 1.0f}},
-        {{-0.5f , 0.5f , 0.0f},{1.0f , 1.0f}},
+        {{-0.5f , -0.5f , 0.0f},{0.0f , 1.0f}} ,
+        {{0.5f , -0.5f , 0.0f},{1.0f , 1.0f}} ,
+        {{0.5f , 0.5f , 0.0f},{1.0f , 0.0f}},
+        {{-0.5f , 0.5f , 0.0f},{0.0f , 0.0f}},
     }};
 
     mesh.SetMeshData(vertices, {0, 1, 2, 2, 3, 0});

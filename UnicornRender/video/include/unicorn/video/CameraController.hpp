@@ -31,17 +31,50 @@ public:
     /** @brief Sets position of the camera */
     UNICORN_EXPORT void SetPosition(glm::vec3 const& position);
 
-    /** @brief Returns direction of the camera */
-    UNICORN_EXPORT glm::vec3 const& GetDirection() const;
-
-    /** @brief Returns up vector of the camera */
-    UNICORN_EXPORT glm::vec3 const& GetUpVector() const;
-
-    /** @brief Returns position of the camera */
-    UNICORN_EXPORT glm::vec3 const& GetPosition() const;
-
     /** @brief Recalculates view matrix if needed */
     UNICORN_EXPORT void Recalculate();
+
+    UNICORN_EXPORT void Pitch(float pitchRadians) {
+        Rotate(pitchRadians, m_rightVector);
+    }
+
+    UNICORN_EXPORT void LookAt(glm::vec3 dir, glm::vec3 up);
+
+    UNICORN_EXPORT void Rotate(float angleRadians, const glm::vec3& axis) {
+        glm::quat q = glm::angleAxis(angleRadians, axis);
+        Rotate(q);
+    }
+
+    UNICORN_EXPORT void Rotate(const glm::quat& rotation) {
+        m_orientation = rotation * m_orientation;
+    }
+
+    UNICORN_EXPORT glm::vec3 GetDirection() const {
+        return glm::conjugate(m_orientation) * m_direction;
+    }
+
+    UNICORN_EXPORT glm::vec3 GetRight() const {
+        return glm::conjugate(m_orientation) * m_rightVector;
+    }
+
+    UNICORN_EXPORT glm::vec3 GetUp() const {
+        return glm::conjugate(m_orientation) * m_upVector;
+    }
+
+    UNICORN_EXPORT void MoveForward(float movement) {
+        m_position += GetDirection() * movement;
+    }
+
+    UNICORN_EXPORT void MoveLeft(float movement) {
+        m_position += GetRight() * movement;
+    }
+
+    UNICORN_EXPORT void MoveUp(float movement) {
+        m_position += GetUp() * movement;
+    }
+
+    glm::mat4 GetViewMatrix() const;
+
 protected:
     CameraController(glm::mat4& cameraView);
 
@@ -50,10 +83,10 @@ protected:
 
     glm::mat4& m_cameraView;
     glm::vec3 m_position;
-    glm::vec3 m_upVector;
-    glm::vec3 m_direction;
-    glm::vec3 m_rightVector;
-    glm::quat m_rotation;
+    const glm::vec3 m_upVector;
+    const glm::vec3 m_direction;
+    const glm::vec3 m_rightVector;
+    glm::quat m_orientation;
     bool m_isDirty;
 };
 
