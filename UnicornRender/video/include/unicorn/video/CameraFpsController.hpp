@@ -4,38 +4,51 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#ifndef UNICORN_VIDEO_CAMERA_FPS_CONTROLLER_HPP
-#define UNICORN_VIDEO_CAMERA_FPS_CONTROLLER_HPP
+#ifndef UNICORN_VIDEO_CAMERAFPSCONTROLLER_HPP
+#define UNICORN_VIDEO_CAMERAFPSCONTROLLER_HPP
 
 #include <unicorn/utility/SharedMacros.hpp>
-#include <unicorn/video/Camera.hpp>
+#include <unicorn/video/CameraController.hpp>
 
 namespace unicorn
 {
 namespace video
 {
-/**
- * @brief FPS style camera controller
- */
-class CameraFpsController
+
+/** @brief FPS style camera controller */
+class CameraFpsController : public CameraController
 {
 public:
-    UNICORN_EXPORT CameraFpsController(unicorn::video::Camera& camera);
-    UNICORN_EXPORT void MoveUp(float deltaTime) const;
-    UNICORN_EXPORT void MoveDown(float deltaTime) const;
-    UNICORN_EXPORT void MoveLeft(float deltaTime) const;
-    UNICORN_EXPORT void MoveRight(float deltaTime) const;
-    UNICORN_EXPORT void MoveForward(float deltaTime) const;
-    UNICORN_EXPORT void MoveBackward(float deltaTime) const;
-    UNICORN_EXPORT void UpdateView(double posX, double posY);
-    UNICORN_EXPORT void Scroll(float yoffset) const;
-    float sensitivity, speed;
-private:
-    double m_lastX, m_lastY, m_yaw, m_pitch;
-    bool m_dirty;
-    unicorn::video::Camera& m_camera;
-};
-}
-}
+    UNICORN_EXPORT CameraFpsController(glm::mat4& cameraView);
 
-#endif // UNICORN_VIDEO_CAMERA_FPS_CONTROLLER_HPP
+    /** @brief Updates view matrix by taking diff between past and new mouse coordinates */
+    UNICORN_EXPORT void UpdateView(float x, float y);
+
+    /** @brief Sets mouse coordinates without updating view matrix */
+    UNICORN_EXPORT void SetViewPositions(double x, double y);
+
+    UNICORN_EXPORT void Roll(float angleRadians)
+    {
+        m_roll += angleRadians;
+    }
+
+    //! Mouse sensitivity for x axis
+    float sensitivityX;
+    //! Mouse sensitivity for y axis
+    float sensitivityY;
+    //! Mouse sensitivity for z axis
+    float sensitivityZ;
+protected:
+    virtual void UpdateViewMatrix();
+private:
+    glm::vec2 m_mousePosition;
+    float m_yaw;
+    float m_pitch;
+    float m_roll;
+    bool m_dirtyViewPosition;
+};
+
+} // namespace video
+} // namespace unicorn
+
+#endif // UNICORN_VIDEO_CAMERAFPSCONTROLLER_HPP

@@ -27,6 +27,7 @@ class Window;
 namespace video
 {
 class Renderer;
+struct Camera;
 
 enum class DriverType
 {
@@ -145,7 +146,7 @@ public:
     *  @param  window Output window.
     *  @return Pointer to newly created Renderer, nullptr if any error occured.
     */
-    UNICORN_EXPORT Renderer* SpawnRenderer(system::Window* window);
+    UNICORN_EXPORT Renderer* SpawnRenderer(system::Window* window, Camera& camera);
 
     /** @brief Binds renderer to window. */
     UNICORN_EXPORT void BindWindowRenderer(system::Window* pWindow, Renderer* pRenderer);

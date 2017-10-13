@@ -12,6 +12,7 @@
 
 #include <wink/signal.hpp>
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #include <list>
 
@@ -19,25 +20,18 @@ namespace unicorn
 {
 namespace video
 {
-/**
- * @brief Vertex information
- */
+
+/** @brief Vertex information */
 struct Vertex
 {
-    /**
-     * @brief Position of vertex
-     */
+    /** @brief Position of vertex */
     glm::vec3 pos;
 
-    /**
-    * @brief Texture coordinates of vertex
-    */
+    /** @brief Texture coordinates of vertex */
     glm::vec2 tc;
 };
 
-/**
-* @brief Mesh data
-*/
+/** @brief Mesh data */
 class Mesh
 {
 public:
@@ -46,7 +40,7 @@ public:
 
     /**
     * @brief Updates vertices and indices geometry
-    * @param [in] vertices vertexes data
+    * @param [in] vertices vertices data
     * @param [in] indices indices data
     */
     UNICORN_EXPORT void SetMeshData(std::vector<Vertex> const& vertices, std::vector<uint32_t> const& indices);
@@ -75,20 +69,26 @@ public:
     */
     UNICORN_EXPORT Material const& GetMaterial() const;
 
-    /**
-    * @brief Matrix for model transformations
-    */
-    glm::mat4 modelMatrix;
-
     /** @brief Event triggered when material is changed */
     wink::signal<wink::slot<void()>> MaterialUpdated;
 
     /** @brief Event triggered when vertices are changed */
     wink::signal<wink::slot<void()>> VerticesUpdated;
+
+    glm::mat4 modelMatrix;
 private:
     std::vector<Vertex> m_vertices;
     std::vector<uint32_t> m_indices;
     Material m_material;
+    
+    struct m_transform
+    {
+        glm::vec3 scale;
+        glm::vec3 rotationOrigin;
+        glm::vec3 translation;
+        glm::vec3 worldTranslation;
+        glm::quat rotation;
+    };
 };
 }
 }

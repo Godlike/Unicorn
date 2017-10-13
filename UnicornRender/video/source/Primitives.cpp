@@ -9,11 +9,13 @@
 
 #include <glm/gtc/constants.hpp>
 
+#include <cassert>
+
 namespace unicorn
 {
 namespace video
 {
-void Primitives::Cube(Mesh& mesh)
+Mesh& Primitives::Box(Mesh& mesh, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
     std::vector<Vertex> vertices{{
         //front
@@ -60,44 +62,36 @@ void Primitives::Cube(Mesh& mesh)
                          12, 13, 14, 12, 14, 15,
                          16, 17, 18, 16, 18, 19,
                          20, 21, 22, 20, 22, 23});
+
+    return mesh;
 }
 
-void Primitives::Quad(Mesh& mesh)
+Mesh& Primitives::Quad(Mesh& mesh, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
     std::vector<Vertex> vertices{{
-        {{-0.5f , -0.5f , 0.0f},{1.0f , 0.0f}} ,
-        {{0.5f , -0.5f , 0.0f},{0.0f , 0.0f}} ,
-        {{0.5f , 0.5f , 0.0f},{0.0f , 1.0f}},
-        {{-0.5f , 0.5f , 0.0f},{1.0f , 1.0f}},
+        {{-0.5f , -0.5f , 0.0f},{0.0f , 1.0f}} ,
+        {{0.5f , -0.5f , 0.0f},{1.0f , 1.0f}} ,
+        {{0.5f , 0.5f , 0.0f},{1.0f , 0.0f}},
+        {{-0.5f , 0.5f , 0.0f},{0.0f , 0.0f}},
     }};
 
     mesh.SetMeshData(vertices, {0, 1, 2, 2, 3, 0});
+
+    return mesh;
 }
 
-void Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors)
+Mesh& Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors,
+    glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
-    if(radius < 0)
-    {
-        LOG_WARNING("Sphere radius less than 0, sphere will not be generated!");
-        return;
-    }
-
-    if(rings < 4 || sectors < 4)
-    {
-        LOG_WARNING("Rings or sectors are less than 4, sphere will not be generated!");
-        return;
-    }
+    assert(radius > 0);
+    assert(rings > 4 || sectors > 4);
 
     std::vector<uint32_t> indices;
     std::vector<Vertex> vertices;
 
     uint32_t vectorSize = rings * sectors;
 
-    if(vectorSize > vertices.max_size())
-    {
-        LOG_WARNING("Number of vertices is too big, sphere will not be generated!");
-        return;
-    }
+    assert(vectorSize < vertices.max_size());
 
     vertices.resize(vectorSize);
 
@@ -136,6 +130,8 @@ void Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t secto
     }
 
     mesh.SetMeshData(vertices, indices);
+
+    return mesh;
 }
 }
 }
