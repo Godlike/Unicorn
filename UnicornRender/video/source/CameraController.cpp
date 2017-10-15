@@ -65,9 +65,8 @@ void CameraController::SetPosition(glm::vec3 const& position)
     m_isDirty = true;
 }
 
-void CameraController::Recalculate()
+void CameraController::Update()
 {
-    UpdateViewMatrix();
     if (m_isDirty)
     {
         UpdateViewMatrix();

@@ -1304,7 +1304,7 @@ bool Renderer::CreateCommandBuffers()
 
             for(auto pVkMesh : m_vkMeshes)
             {
-                if(pVkMesh->IsValid())
+                if(pVkMesh->isVisible() && pVkMesh->IsValid())
                 {
                     glm::vec4 colorPush(
                         pVkMesh->GetColor(), // xyz - color

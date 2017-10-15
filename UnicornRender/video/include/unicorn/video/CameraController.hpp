@@ -32,46 +32,27 @@ public:
     UNICORN_EXPORT void SetPosition(glm::vec3 const& position);
 
     /** @brief Recalculates view matrix if needed */
-    UNICORN_EXPORT void Recalculate();
+    UNICORN_EXPORT void Update();
 
-    UNICORN_EXPORT void Pitch(float pitchRadians) {
-        Rotate(pitchRadians, m_rightVector);
-    }
+    UNICORN_EXPORT void Pitch(float pitchRadians);
 
     UNICORN_EXPORT void LookAt(glm::vec3 dir, glm::vec3 up);
 
-    UNICORN_EXPORT void Rotate(float angleRadians, const glm::vec3& axis) {
-        glm::quat q = glm::angleAxis(angleRadians, axis);
-        Rotate(q);
-    }
+    UNICORN_EXPORT void Rotate(float angleRadians, glm::vec3 axis);
 
-    UNICORN_EXPORT void Rotate(const glm::quat& rotation) {
-        m_orientation = rotation * m_orientation;
-    }
+    UNICORN_EXPORT void Rotate(glm::quat rotation);
 
-    UNICORN_EXPORT glm::vec3 GetDirection() const {
-        return glm::conjugate(m_orientation) * m_direction;
-    }
+    UNICORN_EXPORT glm::vec3 GetDirection() const;
 
-    UNICORN_EXPORT glm::vec3 GetRight() const {
-        return glm::conjugate(m_orientation) * m_rightVector;
-    }
+    UNICORN_EXPORT glm::vec3 GetRight() const;
 
-    UNICORN_EXPORT glm::vec3 GetUp() const {
-        return glm::conjugate(m_orientation) * m_upVector;
-    }
+    UNICORN_EXPORT glm::vec3 GetUp() const;
 
-    UNICORN_EXPORT void MoveForward(float movement) {
-        m_position += GetDirection() * movement;
-    }
+    UNICORN_EXPORT void MoveForward(float movement);
 
-    UNICORN_EXPORT void MoveLeft(float movement) {
-        m_position += GetRight() * movement;
-    }
+    UNICORN_EXPORT void MoveLeft(float movement);
 
-    UNICORN_EXPORT void MoveUp(float movement) {
-        m_position += GetUp() * movement;
-    }
+    UNICORN_EXPORT void MoveUp(float movement);
 
     glm::mat4 GetViewMatrix() const;
 

@@ -10,7 +10,16 @@ namespace unicorn
 {
 namespace video
 {
-Mesh::Mesh(Material const& material) : modelMatrix(glm::mat4(1.0)), m_material(material)
+Mesh::Mesh(Material const& material) 
+    : modelMatrix(glm::mat4(1.0))
+    , m_material(material)
+{
+}
+
+Mesh::Transformations::Transformations()
+    : scale(1)
+    , translation(0)
+    , orientation({ 0, 0, 0 })
 {
 }
 

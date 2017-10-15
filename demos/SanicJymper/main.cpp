@@ -63,9 +63,6 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     float currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
     float newDeltatime = currentFrame - lastFrame;
 
-    pCameraFpsController->Recalculate();
-    pCamera2DController->Recalculate();
-
     if(newDeltatime <= 0.0)
     {
         return;
@@ -73,11 +70,15 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
 
     deltaTime = newDeltatime;
 
+    // Updating transformations for meshes
     for(auto& mesh : meshes)
     {
-        mesh->modelMatrix = glm::rotate(mesh->modelMatrix, glm::radians(deltaTime * 30), { 1, 1, 1 });
-        mesh->modelMatrix = glm::translate(mesh->modelMatrix, { 0.001, 0, 0 });
+        mesh->Update();
     }
+
+    // Updating transformations for cameras
+    pCameraFpsController->Update();
+    pCamera2DController->Update();
 
     lastFrame = currentFrame;
 }
@@ -121,6 +122,7 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
                 unicorn::video::Material cubeMaterial;
                 cubeMaterial.color = {static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255};
                 cubeMaterial.SetIsWired(true);
+                cubeMaterial.SetIsVisible(false);
                 mesh->SetMaterial(cubeMaterial);
             }
             break;
@@ -177,8 +179,6 @@ void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double>
         pOrthoProjection->Scale(static_cast<float>(pos.second * 10)); // 10 is scale speed
     }
 }
-
-unicorn::video::Mesh* texturedQuad;
 
 void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEvent)
 {
@@ -445,26 +445,20 @@ int main(int argc, char* argv[])
         pOrthoProjection = new unicorn::video::OrthographicCamera(pWindow0, ortho->projection);
 
         pCameraFpsController = new unicorn::video::CameraFpsController(perspective->view);
-        pCameraFpsController->SetPosition({ 0.0f, 0.0f, -10.0f });
-        //pCameraFpsController->LookAt({ 0, 0, 1 }, {0, -1, 0 });
-        //pCameraFpsController->SetUpVector({ 0.0, 0.0, 0.0 });
-        //pCameraFpsController->SetDirection({ 0.0f, 0.0f, -1.0f });
 
         pCamera2DController = new unicorn::video::Camera2DController(ortho->view);
-        pCamera2DController->SetPosition({ 0.0f, 0.0f, -5.0f });
-        pCamera2DController->SetDirection({ 0.0f, 0.0f, 1.0f });
 
         {
             //Loading textures
             unicorn::video::Texture texture, textureMandrill;
             unicorn::video::Texture frontSkyBox, backSkyBox, leftSkyBox, rightSkyBox, topSkyBox, bottomSkyBox;
 
-            frontSkyBox.Load("data/textures/city_skybox/lmcity_ft.tga");
-            backSkyBox.Load("data/textures/city_skybox/lmcity_bk.tga");
-            leftSkyBox.Load("data/textures/city_skybox/lmcity_lf.tga");
-            rightSkyBox.Load("data/textures/city_skybox/lmcity_rt.tga");
-            topSkyBox.Load("data/textures/city_skybox/lmcity_up.tga");
-            bottomSkyBox.Load("data/textures/city_skybox/lmcity_dn.tga");
+            frontSkyBox.Load("data/textures/cubemap/posz.jpg");
+            backSkyBox.Load("data/textures/cubemap/negz.jpg");
+            leftSkyBox.Load("data/textures/cubemap/negx.jpg");
+            rightSkyBox.Load("data/textures/cubemap/posx.jpg");
+            topSkyBox.Load("data/textures/cubemap/posy.jpg");
+            bottomSkyBox.Load("data/textures/cubemap/negy.jpg");
 
             texture.Load("data/textures/texture.jpg");
             textureMandrill.Load("data/textures/mandrill.png");
@@ -497,56 +491,45 @@ int main(int argc, char* argv[])
 
             using unicorn::video::Primitives;
 
-            texturedQuad = &Primitives::Quad(*vkRenderer->SpawnMesh(textureMaterial));
-            //unicorn::video::Mesh* mandrillQuad = &Primitives::Quad(*vkRenderer->SpawnMesh(mandrillMaterial));
-            //texturedCube = &Primitives::Box(*vkRenderer->SpawnMesh(textureMaterial));
-            /*unicorn::video::Mesh* frontBox = &Primitives::Quad(*vkRenderer->SpawnMesh(frontTexture));
+            unicorn::video::Mesh* frontBox = &Primitives::Quad(*vkRenderer->SpawnMesh(frontTexture));
             unicorn::video::Mesh* backBox = &Primitives::Quad(*vkRenderer->SpawnMesh(backTexture));
             unicorn::video::Mesh* leftBox = &Primitives::Quad(*vkRenderer->SpawnMesh(leftTexture));
             unicorn::video::Mesh* rightBox = &Primitives::Quad(*vkRenderer->SpawnMesh(rightTexture));
             unicorn::video::Mesh* upBox = &Primitives::Quad(*vkRenderer->SpawnMesh(upTexture));
             unicorn::video::Mesh* bottomBox = &Primitives::Quad(*vkRenderer->SpawnMesh(bottomTexture));
 
-            unicorn::video::Mesh* leftSphere = &Primitives::Sphere(*vkRenderer->SpawnMesh(textureMaterial), 1, 32, 32);
-            unicorn::video::Mesh* rightSphere = &Primitives::Sphere(*vkRenderer->SpawnMesh(mandrillMaterial), 2, 32, 32);
-
-            leftSphere->modelMatrix = glm::translate(leftSphere->modelMatrix, { -3.0, 0.0, -1.0 });
-            rightSphere->modelMatrix = glm::translate(rightSphere->modelMatrix, { 3.0, 0.0, 1.0 });
-
-            mandrillQuad->modelMatrix = glm::translate(mandrillQuad->modelMatrix, {3.0, 0.0, 1.0});*/
-            //texturedCube->modelMatrix = glm::translate(texturedCube->modelMatrix, {0.0, 5.0, -5.0});
-
-            //meshes.push_back(texturedQuad);
+            meshes.push_back(frontBox);
+            meshes.push_back(backBox);
+            meshes.push_back(leftBox);
+            meshes.push_back(rightBox);
+            meshes.push_back(upBox);
+            meshes.push_back(bottomBox);
 
             //Skybox
-            //float skyBoxScaleFactor = 500;
-            //float skyBoxDistance = skyBoxScaleFactor / 2 - 1;
-/*
-            frontBox->modelMatrix = glm::translate(frontBox->modelMatrix, {0, 0, skyBoxDistance});
-            frontBox->modelMatrix = glm::scale(frontBox->modelMatrix, {skyBoxScaleFactor, skyBoxScaleFactor, 0});
+            const float skyBoxScaleFactor = 500;
+            const float skyBoxDistance = skyBoxScaleFactor / 2 - 1;
 
-            backBox->modelMatrix = glm::translate(backBox->modelMatrix, {0, 0, -skyBoxDistance});
-            backBox->modelMatrix = glm::rotate(backBox->modelMatrix, glm::radians(180.f), {0, 1, 0});
-            backBox->modelMatrix = glm::scale(backBox->modelMatrix, {skyBoxScaleFactor, skyBoxScaleFactor, 0});
+            frontBox->Translate({ 0, 0, skyBoxDistance });
+            backBox->Translate({ 0, 0, -skyBoxDistance });
+            backBox->Rotate(glm::radians(-180.0), { 0.0, 1.0, 0.0 });
 
-            leftBox->modelMatrix = glm::translate(leftBox->modelMatrix, {-skyBoxDistance, 0, 0});
-            leftBox->modelMatrix = glm::rotate(leftBox->modelMatrix, glm::radians(-90.f), {0, 1, 0});
-            leftBox->modelMatrix = glm::scale(leftBox->modelMatrix, {skyBoxScaleFactor, skyBoxScaleFactor, 0});
+            upBox->Translate({ 0, skyBoxDistance, 0 });
+            upBox->Rotate(glm::radians(-90.0), { 1.0, 0.0, 0.0 });
+            bottomBox->Translate({ 0, -skyBoxDistance, 0 });
+            bottomBox->Rotate(glm::radians(90.0), { 1.0, 0.0, 0.0 });
 
-            rightBox->modelMatrix = glm::translate(rightBox->modelMatrix, {skyBoxDistance, 0, 0});
-            rightBox->modelMatrix = glm::rotate(rightBox->modelMatrix, glm::radians(90.f), {0, 1, 0});
-            rightBox->modelMatrix = glm::scale(rightBox->modelMatrix, {skyBoxScaleFactor, skyBoxScaleFactor, 0});
+            leftBox->Translate({ -skyBoxDistance, 0, 0 });
+            leftBox->Rotate(glm::radians(-90.0), { 0.0, 1.0, 0.0 });
+            rightBox->Translate({ skyBoxDistance, 0, 0 });
+            rightBox->Rotate(glm::radians(90.0), { 0.0, 1.0, 0.0 });
 
-            upBox->modelMatrix = glm::translate(upBox->modelMatrix, {0, -skyBoxDistance, 0});
-            upBox->modelMatrix = glm::rotate(upBox->modelMatrix, glm::radians(90.f), {1, 0, 0});
-            upBox->modelMatrix = glm::rotate(upBox->modelMatrix, glm::radians(-90.f), {0, 0, 1});
-            upBox->modelMatrix = glm::scale(upBox->modelMatrix, {skyBoxScaleFactor, skyBoxScaleFactor, 0});
+            frontBox->Scale({ skyBoxScaleFactor, skyBoxScaleFactor, 0 });
+            backBox->Scale({ skyBoxScaleFactor, skyBoxScaleFactor, 0 });
+            upBox->Scale({ skyBoxScaleFactor, skyBoxScaleFactor, 0 });
+            bottomBox->Scale({ skyBoxScaleFactor, skyBoxScaleFactor, 0 });
+            leftBox->Scale({ skyBoxScaleFactor, skyBoxScaleFactor, 0 });
+            rightBox->Scale({ skyBoxScaleFactor, skyBoxScaleFactor, 0 });
 
-            bottomBox->modelMatrix = glm::translate(bottomBox->modelMatrix, {0, skyBoxDistance, 0});
-            bottomBox->modelMatrix = glm::rotate(bottomBox->modelMatrix, glm::radians(-90.f), {1, 0, 0});
-            bottomBox->modelMatrix = glm::rotate(bottomBox->modelMatrix, glm::radians(90.f), {0, 0, 1});
-            bottomBox->modelMatrix = glm::scale(bottomBox->modelMatrix, {skyBoxScaleFactor, skyBoxScaleFactor, 0});
-*/
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);
             pWindow0->Keyboard.connect(&onWindowKeyboard);
