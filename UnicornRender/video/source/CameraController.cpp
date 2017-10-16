@@ -44,6 +44,54 @@ glm::quat RotationBetweenVectors(glm::vec3 origin, glm::vec3 dest)
         rotationAxis.z * invs
     );
 }
+void CameraController::Pitch(float rad)
+{
+    Rotate(rad, m_rightVector);
+}
+
+void CameraController::Yaw(float rad)
+{
+    Rotate(rad, m_upVector);
+}
+
+void CameraController::Rotate(float rad, glm::vec3 axis)
+{
+    glm::quat q = glm::angleAxis(rad, axis);
+    Rotate(q);
+}
+
+void CameraController::Rotate(glm::quat rotation) 
+{
+    m_orientation = glm::normalize(rotation * m_orientation);
+    m_isDirty = true;
+}
+
+glm::vec3 CameraController::GetDirection() const {
+    return glm::conjugate(m_orientation) * m_direction;
+}
+
+glm::vec3 CameraController::GetRight() const {
+    return glm::conjugate(m_orientation) * m_rightVector;
+}
+
+glm::vec3 CameraController::GetUp() const {
+    return glm::conjugate(m_orientation) * m_upVector;
+}
+
+void CameraController::MoveForward(float movement) {
+    m_position += GetDirection() * movement;
+    m_isDirty = true;
+}
+
+void CameraController::MoveLeft(float movement) {
+    m_position += GetRight() * movement;
+    m_isDirty = true;
+}
+
+void CameraController::MoveUp(float movement) {
+    m_position += GetUp() * movement;
+    m_isDirty = true;
+}
 
 void CameraController::SetDirection(glm::vec3 const& direction)
 {
@@ -72,6 +120,11 @@ void CameraController::Update()
         UpdateViewMatrix();
         m_isDirty = false;
     }
+}
+
+void CameraController::Roll(float rad)
+{
+    Rotate(rad, m_direction);
 }
 
 void CameraController::LookAt(glm::vec3 dir, glm::vec3 up)
@@ -108,7 +161,24 @@ CameraController::CameraController(glm::mat4& cameraView)
     , m_rightVector(1.0, 0.0f, 0.0f)
     , m_isDirty(true)
     , m_orientation(glm::vec3(0))
+    , m_pitch(0.0f)
+    , m_roll(0.0f)
+    , m_yaw(0.0f)
 {
+}
+
+/** @brief Recalculates view matrix */
+
+void CameraController::UpdateViewMatrix()
+{
+    
+    Rotate(m_roll, m_direction);
+    Rotate(m_yaw, m_orientation * m_upVector); //TODO: remove this
+    Rotate(m_pitch, m_rightVector);
+
+    m_pitch = m_yaw = m_roll = 0;
+
+    m_cameraView = GetViewMatrix();
 }
 
 } // namespace video

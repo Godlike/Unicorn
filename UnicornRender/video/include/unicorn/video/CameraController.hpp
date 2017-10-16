@@ -34,11 +34,15 @@ public:
     /** @brief Recalculates view matrix if needed */
     UNICORN_EXPORT void Update();
 
-    UNICORN_EXPORT void Pitch(float pitchRadians);
+    UNICORN_EXPORT void Pitch(float rad);
+
+    UNICORN_EXPORT void Yaw(float rad);
+
+    UNICORN_EXPORT void Roll(float rad);
 
     UNICORN_EXPORT void LookAt(glm::vec3 dir, glm::vec3 up);
 
-    UNICORN_EXPORT void Rotate(float angleRadians, glm::vec3 axis);
+    UNICORN_EXPORT void Rotate(float rad, glm::vec3 axis);
 
     UNICORN_EXPORT void Rotate(glm::quat rotation);
 
@@ -54,13 +58,17 @@ public:
 
     UNICORN_EXPORT void MoveUp(float movement);
 
-    glm::mat4 GetViewMatrix() const;
+    UNICORN_EXPORT glm::mat4 GetViewMatrix() const;
 
 protected:
     CameraController(glm::mat4& cameraView);
 
+    float m_yaw;
+    float m_pitch;
+    float m_roll;
+
     /** @brief Recalculates view matrix */
-    virtual void UpdateViewMatrix() = 0;
+    void UpdateViewMatrix();
 
     glm::mat4& m_cameraView;
     glm::vec3 m_position;

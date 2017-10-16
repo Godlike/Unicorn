@@ -18,9 +18,6 @@ namespace video
 CameraFpsController::CameraFpsController(glm::mat4& cameraView)
     : CameraController(cameraView)
     , m_mousePosition(0)
-    , m_pitch(0.0f)
-    , m_roll(0.0f)
-    , m_yaw(0.0f)
     , m_dirtyViewPosition(true)
 {
 }
@@ -39,8 +36,8 @@ void CameraFpsController::UpdateView(float x, float y)
         return;
     }
 
-    m_yaw += xoffset;
-    m_pitch += yoffset;
+    m_yaw = xoffset;
+    m_pitch = yoffset;
 
     m_isDirty = true;
 }
@@ -50,16 +47,17 @@ void CameraFpsController::SetViewPositions(double x, double y)
     m_mousePosition = glm::vec2(x, y);
 }
 
-void CameraFpsController::UpdateViewMatrix()
-{    
-    Rotate(m_pitch, m_rightVector);
-    Rotate(m_yaw, m_upVector);
-    Rotate(m_roll, m_direction);
-
-    m_pitch = m_yaw = m_roll = 0;
-
-    m_cameraView = GetViewMatrix();
+void CameraFpsController::Reset()
+{
+    m_dirtyViewPosition = false;
 }
+
+void CameraFpsController::CameraRoll(float angleRadians)
+{
+    m_roll += angleRadians;
+    m_isDirty = true;
+}
+
 
 } // namespace video
 } // namespace unicorn

@@ -20,13 +20,6 @@ class Camera2DController : public CameraController
 {
 public:
     UNICORN_EXPORT Camera2DController(glm::mat4& cameraView);
-
-    UNICORN_EXPORT void MoveUp(float distance);
-    UNICORN_EXPORT void MoveDown(float distance);
-    UNICORN_EXPORT void MoveLeft(float distance);
-    UNICORN_EXPORT void MoveRight(float distance);
-private:
-    virtual void UpdateViewMatrix();
 };
 
 } // namespace video

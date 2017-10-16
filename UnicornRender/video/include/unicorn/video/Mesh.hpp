@@ -75,6 +75,11 @@ public:
         m_transform.translation += translation;
     }
 
+    UNICORN_EXPORT glm::vec3 GetTranslate() const
+    {
+        return m_transform.translation;
+    }
+
     // Counter clockwise
     UNICORN_EXPORT void Rotate(float angleRadians, glm::vec3 axis) {
         glm::quat q = glm::angleAxis(angleRadians, axis);
@@ -85,9 +90,12 @@ public:
         m_transform.orientation = rotation * m_transform.orientation;
     }
 
-    UNICORN_EXPORT void RotateAroundPoint(float angleRadians, glm::vec3 axis, glm::vec3 point)
+    UNICORN_EXPORT void RotateAroundPoint(float angleRadians, glm::vec3 axis, glm::vec3 origin)
     {
-        // rotated_point = origin + (orientation_quaternion * (point-origin));
+        glm::vec3 dir = origin - m_transform.translation;
+        Translate(dir);
+        glm::quat q = angleAxis(angleRadians, axis);
+        Translate(q * -dir);
     }
 
     UNICORN_EXPORT void Scale(glm::vec3 scale)
