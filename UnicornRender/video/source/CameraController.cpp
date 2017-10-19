@@ -7,109 +7,122 @@
 #include <unicorn/video/CameraController.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/norm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/euler_angles.hpp>
 
 namespace unicorn
 {
 namespace video
 {
 
-glm::quat RotationBetweenVectors(glm::vec3 origin, glm::vec3 dest) 
-{    
-    origin = normalize(origin);
-    dest = normalize(dest);
-    
-    float cosTheta = dot(origin, dest);
-    glm::vec3 rotationAxis;
-
-    if (cosTheta < -1 + 0.001f) {
-        // opposite directions, so guess one
-        rotationAxis = cross(glm::vec3(0.0f, 0.0f, 1.0f), origin);
-        if (length2(rotationAxis) < 0.01) // they parallel
-            rotationAxis = cross(glm::vec3(1.0f, 0.0f, 0.0f), origin);
-
-        rotationAxis = normalize(rotationAxis);
-        return glm::angleAxis(glm::radians(180.0f), rotationAxis);
-    }
-
-    rotationAxis = cross(origin, dest);
-
-    float s = sqrt((1 + cosTheta) * 2);
-    float invs = 1 / s;
-
-    return glm::quat(s * 0.5f,
-        rotationAxis.x * invs,
-        rotationAxis.y * invs,
-        rotationAxis.z * invs
-    );
-}
-void CameraController::Pitch(float rad)
+void CameraController::SetDirection(glm::vec3 direction)
 {
-    Rotate(rad, m_rightVector);
-}
-
-void CameraController::Yaw(float rad)
-{
-    Rotate(rad, m_upVector);
-}
-
-void CameraController::Rotate(float rad, glm::vec3 axis)
-{
-    glm::quat q = glm::angleAxis(rad, axis);
-    Rotate(q);
-}
-
-void CameraController::Rotate(glm::quat rotation) 
-{
-    m_orientation = glm::normalize(rotation * m_orientation);
+    m_direction = direction;
     m_isDirty = true;
 }
 
-glm::vec3 CameraController::GetDirection() const {
-    return glm::conjugate(m_orientation) * m_direction;
-}
-
-glm::vec3 CameraController::GetRight() const {
-    return glm::conjugate(m_orientation) * m_rightVector;
-}
-
-glm::vec3 CameraController::GetUp() const {
-    return glm::conjugate(m_orientation) * m_upVector;
-}
-
-void CameraController::MoveForward(float movement) {
-    m_position += GetDirection() * movement;
-    m_isDirty = true;
-}
-
-void CameraController::MoveLeft(float movement) {
-    m_position += GetRight() * movement;
-    m_isDirty = true;
-}
-
-void CameraController::MoveUp(float movement) {
-    m_position += GetUp() * movement;
-    m_isDirty = true;
-}
-
-void CameraController::SetDirection(glm::vec3 const& direction)
+void CameraController::SetUpVector(glm::vec3 upVector)
 {
-    auto q = RotationBetweenVectors(m_direction, direction);
-    Rotate(q);
+    m_upVector = upVector;
     m_isDirty = true;
 }
 
-void CameraController::SetUpVector(glm::vec3 const& upVector)
-{
-    auto q = RotationBetweenVectors(m_upVector, upVector);
-    Rotate(q);
-    m_isDirty = true;
-}
-
-void CameraController::SetPosition(glm::vec3 const& position)
+void CameraController::SetPosition(glm::vec3 position)
 {
     m_position = position;
+    m_isDirty = true;
+}
+
+glm::vec3 CameraController::GetDirection() const
+{
+    return m_direction;
+}
+
+glm::vec3 CameraController::GetRight() const
+{
+    return m_rightVector;
+}
+
+glm::vec3 CameraController::GetUp() const
+{
+    return m_upVector;
+}
+
+glm::vec3 CameraController::GetPosition() const
+{
+    return m_position;
+}
+
+void CameraController::Translate(glm::vec3 translate)
+{
+    m_position += translate;
+    m_isDirty = true;
+}
+
+void CameraController::TranslateLocalX(float distance)
+{
+    Translate(m_rightVector * distance);
+}
+
+void CameraController::TranslateLocalY(float distance)
+{
+    Translate(m_upVector * distance);
+}
+
+void CameraController::TranslateLocalZ(float distance)
+{
+    Translate(m_direction * distance);
+}
+
+void CameraController::TranslateWorldX(float distance)
+{
+    glm::vec3 worldX = { 1.0, 0.0, 0.0 };
+    Translate(worldX * distance);
+}
+
+void CameraController::TranslateWorldY(float distance)
+{
+    glm::vec3 worldY = { 0.0, 1.0, 0.0 };
+    Translate(worldY * distance);
+}
+
+void CameraController::TranslateWorldZ(float distance)
+{
+    glm::vec3 worldZ = { 0.0, 0.0, 1.0 };
+    Translate(worldZ * distance);
+}
+
+void CameraController::RotateX(float radians)
+{
+    m_rotation.x += radians;
+    m_isDirty = true;
+}
+
+void CameraController::RotateY(float radians)
+{
+    m_rotation.y += radians;
+    m_isDirty = true;
+}
+
+void CameraController::RotateZ(float radians)
+{
+    m_rotation.z += radians;
+    m_isDirty = true;
+}
+
+void CameraController::Rotate(glm::vec3 rotation)
+{
+    m_rotation += rotation;
+    m_isDirty = true;
+}
+
+void CameraController::RotateAroundPoint(float radians, glm::vec3 axis, glm::vec3 point)
+{
+    glm::vec3 dir = point - m_position;
+    Translate(dir);
+    glm::quat q = angleAxis(radians, axis);
+    Translate(q * -dir);
     m_isDirty = true;
 }
 
@@ -122,63 +135,43 @@ void CameraController::Update()
     }
 }
 
-void CameraController::Roll(float rad)
+void CameraController::UpdateForce()
 {
-    Rotate(rad, m_direction);
-}
-
-void CameraController::LookAt(glm::vec3 dir, glm::vec3 up)
-{
-    if (length2(dir) < 0.0001f)
-        return;
-
-    // Recompute desiredUp so that it's perpendicular to the direction
-    // You can skip that part if you really want to force desiredUp
-    glm::vec3 right = cross(dir, up);
-    up = cross(right, dir);
-
-    // Find the rotation between the front of the object (that we assume towards +Z,
-    // but this depends on your model) and the desired direction
-    glm::quat rot1 = RotationBetweenVectors(m_direction, dir);
-    // Because of the 1rst rotation, the up is probably completely screwed up. 
-    // Find the rotation between the "up" of the rotated object, and the desired up
-    glm::vec3 newUp = rot1 * glm::vec3(0.0f, 1.0f, 0.0f);
-    glm::quat rot2 = RotationBetweenVectors(newUp, up);
-    Rotate(rot2 * rot1);
-}
-
-glm::mat4 CameraController::GetViewMatrix() const {
-    glm::mat4 viewMatrix = glm::mat4_cast(m_orientation);
-    viewMatrix = glm::translate(viewMatrix, m_position);
-    return viewMatrix;
+    UpdateViewMatrix();
 }
 
 CameraController::CameraController(glm::mat4& cameraView)
     : m_cameraView(cameraView)
+    , m_rotation(0.0)
     , m_position(0.0)
     , m_upVector(0.0f, 1.0f, 0.0f)
     , m_direction(0.0f, 0.0f, 1.0f)
     , m_rightVector(1.0, 0.0f, 0.0f)
+    , m_orientation(m_rotation)
     , m_isDirty(true)
-    , m_orientation(glm::vec3(0))
-    , m_pitch(0.0f)
-    , m_roll(0.0f)
-    , m_yaw(0.0f)
 {
 }
 
 /** @brief Recalculates view matrix */
 
 void CameraController::UpdateViewMatrix()
-{
-    
-    Rotate(m_roll, m_direction);
-    Rotate(m_yaw, m_orientation * m_upVector); //TODO: remove this
-    Rotate(m_pitch, m_rightVector);
+{   
+    glm::quat x = glm::angleAxis(m_rotation.y, glm::vec3(1.0, 0.0, 0.0));
+    glm::quat y = glm::angleAxis(m_rotation.x, glm::vec3(0.0, 1.0, 0.0));
+    glm::quat z = glm::angleAxis(m_rotation.z, glm::vec3(0.0, 0.0, 1.0));
 
-    m_pitch = m_yaw = m_roll = 0;
+    m_orientation = x * y * z * m_orientation;
 
-    m_cameraView = GetViewMatrix();
+    m_rotation.x = 0;
+    m_rotation.y = 0;
+    m_rotation.z = 0;
+
+    m_direction = m_orientation * glm::vec3(0.0, 0.0, 1.0);
+    m_rightVector = m_orientation * glm::vec3(1.0, 0.0, 0.0);
+    m_upVector = glm::cross(m_direction, m_rightVector);
+
+    m_cameraView = glm::mat4_cast(m_orientation) * glm::translate(glm::mat4(1.0), -m_position); // but why
+
 }
 
 } // namespace video

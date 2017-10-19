@@ -27,16 +27,7 @@ public:
     /** @brief Sets mouse coordinates without updating view matrix */
     UNICORN_EXPORT void SetViewPositions(double x, double y);
 
-    UNICORN_EXPORT void Reset();
-
-    UNICORN_EXPORT void CameraRoll(float angleRadians);
-
-    //! Mouse sensitivity for x axis
-    float sensitivityX;
-    //! Mouse sensitivity for y axis
-    float sensitivityY;
-    //! Mouse sensitivity for z axis
-    float sensitivityZ;
+    UNICORN_EXPORT void ResetView();
 private:
     glm::vec2 m_mousePosition;
     bool m_dirtyViewPosition;

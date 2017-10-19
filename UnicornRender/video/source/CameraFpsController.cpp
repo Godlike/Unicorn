@@ -36,8 +36,8 @@ void CameraFpsController::UpdateView(float x, float y)
         return;
     }
 
-    m_yaw = xoffset;
-    m_pitch = yoffset;
+    m_rotation.x += glm::radians(xoffset);
+    m_rotation.y += glm::radians(yoffset);
 
     m_isDirty = true;
 }
@@ -47,17 +47,10 @@ void CameraFpsController::SetViewPositions(double x, double y)
     m_mousePosition = glm::vec2(x, y);
 }
 
-void CameraFpsController::Reset()
+void CameraFpsController::ResetView()
 {
     m_dirtyViewPosition = false;
 }
-
-void CameraFpsController::CameraRoll(float angleRadians)
-{
-    m_roll += angleRadians;
-    m_isDirty = true;
-}
-
 
 } // namespace video
 } // namespace unicorn

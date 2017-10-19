@@ -45,9 +45,9 @@ std::list<unicorn::video::Mesh*> meshes;
 float deltaTime = 0.0f; // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
-const float xSens = 0.005f;
-const float ySens = 0.005f;
-const float zSens = 1.f;
+const float xSens = 0.05f;
+const float ySens = 0.05f;
+const float zSens = 0.05f;
 
 //Camera settings
 bool isPerspective = true;
@@ -74,9 +74,8 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     deltaTime = newDeltatime;
 
     // Applying transforms
-    earth->RotateAroundPoint(glm::radians(90.) * deltaTime , { 0, 1, 0 }, sun->GetTranslate());
-    sun->RotateAroundPoint(glm::radians(90.) * deltaTime, { 0, 1, 0 }, earth->GetTranslate());
-
+    earth->RotateAroundPoint(static_cast<float>(glm::radians(90.)) * deltaTime , { 0, 1, 0 }, sun->GetTranslate());
+    sun->RotateAroundPoint(static_cast<float>(glm::radians(90.)) * deltaTime, { 0, 1, 0 }, earth->GetTranslate());    
     // Updating transformations for meshes
     for(auto& mesh : meshes)
     {
@@ -163,8 +162,8 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
 
 void onCursorPositionChanged(unicorn::system::Window* pWindow, std::pair<double, double> pos)
 {
-    const auto xOffset = pos.first * xSens;
-    const auto yOffset = pos.second * ySens;
+    const float xOffset = static_cast<float>(pos.first) * xSens;
+    const float yOffset = static_cast<float>(pos.second) * ySens;
     if (isPerspective)
     {
         pCameraFpsController->UpdateView(xOffset, yOffset);
@@ -240,11 +239,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->MoveForward(time * speed);
+                pCameraFpsController->TranslateLocalZ(time * speed);
             }
             else
             {
-                pCamera2DController->MoveUp(time * speed);
+                pCamera2DController->TranslateLocalY(time * speed);
             }
             break;
         }
@@ -252,11 +251,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->MoveForward(-time * speed);
+                pCameraFpsController->TranslateLocalZ(-time * speed);
             }
             else
             {
-                pCamera2DController->MoveUp(-time * speed);
+                pCamera2DController->TranslateLocalY(-time * speed);
             }
             break;
         }
@@ -264,11 +263,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->MoveLeft(time * speed);
+                pCameraFpsController->TranslateLocalX(time * speed);
             }
             else
             {
-                pCamera2DController->MoveLeft(time * speed);
+                pCamera2DController->TranslateLocalX(time * speed);
             }
             break;
         }
@@ -276,11 +275,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->MoveLeft(-time * speed);
+                pCameraFpsController->TranslateLocalX(-time * speed);
             }
             else
             {
-                pCamera2DController->MoveLeft(-time * speed);
+                pCamera2DController->TranslateLocalX(-time * speed);
             }
             break;
         }
@@ -288,7 +287,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->CameraRoll(glm::radians(-1.) * zSens);
+                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(-1.)) * zSens);
             }
             break;
         }
@@ -296,7 +295,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->CameraRoll(glm::radians(1.) * zSens);
+                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(1.)) * zSens);
             }
             break;
         }
@@ -304,7 +303,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
          {
              if (isPerspective)
              {
-                 pCameraFpsController->MoveUp(time * speed);
+                 pCameraFpsController->TranslateLocalY(time * speed);
              }
              break;
          }
@@ -312,7 +311,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
          {
              if (isPerspective)
              {
-                 pCameraFpsController->MoveUp(-time * speed);
+                 pCameraFpsController->TranslateLocalY(-time * speed);
              }
              break;
          }
@@ -468,17 +467,17 @@ bool MakeCubeMap()
 
     frontBox->Translate({ 0, 0, skyBoxDistance });
     backBox->Translate({ 0, 0, -skyBoxDistance });
-    backBox->Rotate(glm::radians(-180.0), { 0.0, 1.0, 0.0 });
+    backBox->Rotate(static_cast<float>(glm::radians(-180.0)), { 0.0, 1.0, 0.0 });
 
     upBox->Translate({ 0, skyBoxDistance, 0 });
-    upBox->Rotate(glm::radians(-90.0), { 1.0, 0.0, 0.0 });
+    upBox->Rotate(static_cast<float>(glm::radians(-90.0)), { 1.0, 0.0, 0.0 });
     bottomBox->Translate({ 0, -skyBoxDistance, 0 });
-    bottomBox->Rotate(glm::radians(90.0), { 1.0, 0.0, 0.0 });
+    bottomBox->Rotate(static_cast<float>(glm::radians(90.0)), { 1.0, 0.0, 0.0 });
 
     leftBox->Translate({ -skyBoxDistance, 0, 0 });
-    leftBox->Rotate(glm::radians(-90.0), { 0.0, 1.0, 0.0 });
+    leftBox->Rotate(static_cast<float>(glm::radians(-90.0)), { 0.0, 1.0, 0.0 });
     rightBox->Translate({ skyBoxDistance, 0, 0 });
-    rightBox->Rotate(glm::radians(90.0), { 0.0, 1.0, 0.0 });
+    rightBox->Rotate(static_cast<float>(glm::radians(90.0)), { 0.0, 1.0, 0.0 });
 
     frontBox->Scale({ skyBoxScaleFactor, skyBoxScaleFactor, 0 });
     backBox->Scale({ skyBoxScaleFactor, skyBoxScaleFactor, 0 });
@@ -542,6 +541,17 @@ int main(int argc, char* argv[])
         pCamera2DController = new unicorn::video::Camera2DController(ortho->view);
 
         {
+            //Loading textures
+            unicorn::video::Texture texture, textureMandrill;
+
+            texture.Load("data/textures/texture.jpg");
+            textureMandrill.Load("data/textures/mandrill.png");
+
+            if (!texture.IsLoaded()
+                || !textureMandrill.IsLoaded())
+            {
+                return -1;
+            }
 
             if (!MakeCubeMap())
             {
@@ -555,17 +565,15 @@ int main(int argc, char* argv[])
             sun = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
             sun->Scale({ 1, 1, 1 });
             mat.color = unicorn::video::Color::Green();
+            mat.SetAlbedo(&texture);
             earth = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
             earth->Scale({ 2, 2, 2 });
             earth->Translate({ -15, 0, -50 });
             sun->Translate({ 15, 0, -50 });
 
-            //earth->RotateAroundPoint(glm::radians(90.), { 0, 1,0 }, sun->GetTranslate());
-            //earth->RotateAroundPoint(glm::radians(90.), { 0,1,0 }, sun->GetTranslate());
-            //earth->RotateAroundPoint(glm::radians(90.), { 0,1,0 }, sun->GetTranslate());
-            //earth->RotateAroundPoint(glm::radians(90.), { 0,1,0 }, sun->GetTranslate());
-            //earth->RotateAroundPoint(glm::radians(90.), { 0,1,0 }, sun->GetTranslate());
+            //unicorn::video::Mesh* box = &Primitives::Box(*vkRenderer->SpawnMesh(mat));
 
+           // meshes.push_back(box);
             meshes.push_back(earth);
             meshes.push_back(sun);
 
