@@ -75,7 +75,10 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
 
     // Applying transforms
     earth->RotateAroundPoint(static_cast<float>(glm::radians(90.)) * deltaTime , { 0, 1, 0 }, sun->GetTranslate());
-    sun->RotateAroundPoint(static_cast<float>(glm::radians(90.)) * deltaTime, { 0, 1, 0 }, earth->GetTranslate());    
+    sun->RotateAroundPoint(static_cast<float>(glm::radians(90.)) * deltaTime, { 0, 1, 0 }, earth->GetTranslate());
+
+    //pCameraFpsController->SetPosition(earth->GetTranslate() + glm::vec3(0, 5, 0));
+    //pCameraFpsController->SetDirection(sun->GetTranslate() - pCameraFpsController->GetPosition());
     // Updating transformations for meshes
     for(auto& mesh : meshes)
     {

@@ -25,7 +25,7 @@ CameraFpsController::CameraFpsController(glm::mat4& cameraView)
 void CameraFpsController::UpdateView(float x, float y)
 {
     const float xoffset = x - m_mousePosition.x;
-    const float yoffset = y - m_mousePosition.y;
+    const float yoffset = m_mousePosition.y - y;
 
     m_mousePosition.x = x;
     m_mousePosition.y = y;
@@ -36,8 +36,10 @@ void CameraFpsController::UpdateView(float x, float y)
         return;
     }
 
-    m_rotation.x += glm::radians(xoffset);
-    m_rotation.y += glm::radians(yoffset);
+    m_rotation.x += yoffset;
+    m_rotation.y += glm::radians(xoffset);
+
+    m_rotation.x = glm::radians(std::max(std::min(m_rotation.x, 89.0f), -89.0f));
 
     m_isDirty = true;
 }
@@ -51,6 +53,16 @@ void CameraFpsController::ResetView()
 {
     m_dirtyViewPosition = false;
 }
+
+void CameraFpsController::CalculateOrientation()
+{
+    glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
+    glm::quat y = glm::angleAxis(m_rotation.y, m_orientation * m_worldY);
+
+    m_orientation = x * y * m_orientation;
+
+}
+
 
 } // namespace video
 } // namespace unicorn

@@ -19,12 +19,14 @@ namespace video
 void CameraController::SetDirection(glm::vec3 direction)
 {
     m_direction = direction;
+    m_orientation = glm::quat(glm::vec3(0));
     m_isDirty = true;
 }
 
 void CameraController::SetUpVector(glm::vec3 upVector)
 {
     m_upVector = upVector;
+    m_orientation = glm::quat(glm::vec3(0));
     m_isDirty = true;
 }
 
@@ -77,20 +79,17 @@ void CameraController::TranslateLocalZ(float distance)
 
 void CameraController::TranslateWorldX(float distance)
 {
-    glm::vec3 worldX = { 1.0, 0.0, 0.0 };
-    Translate(worldX * distance);
+    Translate(m_worldX * distance);
 }
 
 void CameraController::TranslateWorldY(float distance)
 {
-    glm::vec3 worldY = { 0.0, 1.0, 0.0 };
-    Translate(worldY * distance);
+    Translate(m_worldY * distance);
 }
 
 void CameraController::TranslateWorldZ(float distance)
 {
-    glm::vec3 worldZ = { 0.0, 0.0, 1.0 };
-    Translate(worldZ * distance);
+    Translate(m_worldZ * distance);
 }
 
 void CameraController::RotateX(float radians)
@@ -130,12 +129,13 @@ void CameraController::Update()
 {
     if (m_isDirty)
     {
+        CalculateOrientation();
         UpdateViewMatrix();
         m_isDirty = false;
     }
 }
 
-void CameraController::UpdateForce()
+void CameraController::ForceUpdate()
 {
     UpdateViewMatrix();
 }
@@ -146,6 +146,9 @@ CameraController::CameraController(glm::mat4& cameraView)
     , m_position(0.0)
     , m_upVector(0.0f, 1.0f, 0.0f)
     , m_direction(0.0f, 0.0f, 1.0f)
+    , m_worldX(1.f, 0.f, 0.f)
+    , m_worldY(0.f, 1.f, 0.f)
+    , m_worldZ(0.f, 0.f, 1.f)
     , m_rightVector(1.0, 0.0f, 0.0f)
     , m_orientation(m_rotation)
     , m_isDirty(true)
@@ -155,23 +158,25 @@ CameraController::CameraController(glm::mat4& cameraView)
 /** @brief Recalculates view matrix */
 
 void CameraController::UpdateViewMatrix()
-{   
-    glm::quat x = glm::angleAxis(m_rotation.y, glm::vec3(1.0, 0.0, 0.0));
-    glm::quat y = glm::angleAxis(m_rotation.x, glm::vec3(0.0, 1.0, 0.0));
-    glm::quat z = glm::angleAxis(m_rotation.z, glm::vec3(0.0, 0.0, 1.0));
+{
+    m_direction = glm::conjugate(m_orientation) * m_direction;
+    m_upVector = glm::conjugate(m_orientation) * m_upVector;
+    m_rightVector = glm::cross(m_upVector, m_direction);
+    
+    m_orientation = glm::quat(glm::vec3(0));
 
-    m_orientation = x * y * z * m_orientation;
+    m_cameraView = glm::lookAt(m_position, m_position + m_direction, m_upVector);
+}
 
-    m_rotation.x = 0;
-    m_rotation.y = 0;
-    m_rotation.z = 0;
+void CameraController::CalculateOrientation()
+{
+    glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
+    glm::quat y = glm::angleAxis(m_rotation.y, m_worldY);
+    glm::quat z = glm::angleAxis(m_rotation.z, m_worldZ);
 
-    m_direction = m_orientation * glm::vec3(0.0, 0.0, 1.0);
-    m_rightVector = m_orientation * glm::vec3(1.0, 0.0, 0.0);
-    m_upVector = glm::cross(m_direction, m_rightVector);
+    m_orientation = z * x * y * m_orientation;
 
-    m_cameraView = glm::mat4_cast(m_orientation) * glm::translate(glm::mat4(1.0), -m_position); // but why
-
+    m_rotation = { 0 };
 }
 
 } // namespace video

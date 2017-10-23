@@ -67,19 +67,22 @@ public:
     UNICORN_EXPORT void Update();
 
     /** @brief Recalculates view matrix even if not needed */
-    UNICORN_EXPORT void UpdateForce();
+    UNICORN_EXPORT void ForceUpdate();
 protected:
     CameraController(glm::mat4& cameraView);
 
-
     /** @brief Recalculates view matrix */
     void UpdateViewMatrix();
+    virtual void CalculateOrientation();
 
     glm::mat4& m_cameraView;
     glm::vec3 m_rotation;
     glm::vec3 m_position;
     glm::vec3 m_upVector;
     glm::vec3 m_direction;
+    const glm::vec3 m_worldX;
+    const glm::vec3 m_worldY;
+    const glm::vec3 m_worldZ;
     glm::vec3 m_rightVector;
     glm::quat m_orientation;
     bool m_isDirty;

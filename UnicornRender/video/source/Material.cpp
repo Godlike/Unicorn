@@ -12,11 +12,12 @@ namespace unicorn
 {
 namespace video
 {
-Material::Material() : color(Color::Red())
-                     , m_isColored(true)
-                     , m_isWired(false)
-                     , m_albedo(nullptr)
-                     , m_isVisible(true)
+Material::Material() 
+    : color(Color::Red())
+    , m_isColored(true)
+    , m_isVisible(true)
+    , m_isWired(false)
+    , m_albedo(nullptr)
 {
 }
 
