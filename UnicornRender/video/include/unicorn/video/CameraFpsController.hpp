@@ -29,7 +29,7 @@ public:
 
     UNICORN_EXPORT void ResetView();
 private:
-    virtual void CalculateOrientation() override;
+    //virtual void CalculateOrientation() override;
     glm::vec2 m_mousePosition;
     bool m_dirtyViewPosition;
 };

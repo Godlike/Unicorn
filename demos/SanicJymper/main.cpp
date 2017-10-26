@@ -286,11 +286,19 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
             }
             break;
         }
+        case Key::B:
+        {
+            if (isPerspective)
+            {
+                pCameraFpsController->SetDirection({ 0, 0, 1 });
+            }
+            break;
+        }
         case Key::Q:
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(-1.)) * zSens);
+                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(1.)) * zSens);
             }
             break;
         }
@@ -298,7 +306,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(1.)) * zSens);
+                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(-1.)) * zSens);
             }
             break;
         }
@@ -540,7 +548,8 @@ int main(int argc, char* argv[])
         pOrthoProjection = new unicorn::video::OrthographicCamera(pWindow0, ortho->projection);
 
         pCameraFpsController = new unicorn::video::CameraFpsController(perspective->view);
-
+        //pCameraFpsController->SetDirection({ 0, 0, 1 });
+        pCameraFpsController->SetPosition({ 0, 0, -15 });
         pCamera2DController = new unicorn::video::Camera2DController(ortho->view);
 
         {
@@ -571,8 +580,8 @@ int main(int argc, char* argv[])
             mat.SetAlbedo(&texture);
             earth = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
             earth->Scale({ 2, 2, 2 });
-            earth->Translate({ -15, 0, -50 });
-            sun->Translate({ 15, 0, -50 });
+            earth->Translate({ -15, 0, 50 });
+            sun->Translate({ 15, 0, 50 });
 
             //unicorn::video::Mesh* box = &Primitives::Box(*vkRenderer->SpawnMesh(mat));
 
