@@ -290,7 +290,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->SetDirection({ 0, 0, 1 });
+                pCameraFpsController->SetOrientation({ 0, 0, 1 }, { 0, -1, 0 });
             }
             break;
         }
