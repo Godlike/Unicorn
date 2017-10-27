@@ -17,77 +17,30 @@ namespace unicorn
 namespace video
 {
 
-glm::quat RotationBetweenVectors(glm::vec3 v1, glm::vec3 v2)
+glm::quat RotationBetweenVectors(glm::vec3 v0, glm::vec3 v1)
 {
-    glm::quat q;
-    const auto cosTheta = dot(v1, v2);
-    //const auto a = cross(v2, v1);
+    glm::quat q = glm::quat(glm::vec3(0));
 
-    glm::vec3 rotationAxis;
-    
-    if (cosTheta < -1 + 0.001f) {
-        // special case when vectors in opposite directions:
-        // there is no "ideal" rotation axis
-        // So guess one; any will do as long as it's perpendicular to start
-        rotationAxis = cross(glm::vec3(0.0f, 0.0f, 1.0f), v1);
-            
-        if (glm::length2(rotationAxis) < 0.01) // bad luck, they were parallel, try again! 
-            rotationAxis = cross(glm::vec3(1.0f, 0.0f, 0.0f), v1);
-    
-        rotationAxis = normalize(rotationAxis);
-        return glm::angleAxis(glm::radians(180.0f), rotationAxis);
-    }
-    
-    rotationAxis = cross(v2, v1);
+    v0 = normalize(v0);
+    v1 = normalize(v1);
 
-    q = rotationAxis;
-    q.w = glm::sqrt(pow(length(v1), 2) * (length(v2), 2) + cosTheta);
-    return normalize(q);
+    const float d = dot(v0, v1);
+    const glm::vec3 c = cross(v0, v1);
+    const float s = sqrt((1 + d) * 2);
+
+    q.x = c.x / s;
+    q.y = c.y / s;
+    q.z = c.z / s;
+    q.w = s / 2.0f;
+
+    return q;
 }
 
-//glm::quat RotationBetweenVectors(glm::vec3 start, glm::vec3 dest) {
-//    start = normalize(start);
-//    dest = normalize(dest);
-//
-//    float cosTheta = dot(start, dest);
-//    glm::vec3 rotationAxis;
-//
-//    if (cosTheta < -1 + 0.001f) {
-//        // special case when vectors in opposite directions:
-//        // there is no "ideal" rotation axis
-//        // So guess one; any will do as long as it's perpendicular to start
-//        rotationAxis = cross(glm::vec3(0.0f, 0.0f, 1.0f), start);
-//        
-//        if (glm::length2(rotationAxis) < 0.01) // bad luck, they were parallel, try again! 
-//            rotationAxis = cross(glm::vec3(1.0f, 0.0f, 0.0f), start);
-//
-//        rotationAxis = normalize(rotationAxis);
-//        return glm::angleAxis(glm::radians(180.0f), rotationAxis);
-//    }
-//
-//    rotationAxis = cross(start, dest);
-//
-//    float s = sqrt((1 + cosTheta) * 2);
-//    float invs = 1 / s;
-//
-//    return glm::quat(
-//        s * 0.5f,
-//        rotationAxis.x * invs,
-//        rotationAxis.y * invs,
-//        rotationAxis.z * invs
-//    );
-//
-//}
-
-void CameraController::SetDirection(glm::vec3 direction)
+void CameraController::SetOrientation(glm::vec3 direction, glm::vec3 upvector)
 {
-    m_orientation = RotationBetweenVectors(m_direction, direction) * m_orientation;
-    m_isDirty = true;
-}
+    glm::mat4 mat = lookAt(m_position, m_position + direction, upvector);
+    m_orientation = normalize(quat_cast(mat));
 
-void CameraController::SetUpVector(glm::vec3 upVector)
-{
-    m_orientation = RotationBetweenVectors(m_upVector, upVector) * m_orientation;
     m_isDirty = true;
 }
 
@@ -220,8 +173,8 @@ CameraController::CameraController(glm::mat4& cameraView)
 
 void CameraController::UpdateViewMatrix()
 {
-    m_direction = glm::normalize(glm::conjugate(m_orientation) * m_worldZ);
-    m_upVector = glm::normalize(glm::conjugate(m_orientation) * m_worldY);
+    m_direction = glm::conjugate(m_orientation) * m_worldZ;
+    m_upVector = glm::conjugate(m_orientation) * m_worldY;
     m_rightVector = glm::cross(m_upVector, m_direction);
     
     //m_orientation = glm::quat(glm::vec3(0));

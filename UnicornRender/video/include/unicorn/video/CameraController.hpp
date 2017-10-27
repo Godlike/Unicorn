@@ -23,10 +23,8 @@ class CameraController
 {
 public:
     /** @brief Sets direction of the camera */
-    UNICORN_EXPORT void SetDirection(glm::vec3 direction);
+    UNICORN_EXPORT void SetOrientation(glm::vec3 direction, glm::vec3 upvector);
 
-    /** @brief Sets up vector of the camera */
-    UNICORN_EXPORT void SetUpVector(glm::vec3 upVector);
 
     /** @brief Sets position of the camera */
     UNICORN_EXPORT void SetPosition(glm::vec3 position);
