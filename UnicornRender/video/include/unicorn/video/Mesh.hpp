@@ -9,6 +9,7 @@
 
 #include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/video/Material.hpp>
+#include <unicorn/video/Transform.hpp>
 
 #include <wink/signal.hpp>
 #include <glm/glm.hpp>
@@ -33,7 +34,7 @@ struct Vertex
 };
 
 /** @brief Mesh data */
-class Mesh
+class Mesh : public Transform
 {
 public:
     UNICORN_EXPORT Mesh(Material const& material);
@@ -70,37 +71,9 @@ public:
     */
     UNICORN_EXPORT Material const& GetMaterial() const;
 
-    UNICORN_EXPORT void Translate(glm::vec3 translation)
-    {
-        m_transform.translation += translation;
-    }
-
-    UNICORN_EXPORT glm::vec3 GetTranslate() const
-    {
-        return m_transform.translation;
-    }
-
-    // Counter clockwise
-    UNICORN_EXPORT void Rotate(float angleRadians, glm::vec3 axis) {
-        glm::quat q = glm::angleAxis(angleRadians, axis);
-        Rotate(q);
-    }
-
-    UNICORN_EXPORT void Rotate(glm::quat rotation) {
-        m_transform.orientation = rotation * m_transform.orientation;
-    }
-
-    UNICORN_EXPORT void RotateAroundPoint(float angleRadians, glm::vec3 axis, glm::vec3 origin)
-    {
-        glm::vec3 dir = origin - m_transform.translation;
-        Translate(dir);
-        glm::quat q = angleAxis(angleRadians, axis);
-        Translate(q * -dir);
-    }
-
     UNICORN_EXPORT void Scale(glm::vec3 scale)
     {
-        m_transform.scale = scale;
+        m_scale = scale;
     }
 
     UNICORN_EXPORT void Shear()
@@ -108,11 +81,14 @@ public:
 
     }
 
-    UNICORN_EXPORT void Update()
+    UNICORN_EXPORT void Calculate()
     {
-        auto T = glm::translate(glm::mat4(1.0), m_transform.translation);
-        auto R = mat4_cast(m_transform.orientation) * glm::mat4(1.0);
-        auto S = scale(glm::mat4(1.0), { m_transform.scale });
+        CalculateOrientation();
+
+        auto T = glm::translate(glm::mat4(1.0), m_translation);
+        auto R = mat4_cast(m_orientation) * glm::mat4(1.0);
+        auto S = scale(glm::mat4(1.0), { m_scale });
+
         modelMatrix = T * R * S;
     }
 
@@ -127,14 +103,8 @@ private:
     std::vector<Vertex> m_vertices;
     std::vector<uint32_t> m_indices;
     Material m_material;
-    
-    struct Transformations
-    {
-        Transformations();
-        glm::vec3 scale;
-        glm::vec3 translation;
-        glm::quat orientation;
-    } m_transform;
+
+    glm::vec3 m_scale;
 };
 }
 }

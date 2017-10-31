@@ -15,7 +15,7 @@ namespace unicorn
 {
 namespace video
 {
-Mesh& Primitives::Box(Mesh& mesh, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+Mesh& Primitives::Box(Mesh& mesh)
 {
     std::vector<Vertex> vertices{{
         //front
@@ -66,7 +66,7 @@ Mesh& Primitives::Box(Mesh& mesh, glm::vec3 position, glm::vec3 rotation, glm::v
     return mesh;
 }
 
-Mesh& Primitives::Quad(Mesh& mesh, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+Mesh& Primitives::Quad(Mesh& mesh)
 {
     std::vector<Vertex> vertices{{
         {{-0.5f , -0.5f , 0.0f},{0.0f , 1.0f}} ,
@@ -80,8 +80,7 @@ Mesh& Primitives::Quad(Mesh& mesh, glm::vec3 position, glm::vec3 rotation, glm::
     return mesh;
 }
 
-Mesh& Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors,
-    glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+Mesh& Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors)
 {
     assert(radius > 0);
     assert(rings > 4 || sectors > 4);
