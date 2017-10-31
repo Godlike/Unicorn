@@ -37,6 +37,7 @@ public:
     /** @brief Returns fov */
     UNICORN_EXPORT float GetFov() const;
 
+    /** @brief      { function_description } */
     void UpdateProjection() override;
 private:
     float m_fov;

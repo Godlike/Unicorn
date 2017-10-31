@@ -47,6 +47,7 @@ set(VIDEO_HEADERS
     include/unicorn/video/Mesh.hpp
     include/unicorn/video/Material.hpp
     include/unicorn/video/Primitives.hpp
+    include/unicorn/video/Transform.hpp
 )
 
 set(VIDEO_SOURCES
@@ -63,6 +64,7 @@ set(VIDEO_SOURCES
     source/Mesh.cpp
     source/Material.cpp
     source/Primitives.cpp
+    source/Transform.cpp
 )
 
 add_library(video OBJECT

@@ -10,19 +10,14 @@
 #include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/system/Window.hpp>
 
-#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <wink/slot.hpp>
-
-#include <utility>
 
 namespace unicorn
 {
 namespace video
 {
 
-/** @brief Camera struct, holds view and projection matrices. */
+/** @brief Camera struct, holds view and projection matrices */
 struct Camera
 {
     glm::mat4 projection = glm::mat4();

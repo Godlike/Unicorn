@@ -77,17 +77,18 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     earth->RotateAroundPoint(static_cast<float>(glm::radians(90.)) * deltaTime , { 0, 1, 0 }, sun->GetTranslate());
     sun->RotateAroundPoint(static_cast<float>(glm::radians(90.)) * deltaTime, { 0, 1, 0 }, earth->GetTranslate());
 
-    //pCameraFpsController->SetPosition(earth->GetTranslate() + glm::vec3(0, 5, 0));
-    //pCameraFpsController->SetDirection(sun->GetTranslate() - pCameraFpsController->GetPosition());
+    //pCameraFpsController->SetTranslate(earth->GetTranslate() + glm::vec3(0, 5, 0));
+    //pCameraFpsController->LookAtDirection(sun->GetTranslate() - pCameraFpsController->GetTranslate(), {0, 1, 0});
+
     // Updating transformations for meshes
     for(auto& mesh : meshes)
     {
-        mesh->Update();
+        mesh->Calculate();
     }
 
     // Updating transformations for cameras
-    pCameraFpsController->Update();
-    pCamera2DController->Update();
+    pCameraFpsController->Calculate();
+    pCamera2DController->Calculate();
 
     lastFrame = currentFrame;
 }
@@ -209,7 +210,6 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
     unicorn::system::input::Modifier::Mask const& modifiers = keyboardEvent.modifiers;
 
     std::pair<int32_t, int32_t> position = pWindow->GetPosition();
-    bool positionChanged = false;
 
     float time = deltaTime * 0.1f;
     float speed = 1000.f;
@@ -286,11 +286,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
             }
             break;
         }
-        case Key::B:
+        case Key::N:
         {
             if (isPerspective)
             {
-                pCameraFpsController->SetOrientation({ 0, 0, 1 }, { 0, -1, 0 });
+                pCameraFpsController->RotateY(glm::radians(1.f));
             }
             break;
         }
@@ -298,7 +298,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(1.)) * zSens);
+                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(1.)));
             }
             break;
         }
@@ -306,7 +306,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(-1.)) * zSens);
+                pCameraFpsController->RotateZ(static_cast<float>(-glm::radians(1.)));
             }
             break;
         }
@@ -328,26 +328,22 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
          }
         case Key::Up:
         {
-            position.second -= static_cast<uint32_t>(time * speed);
-            positionChanged = true;
+            pCameraFpsController->RotateX(static_cast<float>(glm::radians(1.)));
             break;
         }
         case Key::Down:
         {
-            position.second += static_cast<uint32_t>(time * speed);
-            positionChanged = true;
+            pCameraFpsController->RotateX(static_cast<float>(glm::radians(-1.)));
             break;
         }
         case Key::Left:
         {
-            position.first -= static_cast<uint32_t>(time * speed);
-            positionChanged = true;
+            pCameraFpsController->RotateY(static_cast<float>(glm::radians(-1.)));
             break;
         }
         case Key::Right:
-        {;
-            position.first += static_cast<uint32_t>(time * speed);
-            positionChanged = true;
+        {
+            pCameraFpsController->RotateY(static_cast<float>(glm::radians(1.)));
             break;
         }
         case Key::C:
@@ -398,11 +394,6 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             break;
         }
-    }
-
-    if(positionChanged)
-    {
-        pWindow->SetPosition(position);
     }
 }
 
@@ -549,7 +540,7 @@ int main(int argc, char* argv[])
 
         pCameraFpsController = new unicorn::video::CameraFpsController(perspective->view);
         //pCameraFpsController->SetDirection({ 0, 0, 1 });
-        pCameraFpsController->SetPosition({ 0, 0, -15 });
+        pCameraFpsController->SetTranslate({ 15, 15, 15 });
         pCamera2DController = new unicorn::video::Camera2DController(ortho->view);
 
         {
@@ -574,6 +565,21 @@ int main(int argc, char* argv[])
 
             unicorn::video::Material mat;
 
+            mat.color = unicorn::video::Color::LightPink();
+            auto x_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
+
+
+            mat.color = unicorn::video::Color::Green();
+            auto x_minus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
+
+            mat.color = unicorn::video::Color::Blue();
+            auto z_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
+
+            x_minus->Translate({ -250, 0, 0 });
+            x_plus->Translate({ 250, 0, 0 });
+            z_plus->Translate({ 0, 0, 250 });
+
+            mat.color = unicorn::video::Color::Red();
             sun = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
             sun->Scale({ 1, 1, 1 });
             mat.color = unicorn::video::Color::Green();
@@ -588,6 +594,9 @@ int main(int argc, char* argv[])
            // meshes.push_back(box);
             meshes.push_back(earth);
             meshes.push_back(sun);
+            meshes.push_back(x_plus);
+            meshes.push_back(x_minus);
+            meshes.push_back(z_plus);
 
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
