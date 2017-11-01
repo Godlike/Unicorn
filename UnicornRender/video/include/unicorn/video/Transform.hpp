@@ -38,6 +38,8 @@ public:
 
     }
 
+    virtual ~Transform() = default;
+
     UNICORN_EXPORT void LookAtDirection(glm::vec3 direction)
     {
         glm::mat4 mat = lookAt(m_translation, m_translation + direction, m_upVector);
@@ -87,7 +89,7 @@ public:
     UNICORN_EXPORT void Translate(glm::vec3 translate)
     {
         m_translation += translate;
-        
+
         m_isDirty = true;
     }
 
@@ -124,7 +126,7 @@ public:
         m_isDirty = true;
     }
 
-    UNICORN_EXPORT void TranslateLocalX(float distance) 
+    UNICORN_EXPORT void TranslateLocalX(float distance)
     {
         Translate(m_rightVector * distance);
     }
@@ -157,7 +159,7 @@ public:
     UNICORN_EXPORT void RotateX(float radians)
     {
         m_rotation.x += radians;
-     
+
         m_isDirty = true;
     }
 
@@ -208,7 +210,7 @@ protected:
 
         m_orientation = z * x * y * m_orientation;
 
-        m_rotation = { 0 };
+        m_rotation = glm::vec3(0);
     }
 
     void Update()

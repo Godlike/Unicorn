@@ -55,7 +55,7 @@ void CameraFpsController::CalculateOrientation()
 
     m_orientation = x * y * m_orientation;
 
-    m_rotation = { 0 };
+    m_rotation = glm::vec3(0);
 }
 
 
