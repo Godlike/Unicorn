@@ -19,7 +19,7 @@ namespace video
 using namespace glm;
 
 // Returns a quaternion such that q*start = dest
-quat RotationBetweenVectors0(vec3 start, vec3 dest){
+quat RotationBetweenVectors0(vec3 start, vec3 dest){  
     start = normalize(start);
     dest = normalize(dest);
 
@@ -42,6 +42,7 @@ quat RotationBetweenVectors0(vec3 start, vec3 dest){
 
     // Implementation from Stan Melax's Game Programming Gems 1 article
     rotationAxis = cross(start, dest);
+
 
     float s = sqrt( (1 + cosTheta)*2 );
     float invs = 1 / s;
@@ -155,9 +156,9 @@ Transform::Transform()
     }
 
 void Transform::LookAtDirection(glm::vec3 direction, glm::vec3 upVector)
-{
-    m_orientation = RotationBetweenVectors0(m_direction, direction);
-
+{ 
+    m_orientation = RotationBetweenVectors0(m_worldZ, direction);
+    m_orientation = LookAt(direction, upVector);
     m_isDirty = true;
 }
 
@@ -170,7 +171,7 @@ void Transform::LookAtPoint(glm::vec3 point, glm::vec3 upVector) // Not Working
     m_isDirty = true;
 }
 
-void Transform::SetUp(glm::vec3 upVector) // Not Working
+void Transform::SetUp(glm::vec3 upVector)
 {
     glm::mat4 mat = lookAt(m_translation, m_translation + m_direction, upVector);
     m_orientation = normalize(quat_cast(mat));
@@ -178,7 +179,7 @@ void Transform::SetUp(glm::vec3 upVector) // Not Working
     m_isDirty = true;
 }
 
-void Transform::SetRight(glm::vec3 rightVector) // Not Working
+void Transform::SetRight(glm::vec3 rightVector)
 {
     m_rightVector = rightVector;
     m_upVector = cross(m_direction, m_rightVector);
@@ -186,7 +187,7 @@ void Transform::SetRight(glm::vec3 rightVector) // Not Working
     m_isDirty = true;
 }
 
-void Transform::SetTranslate(glm::vec3 translate) // Works
+void Transform::SetTranslate(glm::vec3 translate)
 {
     m_translation = translate;
 
@@ -200,7 +201,7 @@ void Transform::SetWorldCoordinates(glm::vec3 x, glm::vec3 y, glm::vec3 z)
     m_worldZ = z;
 }
 
-void Transform::Translate(glm::vec3 translate)  // Works
+void Transform::Translate(glm::vec3 translate)
 {
     m_translation += translate;
 
@@ -307,9 +308,9 @@ void Transform::Rotate(float angleRadians, glm::vec3 axis) {
 
 void Transform::CalculateOrientation()
 {
-    glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
-    glm::quat y = glm::angleAxis(m_rotation.y, m_worldY);
-    glm::quat z = glm::angleAxis(m_rotation.z, m_worldZ);
+    glm::quat x = glm::angleAxis(m_rotation.x, m_rightVector);
+    glm::quat y = glm::angleAxis(m_rotation.y, m_upVector);
+    glm::quat z = glm::angleAxis(m_rotation.z, m_direction);
 
     m_orientation = z * x * y * m_orientation;
 
@@ -322,8 +323,8 @@ void Transform::Update()
     {
         CalculateOrientation();
 
-        m_direction = conjugate(m_orientation) * m_worldZ;
-        m_upVector = conjugate(m_orientation) * m_worldY;
+        m_direction = m_orientation * m_worldZ;
+        m_upVector = m_orientation * m_worldY;
         m_rightVector = cross(m_upVector, m_direction);
 
         m_transformMatrix = glm::lookAt(m_translation, m_translation + m_direction, m_upVector);

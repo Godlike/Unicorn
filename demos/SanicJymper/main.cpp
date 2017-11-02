@@ -291,9 +291,9 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                //pCameraFpsController->LookAtDirection(sun->GetTranslate() - pCameraFpsController->GetTranslate(), {0, 1, 0});
-                pCameraFpsController->LookAtDirection({1, 0, 0}, {0, 1, 0});
-                //pCameraFpsController->RotateX(glm::radians(0.1f));
+                //pCameraFpsController->LookAtDirection(glm::vec3( 0, 1, 0), {0, 1, 0});
+                //pCameraFpsController->LookAtDirection({1, 0, 0}, {0, 1, 0});
+                pCameraFpsController->RotateX(glm::radians(1.f));
             }
             break;
         }
@@ -301,7 +301,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateZ(glm::radians(0.1));
+                pCameraFpsController->RotateY(glm::radians(1.f));
             }
             break;
         }
@@ -585,6 +585,21 @@ int main(int argc, char* argv[])
 
             unicorn::video::Material mat;
 
+            mat.color = unicorn::video::Color::LightPink();
+            auto x_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
+
+
+            mat.color = unicorn::video::Color::Green();
+            auto x_minus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
+
+            mat.color = unicorn::video::Color::Blue();
+            auto z_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
+
+            x_minus->Translate({ -250, 0, 0 });
+            x_plus->Translate({ 250, 0, 0 });
+            z_plus->Translate({ 0, 0, 250 });
+
+            mat.color = unicorn::video::Color::Red();
             sun = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
             sun->Scale({ 1, 1, 1 });
             mat.color = unicorn::video::Color::Green();
@@ -599,6 +614,9 @@ int main(int argc, char* argv[])
            // meshes.push_back(box);
             meshes.push_back(earth);
             meshes.push_back(sun);
+            meshes.push_back(x_plus);
+            meshes.push_back(x_minus);
+            meshes.push_back(z_plus);
 
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);

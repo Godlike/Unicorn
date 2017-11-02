@@ -32,8 +32,8 @@ void CameraFpsController::UpdateView(float x, float y)
         return;
     }
 
-    m_rotation.x += glm::radians(yoffset);
-    m_rotation.y += glm::radians(xoffset);
+    m_rotation.x += -glm::radians(yoffset);
+    m_rotation.y += -glm::radians(xoffset);
 
     m_isDirty = true;
 }
@@ -48,15 +48,15 @@ void CameraFpsController::ResetView()
     m_dirtyViewPosition = false;
 }
 
-// void CameraFpsController::CalculateOrientation()
-// {
-//     glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
-//     glm::quat y = glm::angleAxis(m_rotation.y, m_orientation * m_worldY);
+ void CameraFpsController::CalculateOrientation()
+ {
+     glm::quat x = glm::angleAxis(m_rotation.x, m_rightVector);
+     glm::quat y = glm::angleAxis(m_rotation.y, glm::inverse(m_orientation) * m_upVector);
 
-//     m_orientation = x * y * m_orientation;
+     m_orientation = x * y * m_orientation;
 
-//     m_rotation = glm::vec3(0);
-// }
+     m_rotation = glm::vec3(0);
+ }
 
 
 } // namespace video
