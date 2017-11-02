@@ -19,16 +19,17 @@ namespace video
 class CameraController : public Transform
 {
 public:
-    void Calculate()
-    {
-        Update();
-        m_cameraView = m_transformMatrix;
-    }
+    /**
+     * @brief      { function_description }
+     */
+    void Calculate();
 protected:
-    CameraController(glm::mat4& cameraView) : m_cameraView(cameraView)
-    {
-
-    }
+    /**
+     * @brief      { function_description }
+     *
+     * @param      cameraView  The camera view
+     */
+    CameraController(glm::mat4& cameraView);
 
     glm::mat4& m_cameraView;
 };

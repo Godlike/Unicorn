@@ -77,8 +77,8 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     earth->RotateAroundPoint(static_cast<float>(glm::radians(90.)) * deltaTime , { 0, 1, 0 }, sun->GetTranslate());
     sun->RotateAroundPoint(static_cast<float>(glm::radians(90.)) * deltaTime, { 0, 1, 0 }, earth->GetTranslate());
 
-    pCameraFpsController->SetTranslate(earth->GetTranslate() + glm::vec3(0, 5, 0));
-    pCameraFpsController->LookAtDirection(sun->GetTranslate() - pCameraFpsController->GetTranslate());
+    //pCameraFpsController->SetTranslate(earth->GetTranslate() + glm::vec3(0, 5, 0));
+    //pCameraFpsController->LookAtDirection(sun->GetTranslate() - pCameraFpsController->GetTranslate(), {0, 1, 0});
 
     // Updating transformations for meshes
     for(auto& mesh : meshes)
@@ -291,7 +291,17 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->LookAtDirection({ 0, 0, 1 });
+                //pCameraFpsController->LookAtDirection(sun->GetTranslate() - pCameraFpsController->GetTranslate(), {0, 1, 0});
+                pCameraFpsController->LookAtDirection({1, 0, 0}, {0, 1, 0});
+                //pCameraFpsController->RotateX(glm::radians(0.1f));
+            }
+            break;
+        }
+        case Key::N:
+        {
+            if (isPerspective)
+            {
+                pCameraFpsController->RotateZ(glm::radians(0.1));
             }
             break;
         }
@@ -550,7 +560,7 @@ int main(int argc, char* argv[])
 
         pCameraFpsController = new unicorn::video::CameraFpsController(perspective->view);
         //pCameraFpsController->SetDirection({ 0, 0, 1 });
-        pCameraFpsController->SetTranslate({ 0, 0, -15 });
+        pCameraFpsController->SetTranslate({ 15, 15, 15 });
         pCamera2DController = new unicorn::video::Camera2DController(ortho->view);
 
         {

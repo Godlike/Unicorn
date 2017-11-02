@@ -48,15 +48,15 @@ void CameraFpsController::ResetView()
     m_dirtyViewPosition = false;
 }
 
-void CameraFpsController::CalculateOrientation()
-{
-    glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
-    glm::quat y = glm::angleAxis(m_rotation.y, m_orientation * m_worldY);
+// void CameraFpsController::CalculateOrientation()
+// {
+//     glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
+//     glm::quat y = glm::angleAxis(m_rotation.y, m_orientation * m_worldY);
 
-    m_orientation = x * y * m_orientation;
+//     m_orientation = x * y * m_orientation;
 
-    m_rotation = glm::vec3(0);
-}
+//     m_rotation = glm::vec3(0);
+// }
 
 
 } // namespace video

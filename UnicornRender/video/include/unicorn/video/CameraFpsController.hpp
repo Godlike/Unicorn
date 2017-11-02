@@ -27,9 +27,11 @@ public:
     /** @brief Sets mouse coordinates without updating view matrix */
     UNICORN_EXPORT void SetViewPositions(double x, double y);
 
+    /** @brief  */
     UNICORN_EXPORT void ResetView();
 private:
-    virtual void CalculateOrientation() override;
+    /** @brief  */
+    // virtual void CalculateOrientation() override;
     glm::vec2 m_mousePosition;
     bool m_dirtyViewPosition;
 };

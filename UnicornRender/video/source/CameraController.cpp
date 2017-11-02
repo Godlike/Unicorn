@@ -11,6 +11,17 @@ namespace unicorn
 namespace video
 {
 
+void CameraController::Calculate()
+{
+    Update();
+    m_cameraView = m_transformMatrix;
+}
+
+CameraController::CameraController(glm::mat4& cameraView)
+    : m_cameraView(cameraView)
+{
+
+}
 
 } // namespace video
 } // namespace unicorn
