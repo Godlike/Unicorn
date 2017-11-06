@@ -309,7 +309,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(1.)) * zSens);
+                pCameraFpsController->RotateZ(static_cast<float>(-glm::radians(1.)));
             }
             break;
         }
@@ -317,7 +317,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(-1.)) * zSens);
+                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(1.)));
             }
             break;
         }

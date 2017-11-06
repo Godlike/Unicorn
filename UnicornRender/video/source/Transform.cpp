@@ -19,7 +19,7 @@ namespace video
 using namespace glm;
 
 // Returns a quaternion such that q*start = dest
-quat RotationBetweenVectors0(vec3 start, vec3 dest){  
+quat RotationBetweenVectors(vec3 start, vec3 dest){
     start = normalize(start);
     dest = normalize(dest);
 
@@ -67,78 +67,15 @@ quat LookAt(vec3 direction, vec3 desiredUp){
 
     // Find the rotation between the front of the object (that we assume towards +Z,
     // but this depends on your model) and the desired direction
-    quat rot1 = RotationBetweenVectors0(vec3(0.0f, 0.0f, 1.0f), direction);
+    quat rot1 = RotationBetweenVectors(vec3(0.0f, 0.0f, 1.0f), direction);
     // Because of the 1rst rotation, the up is probably completely screwed up.
     // Find the rotation between the "up" of the rotated object, and the desired up
     vec3 newUp = rot1 * vec3(0.0f, 1.0f, 0.0f);
-    quat rot2 = RotationBetweenVectors0(newUp, desiredUp);
+    quat rot2 = RotationBetweenVectors(newUp, desiredUp);
 
     // Apply them
     return rot2 * rot1; // remember, in reverse order.
 }
-
-glm::quat RotationBetweenVectors(glm::vec3 v1, glm::vec3 v2)
-{
-    glm::quat q;
-
-    v1 = normalize(v1);
-    v2 = normalize(v2);
-
-    const auto cosTheta = dot(v1, v2);
-
-    glm::vec3 rotationAxis;
-
-    if (cosTheta < -1 + 0.001f)
-    {
-        // special case when vectors in opposite directions:
-        // there is no "ideal" rotation axis
-        // So guess one; any will do as long as it's perpendicular to start
-        rotationAxis = cross(glm::vec3(0.0f, 0.0f, 1.0f), v1);
-
-        if (glm::length2(rotationAxis) < 0.01)
-        {
-            rotationAxis = cross(glm::vec3(1.0f, 0.0f, 0.0f), v1);
-        }
-
-        rotationAxis = normalize(rotationAxis);
-        return glm::angleAxis(glm::radians(180.0f), rotationAxis);
-    }
-
-    rotationAxis = cross(v2, v1);
-
-    q = glm::quat(rotationAxis);
-    q.w = glm::sqrt(pow(length(v1), 2) * (length(v2), 2) + cosTheta);
-
-    return normalize(q);
-}
-
-glm::quat RotationBetweenVectors2(glm::vec3 v0, glm::vec3 v1)
-{
-    glm::quat q = glm::quat(glm::vec3(0));
-
-    v0 = normalize(v0);
-    v1 = normalize(v1);
-
-    const float d = dot(v0, v1);
-    const glm::vec3 c = cross(v0, v1);
-    const float s = sqrt((1 + d) * 2);
-
-    q.x = c.x / s;
-    q.y = c.y / s;
-    q.z = c.z / s;
-    q.w = s / 2.0f;
-
-    return q;
-}
-
-glm::quat RotationBetweenVectors3(glm::vec3 v0, glm::vec3 v1)
-{
-    v0 = normalize(v0);
-    v1 = normalize(v1);
-
-    return rotation(v0, v1);
-}
-
 
 Transform::Transform()
     : m_rotation(0)
@@ -156,8 +93,7 @@ Transform::Transform()
     }
 
 void Transform::LookAtDirection(glm::vec3 direction, glm::vec3 upVector)
-{ 
-    m_orientation = RotationBetweenVectors0(m_worldZ, direction);
+{
     m_orientation = LookAt(direction, upVector);
     m_isDirty = true;
 }
@@ -165,7 +101,6 @@ void Transform::LookAtDirection(glm::vec3 direction, glm::vec3 upVector)
 void Transform::LookAtPoint(glm::vec3 point, glm::vec3 upVector) // Not Working
 {
     glm::mat4 mat = lookAt(m_translation, point, m_upVector);
-    //Rotate(quat_cast(mat));
     m_orientation = conjugate(quat_cast(mat));
 
     m_isDirty = true;
@@ -308,11 +243,11 @@ void Transform::Rotate(float angleRadians, glm::vec3 axis) {
 
 void Transform::CalculateOrientation()
 {
-    glm::quat x = glm::angleAxis(m_rotation.x, m_rightVector);
-    glm::quat y = glm::angleAxis(m_rotation.y, m_upVector);
-    glm::quat z = glm::angleAxis(m_rotation.z, m_direction);
+    glm::quat z = glm::angleAxis(m_rotation.z, m_worldZ);
+    glm::quat y = glm::angleAxis(m_rotation.y, m_worldY);
+    glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
 
-    m_orientation = z * x * y * m_orientation;
+    m_orientation = normalize(z * x * y * m_orientation);
 
     m_rotation = glm::vec3(0);
 }
@@ -323,9 +258,10 @@ void Transform::Update()
     {
         CalculateOrientation();
 
-        m_direction = m_orientation * m_worldZ;
-        m_upVector = m_orientation * m_worldY;
-        m_rightVector = cross(m_upVector, m_direction);
+        // TODO: WHY conjugate works and m_orientation not works?
+        m_direction = conjugate(m_orientation) * m_worldZ;
+        m_upVector = conjugate(m_orientation) * m_worldY;
+        m_rightVector = conjugate(m_orientation) * m_worldX;
 
         m_transformMatrix = glm::lookAt(m_translation, m_translation + m_direction, m_upVector);
 
