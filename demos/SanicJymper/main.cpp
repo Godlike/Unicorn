@@ -210,7 +210,6 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
     unicorn::system::input::Modifier::Mask const& modifiers = keyboardEvent.modifiers;
 
     std::pair<int32_t, int32_t> position = pWindow->GetPosition();
-    bool positionChanged = false;
 
     float time = deltaTime * 0.1f;
     float speed = 1000.f;
@@ -287,16 +286,6 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
             }
             break;
         }
-        case Key::B:
-        {
-            if (isPerspective)
-            {
-                //pCameraFpsController->LookAtDirection(glm::vec3( 0, 1, 0), {0, 1, 0});
-                //pCameraFpsController->LookAtDirection({1, 0, 0}, {0, 1, 0});
-                pCameraFpsController->RotateX(glm::radians(1.f));
-            }
-            break;
-        }
         case Key::N:
         {
             if (isPerspective)
@@ -309,7 +298,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateZ(static_cast<float>(-glm::radians(1.)));
+                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(1.)));
             }
             break;
         }
@@ -317,7 +306,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(1.)));
+                pCameraFpsController->RotateZ(static_cast<float>(-glm::radians(1.)));
             }
             break;
         }
@@ -339,26 +328,22 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
          }
         case Key::Up:
         {
-            position.second -= static_cast<uint32_t>(time * speed);
-            positionChanged = true;
+            pCameraFpsController->RotateX(static_cast<float>(glm::radians(1.)));
             break;
         }
         case Key::Down:
         {
-            position.second += static_cast<uint32_t>(time * speed);
-            positionChanged = true;
+            pCameraFpsController->RotateX(static_cast<float>(glm::radians(-1.)));
             break;
         }
         case Key::Left:
         {
-            position.first -= static_cast<uint32_t>(time * speed);
-            positionChanged = true;
+            pCameraFpsController->RotateY(static_cast<float>(glm::radians(-1.)));
             break;
         }
         case Key::Right:
-        {;
-            position.first += static_cast<uint32_t>(time * speed);
-            positionChanged = true;
+        {
+            pCameraFpsController->RotateY(static_cast<float>(glm::radians(1.)));
             break;
         }
         case Key::C:
@@ -409,11 +394,6 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             break;
         }
-    }
-
-    if(positionChanged)
-    {
-        pWindow->SetPosition(position);
     }
 }
 

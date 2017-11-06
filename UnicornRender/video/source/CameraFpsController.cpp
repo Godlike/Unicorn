@@ -20,8 +20,8 @@ CameraFpsController::CameraFpsController(glm::mat4& cameraView)
 
 void CameraFpsController::UpdateView(float x, float y)
 {
-    const float xoffset = m_mousePosition.x - x;
-    const float yoffset = y - m_mousePosition.y;
+    const float xoffset = x - m_mousePosition.x;
+    const float yoffset = m_mousePosition.y - y;
 
     m_mousePosition.x = x;
     m_mousePosition.y = y;
@@ -32,8 +32,8 @@ void CameraFpsController::UpdateView(float x, float y)
         return;
     }
 
-    m_rotation.x += -glm::radians(yoffset);
-    m_rotation.y += -glm::radians(xoffset);
+    m_rotation.x += glm::radians(yoffset);
+    m_rotation.y += glm::radians(xoffset);
 
     m_isDirty = true;
 }
@@ -48,15 +48,15 @@ void CameraFpsController::ResetView()
     m_dirtyViewPosition = false;
 }
 
-// void CameraFpsController::CalculateOrientation()
-// {
-//     glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
-//     glm::quat y = glm::angleAxis(m_rotation.y, glm::inverse(m_orientation) * m_worldY);
+void CameraFpsController::CalculateOrientation()
+{
+    glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
+    glm::quat y = glm::angleAxis(m_rotation.y, m_orientation * m_worldY);
 
-//     m_orientation = normalize(x * y * m_orientation);
+    m_orientation = normalize(x * y * m_orientation);
 
-//     m_rotation = glm::vec3(0);
-// }
+    m_rotation = glm::vec3(0);
+}
 
 
 } // namespace video

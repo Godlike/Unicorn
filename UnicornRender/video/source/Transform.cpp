@@ -94,7 +94,7 @@ Transform::Transform()
 
 void Transform::LookAtDirection(glm::vec3 direction, glm::vec3 upVector)
 {
-    m_orientation = LookAt(direction, upVector);
+    m_orientation = conjugate(LookAt(direction, upVector));
     m_isDirty = true;
 }
 
@@ -258,7 +258,6 @@ void Transform::Update()
     {
         CalculateOrientation();
 
-        // TODO: WHY conjugate works and m_orientation not works?
         m_direction = conjugate(m_orientation) * m_worldZ;
         m_upVector = conjugate(m_orientation) * m_worldY;
         m_rightVector = conjugate(m_orientation) * m_worldX;
