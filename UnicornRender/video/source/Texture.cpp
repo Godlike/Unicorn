@@ -15,7 +15,7 @@ namespace unicorn
 {
 namespace video
 {
-Texture::Texture(const std::string& path) 
+Texture::Texture(const std::string& path)
     : m_width(0)
     , m_height(0)
     , m_channels(0)

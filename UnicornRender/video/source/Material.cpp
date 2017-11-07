@@ -58,6 +58,16 @@ bool Material::IsWired() const
     return m_isWired;
 }
 
+void Material::SetIsVisible(bool visible)
+{
+    m_isVisible = visible;
+}
+
+bool Material::IsVisible() const
+{
+    return m_isVisible;
+}
+
 const Texture* Material::GetAlbedo() const
 {
     return m_albedo;

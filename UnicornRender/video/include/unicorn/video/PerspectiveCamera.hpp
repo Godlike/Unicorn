@@ -22,7 +22,11 @@ class PerspectiveCamera final : public CameraProjection
 public:
     UNICORN_EXPORT PerspectiveCamera(system::Window* window, glm::mat4& cameraProj);
 
-    /** @brief Changes fov */
+    /**
+    * @brief Changes fov by zoomOffset
+    *
+    * @param zoomOffset adds it to fov value
+    */
     UNICORN_EXPORT void Zoom(float zoomOffset);
 
     /** @brief Sets fov */
