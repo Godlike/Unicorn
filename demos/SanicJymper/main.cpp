@@ -78,7 +78,7 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     sun->RotateAroundPoint(static_cast<float>(glm::radians(90.)) * deltaTime, { 0, 1, 0 }, earth->GetTranslate());
 
     //pCameraFpsController->SetTranslate(earth->GetTranslate() + glm::vec3(0, 5, 0));
-    //pCameraFpsController->LookAtDirection(sun->GetTranslate() - pCameraFpsController->GetTranslate(), {0, 1, 0});
+    //pCameraFpsController->LookAtDirection(sun->GetTranslate() - pCameraFpsController->GetTranslate());
 
     // Updating transformations for meshes
     for(auto& mesh : meshes)
@@ -298,7 +298,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(1.)));
+                pCameraFpsController->RotateZ(static_cast<float>(-glm::radians(1.)));
             }
             break;
         }
@@ -306,7 +306,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateZ(static_cast<float>(-glm::radians(1.)));
+                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(1.)));
             }
             break;
         }
@@ -328,22 +328,22 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
          }
         case Key::Up:
         {
-            pCameraFpsController->RotateX(static_cast<float>(glm::radians(1.)));
+            pCameraFpsController->RotateX(static_cast<float>(glm::radians(-1.)));
             break;
         }
         case Key::Down:
         {
-            pCameraFpsController->RotateX(static_cast<float>(glm::radians(-1.)));
+            pCameraFpsController->RotateX(static_cast<float>(glm::radians(1.)));
             break;
         }
         case Key::Left:
         {
-            pCameraFpsController->RotateY(static_cast<float>(glm::radians(-1.)));
+            pCameraFpsController->RotateY(static_cast<float>(glm::radians(1.)));
             break;
         }
         case Key::Right:
         {
-            pCameraFpsController->RotateY(static_cast<float>(glm::radians(1.)));
+            pCameraFpsController->RotateY(static_cast<float>(glm::radians(-1.)));
             break;
         }
         case Key::C:
@@ -539,8 +539,6 @@ int main(int argc, char* argv[])
         pOrthoProjection = new unicorn::video::OrthographicCamera(pWindow0, ortho->projection);
 
         pCameraFpsController = new unicorn::video::CameraFpsController(perspective->view);
-        //pCameraFpsController->SetDirection({ 0, 0, 1 });
-        pCameraFpsController->SetTranslate({ 15, 15, 15 });
         pCamera2DController = new unicorn::video::Camera2DController(ortho->view);
 
         {
@@ -589,9 +587,9 @@ int main(int argc, char* argv[])
             earth->Translate({ -15, 0, 50 });
             sun->Translate({ 15, 0, 50 });
 
-            //unicorn::video::Mesh* box = &Primitives::Box(*vkRenderer->SpawnMesh(mat));
+            unicorn::video::Mesh* box = &Primitives::Box(*vkRenderer->SpawnMesh(mat));
 
-           // meshes.push_back(box);
+            meshes.push_back(box);
             meshes.push_back(earth);
             meshes.push_back(sun);
             meshes.push_back(x_plus);

@@ -92,32 +92,23 @@ Transform::Transform()
     {
     }
 
-void Transform::LookAtDirection(glm::vec3 direction, glm::vec3 upVector)
+void Transform::LookAtDirection(glm::vec3 direction)
 {
-    m_orientation = conjugate(LookAt(direction, upVector));
+    m_orientation = LookAt(direction, m_upVector);
+
     m_isDirty = true;
 }
 
-void Transform::LookAtPoint(glm::vec3 point, glm::vec3 upVector) // Not Working
+void Transform::LookAtDirection(glm::vec3 direction, glm::vec3 upVector)
 {
-    glm::mat4 mat = lookAt(m_translation, point, m_upVector);
-    m_orientation = conjugate(quat_cast(mat));
+    m_orientation = LookAt(direction, upVector);
 
     m_isDirty = true;
 }
 
 void Transform::SetUp(glm::vec3 upVector)
 {
-    glm::mat4 mat = lookAt(m_translation, m_translation + m_direction, upVector);
-    m_orientation = normalize(quat_cast(mat));
-
-    m_isDirty = true;
-}
-
-void Transform::SetRight(glm::vec3 rightVector)
-{
-    m_rightVector = rightVector;
-    m_upVector = cross(m_direction, m_rightVector);
+    m_orientation = LookAt(m_direction, upVector);
 
     m_isDirty = true;
 }
@@ -161,6 +152,11 @@ glm::vec3 Transform::GetUp() const
 glm::vec3 Transform::GetTranslate() const
 {
     return m_translation;
+}
+
+glm::mat4 const& Transform::GetModelMatrix() const
+{
+    return m_transformMatrix;
 }
 
 void Transform::TranslateLocalX(float distance)
@@ -247,7 +243,7 @@ void Transform::CalculateOrientation()
     glm::quat y = glm::angleAxis(m_rotation.y, m_worldY);
     glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
 
-    m_orientation = normalize(z * x * y * m_orientation);
+    m_orientation = normalize(m_orientation * z * x * y);
 
     m_rotation = glm::vec3(0);
 }
@@ -258,9 +254,9 @@ void Transform::Update()
     {
         CalculateOrientation();
 
-        m_direction = conjugate(m_orientation) * m_worldZ;
-        m_upVector = conjugate(m_orientation) * m_worldY;
-        m_rightVector = conjugate(m_orientation) * m_worldX;
+        m_direction = m_orientation * m_worldZ;
+        m_upVector = m_orientation * m_worldY;
+        m_rightVector = m_orientation * m_worldX;
 
         m_transformMatrix = glm::lookAt(m_translation, m_translation + m_direction, m_upVector);
 

@@ -17,12 +17,11 @@ namespace video
 {
 class Texture;
 
-/*
- * @brief Material class holds all data which needed to render any object
- */
+/** @brief Material class holds all data which needed to render any mesh */
 class Material
 {
 public:
+    /** @brief Default constructor */
     UNICORN_EXPORT Material();
 
     /**
@@ -35,33 +34,35 @@ public:
     /**
      * @brief Sets rendering mode to wireframe
      * @param[in] wireframe true if wired and false if not
-     * 
+     *
      * @attention sets IsColored to false
      */
     UNICORN_EXPORT void SetIsWired(bool wireframe);
 
+    /**
+     * @brief Sets mesh visible state
+     *
+     * @param[in] visible visibility flag
+     */
+    UNICORN_EXPORT void SetIsVisible(bool visible);
 
-    UNICORN_EXPORT void SetIsVisible(bool visible)
-    {
-        m_isVisible = visible;
-    }
-
-    UNICORN_EXPORT bool IsVisible() const
-    {
-        return m_isVisible;
-    }
+    /**
+     * @brief Determines if visible
+     *
+     * @return True if visible, False otherwise.
+     */
+    UNICORN_EXPORT bool IsVisible() const;
 
     /**
      * @brief Sets colored mode
+     *
      * @param[in] colored true if must render with color and false if render with albedo
-     * 
-     * @attention if colored mode enabled and no albedo provided, default engine texture is used
+     *
+     * @attention if colored mode enabled and no albedo provided, default engine "replace me" texture is used
      */
     UNICORN_EXPORT void SetIsColored(bool colored);
 
-    /**
-     * @brief Sets IsColored mode to true and removes binded texture
-     */
+    /** @brief Sets IsColored mode to true and removes binded texture */
     UNICORN_EXPORT void RemoveAlbedo();
 
     /** Returns @c true if colored mode is enabled and @false otherwise */
@@ -72,18 +73,18 @@ public:
 
     /**
      * @brief Returns pointer to albedo texture
+     *
      * @return pointer to binded albdeo texture
      */
     UNICORN_EXPORT Texture const* GetAlbedo() const;
 
-    /*
-     * @brief Color of object
-     */
+    /** @brief Color of object */
     glm::vec3 color;
 private:
     bool m_isColored;
     bool m_isWired;
     bool m_isVisible;
+
     Texture const* m_albedo;
 };
 }

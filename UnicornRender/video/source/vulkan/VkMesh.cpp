@@ -39,7 +39,7 @@ bool VkMesh::operator==(const Mesh& mesh) const
 
 const glm::mat4& VkMesh::GetModelMatrix() const
 {
-    return m_mesh.modelMatrix;
+    return m_mesh.GetModelMatrix();
 }
 
 void VkMesh::AllocateOnGPU()

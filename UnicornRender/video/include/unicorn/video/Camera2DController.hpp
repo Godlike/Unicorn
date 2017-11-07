@@ -19,6 +19,11 @@ namespace video
 class Camera2DController : public CameraController
 {
 public:
+    /**
+     * @brief Constructs camera 2d controller
+     *
+     * @param cameraView target camera view matix
+     */
     UNICORN_EXPORT Camera2DController(glm::mat4& cameraView);
 };
 

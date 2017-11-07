@@ -19,7 +19,7 @@ PerspectiveCamera::PerspectiveCamera(system::Window* window, glm::mat4& cameraPr
     , m_fovLowerBound(44.f)
     , m_fovUpperBound(45.f)
     , m_znear(0.1f)
-    , m_zfar(1000.f)
+    , m_zfar(100000.f) // 100 kilometers
 {
     UpdateProjection();
 }

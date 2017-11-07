@@ -20,14 +20,14 @@ class CameraController : public Transform
 {
 public:
     /**
-     * @brief      { function_description }
+     * @brief Recalculates camera view matrix
      */
     void Calculate();
 protected:
     /**
-     * @brief      { function_description }
+     * @brief Constructs camera controller
      *
-     * @param      cameraView  The camera view
+     * @param cameraView reference to target camera view
      */
     CameraController(glm::mat4& cameraView);
 

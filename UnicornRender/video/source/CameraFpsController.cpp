@@ -20,8 +20,8 @@ CameraFpsController::CameraFpsController(glm::mat4& cameraView)
 
 void CameraFpsController::UpdateView(float x, float y)
 {
-    const float xoffset = x - m_mousePosition.x;
-    const float yoffset = m_mousePosition.y - y;
+    const float xoffset = m_mousePosition.x - x;
+    const float yoffset = y - m_mousePosition.y;
 
     m_mousePosition.x = x;
     m_mousePosition.y = y;
@@ -51,9 +51,9 @@ void CameraFpsController::ResetView()
 void CameraFpsController::CalculateOrientation()
 {
     glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
-    glm::quat y = glm::angleAxis(m_rotation.y, m_orientation * m_worldY);
+    glm::quat y = glm::angleAxis(m_rotation.y, conjugate(m_orientation) * m_worldY);
 
-    m_orientation = normalize(x * y * m_orientation);
+    m_orientation = normalize(m_orientation * y * x);
 
     m_rotation = glm::vec3(0);
 }

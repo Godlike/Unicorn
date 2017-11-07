@@ -19,6 +19,11 @@ namespace video
 class CameraFpsController : public CameraController
 {
 public:
+    /**
+     * @brief Constructs camera fps controller
+     *
+     * @param cameraView reference to camera view
+     */
     UNICORN_EXPORT CameraFpsController(glm::mat4& cameraView);
 
     /** @brief Updates view matrix by taking diff between past and new mouse coordinates */
@@ -27,11 +32,12 @@ public:
     /** @brief Sets mouse coordinates without updating view matrix */
     UNICORN_EXPORT void SetViewPositions(double x, double y);
 
-    /** @brief  */
+    /** @brief Resets camera to provide setting new mouse coordinates */
     UNICORN_EXPORT void ResetView();
 private:
-    /** @brief  */
+    /** @brief Calculates orientation in space */
     virtual void CalculateOrientation() override;
+
     glm::vec2 m_mousePosition;
     bool m_dirtyViewPosition;
 };

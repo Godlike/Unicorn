@@ -20,7 +20,6 @@ namespace video
 {
 /**
  * @brief Base class for every object that can translate or rotate
- * @note Every todo
  */
 class Transform
 {
@@ -32,37 +31,31 @@ public:
     virtual ~Transform() = default;
 
     /**
-     * @brief      Sets camera look at provided direction
+     * @brief Sets camera look at provided direction
      *
-     * @param[in]  direction  Camera new direction vector
+     * @param[in] direction Camera new direction vector
+     */
+    UNICORN_EXPORT void LookAtDirection(glm::vec3 direction);
+
+    /**
+     * @brief Sets camera look at provided direction
+     *
+     * @param[in] direction Camera new direction vector
+     * @param[in] upVector Camera new up vector
      */
     UNICORN_EXPORT void LookAtDirection(glm::vec3 direction, glm::vec3 upVector);
 
     /**
-     * @brief      { function_description }
+     * @brief Sets camera up vector
      *
-     * @param[in]  point  The point
-     */
-    UNICORN_EXPORT void LookAtPoint(glm::vec3 point, glm::vec3 upVector);
-
-    /**
-     * @brief      { function_description }
-     *
-     * @param[in]  upVector  The up vector
+     * @param[in] upVector The up vector
      */
     UNICORN_EXPORT void SetUp(glm::vec3 upVector);
 
     /**
-     * @brief      Sets the right.
+     * @brief Sets camera translate
      *
-     * @param[in]  rightVector  The right vector
-     */
-    UNICORN_EXPORT void SetRight(glm::vec3 rightVector);
-
-    /**
-     * @brief      Sets the translate.
-     *
-     * @param[in]  translate  The translate
+     * @param[in] translate
      */
     UNICORN_EXPORT void SetTranslate(glm::vec3 translate);
 
@@ -110,6 +103,14 @@ public:
      */
     UNICORN_EXPORT glm::vec3 GetTranslate() const;
 
+    /**
+     * @brief Returns model matrix
+     *
+     * @return model matrix
+     *
+     * Don't forget to recalculate @sa Calculate
+     */
+    UNICORN_EXPORT glm::mat4 const& GetModelMatrix() const;
     /**
      * @brief      { function_description }
      *
