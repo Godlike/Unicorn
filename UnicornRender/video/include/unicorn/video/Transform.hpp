@@ -31,75 +31,75 @@ public:
     virtual ~Transform() = default;
 
     /**
-     * @brief Sets camera look at provided direction
+     * @brief Sets look at provided direction
      *
-     * @param[in] direction Camera new direction vector
+     * @param[in] direction new direction vector
      */
     UNICORN_EXPORT void LookAtDirection(glm::vec3 direction);
 
     /**
-     * @brief Sets camera look at provided direction
+     * @brief Sets look at provided direction
      *
-     * @param[in] direction Camera new direction vector
-     * @param[in] upVector Camera new up vector
+     * @param[in] direction new direction vector
+     * @param[in] upVector new up vector
      */
     UNICORN_EXPORT void LookAtDirection(glm::vec3 direction, glm::vec3 upVector);
 
     /**
-     * @brief Sets camera up vector
+     * @brief Sets up vector
      *
-     * @param[in] upVector The up vector
+     * @param[in] upVector new up vector
      */
     UNICORN_EXPORT void SetUp(glm::vec3 upVector);
 
     /**
-     * @brief Sets camera translate
+     * @brief      Sets the world coordinates
      *
-     * @param[in] translate
-     */
-    UNICORN_EXPORT void SetTranslate(glm::vec3 translate);
-
-    /**
-     * @brief      Sets the world coordinates.
-     *
-     * @param[in]  x     { parameter_description }
-     * @param[in]  y     { parameter_description }
-     * @param[in]  z     { parameter_description }
+     * @param[in]  x world axis
+     * @param[in]  y world axis
+     * @param[in]  z world axis
      */
     UNICORN_EXPORT void SetWorldCoordinates(glm::vec3 x, glm::vec3 y, glm::vec3 z);
 
     /**
-     * @brief      { function_description }
+     * @brief Translates object
      *
      * @param[in]  translate  The translate
      */
     UNICORN_EXPORT void Translate(glm::vec3 translate);
 
     /**
-     * @brief      Gets the direction.
+     * @brief Sets translate
      *
-     * @return     The direction.
+     * @param[in]  translate new translate
+     */
+    UNICORN_EXPORT void SetTranslate(glm::vec3 translate);
+
+    /**
+     * @brief Returns direction
+     *
+     * @return direction
      */
     UNICORN_EXPORT glm::vec3 GetDirection() const;
 
     /**
-     * @brief      Gets the right.
+     * @brief Return right vector
      *
-     * @return     The right.
+     * @return right vector
      */
     UNICORN_EXPORT glm::vec3 GetRight() const;
 
     /**
-     * @brief      { function_description }
+     * @brief Returns up vector
      *
-     * @return     The up.
+     * @return up vector
      */
     UNICORN_EXPORT glm::vec3 GetUp() const;
 
     /**
-     * @brief      Gets the translate.
+     * @brief Return translate
      *
-     * @return     The translate.
+     * @return translate
      */
     UNICORN_EXPORT glm::vec3 GetTranslate() const;
 
@@ -111,108 +111,106 @@ public:
      * Don't forget to recalculate @sa Calculate
      */
     UNICORN_EXPORT glm::mat4 const& GetModelMatrix() const;
+
     /**
-     * @brief      { function_description }
+     * @brief Translates by local X - right vector
      *
-     * @param[in]  distance  The distance
+     * @param[in] distance distance to translate
      */
     UNICORN_EXPORT void TranslateLocalX(float distance);
 
     /**
-     * @brief      { function_description }
+     * @brief Translates by local Y - up vector
      *
-     * @param[in]  distance  The distance
+     * @param[in] distance distance to translate
      */
     UNICORN_EXPORT void TranslateLocalY(float distance);
 
     /**
-     * @brief      { function_description }
+     * @brief Translates by local Z - direction vector
      *
-     * @param[in]  distance  The distance
+     * @param[in] distance distance to translate
      */
     UNICORN_EXPORT void TranslateLocalZ(float distance);
 
     /**
-     * @brief      { function_description }
+     * @brief Translates by local X
      *
-     * @param[in]  distance  The distance
+     * @param[in] distance distance to translate
      */
     UNICORN_EXPORT void TranslateWorldX(float distance);
 
     /**
-     * @brief      { function_description }
+     * @brief Translates by local Y
      *
-     * @param[in]  distance  The distance
+     * @param[in] distance distance to translate
      */
     UNICORN_EXPORT void TranslateWorldY(float distance);
 
     /**
-     * @brief      { function_description }
+     * @brief Translates by local Z
      *
-     * @param[in]  distance  The distance
+     * @param[in] distance distance to translate
      */
     UNICORN_EXPORT void TranslateWorldZ(float distance);
 
     /**
-     * @brief      { function_description }
+     * @brief Rotates by X axis counterclockwise
      *
-     * @param[in]  radians  The radians
+     * @param[in] radians amount of radians
      */
     UNICORN_EXPORT void RotateX(float radians);
 
     /**
-     * @brief      { function_description }
+     * @brief Rotates by Y axis counterclockwise
      *
-     * @param[in]  radians  The radians
+     * @param[in] radians amount of radians
      */
     UNICORN_EXPORT void RotateY(float radians);
 
     /**
-     * @brief      { function_description }
+     * @brief Rotates by Z axis counterclockwise
      *
-     * @param[in]  radians  The radians
+     * @param[in] radians amount of radians
      */
     UNICORN_EXPORT void RotateZ(float radians);
 
     /**
-     * @brief      { function_description }
+     * @brief Rotates by all axises counterclockwise
      *
-     * @param[in]  rotation  The rotation
+     * @param[in] rotation amount of radians at each axis
      */
     UNICORN_EXPORT void Rotate(glm::vec3 rotation);
 
     /**
-     * @brief      { function_description }
+     * @brief Rotates by quaternion
      *
-     * @param[in]  rotation  The rotation
+     * @param[in] rotation quaternion
      */
     UNICORN_EXPORT void Rotate(glm::quat rotation);
 
     /**
-     * @brief      { function_description }
+     * @brief Rotates around point
      *
-     * @param[in]  radians  The radians
-     * @param[in]  axis     The axis
-     * @param[in]  point    The point
+     * @param[in] radians amount of radians in frame
+     * @param[in] axis axis of rotation
+     * @param[in] point point of interest
      */
     UNICORN_EXPORT void RotateAroundPoint(float radians, glm::vec3 axis, glm::vec3 point);
 
     /**
-     * @brief      { function_description }
+     * @brief Rotates around axis
      *
-     * @param[in]  angleRadians  The angle radians
-     * @param[in]  axis          The axis
+     * @param[in] angleRadians amount of radians to rotate
+     * @param[in] axis axis of rotation
      */
     UNICORN_EXPORT void Rotate(float angleRadians, glm::vec3 axis);
 protected:
-    /**
-     * @brief      { function_description }
-     */
+
+    /** @brief Abstract method to calculate orientation quaternion */
     virtual void CalculateOrientation();
 
-    /**
-     * @brief      { function_description }
-     */
+    /** @brief Recalculates model matrix */
     void Update();
 
     glm::vec3 m_rotation;

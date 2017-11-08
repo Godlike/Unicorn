@@ -19,6 +19,7 @@ set(UTILITY_HEADERS
     include/unicorn/utility/templates/Singleton.hpp
     include/unicorn/utility/templates/Singleton.imp
     include/unicorn/utility/Memory.hpp
+    include/unicorn/utility/Math.hpp
 )
 
 set(UTILITY_SOURCES
@@ -29,6 +30,7 @@ set(UTILITY_SOURCES
     sources/asset/SimpleStorage.cpp
     sources/Logger.cpp
     sources/Memory.cpp
+    sources/Math.cpp
 )
 
 add_library(utility OBJECT
