@@ -26,6 +26,7 @@ public:
     * @param [in] cameraProj camera projection matrix
     */
     CameraProjection(system::Window* window, glm::mat4& cameraProj);
+
     /** @brief Disconnects from window signals */
     virtual ~CameraProjection();
 

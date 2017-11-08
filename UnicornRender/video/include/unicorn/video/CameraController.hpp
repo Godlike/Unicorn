@@ -19,15 +19,13 @@ namespace video
 class CameraController : public Transform
 {
 public:
-    /**
-     * @brief Recalculates camera view matrix
-     */
+    /** @brief Recalculates camera view matrix */
     void Calculate();
 protected:
     /**
      * @brief Constructs camera controller
      *
-     * @param cameraView reference to target camera view
+     * @param[out] cameraView reference to target camera view
      */
     CameraController(glm::mat4& cameraView);
 

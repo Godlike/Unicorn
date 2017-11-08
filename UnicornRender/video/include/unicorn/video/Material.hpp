@@ -40,7 +40,7 @@ public:
     UNICORN_EXPORT void SetIsWired(bool wireframe);
 
     /**
-     * @brief Sets mesh visible state
+     * @brief Sets mesh in visible state
      *
      * @param[in] visible visibility flag
      */
