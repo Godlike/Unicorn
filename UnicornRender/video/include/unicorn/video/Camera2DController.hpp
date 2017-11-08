@@ -22,7 +22,7 @@ public:
     /**
      * @brief Constructs camera 2d controller
      *
-     * @param cameraView target camera view matix
+     * @param[out] cameraView target camera view matix
      */
     UNICORN_EXPORT Camera2DController(glm::mat4& cameraView);
 };

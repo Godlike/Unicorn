@@ -22,7 +22,7 @@ public:
     /**
      * @brief Constructs camera fps controller
      *
-     * @param cameraView reference to camera view
+     * @param[out] cameraView reference to camera view
      */
     UNICORN_EXPORT CameraFpsController(glm::mat4& cameraView);
 

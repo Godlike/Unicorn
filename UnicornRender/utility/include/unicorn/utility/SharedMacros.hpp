@@ -4,7 +4,6 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-
 #ifndef UNICORN_UTILITY_SHARED_MACROS_HPP
 #define UNICORN_UTILITY_SHARED_MACROS_HPP
 

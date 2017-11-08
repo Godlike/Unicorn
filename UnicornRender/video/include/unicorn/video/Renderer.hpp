@@ -34,6 +34,12 @@ namespace video
 class Renderer
 {
 public:
+    /**
+     * @brief Constructor
+     * @param manager Describes required extensions
+     * @param window Render into
+     * @param[in] camera main camera
+     */
     Renderer(system::Manager& manager, system::Window* window, Camera& camera);
 
     virtual ~Renderer();
