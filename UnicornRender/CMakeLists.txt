@@ -18,7 +18,7 @@ if (NOT CMAKE_BUILD_TYPE)
 endif (NOT CMAKE_BUILD_TYPE)
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Werror -pedantic")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14") # TODO: assimp fail -Wall -Werror -pedantic
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s -O3")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb3 -O0")
 elseif(WIN32)
@@ -43,7 +43,7 @@ include(system)
 include(video)
 include(WinkSignals)
 include(assimp)
-find_package(assimp REQUIRED)
+add_subdirectory(${ASSIMP_ROOT_DIR})
 
 ## Installation info
 include(InstallInfo)
@@ -150,7 +150,7 @@ set_target_properties(
 target_link_libraries(${UNICORN_RENDER_LIB}
     ${WINDOW_MANAGER_LIBS}
     ${VULKAN_LIBRARY}
-    ${ASSIMP_LIBRARIES}
+    ${ASSIMP_LIB}
 )
 
 install( TARGETS ${UNICORN_RENDER_LIB}

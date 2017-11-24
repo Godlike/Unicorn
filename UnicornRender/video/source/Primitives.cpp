@@ -155,7 +155,7 @@ Mesh& Primitives::LoadMeshFromFile(Mesh& mesh, std::string const& path)
         //return false;
     }
 
-    aiMesh* assimpMesh = scene->mMeshes[scene->mRootNode->mChildren[0]->mMeshes[0]];
+    aiMesh* assimpMesh = scene->mMeshes[scene->mRootNode->mMeshes[0]];
 
     for(unsigned int i = 0; i < assimpMesh->mNumVertices; i++)
     {
