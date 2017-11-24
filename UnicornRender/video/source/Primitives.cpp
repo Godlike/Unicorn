@@ -139,17 +139,59 @@ Mesh& Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sect
 Mesh& Primitives::LoadMeshFromFile(Mesh& mesh, std::string const& path)
 {
     Assimp::Importer importer;
+
+    std::vector<uint32_t> indices;
+    std::vector<Vertex> vertices;
+
     aiScene const* scene = importer.ReadFile(path,
         aiProcess_CalcTangentSpace       |
         aiProcess_Triangulate            |
         aiProcess_JoinIdenticalVertices  |
         aiProcess_SortByPType);
-    // If the import failed, report it
+
     if( !scene)
     {
         LOG_ERROR("Assimp import error %s", importer.GetErrorString());
         //return false;
     }
+
+    aiMesh* assimpMesh = scene->mMeshes[scene->mRootNode->mChildren[0]->mMeshes[0]];
+
+    for(unsigned int i = 0; i < assimpMesh->mNumVertices; i++)
+    {
+        Vertex vertex;
+
+        glm::vec3 vector;
+        vector.x = assimpMesh->mVertices[i].x;
+        vector.y = assimpMesh->mVertices[i].y;
+        vector.z = assimpMesh->mVertices[i].z;
+        vertex.pos = vector;
+
+        if(assimpMesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+        {
+            glm::vec2 vec;
+            vec.x = assimpMesh->mTextureCoords[0][i].x;
+            vec.y = assimpMesh->mTextureCoords[0][i].y;
+            vertex.tc = vec;
+        }
+        else
+        {
+            vertex.tc = glm::vec2(0.0f, 0.0f);
+        }
+
+        vertices.push_back(vertex);
+    }
+
+    for(unsigned int i = 0; i < assimpMesh->mNumFaces; i++)
+    {
+        aiFace face = assimpMesh->mFaces[i];
+        for(unsigned int j = 0; j < face.mNumIndices; j++)
+        {
+            indices.push_back(face.mIndices[j]);
+        }
+    }
+
+    mesh.SetMeshData(vertices, indices);
 
     return mesh;
 }

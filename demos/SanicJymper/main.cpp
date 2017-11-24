@@ -519,7 +519,7 @@ int main(int argc, char* argv[])
            settings.GetApplicationName(),
            nullptr,
            nullptr);
-        pWindow0->SetMouseMode(unicorn::system::MouseMode::Captured);
+        pWindow0->SetMouseMode(unicorn::system::MouseMode::Normal);
 
         perspective = new unicorn::video::Camera;
         ortho = new unicorn::video::Camera;
@@ -563,6 +563,12 @@ int main(int argc, char* argv[])
             mat.color = unicorn::video::Color::LightPink();
             auto x_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
 
+            // auto gltfMesh = &Primitives::LoadMeshFromFile(*vkRenderer->SpawnMesh(mat),
+            //     "data/models/glTF/DamagedHelmet/DamagedHelmet.gltf");
+
+            auto objMesh = &Primitives::LoadMeshFromFile(*vkRenderer->SpawnMesh(mat),
+                "data/models/obj/dragon.obj");
+
             mat.color = unicorn::video::Color::Green();
             auto x_minus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
 
@@ -583,6 +589,8 @@ int main(int argc, char* argv[])
             earth->Translate({ -15, 0, 50 });
             sun->Translate({ 15, 0, 50 });
 
+            objMesh->Translate({5, 0, 0});
+
             unicorn::video::Mesh* box = &Primitives::Box(*vkRenderer->SpawnMesh(mat));
 
             meshes.push_back(box);
@@ -591,6 +599,7 @@ int main(int argc, char* argv[])
             meshes.push_back(x_plus);
             meshes.push_back(x_minus);
             meshes.push_back(z_plus);
+            meshes.push_back(objMesh);
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);
