@@ -5,87 +5,59 @@
 */
 
 #include <unicorn/video/CameraFpsController.hpp>
-#include <algorithm>
 
 namespace unicorn
 {
 namespace video
 {
-CameraFpsController::CameraFpsController(unicorn::video::Camera& camera)
-    : sensitivity(0.1f), 
-    speed(100.0f), 
-    m_lastX(0.0), 
-    m_lastY(0.0), 
-    m_yaw(90.0),
-    m_pitch(0.0), 
-    m_dirty(false),
-    m_camera(camera)
+
+CameraFpsController::CameraFpsController(glm::mat4& cameraView)
+    : CameraController(cameraView)
+    , m_mousePosition(0)
+    , m_dirtyViewPosition(true)
 {
 }
 
-void CameraFpsController::MoveUp(float deltaTime) const
+void CameraFpsController::UpdateView(float x, float y)
 {
-    m_camera.Translate({0.0f, -deltaTime * speed, 0.0f});
-}
+    const float xoffset = m_mousePosition.x - x;
+    const float yoffset = y - m_mousePosition.y;
 
-void CameraFpsController::MoveDown(float deltaTime) const
-{
-    m_camera.Translate({0.0f, speed * deltaTime, 0.0});
-}
+    m_mousePosition.x = x;
+    m_mousePosition.y = y;
 
-void CameraFpsController::MoveLeft(float deltaTime) const
-{
-    m_camera.Translate(-glm::normalize(glm::cross(m_camera.GetDirection(), m_camera.GetUpVector())) * speed * deltaTime);
-}
-
-void CameraFpsController::MoveRight(float deltaTime) const
-{
-    m_camera.Translate(glm::normalize(glm::cross(m_camera.GetDirection(), m_camera.GetUpVector())) * speed * deltaTime);
-}
-
-void CameraFpsController::MoveForward(float deltaTime) const
-{
-    m_camera.Translate(m_camera.GetDirection() * speed * deltaTime);
-}
-
-void CameraFpsController::MoveBackward(float deltaTime) const
-{
-    m_camera.Translate(-m_camera.GetDirection() * speed * deltaTime);
-}
-
-void CameraFpsController::UpdateView(double posX, double posY)
-{
-    if (!m_dirty)
+    if (m_dirtyViewPosition)
     {
-        m_lastX = posX;
-        m_lastY = posY;
-        m_dirty = true;
+        m_dirtyViewPosition = false;
+        return;
     }
 
-    double xoffset = m_lastX - posX;
-    double yoffset = posY - m_lastY;
-    m_lastX = posX;
-    m_lastY = posY;
+    m_rotation.x += glm::radians(yoffset);
+    m_rotation.y += glm::radians(xoffset);
 
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-    m_yaw += xoffset;
-    m_pitch += yoffset;
-
-    m_pitch = std::max(std::min(m_pitch, 89.0), -89.0);
-
-    glm::vec3 front;
-    front.x = static_cast<float>(cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
-    front.y = static_cast<float>(sin(glm::radians(m_pitch)));
-    front.z = static_cast<float>(sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch)));
-    m_camera.SetDirection(glm::normalize(front));
+    m_isDirty = true;
 }
 
-void CameraFpsController::Scroll(float yoffset) const
+void CameraFpsController::SetViewPositions(double x, double y)
 {
-    m_camera.SetFov(m_camera.GetFov() - yoffset);
+    m_mousePosition = glm::vec2(x, y);
 }
 
+void CameraFpsController::ResetView()
+{
+    m_dirtyViewPosition = false;
 }
+
+void CameraFpsController::CalculateOrientation()
+{
+    glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
+    glm::quat y = glm::angleAxis(m_rotation.y, conjugate(m_orientation) * m_worldY);
+
+    m_orientation = normalize(m_orientation * y * x);
+
+    m_rotation = glm::vec3(0);
 }
+
+
+} // namespace video
+} // namespace unicorn

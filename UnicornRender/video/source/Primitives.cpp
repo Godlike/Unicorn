@@ -12,48 +12,50 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <cassert>
+
 namespace unicorn
 {
 namespace video
 {
-void Primitives::Cube(Mesh& mesh)
+Mesh& Primitives::Box(Mesh& mesh)
 {
     std::vector<Vertex> vertices{{
         //front
-        {{-0.5f, -0.5f, 0.5f},{1.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.5f},{0.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.5f},{0.0f, 1.0f}},
-        {{-0.5f, 0.5f, 0.5f},{1.0f, 1.0f}},
+        {{-0.5f, -0.5f, 0.5f}, {0.0f, 1.0f}},
+        {{0.5f, -0.5f, 0.5f}, {1.0f, 1.0f}},
+        {{0.5f, 0.5f, 0.5f}, {1.0f, 0.0f}},
+        {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
 
         //right
-        {{0.5f, 0.5f, 0.5f},{1.0f, 1.0f}},
-        {{0.5f, 0.5f, -0.5f},{0.0f, 1.0f}},
-        {{0.5f, -0.5f, -0.5f},{0.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.5f},{1.0f, 0.0f}},
+        {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
+        {{0.5f, 0.5f, -0.5f}, {1.0f, 0.0f}},
+        {{0.5f, -0.5f, -0.5f}, {1.0f, 1.0f}},
+        {{0.5f, -0.5f, 0.5f}, {0.0f, 1.0f}},
 
         //back
-        {{-0.5f, -0.5f, -0.5f},{1.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f},{0.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f},{0.0f, 1.0f}},
-        {{-0.5f, 0.5f, -0.5f},{1.0f, 1.0f}},
+        {{-0.5f, -0.5f, -0.5f}, {0.0f, 1.0f}},
+        {{0.5f, -0.5f, -0.5f}, {1.0f, 1.0f}},
+        {{0.5f, 0.5f, -0.5f}, {1.0f, 0.0f}},
+        {{-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
 
         //left
-        {{-0.5f, -0.5f, -0.5f},{1.0f, 0.0f}},
-        {{-0.5f, -0.5f, 0.5f},{0.0f, 0.0f}},
-        {{-0.5f, 0.5f, 0.5f},{0.0f, 1.0f}},
-        {{-0.5f, 0.5f, -0.5f},{1.0f, 1.0f}},
+        {{-0.5f, -0.5f, -0.5f}, {0.0f, 1.0f}},
+        {{-0.5f, -0.5f, 0.5f}, {1.0f, 1.0f}},
+        {{-0.5f, 0.5f, 0.5f}, {1.0f, 0.0f}},
+        {{-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
 
         //upper
-        {{0.5f, 0.5f, 0.5f},{1.0f, 0.0f}},
-        {{-0.5f, 0.5f, 0.5f},{0.0f, 0.0f}},
-        {{-0.5f, 0.5f, -0.5f},{0.0f, 1.0f}},
-        {{0.5f, 0.5f, -0.5f},{1.0f, 1.0f}},
+        {{0.5f, 0.5f, 0.5f}, {0.0f, 1.0f}},
+        {{-0.5f, 0.5f, 0.5f}, {1.0f, 1.0f}},
+        {{-0.5f, 0.5f, -0.5f}, {1.0f, 0.0f}},
+        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f}},
 
         //bottom
-        {{-0.5f, -0.5f, -0.5f},{1.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f},{0.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.5f},{0.0f, 1.0f}},
-        {{-0.5f, -0.5f, 0.5f},{1.0f, 1.0f}},
+        {{-0.5f, -0.5f, -0.5f}, {0.0f, 1.0f}},
+        {{0.5f, -0.5f, -0.5f}, {1.0f, 1.0f}},
+        {{0.5f, -0.5f, 0.5f}, {1.0f, 0.0f}},
+        {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
     }};
 
     mesh.SetMeshData(vertices, {
@@ -63,44 +65,35 @@ void Primitives::Cube(Mesh& mesh)
                          12, 13, 14, 12, 14, 15,
                          16, 17, 18, 16, 18, 19,
                          20, 21, 22, 20, 22, 23});
+
+    return mesh;
 }
 
-void Primitives::Quad(Mesh& mesh)
+Mesh& Primitives::Quad(Mesh& mesh)
 {
     std::vector<Vertex> vertices{{
-        {{-0.5f , -0.5f , 0.0f},{1.0f , 0.0f}} ,
-        {{0.5f , -0.5f , 0.0f},{0.0f , 0.0f}} ,
-        {{0.5f , 0.5f , 0.0f},{0.0f , 1.0f}},
-        {{-0.5f , 0.5f , 0.0f},{1.0f , 1.0f}},
+        {{-0.5f, -0.5f, 0.0f},{0.0f, 1.0f}} ,
+        {{0.5f, -0.5f, 0.0f},{1.0f, 1.0f}} ,
+        {{0.5f, 0.5f, 0.0f},{1.0f, 0.0f}},
+        {{-0.5f, 0.5f, 0.0f},{0.0f, 0.0f}},
     }};
 
     mesh.SetMeshData(vertices, {0, 1, 2, 2, 3, 0});
+
+    return mesh;
 }
 
-void Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors)
+Mesh& Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors)
 {
-    if(radius < 0)
-    {
-        LOG_WARNING("Sphere radius less than 0, sphere will not be generated!");
-        return;
-    }
-
-    if(rings < 4 || sectors < 4)
-    {
-        LOG_WARNING("Rings or sectors are less than 4, sphere will not be generated!");
-        return;
-    }
+    assert(radius > 0);
+    assert(rings > 4 || sectors > 4);
 
     std::vector<uint32_t> indices;
     std::vector<Vertex> vertices;
 
     uint32_t vectorSize = rings * sectors;
 
-    if(vectorSize > vertices.max_size())
-    {
-        LOG_WARNING("Number of vertices is too big, sphere will not be generated!");
-        return;
-    }
+    assert(vectorSize < vertices.max_size());
 
     vertices.resize(vectorSize);
 
@@ -116,7 +109,7 @@ void Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t secto
                 float const y = glm::sin(-glm::half_pi<float>() + glm::pi<float>() * r * R);
                 float const x = glm::cos(2 * glm::pi<float>() * s * S) * glm::sin(glm::pi<float>() * r * R);
                 float const z = glm::sin(2 * glm::pi<float>() * s * S) * glm::sin(glm::pi<float>() * r * R);
-                *vert_iter++ = {{x * radius, y * radius, z * radius}, {s * S, r * R}};
+                *vert_iter++ = {{x * radius, y * radius, z * radius}, {(sectors - s) * S, (rings - r) * R}};
             }
         }
     }
@@ -139,9 +132,11 @@ void Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t secto
     }
 
     mesh.SetMeshData(vertices, indices);
+
+    return mesh;
 }
 
-void Primitives::LoadMeshFromFile(Mesh& mesh, std::string const& path)
+Mesh& Primitives::LoadMeshFromFile(Mesh& mesh, std::string const& path)
 {
     Assimp::Importer importer;
     aiScene const* scene = importer.ReadFile(path,
@@ -156,6 +151,7 @@ void Primitives::LoadMeshFromFile(Mesh& mesh, std::string const& path)
         //return false;
     }
 
+    return mesh;
 }
 
 }

@@ -34,7 +34,13 @@ namespace video
 class Renderer
 {
 public:
-    Renderer(system::Manager& manager, system::Window* window);
+    /**
+     * @brief Constructor
+     * @param manager Describes required extensions
+     * @param window Render into
+     * @param[in] camera main camera
+     */
+    Renderer(system::Manager& manager, system::Window* window, Camera& camera);
 
     virtual ~Renderer();
 
@@ -46,12 +52,6 @@ public:
     virtual bool Init() = 0;
     virtual void Deinit() = 0;
     virtual bool Render() = 0;
-
-    /**
-     * @brief Returns reference to main camera
-     * @return reference to main camera
-     */
-    UNICORN_EXPORT Camera& GetCamera();
 
     UNICORN_EXPORT void SetBackgroundColor(const glm::vec3& backgroundColor);
 
@@ -72,9 +72,9 @@ public:
     *
     *  Creates and subscribes to mesh.
     *  Mesh shall be deleted via DeleteMesh().
-    *  
+    *
     *  @param [in] material describes mesh visual representation
-    *  
+    *
     *  @attention  Mesh lifetime is bound by its renderer's lifetime.
     *              Using meshes after their renderer was destroyed is undefined behaviour.
     *              If you're storing mesh pointers, consider storing them with a reference
@@ -92,6 +92,9 @@ public:
     * @return true if mesh was sucessfully deleted from system and false if not
     */
     UNICORN_EXPORT virtual bool DeleteMesh(Mesh const* mesh) = 0;
+
+    //! Main view camera, must never be nullptr
+    Camera* camera;
 protected:
     bool m_isInitialized;
 
@@ -99,8 +102,6 @@ protected:
     system::Manager& m_systemManager;
     //! Pointer to associated window
     system::Window* m_pWindow;
-    //! Main view camera
-    Camera m_camera;
     //! Background filling color
     std::array<float, 4> m_backgroundColor;
     //! Depth test

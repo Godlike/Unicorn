@@ -22,15 +22,17 @@ public:
     *  @brief Fills given mesh with cube data
     *
     *  @param[out] mesh    geometry mesh
+    *  @return reference to updated mesh
     */
-    UNICORN_EXPORT static void Cube(Mesh& mesh);
+    UNICORN_EXPORT static Mesh& Box(Mesh& mesh);
 
     /**
     *  @brief Fills given mesh with quad data
     *
     *  @param[out] mesh    geometry mesh
+    *  @return reference to updated mesh
     */
-    UNICORN_EXPORT static void Quad(Mesh& mesh);
+    UNICORN_EXPORT static Mesh& Quad(Mesh& mesh);
 
     /**
     *  @brief Fills given mesh with sphere data
@@ -40,11 +42,12 @@ public:
     *  @param[in] rings horizontal slices count (>= 4)
     *  @param[in] sectors vertical slices count (>= 4)
     *  @attention `rings * sectors` must be less than `std::vector<Vertex>::max_size()`
-    *
+    *  @return reference to updated mesh
     */
-    UNICORN_EXPORT static void Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors);
+    UNICORN_EXPORT static Mesh& Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors);
 
-    UNICORN_EXPORT static void LoadMeshFromFile(Mesh& mesh, std::string const& path);
+
+    UNICORN_EXPORT static Mesh& LoadMeshFromFile(Mesh& mesh, std::string const& path);
 };
 }
 }

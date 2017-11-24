@@ -44,13 +44,14 @@ bool QueueFamilyIndices::IsComplete() const
     return graphicsFamily >= 0 && presentFamily >= 0;
 }
 
-Renderer::Renderer(system::Manager& manager, system::Window* window)
-    : video::Renderer(manager, window)
+Renderer::Renderer(system::Manager& manager, system::Window* window, Camera& camera)
+    : video::Renderer(manager, window, camera)
     , m_pDepthImage(nullptr)
     , m_contextInstance(Context::Instance().GetVkInstance())
     , m_hasDirtyMeshes(false)
 {
     m_pWindow->Destroyed.connect(this, &Renderer::OnWindowDestroyed);
+    m_pWindow->SizeChanged.connect(this, &Renderer::OnWindowSizeChanged);
 }
 
 Renderer::~Renderer()
@@ -329,10 +330,6 @@ void Renderer::OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, i
     {
         LOG_ERROR("Can't recreate swapchain!");
     }
-    if(!CreateDepthBuffer())
-    {
-        LOG_ERROR("Can't recreate depth buffer!");
-    }
 }
 
 bool Renderer::RecreateSwapChain()
@@ -341,6 +338,7 @@ bool Renderer::RecreateSwapChain()
 
     if(CreateSwapChain() &&
         CreateImageViews() &&
+        CreateDepthBuffer() &&
         CreateRenderPass() &&
         CreateGraphicsPipeline() &&
         CreateFramebuffers() &&
@@ -618,8 +616,8 @@ bool Renderer::PrepareUniformBuffers()
     size_t uboAlignment = static_cast<size_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
     m_dynamicAlignment = (sizeof(glm::mat4) / uboAlignment) * uboAlignment + ((sizeof(glm::mat4) % uboAlignment) > 0 ? uboAlignment : 0);
 
-    m_uniformCameraData.proj = m_camera.GetProjection();
-    m_uniformCameraData.view = m_camera.GetView();
+    m_uniformCameraData.proj = camera->projection;
+    m_uniformCameraData.view = camera->view;
 
     m_uniformViewProjection.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, sizeof(UniformCameraData));
     m_uniformViewProjection.Map();
@@ -655,12 +653,9 @@ void Renderer::UpdateModelDescriptorSet() const
 
 void Renderer::UpdateUniformBuffer()
 {
-    if(m_uniformCameraData.view != m_camera.GetView() || m_uniformCameraData.proj != m_camera.GetProjection())
-    {
-        m_uniformCameraData.proj = m_camera.GetProjection();
-        m_uniformCameraData.view = m_camera.GetView();
-        m_uniformViewProjection.Write(&m_uniformCameraData);
-    }
+    m_uniformCameraData.proj = camera->projection;
+    m_uniformCameraData.view = camera->view;
+    m_uniformViewProjection.Write(&m_uniformCameraData);
 }
 
 void Renderer::UpdateDynamicUniformBuffer()
@@ -958,7 +953,7 @@ bool Renderer::CreateDescriptionSetLayout()
 
     vk::DescriptorPoolSize descriptorSamplerPoolSize;
     descriptorSamplerPoolSize.type = vk::DescriptorType::eCombinedImageSampler;
-    descriptorSamplerPoolSize.descriptorCount = m_physicalDeviceProperties.limits.maxDescriptorSetSampledImages;
+    descriptorSamplerPoolSize.descriptorCount = 3000; //TODO: task [#101] Custom vulkan allocator must enhance this
 
     descriptorPoolSizes.push_back(descriptorViewProjectionPoolSize);
     descriptorPoolSizes.push_back(descriptorModelPoolSize);
@@ -967,7 +962,7 @@ bool Renderer::CreateDescriptionSetLayout()
     vk::DescriptorPoolCreateInfo poolCreateInfo;
     poolCreateInfo.poolSizeCount = static_cast<uint32_t>(descriptorPoolSizes.size());
     poolCreateInfo.pPoolSizes = descriptorPoolSizes.data();
-    poolCreateInfo.maxSets = 3000; //TODO: expand
+    poolCreateInfo.maxSets = 3000; //TODO: task [#101] Custom vulkan allocator must enhance this
     poolCreateInfo.flags = vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet;
 
     vk::Result result = m_vkLogicalDevice.createDescriptorPool(&poolCreateInfo, nullptr, &m_descriptorPool);
@@ -1038,7 +1033,7 @@ bool Renderer::CreateDescriptionSetLayout()
     }
 
     vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
-    pipelineLayoutInfo.setLayoutCount = m_descriptorSetLayouts.size();
+    pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(m_descriptorSetLayouts.size());
     pipelineLayoutInfo.pSetLayouts = m_descriptorSetLayouts.data();
 
     vk::PushConstantRange pushConstanRange;
@@ -1093,7 +1088,7 @@ bool Renderer::CreateGraphicsPipeline()
     vk::PipelineRasterizationStateCreateInfo rasterizer;
     rasterizer.lineWidth = 1.0f;
     rasterizer.cullMode = vk::CullModeFlagBits::eNone;
-    rasterizer.frontFace = vk::FrontFace::eClockwise;
+    rasterizer.frontFace = vk::FrontFace::eCounterClockwise;
     rasterizer.polygonMode = vk::PolygonMode::eFill;
 
     vk::PipelineMultisampleStateCreateInfo multisampling; // TODO: configure MSAA at global level.
@@ -1309,6 +1304,12 @@ bool Renderer::CreateCommandBuffers()
 
             for(auto pVkMesh : m_vkMeshes)
             {
+                if (!pVkMesh->isVisible())
+                {
+                    ++j;
+                    continue;
+                }
+
                 if(pVkMesh->IsValid())
                 {
                     glm::vec4 colorPush(
@@ -1337,7 +1338,9 @@ bool Renderer::CreateCommandBuffers()
                     // Set 1: Per-Material descriptor set containing bound images
                     descriptorSets[1] = pVkMesh->pMaterial->descriptorSet;
 
-                    m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout, 0, descriptorSets.size(), descriptorSets.data(), 1, &dynamicOffset);
+                    m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout,
+                        0, static_cast<uint32_t>(descriptorSets.size()),
+                        descriptorSets.data(), 1, &dynamicOffset);
 
                     m_commandBuffers[i].drawIndexed(pVkMesh->IndicesSize(), 1, 0, 0, 0);
 
@@ -1605,7 +1608,6 @@ bool Renderer::Frame()
     submitInfo.signalSemaphoreCount = 1;
     submitInfo.pSignalSemaphores = signalSemaphores;
 
-    m_camera.Frame();
     UpdateUniformBuffer();
     UpdateDynamicUniformBuffer();
 

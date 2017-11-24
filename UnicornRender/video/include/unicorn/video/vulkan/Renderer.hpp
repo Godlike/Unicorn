@@ -57,8 +57,8 @@ struct SwapChainSupportDetails
 /** @brief Camera data */
 struct UniformCameraData
 {
-    glm::mat4 view;
-    glm::mat4 proj;
+    glm::mat4 view = glm::mat4();
+    glm::mat4 proj = glm::mat4();
 };
 
 /** @brief Struct which holds all models uniform data for sending to shader */
@@ -76,11 +76,12 @@ class Renderer : public video::Renderer
 {
 public:
     /**
-     * @brief Basic constructor
+     * @brief Constructor
      * @param manager Describes required extensions
      * @param window Render into
+     * @param[in] camera main camera
      */
-    Renderer(system::Manager& manager, system::Window* window);
+    Renderer(system::Manager& manager, system::Window* window, Camera& camera);
 
     /**
      * @brief Destructor which calls Deinit()

@@ -39,7 +39,7 @@ bool VkMesh::operator==(const Mesh& mesh) const
 
 const glm::mat4& VkMesh::GetModelMatrix() const
 {
-    return m_mesh.modelMatrix;
+    return m_mesh.GetModelMatrix();
 }
 
 void VkMesh::AllocateOnGPU()
@@ -104,6 +104,11 @@ bool VkMesh::IsColored() const
 bool VkMesh::IsWired() const
 {
     return m_mesh.GetMaterial().IsWired();
+}
+
+bool VkMesh::isVisible() const
+{
+    return m_mesh.GetMaterial().IsVisible();
 }
 
 glm::vec3 VkMesh::GetColor() const

@@ -12,10 +12,12 @@ namespace unicorn
 {
 namespace video
 {
-Material::Material() : color(Color::Red())
-                     , m_isColored(true)
-                     , m_isWired(false)
-                     , m_albedo(nullptr)
+Material::Material()
+    : color(Color::Red())
+    , m_isColored(true)
+    , m_isWired(false)
+    , m_isVisible(true)
+    , m_albedo(nullptr)
 {
 }
 
@@ -54,6 +56,16 @@ bool Material::IsColored() const
 bool Material::IsWired() const
 {
     return m_isWired;
+}
+
+void Material::SetIsVisible(bool visible)
+{
+    m_isVisible = visible;
+}
+
+bool Material::IsVisible() const
+{
+    return m_isVisible;
 }
 
 const Texture* Material::GetAlbedo() const
