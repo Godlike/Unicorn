@@ -8,6 +8,9 @@
 #include <unicorn/utility/Logger.hpp>
 
 #include <glm/gtc/constants.hpp>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 namespace unicorn
 {
@@ -137,5 +140,23 @@ void Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t secto
 
     mesh.SetMeshData(vertices, indices);
 }
+
+void Primitives::LoadMeshFromFile(Mesh& mesh, std::string const& path)
+{
+    Assimp::Importer importer;
+    aiScene const* scene = importer.ReadFile(path,
+        aiProcess_CalcTangentSpace       |
+        aiProcess_Triangulate            |
+        aiProcess_JoinIdenticalVertices  |
+        aiProcess_SortByPType);
+    // If the import failed, report it
+    if( !scene)
+    {
+        LOG_ERROR("Assimp import error %s", importer.GetErrorString());
+        //return false;
+    }
+
+}
+
 }
 }

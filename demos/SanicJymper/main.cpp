@@ -397,6 +397,9 @@ int main(int argc, char* argv[])
             unicorn::video::Mesh* rightSphere = vkRenderer->SpawnMesh(mandrillMaterial);
             unicorn::video::Primitives::Sphere(*rightSphere, 2, 32, 32);
 
+            unicorn::video::Mesh* loadedMesh = vkRenderer->SpawnMesh(mandrillMaterial);
+            unicorn::video::Primitives::LoadMeshFromFile(*loadedMesh, "models/glTF/DamagedHelmet/DamagedHelmet.gltf");
+
             leftSphere->modelMatrix = glm::translate(leftSphere->modelMatrix, { -3.0, 0.0, -1.0 });
             rightSphere->modelMatrix = glm::translate(rightSphere->modelMatrix, { 3.0, 0.0, 1.0 });
 

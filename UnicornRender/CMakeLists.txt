@@ -30,29 +30,20 @@ add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS -DVULKAN_HPP_TYPESAFE_CONVERSION)
 
 ## GLM
 include(GlmConfig)
-find_package(GLM)
+find_package(GLM REQUIRED)
 
 if (NOT GLM_FOUND)
     add_subdirectory(${GLM_ROOT_DIR})
 endif()
 
-## Loguru
 include(loguru)
-
-## STB
 include(stb)
-
-## utility
 include(utility)
-
-## system
 include(system)
-
-## video
 include(video)
-
-## Wink Signals
 include(WinkSignals)
+include(assimp)
+find_package(assimp REQUIRED)
 
 ## Installation info
 include(InstallInfo)
@@ -104,6 +95,7 @@ include_directories( SYSTEM
     ${GLM_INCLUDE_DIR}
     ${LOGURU_INCLUDE_DIR}
     ${STB_INCLUDE_DIR}
+    ${ASSIMP_INCLUDE_DIR}
 )
 
 if (BUILD_SHARED_LIBS)
@@ -158,6 +150,7 @@ set_target_properties(
 target_link_libraries(${UNICORN_RENDER_LIB}
     ${WINDOW_MANAGER_LIBS}
     ${VULKAN_LIBRARY}
+    ${ASSIMP_LIBRARIES}
 )
 
 install( TARGETS ${UNICORN_RENDER_LIB}
@@ -252,10 +245,14 @@ foreach(GLSL ${GLSL_SOURCE_FILES})
         OUTPUT ${SPIRV}
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/shaders/"
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/textures/"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/models/"
         COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${UNICORN_RENDER_ROOT}/data/textures"
             "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/textures"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${UNICORN_RENDER_ROOT}/data/models"
+            "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/models"
         DEPENDS ${GLSL})
     list(APPEND SPIRV_BINARY_FILES ${SPIRV})
 endforeach(GLSL)
