@@ -147,6 +147,7 @@ Mesh& Primitives::LoadMeshFromFile(Mesh& mesh, std::string const& path)
         aiProcess_CalcTangentSpace       |
         aiProcess_Triangulate            |
         aiProcess_JoinIdenticalVertices  |
+		aiProcess_FlipUVs |
         aiProcess_SortByPType);
 
     if( !scene)

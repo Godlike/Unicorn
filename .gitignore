@@ -1,5 +1,4 @@
-*.TMP
-.vs/
+*.TMP .vs/
 CMakeSettings.json
 *.kdev4
 *.spv
@@ -8,7 +7,6 @@ CMakeSettings.json
 *.a
 *.core
 *.moc
-*.obj
 *.orig
 *.rej
 *_pch.h.cpp
