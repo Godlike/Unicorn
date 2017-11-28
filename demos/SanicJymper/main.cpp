@@ -80,7 +80,7 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     // Updating transformations for meshes
     for(auto& mesh : meshes)
     {
-        mesh->Calculate();
+        mesh->CalculateModelMatrix();
     }
 
     // Updating transformations for cameras

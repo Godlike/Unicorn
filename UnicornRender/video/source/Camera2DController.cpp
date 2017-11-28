@@ -15,10 +15,15 @@ namespace video
 {
 
 Camera2DController::Camera2DController(glm::mat4& cameraView) :
-    CameraController(cameraView)
+    m_cameraView(cameraView)
 {
 }
 
+void Camera2DController::Calculate()
+{
+    Update();
+    m_cameraView = m_transformMatrix;
+}
 
 } // namespace video
 } // namespace unicorn

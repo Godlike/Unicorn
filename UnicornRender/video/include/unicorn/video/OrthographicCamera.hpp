@@ -20,8 +20,14 @@ namespace video
 class OrthographicCamera final : public CameraProjection
 {
 public:
+    /**
+    * @brief Creates orthographics camera projection
+    * @param[in] window 
+    * @param[in] cameraProj projection matrix
+    */
     UNICORN_EXPORT OrthographicCamera(system::Window* window, glm::mat4& cameraProj);
 
+    /** @brief Recalculates projection */
     UNICORN_EXPORT void UpdateProjection() override;
 
     /** @brief Changes scale by adding scaleOffset to it */

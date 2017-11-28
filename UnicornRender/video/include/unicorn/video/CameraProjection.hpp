@@ -27,6 +27,11 @@ public:
     */
     CameraProjection(system::Window* window, glm::mat4& cameraProj);
 
+    CameraProjection(CameraProjection const& other) = delete;
+    CameraProjection(CameraProjection&& other) = delete;
+    CameraProjection& operator=(CameraProjection& other) = delete;
+    CameraProjection& operator=(CameraProjection&& other) = delete;
+
     /** @brief Disconnects from window signals */
     virtual ~CameraProjection();
 

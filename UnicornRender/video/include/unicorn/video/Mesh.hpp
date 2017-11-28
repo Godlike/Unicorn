@@ -13,10 +13,6 @@
 
 #include <wink/signal.hpp>
 #include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-#include <list>
 
 namespace unicorn
 {
@@ -86,8 +82,9 @@ public:
     /**
      * @brief Scales mesh
      *
-     * @param[in] scale Each axis scale factor
+     * @param[in] scale basis scale factors
      *
+     * Lineary scales each basis component of the mesh vectors by the given scale factors
      * {1,1,1} is origin scale, {0.5, 0.5, 2} is x and y diminished twice
      * and z is twice bigger
      */
@@ -96,7 +93,7 @@ public:
     /**
      * @brief Calculates model matrix for model view projection calculation
      */
-    UNICORN_EXPORT void Calculate();
+    UNICORN_EXPORT void CalculateModelMatrix();
 
     /** @brief Event triggered when material is changed */
     wink::signal<wink::slot<void()>> MaterialUpdated;
