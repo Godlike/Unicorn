@@ -24,7 +24,7 @@ namespace math
  * @param[in]  worldX  world X axis
  * @param[in]  worldZ  world Z axis
  *
- * Realization : realtime rendering 3rd edition, 79 page
+ * Realisation : Realtime rendering 3rd edition, 79 page by Eric Haines, Naty Hoffman, and Tomas Möller
  *
  * @return returns a quaternion such that q*start = dest
  */
@@ -37,6 +37,9 @@ glm::quat RotationBetweenVectors(glm::vec3 start, glm::vec3 dest
  *
  * @param[in] direction new direction
  * @param[in] desiredUp new up vector
+ * @param[in] desiredUp new world Y vector
+ * @param[in] desiredUp new world Z vector
+ * @attention worldY and worldZ must be orthogonal
  *
  * @return orientation quaternion
  */

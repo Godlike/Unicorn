@@ -11,10 +11,10 @@ namespace unicorn
 namespace video
 {
 
-CameraFpsController::CameraFpsController(glm::mat4& cameraView)
-    : CameraController(cameraView)
-    , m_mousePosition(0)
+CameraFpsController::CameraFpsController(glm::mat4& cameraView) :
+    m_mousePosition(0)
     , m_dirtyViewPosition(true)
+    , m_cameraView(cameraView)
 {
 }
 
@@ -38,7 +38,7 @@ void CameraFpsController::UpdateView(float x, float y)
     m_isDirty = true;
 }
 
-void CameraFpsController::SetViewPositions(double x, double y)
+void CameraFpsController::SetViewPositions(float x, float y)
 {
     m_mousePosition = glm::vec2(x, y);
 }
@@ -58,6 +58,11 @@ void CameraFpsController::CalculateOrientation()
     m_rotation = glm::vec3(0);
 }
 
+void CameraFpsController::Calculate()
+{
+    Update();
+    m_cameraView = m_transformMatrix;
+}
 
 } // namespace video
 } // namespace unicorn

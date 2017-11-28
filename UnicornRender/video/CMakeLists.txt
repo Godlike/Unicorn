@@ -41,7 +41,6 @@ set(VIDEO_HEADERS
     include/unicorn/video/OrthographicCamera.hpp
     include/unicorn/video/PerspectiveCamera.hpp
     include/unicorn/video/CameraFpsController.hpp
-    include/unicorn/video/CameraController.hpp
     include/unicorn/video/Color.hpp
     include/unicorn/video/Texture.hpp
     include/unicorn/video/Mesh.hpp
@@ -58,7 +57,6 @@ set(VIDEO_SOURCES
     source/OrthographicCamera.cpp
     source/PerspectiveCamera.cpp
     source/CameraFpsController.cpp
-    source/CameraController.cpp
     source/Color.cpp
     source/Texture.cpp
     source/Mesh.cpp

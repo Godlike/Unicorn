@@ -51,7 +51,7 @@ void Mesh::Scale(glm::vec3 scale)
     m_scale = scale;
 }
 
-void Mesh::Calculate()
+void Mesh::CalculateModelMatrix()
 {
     CalculateOrientation();
 
