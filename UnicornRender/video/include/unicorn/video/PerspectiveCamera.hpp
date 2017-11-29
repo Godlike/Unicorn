@@ -22,14 +22,7 @@ class PerspectiveCamera final : public CameraProjection
 public:
     UNICORN_EXPORT PerspectiveCamera(system::Window* window, glm::mat4& cameraProj);
 
-    /**
-    * @brief Changes fov by zoomOffset
-    *
-    * @param zoomOffset adds it to fov value
-    */
-    UNICORN_EXPORT void Zoom(float zoomOffset);
-
-    /** @brief Sets fov */
+    /** @brief Sets field of view */
     UNICORN_EXPORT void SetFov(float fov);
 
     /** @brief Sets near Z plane */
@@ -38,10 +31,10 @@ public:
     /** @brief Sets far Z plane */
     UNICORN_EXPORT void SetZFar(float zfar);
 
-    /** @brief Returns fov */
+    /** @brief Returns field of view */
     UNICORN_EXPORT float GetFov() const;
 
-    /** @brief      { function_description } */
+    /** @brief Recalculates perspective */
     void UpdateProjection() override;
 private:
     float m_fov;

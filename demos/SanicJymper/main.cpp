@@ -111,7 +111,8 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
             unicorn::video::Material cubematerial;
             cubematerial.color = {static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255};
             unicorn::video::Mesh* mesh = &unicorn::video::Primitives::Sphere(*vkRenderer->SpawnMesh(cubematerial), 1, 32, 32);
-            mesh->Translate({ std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 });
+            glm::vec3 randomTranslate = { std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 };
+            mesh->SetTranslation(mesh->GetTranslate() + randomTranslate);
             meshes.push_back(mesh);
             break;
         }
@@ -179,11 +180,13 @@ void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double>
 {
     if (isPerspective)
     {
-        pPerspectiveProjection->Zoom(static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
+        pPerspectiveProjection->SetFov(pPerspectiveProjection->GetFov() -
+            static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
     }
     else
     {
-        pOrthoProjection->Scale(static_cast<float>(pos.second * 10)); // 10 is scale speed
+        pOrthoProjection->SetScale(pOrthoProjection->GetScale() +
+            static_cast<float>(pos.second * 10)); // 10 is scale speed
     }
 }
 
@@ -464,18 +467,18 @@ bool MakeCubeMap()
     const float skyBoxScaleFactor = 500;
     const float skyBoxDistance = skyBoxScaleFactor / 2 - 1;
 
-    frontBox->Translate({ 0, 0, skyBoxDistance });
-    backBox->Translate({ 0, 0, -skyBoxDistance });
+    frontBox->SetTranslation({ 0, 0, skyBoxDistance });
+    backBox->SetTranslation({ 0, 0, -skyBoxDistance });
     backBox->Rotate(static_cast<float>(glm::radians(-180.0)), { 0.0, 1.0, 0.0 });
 
-    upBox->Translate({ 0, skyBoxDistance, 0 });
+    upBox->SetTranslation({ 0, skyBoxDistance, 0 });
     upBox->Rotate(static_cast<float>(glm::radians(-90.0)), { 1.0, 0.0, 0.0 });
-    bottomBox->Translate({ 0, -skyBoxDistance, 0 });
+    bottomBox->SetTranslation({ 0, -skyBoxDistance, 0 });
     bottomBox->Rotate(static_cast<float>(glm::radians(90.0)), { 1.0, 0.0, 0.0 });
 
-    leftBox->Translate({ -skyBoxDistance, 0, 0 });
+    leftBox->SetTranslation({ -skyBoxDistance, 0, 0 });
     leftBox->Rotate(static_cast<float>(glm::radians(-90.0)), { 0.0, 1.0, 0.0 });
-    rightBox->Translate({ skyBoxDistance, 0, 0 });
+    rightBox->SetTranslation({ skyBoxDistance, 0, 0 });
     rightBox->Rotate(static_cast<float>(glm::radians(90.0)), { 0.0, 1.0, 0.0 });
 
     frontBox->Scale({ skyBoxScaleFactor, skyBoxScaleFactor, 0 });
@@ -570,9 +573,9 @@ int main(int argc, char* argv[])
             mat.color = unicorn::video::Color::Blue();
             auto z_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
 
-            x_minus->Translate({ -250, 0, 0 });
-            x_plus->Translate({ 250, 0, 0 });
-            z_plus->Translate({ 0, 0, 250 });
+            x_minus->SetTranslation({ -250, 0, 0 });
+            x_plus->SetTranslation({ 250, 0, 0 });
+            z_plus->SetTranslation({ 0, 0, 250 });
 
             mat.color = unicorn::video::Color::Red();
             sun = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
@@ -581,8 +584,8 @@ int main(int argc, char* argv[])
             mat.SetAlbedo(&texture);
             earth = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
             earth->Scale({ 2, 2, 2 });
-            earth->Translate({ -15, 0, 50 });
-            sun->Translate({ 15, 0, 50 });
+            earth->SetTranslation({ -15, 0, 50 });
+            sun->SetTranslation({ 15, 0, 50 });
 
             unicorn::video::Mesh* box = &Primitives::Box(*vkRenderer->SpawnMesh(mat));
 

@@ -76,7 +76,7 @@ class Renderer : public video::Renderer
 {
 public:
     /**
-     * @brief Constructor
+     * @brief Constructs and initializes new renderer instance
      * @param manager Describes required extensions
      * @param window Render into
      * @param[in] camera main camera

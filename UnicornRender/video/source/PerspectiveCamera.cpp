@@ -32,11 +32,6 @@ void PerspectiveCamera::UpdateProjection()
                                           m_zfar);
 }
 
-void PerspectiveCamera::Zoom(float zoomOffset)
-{
-    SetFov(m_fov - zoomOffset);
-}
-
 void PerspectiveCamera::SetFov(float fov)
 {
     m_fov = std::max(std::min(fov, m_fovUpperBound), m_fovLowerBound);

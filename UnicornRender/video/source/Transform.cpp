@@ -29,9 +29,7 @@ Transform::Transform()
 
 void Transform::LookAtDirection(glm::vec3 direction)
 {
-    m_orientation = utility::math::LookAt(direction, m_upVector);
-
-    m_isDirty = true;
+    LookAtDirection(direction, m_upVector);
 }
 
 void Transform::LookAtDirection(glm::vec3 direction, glm::vec3 upVector)
@@ -48,7 +46,7 @@ void Transform::SetUp(glm::vec3 upVector)
     m_isDirty = true;
 }
 
-void Transform::SetTranslate(glm::vec3 translate)
+void Transform::SetTranslation(glm::vec3 translate)
 {
     m_translation = translate;
 
@@ -60,13 +58,6 @@ void Transform::SetWorldCoordinates(glm::vec3 x, glm::vec3 y, glm::vec3 z)
     m_worldX = x;
     m_worldY = y;
     m_worldZ = z;
-}
-
-void Transform::Translate(glm::vec3 translate)
-{
-    m_translation += translate;
-
-    m_isDirty = true;
 }
 
 glm::vec3 Transform::GetDirection() const
@@ -96,32 +87,32 @@ glm::mat4 const& Transform::GetModelMatrix() const
 
 void Transform::TranslateLocalX(float distance)
 {
-    Translate(m_rightVector * distance);
+    SetTranslation(GetTranslate() + m_rightVector * distance);
 }
 
 void Transform::TranslateLocalY(float distance)
 {
-    Translate(m_upVector * distance);
+    SetTranslation(GetTranslate() + m_upVector * distance);
 }
 
 void Transform::TranslateLocalZ(float distance)
 {
-    Translate(m_direction * distance);
+    SetTranslation(GetTranslate() + m_direction * distance);
 }
 
 void Transform::TranslateWorldX(float distance)
 {
-    Translate(m_worldX * distance);
+    SetTranslation(GetTranslate() + m_worldX * distance);
 }
 
 void Transform::TranslateWorldY(float distance)
 {
-    Translate(m_worldY * distance);
+    SetTranslation(GetTranslate() + m_worldY * distance);
 }
 
 void Transform::TranslateWorldZ(float distance)
 {
-    Translate(m_worldZ * distance);
+    SetTranslation(GetTranslate() + m_worldZ * distance);
 }
 
 void Transform::RotateX(float radians)
@@ -161,9 +152,9 @@ void Transform::Rotate(glm::quat rotation)
 void Transform::RotateAroundPoint(float radians, glm::vec3 axis, glm::vec3 point)
 {
     glm::vec3 dir = point - m_translation;
-    Translate(dir);
+    SetTranslation(GetTranslate() + dir);
     glm::quat q = angleAxis(radians, axis);
-    Translate(q * -dir);
+    SetTranslation(GetTranslate() + q * -dir);
     m_isDirty = true;
 }
 

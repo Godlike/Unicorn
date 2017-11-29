@@ -20,8 +20,8 @@ namespace video
 /** @brief Camera struct, holds view and projection matrices */
 struct Camera
 {
-    glm::mat4 projection = glm::mat4();
     glm::mat4 view = glm::mat4();
+    glm::mat4 projection = glm::mat4();
 };
 
 } // namespace video
