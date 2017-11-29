@@ -38,11 +38,6 @@ void OrthographicCamera::UpdateProjection()
                                     m_back, m_front);
 }
 
-void OrthographicCamera::Scale(float scaleOffset)
-{
-    SetScale(m_orthoScale + scaleOffset);
-}
-
 void OrthographicCamera::SetScale(float scale)
 {
     m_orthoScale = std::max(scale, 1.0f);

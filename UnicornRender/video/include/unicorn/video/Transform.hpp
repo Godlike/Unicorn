@@ -19,7 +19,7 @@ namespace unicorn
 namespace video
 {
 /**
- * @brief Base class for every object that can translate or rotate
+ * @brief Base class for every object that can be translated or rotated
  */
 class Transform
 {
@@ -33,7 +33,7 @@ public:
     /**
      * @brief Sets look at provided direction
      *
-     * @param[in] direction new direction vector
+     * @param[in] direction new direction vectorr
      */
     UNICORN_EXPORT void LookAtDirection(glm::vec3 direction);
 
@@ -62,18 +62,11 @@ public:
     UNICORN_EXPORT void SetWorldCoordinates(glm::vec3 x, glm::vec3 y, glm::vec3 z);
 
     /**
-     * @brief Translates object
-     *
-     * @param[in]  translate  The translate
-     */
-    UNICORN_EXPORT void Translate(glm::vec3 translate);
-
-    /**
      * @brief Sets translate
      *
-     * @param[in]  translate new translate
+     * @param[in]  translate new translate vector
      */
-    UNICORN_EXPORT void SetTranslate(glm::vec3 translate);
+    UNICORN_EXPORT void SetTranslation(glm::vec3 translate);
 
     /**
      * @brief Returns direction
@@ -106,9 +99,9 @@ public:
     /**
      * @brief Returns model matrix
      *
-     * @return model matrix
+     * Don't forget to recalculate @sa Calculate before
      *
-     * Don't forget to recalculate @sa Calculate
+     * @return model matrix
      */
     UNICORN_EXPORT glm::mat4 const& GetModelMatrix() const;
 
