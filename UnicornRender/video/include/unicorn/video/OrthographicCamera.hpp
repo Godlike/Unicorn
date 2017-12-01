@@ -25,7 +25,7 @@ public:
     * @param[in] window
     * @param[in] cameraProj projection matrix
     */
-    UNICORN_EXPORT OrthographicCamera(system::Window* window, glm::mat4& cameraProj);
+    UNICORN_EXPORT OrthographicCamera(system::Window& window, glm::mat4& cameraProj);
 
     /** @brief Recalculates projection */
     UNICORN_EXPORT void UpdateProjection() override;

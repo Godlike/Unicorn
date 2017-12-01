@@ -31,14 +31,14 @@ public:
     virtual ~Transform() = default;
 
     /**
-     * @brief Sets look at provided direction
+     * @brief Sets the direction of the view
      *
      * @param[in] direction new direction vectorr
      */
     UNICORN_EXPORT void LookAtDirection(glm::vec3 direction);
 
     /**
-     * @brief Sets look at provided direction
+     * @brief Sets the direction of the view
      *
      * @param[in] direction new direction vector
      * @param[in] upVector new up vector
@@ -94,12 +94,12 @@ public:
      *
      * @return translate
      */
-    UNICORN_EXPORT glm::vec3 GetTranslate() const;
+    UNICORN_EXPORT glm::vec3 GetTranslation() const;
 
     /**
      * @brief Returns model matrix
      *
-     * Don't forget to recalculate @sa Calculate before
+     * @attention Don't forget to recalculate @sa Calculate before
      *
      * @return model matrix
      */
@@ -183,15 +183,6 @@ public:
     UNICORN_EXPORT void Rotate(glm::quat rotation);
 
     /**
-     * @brief Rotates around point
-     *
-     * @param[in] radians amount of radians in frame
-     * @param[in] axis axis of rotation
-     * @param[in] point point of interest
-     */
-    UNICORN_EXPORT void RotateAroundPoint(float radians, glm::vec3 axis, glm::vec3 point);
-
-    /**
      * @brief Rotates around axis
      *
      * @param[in] angleRadians amount of radians to rotate
@@ -201,10 +192,10 @@ public:
 protected:
 
     /** @brief Abstract method to calculate orientation quaternion */
-    virtual void CalculateOrientation();
+    virtual void UpdateOrientation();
 
     /** @brief Recalculates model matrix */
-    void Update();
+    void UpdateModelMatrix();
 
     glm::vec3 m_rotation;
     glm::vec3 m_translation;

@@ -55,19 +55,30 @@ glm::quat RotationBetweenVectors(glm::vec3 start, glm::vec3 dest, glm::vec3 worl
 
 glm::quat LookAt(glm::vec3 direction, glm::vec3 desiredUp, glm::vec3 worldY, glm::vec3 worldZ)
 {
-    if (length2(direction) < 0.0001f )
+    if (length2(direction) < 0.0001f) // Already look at desired direction
     {
         return glm::quat();
     }
 
-    glm::vec3 right = cross(direction, desiredUp);
+    glm::vec3 const right = cross(direction, desiredUp);
     desiredUp = cross(right, direction);
 
-    glm::quat rot1 = RotationBetweenVectors(worldZ, direction);
-    glm::quat rot2 = RotationBetweenVectors(worldY, desiredUp);
+    glm::quat const rot1 = RotationBetweenVectors(worldZ, direction);
+    glm::quat const rot2 = RotationBetweenVectors(worldY, desiredUp);
 
     return rot2 * rot1;
 }
+
+glm::vec3 RotateAroundPoint(glm::vec3 originalTranslation, float radians, glm::vec3 axis, glm::vec3 point)
+{
+    glm::vec3 outputTranslation;
+    glm::vec3 dir = point - originalTranslation;
+    outputTranslation = originalTranslation + dir;
+    glm::quat q = glm::angleAxis(radians, axis);
+    outputTranslation = outputTranslation + q * -dir;
+    return outputTranslation;
+}
+
 }
 }
 }

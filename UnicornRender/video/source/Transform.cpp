@@ -75,7 +75,7 @@ glm::vec3 Transform::GetUp() const
     return m_upVector;
 }
 
-glm::vec3 Transform::GetTranslate() const
+glm::vec3 Transform::GetTranslation() const
 {
     return m_translation;
 }
@@ -87,32 +87,32 @@ glm::mat4 const& Transform::GetModelMatrix() const
 
 void Transform::TranslateLocalX(float distance)
 {
-    SetTranslation(GetTranslate() + m_rightVector * distance);
+    SetTranslation(GetTranslation() + m_rightVector * distance);
 }
 
 void Transform::TranslateLocalY(float distance)
 {
-    SetTranslation(GetTranslate() + m_upVector * distance);
+    SetTranslation(GetTranslation() + m_upVector * distance);
 }
 
 void Transform::TranslateLocalZ(float distance)
 {
-    SetTranslation(GetTranslate() + m_direction * distance);
+    SetTranslation(GetTranslation() + m_direction * distance);
 }
 
 void Transform::TranslateWorldX(float distance)
 {
-    SetTranslation(GetTranslate() + m_worldX * distance);
+    SetTranslation(GetTranslation() + m_worldX * distance);
 }
 
 void Transform::TranslateWorldY(float distance)
 {
-    SetTranslation(GetTranslate() + m_worldY * distance);
+    SetTranslation(GetTranslation() + m_worldY * distance);
 }
 
 void Transform::TranslateWorldZ(float distance)
 {
-    SetTranslation(GetTranslate() + m_worldZ * distance);
+    SetTranslation(GetTranslation() + m_worldZ * distance);
 }
 
 void Transform::RotateX(float radians)
@@ -149,21 +149,12 @@ void Transform::Rotate(glm::quat rotation)
     m_isDirty = true;
 }
 
-void Transform::RotateAroundPoint(float radians, glm::vec3 axis, glm::vec3 point)
-{
-    glm::vec3 dir = point - m_translation;
-    SetTranslation(GetTranslate() + dir);
-    glm::quat q = angleAxis(radians, axis);
-    SetTranslation(GetTranslate() + q * -dir);
-    m_isDirty = true;
-}
-
 void Transform::Rotate(float angleRadians, glm::vec3 axis) {
     glm::quat q = glm::angleAxis(angleRadians, axis);
     Rotate(q);
 }
 
-void Transform::CalculateOrientation()
+void Transform::UpdateOrientation()
 {
     glm::quat z = glm::angleAxis(m_rotation.z, m_worldZ);
     glm::quat y = glm::angleAxis(m_rotation.y, m_worldY);
@@ -174,11 +165,11 @@ void Transform::CalculateOrientation()
     m_rotation = glm::vec3(0);
 }
 
-void Transform::Update()
+void Transform::UpdateModelMatrix()
 {
     if (m_isDirty)
     {
-        CalculateOrientation();
+        UpdateOrientation();
 
         m_direction = m_orientation * m_worldZ;
         m_upVector = m_orientation * m_worldY;

@@ -25,7 +25,7 @@ public:
     * @param [in] window holds pointer to window to update aspect ratio
     * @param [in] cameraProj camera projection matrix
     */
-    CameraProjection(system::Window* window, glm::mat4& cameraProj);
+    CameraProjection(system::Window& window, glm::mat4& cameraProj);
 
     CameraProjection(CameraProjection const& other) = delete;
     CameraProjection(CameraProjection&& other) = delete;

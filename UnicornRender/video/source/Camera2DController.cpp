@@ -19,9 +19,9 @@ Camera2DController::Camera2DController(glm::mat4& cameraView) :
 {
 }
 
-void Camera2DController::Calculate()
+void Camera2DController::Update()
 {
-    Update();
+    UpdateModelMatrix();
     m_cameraView = m_transformMatrix;
 }
 
