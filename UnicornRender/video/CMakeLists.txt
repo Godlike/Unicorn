@@ -48,6 +48,7 @@ set(VIDEO_HEADERS
     include/unicorn/video/Material.hpp
     include/unicorn/video/Primitives.hpp
     include/unicorn/video/Transform.hpp
+    include/unicorn/video/Model.hpp
 )
 
 set(VIDEO_SOURCES
@@ -65,6 +66,7 @@ set(VIDEO_SOURCES
     source/Material.cpp
     source/Primitives.cpp
     source/Transform.cpp
+    source/Model.cpp
 )
 
 add_library(video OBJECT

@@ -564,22 +564,19 @@ int main(int argc, char* argv[])
             auto x_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
 
             unicorn::video::Texture helmetTexture;
-            helmetTexture.Load("data/models/glTF/DamagedHelmet/Default_albedo.jpg");
+            helmetTexture.Load("data/models/glTF/Default_albedo.jpg");
 
-            unicorn::video::Texture chatletTexture;
-            chatletTexture.Load("data/models/obj/chalet/chalet.jpg");
-
-            if(!helmetTexture.IsLoaded() || !chatletTexture.IsLoaded())
+            if(!helmetTexture.IsLoaded())
             {
                 return -1;
             }
             mat.SetAlbedo(&helmetTexture);
-             auto gltfMesh = &Primitives::LoadMeshFromFile(*vkRenderer->SpawnMesh(mat),
-                 "data/models/glTF/DamagedHelmet/DamagedHelmet.gltf");
+            auto gltfMesh = &Primitives::LoadMeshFromFile(*vkRenderer->SpawnMesh(mat),
+                "data/models/glTF/DamagedHelmet.gltf");
 
-            mat.SetAlbedo(&chatletTexture);
-            auto objMesh = &Primitives::LoadMeshFromFile(*vkRenderer->SpawnMesh(mat),
-                "data/models/obj/chalet/chalet.obj");
+            // mat.SetAlbedo(&chatletTexture);
+            // auto objMesh = &Primitives::LoadMeshFromFile(*vkRenderer->SpawnMesh(mat),
+            //     "data/models/obj/chalet/chalet.obj");
 
             mat.color = unicorn::video::Color::Green();
             auto x_minus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
@@ -602,7 +599,7 @@ int main(int argc, char* argv[])
             sun->Translate({ 15, 0, 50 });
 
             gltfMesh->Translate({ 5, 0, 0 });
-            objMesh->Translate({ -7, 0, 0 });
+            // objMesh->Translate({ -7, 0, 0 });
 
             unicorn::video::Mesh* box = &Primitives::Box(*vkRenderer->SpawnMesh(mat));
 
@@ -613,7 +610,7 @@ int main(int argc, char* argv[])
             meshes.push_back(x_minus);
             meshes.push_back(z_plus);
             meshes.push_back(gltfMesh);
-            meshes.push_back(objMesh);
+            // meshes.push_back(objMesh);
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);
