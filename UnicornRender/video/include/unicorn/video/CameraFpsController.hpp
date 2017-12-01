@@ -32,13 +32,14 @@ public:
     /** @brief Sets mouse coordinates without updating view matrix */
     UNICORN_EXPORT void SetViewPositions(float x, float y);
 
-    /** @brief Resets camera to provide setting new mouse coordinates */
+    /** @brief Sets flag to update mouse position without recalculation of orientation
+     * in next UpdateView call */
     UNICORN_EXPORT void ResetView();
 
-    UNICORN_EXPORT void Calculate();
+    UNICORN_EXPORT void Update();
 private:
     /** @brief Calculates orientation in space */
-    virtual void CalculateOrientation() override;
+    virtual void UpdateOrientation() override;
 
     glm::vec2 m_mousePosition;
     bool m_dirtyViewPosition;

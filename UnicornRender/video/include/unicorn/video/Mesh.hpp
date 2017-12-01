@@ -54,7 +54,7 @@ public:
     /**
     * @brief Sets new material
     *
-    * @param[in] material updated material for current mesh
+    * @param[in] material material to be used for current mesh
     */
     UNICORN_EXPORT void SetMaterial(Material const& material);
 
@@ -91,9 +91,9 @@ public:
     UNICORN_EXPORT void Scale(glm::vec3 scale);
 
     /**
-     * @brief Calculates model matrix for model view projection calculation
+     * @brief Updates model matrix for model view projection calculation
      */
-    UNICORN_EXPORT void CalculateModelMatrix();
+    UNICORN_EXPORT void Update();
 
     /** @brief Event triggered when material is changed */
     wink::signal<wink::slot<void()>> MaterialUpdated;

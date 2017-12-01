@@ -77,8 +77,8 @@ class Renderer : public video::Renderer
 public:
     /**
      * @brief Constructs and initializes new renderer instance
-     * @param manager Describes required extensions
-     * @param window Render into
+     * @param[in] manager Describes required extensions
+     * @param[in, out] window output window
      * @param[in] camera main camera
      */
     Renderer(system::Manager& manager, system::Window* window, Camera& camera);

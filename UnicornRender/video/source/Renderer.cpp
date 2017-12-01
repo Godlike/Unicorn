@@ -7,6 +7,7 @@
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/system/Window.hpp>
 #include <unicorn/video/Camera.hpp>
+#include <unicorn/utility/Logger.hpp>
 
 namespace unicorn
 {
@@ -20,6 +21,10 @@ Renderer::Renderer(system::Manager& manager, system::Window* window, Camera& cam
     , m_backgroundColor({ {0.0f, 0.0f, 0.0f, 0.0f} })
     , m_depthTestEnabled(true)
 {
+    if(m_pWindow == nullptr)
+    {
+        LOG_ERROR("Window pointer in nullptr!");
+    }
 }
 
 Renderer::~Renderer()

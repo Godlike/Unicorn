@@ -45,10 +45,10 @@ void CameraFpsController::SetViewPositions(float x, float y)
 
 void CameraFpsController::ResetView()
 {
-    m_dirtyViewPosition = false;
+    m_dirtyViewPosition = true;
 }
 
-void CameraFpsController::CalculateOrientation()
+void CameraFpsController::UpdateOrientation()
 {
     glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
     glm::quat y = glm::angleAxis(m_rotation.y, conjugate(m_orientation) * m_worldY);
@@ -58,9 +58,9 @@ void CameraFpsController::CalculateOrientation()
     m_rotation = glm::vec3(0);
 }
 
-void CameraFpsController::Calculate()
+void CameraFpsController::Update()
 {
-    Update();
+    UpdateModelMatrix();
     m_cameraView = m_transformMatrix;
 }
 

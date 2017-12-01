@@ -13,7 +13,7 @@ namespace unicorn
 namespace video
 {
 
-PerspectiveCamera::PerspectiveCamera(system::Window* window, glm::mat4& cameraProj)
+PerspectiveCamera::PerspectiveCamera(system::Window& window, glm::mat4& cameraProj)
     : CameraProjection(window, cameraProj)
     , m_fov(45.f)
     , m_fovLowerBound(44.f)

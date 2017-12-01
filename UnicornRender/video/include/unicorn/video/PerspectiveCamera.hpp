@@ -20,7 +20,7 @@ namespace video
 class PerspectiveCamera final : public CameraProjection
 {
 public:
-    UNICORN_EXPORT PerspectiveCamera(system::Window* window, glm::mat4& cameraProj);
+    UNICORN_EXPORT PerspectiveCamera(system::Window& window, glm::mat4& cameraProj);
 
     /** @brief Sets field of view */
     UNICORN_EXPORT void SetFov(float fov);
