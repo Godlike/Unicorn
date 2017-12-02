@@ -47,9 +47,6 @@ public:
     *  @return reference to updated mesh
     */
     UNICORN_EXPORT static Mesh& Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors);
-
-
-    UNICORN_EXPORT static Mesh& LoadMeshFromFile(Mesh& mesh, std::string const& path);
 };
 }
 }

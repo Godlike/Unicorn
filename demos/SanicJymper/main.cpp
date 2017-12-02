@@ -565,7 +565,7 @@ int main(int argc, char* argv[])
             auto x_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
 
             unicorn::video::Model gltfModel;
-            if(!gltfModel.LoadModel("data/models/glTF/DamagedHelmet/DamagedHelmet.gltf"))
+            if(!gltfModel.LoadModel("data/models/glTF/DamagedHelmet.gltf"))
             {
                 return -1;
             }

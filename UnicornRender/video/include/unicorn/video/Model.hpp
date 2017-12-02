@@ -13,6 +13,7 @@
 
 class aiNode;
 class aiScene;
+class aiMesh;
 
 namespace unicorn
 {
@@ -28,7 +29,7 @@ private:
     std::vector<Mesh> m_meshes;
 
     void ProcessNode(aiNode* node, aiScene const* scene);
-    // Mesh ProcessMesh(aiMesh* mesh, aiScene const* scene);
+    Mesh ProcessMesh(aiMesh* mesh, aiScene const* scene);
 };
 }
 }

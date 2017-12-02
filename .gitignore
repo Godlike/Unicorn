@@ -80,3 +80,5 @@ cmake-build-debug/
 lib/
 *.lnk
 *.log
+
+UnicornRender/data/
