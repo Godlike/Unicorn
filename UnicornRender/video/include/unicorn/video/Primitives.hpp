@@ -10,6 +10,8 @@
 #include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/video/Mesh.hpp>
 
+#include <string>
+
 namespace unicorn
 {
 namespace video

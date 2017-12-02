@@ -9,11 +9,10 @@
 
 #include <unicorn/video/Mesh.hpp>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 #include <string>
+
+class aiNode;
+class aiScene;
 
 namespace unicorn
 {
@@ -22,8 +21,9 @@ namespace video
 
 class Model
 {
-    bool LoadModel(std::string const& pathToModel);
 public:
+    bool LoadModel(std::string const& pathToModel);
+private:
     std::string m_directory;
     std::vector<Mesh> m_meshes;
 

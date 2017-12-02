@@ -7,6 +7,10 @@
 #include <unicorn/video/Model.hpp>
 #include <unicorn/utility/Logger.hpp>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 namespace unicorn
 {
 namespace video
@@ -18,7 +22,7 @@ bool Model::LoadModel(std::string const& pathToModel)
     Assimp::Importer importer;
 
     aiScene const* scene = importer.ReadFile(pathToModel,
-        aiProcess_Triangulate            |
+        aiProcess_Triangulate |
         aiProcess_FlipUVs);
 
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
