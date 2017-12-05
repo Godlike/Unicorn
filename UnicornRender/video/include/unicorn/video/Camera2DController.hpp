@@ -26,6 +26,7 @@ public:
      */
     UNICORN_EXPORT Camera2DController(glm::mat4& cameraView);
 
+    /** @brief Calculates and updates camera view matrix */
     UNICORN_EXPORT void Update();
 private:
     glm::mat4& m_cameraView;

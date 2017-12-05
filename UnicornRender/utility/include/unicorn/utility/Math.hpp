@@ -16,6 +16,11 @@ namespace utility
 namespace math
 {
 
+constexpr static float SystemAccuracy()
+{
+    return 0.0001;
+}
+
 /**
  * @brief Calculates rotation quaternion between two vectors
  *
@@ -24,7 +29,7 @@ namespace math
  * @param[in] worldX world X axis
  * @param[in] worldZ world Z axis
  *
- * Realisation : Realtime rendering 3rd edition, 79 page by Eric Haines, Naty Hoffman, and Tomas Möller
+ * Implementation : Realtime rendering 3rd edition, 79 page by Eric Haines, Naty Hoffman, and Tomas Möller
  *
  * @return returns a quaternion such that q*start = dest
  */
@@ -43,7 +48,7 @@ glm::quat RotationBetweenVectors(glm::vec3 start, glm::vec3 dest
  *
  * @return orientation quaternion
  */
-glm::quat LookAt(glm::vec3 direction, glm::vec3 desiredUp
+glm::quat CalculateOrientationQuaternion(glm::vec3 direction, glm::vec3 desiredUp
     , glm::vec3 worldY = glm::vec3(0.0f, 1.0f, 0.0f)
     , glm::vec3 worldZ = glm::vec3(0.0f, 0.0f, 1.0f));
 

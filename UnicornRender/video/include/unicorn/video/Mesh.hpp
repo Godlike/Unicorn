@@ -40,9 +40,6 @@ public:
      */
     UNICORN_EXPORT Mesh(Material const& material);
 
-    /** @brief Default destructor */
-    UNICORN_EXPORT ~Mesh() = default;
-
     /**
     * @brief Updates vertices and indices geometry
      *
@@ -79,22 +76,6 @@ public:
     */
     UNICORN_EXPORT Material const& GetMaterial() const;
 
-    /**
-     * @brief Scales mesh
-     *
-     * @param[in] scale basis scale factors
-     *
-     * Lineary scales each basis component of the mesh vectors by the given scale factors
-     * {1,1,1} is origin scale, {0.5, 0.5, 2} is x and y diminished twice
-     * and z is twice bigger
-     */
-    UNICORN_EXPORT void Scale(glm::vec3 scale);
-
-    /**
-     * @brief Updates model matrix for model view projection calculation
-     */
-    UNICORN_EXPORT void Update();
-
     /** @brief Event triggered when material is changed */
     wink::signal<wink::slot<void()>> MaterialUpdated;
 
@@ -104,7 +85,6 @@ private:
     std::vector<Vertex> m_vertices;
     std::vector<uint32_t> m_indices;
     Material m_material;
-    glm::vec3 m_scale;
 };
 }
 }

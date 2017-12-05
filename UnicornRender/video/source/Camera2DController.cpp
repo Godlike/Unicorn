@@ -22,7 +22,7 @@ Camera2DController::Camera2DController(glm::mat4& cameraView) :
 void Camera2DController::Update()
 {
     UpdateModelMatrix();
-    m_cameraView = m_transformMatrix;
+    m_cameraView = glm::lookAt(m_translation, m_translation + m_direction, m_upVector);
 }
 
 } // namespace video

@@ -36,6 +36,7 @@ public:
      * in next UpdateView call */
     UNICORN_EXPORT void ResetView();
 
+    /** @brief Calculates and updates camera view matrix */
     UNICORN_EXPORT void Update();
 private:
     /** @brief Calculates orientation in space */

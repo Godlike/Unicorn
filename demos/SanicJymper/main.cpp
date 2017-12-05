@@ -83,7 +83,7 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     // Updating transformations for meshes
     for(auto& mesh : meshes)
     {
-        mesh->Update();
+        mesh->UpdateModelMatrix();
     }
 
     // Updating transformations for cameras
@@ -245,11 +245,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocalZ(time * speed);
+                pCameraFpsController->TranslateLocal(glm::vec3(0, 0, time * speed));
             }
             else
             {
-                pCamera2DController->TranslateLocalY(time * speed);
+                pCamera2DController->TranslateLocal(glm::vec3(0, time * speed, 0));
             }
             break;
         }
@@ -257,11 +257,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocalZ(-time * speed);
+                pCameraFpsController->TranslateLocal(glm::vec3(0, 0, time * -speed));
             }
             else
             {
-                pCamera2DController->TranslateLocalY(-time * speed);
+                pCamera2DController->TranslateLocal(glm::vec3(0, time * -speed, 0));
             }
             break;
         }
@@ -269,11 +269,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocalX(time * speed);
+                pCameraFpsController->TranslateLocal(glm::vec3(time * speed, 0, 0));
             }
             else
             {
-                pCamera2DController->TranslateLocalX(time * speed);
+                pCamera2DController->TranslateLocal(glm::vec3(time * speed, 0, 0));
             }
             break;
         }
@@ -281,11 +281,27 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocalX(-time * speed);
+                pCameraFpsController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
             }
             else
             {
-                pCamera2DController->TranslateLocalX(-time * speed);
+                pCamera2DController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
+            }
+            break;
+        }
+        case Key::Space:
+            {
+            if (isPerspective)
+            {
+                pCameraFpsController->TranslateLocal(glm::vec3(0, time * speed, 0));
+            }
+            break;
+        }
+        case Key::LeftControl:
+        {
+            if (isPerspective)
+            {
+                pCameraFpsController->TranslateLocal(glm::vec3(0, time * -speed, 0));
             }
             break;
         }
@@ -310,22 +326,6 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
             if (isPerspective)
             {
                 pCameraFpsController->RotateZ(static_cast<float>(glm::radians(1.)));
-            }
-            break;
-        }
-        case Key::Space:
-            {
-            if (isPerspective)
-            {
-                pCameraFpsController->TranslateLocalY(time * speed);
-            }
-            break;
-        }
-        case Key::LeftControl:
-        {
-            if (isPerspective)
-            {
-                pCameraFpsController->TranslateLocalY(-time * speed);
             }
             break;
         }
