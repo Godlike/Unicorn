@@ -19,6 +19,7 @@ Transform::Transform()
     , m_upVector({ 0.f, 1.f, 0.f })
     , m_direction({ 0.f, 0.f, 1.f })
     , m_rightVector({ 1., 0.f, 0.f })
+    , m_scale(glm::vec3(1.f))
     , m_worldX({ 1., 0.f, 0.f })
     , m_worldY({ 0.f, 1.f, 0.f })
     , m_worldZ({ 0.f, 0.f, 1.f })
@@ -34,16 +35,14 @@ void Transform::LookAtDirection(glm::vec3 direction)
 
 void Transform::LookAtDirection(glm::vec3 direction, glm::vec3 upVector)
 {
-    m_orientation = utility::math::LookAt(direction, upVector);
+    m_orientation = utility::math::CalculateOrientationQuaternion(direction, upVector);
 
     m_isDirty = true;
 }
 
 void Transform::SetUp(glm::vec3 upVector)
 {
-    m_orientation = utility::math::LookAt(m_direction, upVector);
-
-    m_isDirty = true;
+    LookAtDirection(m_direction, upVector);
 }
 
 void Transform::SetTranslation(glm::vec3 translate)
@@ -85,54 +84,42 @@ glm::mat4 const& Transform::GetModelMatrix() const
     return m_transformMatrix;
 }
 
-void Transform::TranslateLocalX(float distance)
+void Transform::Scale(glm::vec3 scale)
 {
-    SetTranslation(GetTranslation() + m_rightVector * distance);
+    m_scale = scale;
 }
 
-void Transform::TranslateLocalY(float distance)
+void Transform::TranslateLocal(glm::vec3 distance)
 {
-    SetTranslation(GetTranslation() + m_upVector * distance);
+    glm::vec3 const rightTranslation = m_rightVector * distance.x;
+    glm::vec3 const upTranslation = m_upVector * distance.y;
+    glm::vec3 const forwardTranslation = m_direction * distance.z;
+    SetTranslation(GetTranslation() + rightTranslation + upTranslation + forwardTranslation);
 }
 
-void Transform::TranslateLocalZ(float distance)
+void Transform::TranslateWorld(glm::vec3 distance)
 {
-    SetTranslation(GetTranslation() + m_direction * distance);
-}
-
-void Transform::TranslateWorldX(float distance)
-{
-    SetTranslation(GetTranslation() + m_worldX * distance);
-}
-
-void Transform::TranslateWorldY(float distance)
-{
-    SetTranslation(GetTranslation() + m_worldY * distance);
-}
-
-void Transform::TranslateWorldZ(float distance)
-{
-    SetTranslation(GetTranslation() + m_worldZ * distance);
+    glm::vec3 const xTranslation = m_worldX * distance.x;
+    glm::vec3 const yTranslation = m_worldY * distance.y;
+    glm::vec3 const zTranslation = m_worldZ * distance.z;
+    SetTranslation(GetTranslation() + xTranslation + yTranslation + zTranslation);
 }
 
 void Transform::RotateX(float radians)
 {
     m_rotation.x += radians;
-
     m_isDirty = true;
 }
 
 void Transform::RotateY(float radians)
 {
     m_rotation.y += radians;
-
     m_isDirty = true;
 }
 
 void Transform::RotateZ(float radians)
 {
     m_rotation.z += radians;
-
     m_isDirty = true;
 }
 
@@ -150,15 +137,27 @@ void Transform::Rotate(glm::quat rotation)
 }
 
 void Transform::Rotate(float angleRadians, glm::vec3 axis) {
-    glm::quat q = glm::angleAxis(angleRadians, axis);
+    glm::quat const q = glm::angleAxis(angleRadians, axis);
     Rotate(q);
+}
+
+void Transform::SetOrientation(glm::quat quat)
+{
+    m_orientation = quat;
+    m_isDirty = true;
+}
+
+void Transform::SetRotation(glm::vec3 rotation)
+{
+    m_rotation = rotation;
+    m_isDirty = true;
 }
 
 void Transform::UpdateOrientation()
 {
-    glm::quat z = glm::angleAxis(m_rotation.z, m_worldZ);
-    glm::quat y = glm::angleAxis(m_rotation.y, m_worldY);
-    glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
+    glm::quat const z = glm::angleAxis(m_rotation.z, m_worldZ);
+    glm::quat const y = glm::angleAxis(m_rotation.y, m_worldY);
+    glm::quat const x = glm::angleAxis(m_rotation.x, m_worldX);
 
     m_orientation = normalize(m_orientation * z * x * y);
 
@@ -175,7 +174,11 @@ void Transform::UpdateModelMatrix()
         m_upVector = m_orientation * m_worldY;
         m_rightVector = m_orientation * m_worldX;
 
-        m_transformMatrix = glm::lookAt(m_translation, m_translation + m_direction, m_upVector);
+        auto T = glm::translate(glm::mat4(1.0), m_translation);
+        auto R = glm::mat4_cast(m_orientation) * glm::mat4(1.0);
+        auto S = glm::scale(glm::mat4(1.0), { m_scale });
+
+        m_transformMatrix = T * R * S;
 
         m_isDirty = false;
     }

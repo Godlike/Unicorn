@@ -26,12 +26,11 @@ glm::quat RotationBetweenVectors(glm::vec3 start, glm::vec3 dest, glm::vec3 worl
     float const cosTheta = glm::dot(start, dest);
     glm::vec3 rotationAxis;
 
-    float const floatError = 0.001f;
 
-    if (cosTheta < -1 + floatError) // they look in different sides
+    if (cosTheta < -1 + SystemAccuracy()) // they look in different sides
     {
         rotationAxis = glm::cross(worldZ, start);
-        if (glm::length2(rotationAxis) < floatError) // they are parallel
+        if (glm::length2(rotationAxis) < SystemAccuracy()) // they are parallel
         {
             rotationAxis = glm::cross(worldX, start);
         }
@@ -53,9 +52,9 @@ glm::quat RotationBetweenVectors(glm::vec3 start, glm::vec3 dest, glm::vec3 worl
     );
 }
 
-glm::quat LookAt(glm::vec3 direction, glm::vec3 desiredUp, glm::vec3 worldY, glm::vec3 worldZ)
+glm::quat CalculateOrientationQuaternion(glm::vec3 direction, glm::vec3 desiredUp, glm::vec3 worldY, glm::vec3 worldZ)
 {
-    if (length2(direction) < 0.0001f) // Already look at desired direction
+    if (length2(direction) < SystemAccuracy()) // Already look at desired direction
     {
         return glm::quat();
     }
@@ -71,9 +70,8 @@ glm::quat LookAt(glm::vec3 direction, glm::vec3 desiredUp, glm::vec3 worldY, glm
 
 glm::vec3 RotateAroundPoint(glm::vec3 originalTranslation, float radians, glm::vec3 axis, glm::vec3 point)
 {
-    glm::vec3 outputTranslation;
     glm::vec3 dir = point - originalTranslation;
-    outputTranslation = originalTranslation + dir;
+    glm::vec3 outputTranslation = originalTranslation + dir;
     glm::quat q = glm::angleAxis(radians, axis);
     outputTranslation = outputTranslation + q * -dir;
     return outputTranslation;
