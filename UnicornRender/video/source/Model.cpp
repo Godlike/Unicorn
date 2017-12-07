@@ -12,6 +12,9 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <vector>
+#include <string>
+
 namespace unicorn
 {
 namespace video
@@ -54,6 +57,22 @@ void Model::ProcessNode(aiNode* node, aiScene const* scene)
     }
 }
 
+std::vector<std::string> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
+{
+    std::vector<std::string> textures;
+    for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+    {
+        aiString str;
+        mat->GetTexture(type, i, &str);
+        //Texture texture;
+        //texture.id = TextureFromFile(str.C_Str(), directory);
+        //texture.type = typeName;
+        //texture.path = str;
+        textures.push_back(str.C_Str());
+    }
+    return textures;
+}
+
 Mesh Model::ProcessMesh(aiMesh* mesh, aiScene const* scene)
 {
     std::vector<uint32_t> indices;
@@ -93,14 +112,22 @@ Mesh Model::ProcessMesh(aiMesh* mesh, aiScene const* scene)
         }
     }
 
-    // if(mesh->mMaterialIndex >= 0)
-    // {
-    //     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-    //     vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-    //     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-    //     vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-    //     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-    // }
+    if(mesh->mMaterialIndex >= 0)
+    {
+        aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+        std::vector<std::string> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        for(auto& diffuse : diffuseMaps)
+        {
+            LOG_ERROR("Diffuse %s ", diffuse.c_str());
+        }
+        //textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+        std::vector<std::string> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_metalRoughness");
+        for(auto& specular : specularMaps)
+        {
+            LOG_ERROR("Specular %s ", specular.c_str());
+        }
+        //textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+    }
 
 
     Material mat;
@@ -110,22 +137,6 @@ Mesh Model::ProcessMesh(aiMesh* mesh, aiScene const* scene)
 
     return unicornMesh;
 }
-
-// vector<Texture> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName)
-// {
-//     vector<Texture> textures;
-//     for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)
-//     {
-//         aiString str;
-//         mat->GetTexture(type, i, &str);
-//         Texture texture;
-//         texture.id = TextureFromFile(str.C_Str(), directory);
-//         texture.type = typeName;
-//         texture.path = str;
-//         textures.push_back(texture);
-//     }
-//     return textures;
-// }
 
 } // namespace video
 } // namespace unicorn

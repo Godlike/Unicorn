@@ -51,9 +51,9 @@ void Mesh::Scale(glm::vec3 scale)
     m_scale = scale;
 }
 
-void Mesh::Calculate()
+void Mesh::Update()
 {
-    CalculateOrientation();
+    UpdateOrientation();
 
     auto T = glm::translate(glm::mat4(1.0), m_translation);
     auto R = mat4_cast(m_orientation) * glm::mat4(1.0);

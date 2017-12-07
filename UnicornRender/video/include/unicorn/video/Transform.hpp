@@ -19,7 +19,7 @@ namespace unicorn
 namespace video
 {
 /**
- * @brief Base class for every object that can translate or rotate
+ * @brief Base class for every object that can be translated or rotated
  */
 class Transform
 {
@@ -31,14 +31,14 @@ public:
     virtual ~Transform() = default;
 
     /**
-     * @brief Sets look at provided direction
+     * @brief Sets the direction of the view
      *
-     * @param[in] direction new direction vector
+     * @param[in] direction new direction vectorr
      */
     UNICORN_EXPORT void LookAtDirection(glm::vec3 direction);
 
     /**
-     * @brief Sets look at provided direction
+     * @brief Sets the direction of the view
      *
      * @param[in] direction new direction vector
      * @param[in] upVector new up vector
@@ -62,18 +62,11 @@ public:
     UNICORN_EXPORT void SetWorldCoordinates(glm::vec3 x, glm::vec3 y, glm::vec3 z);
 
     /**
-     * @brief Translates object
-     *
-     * @param[in]  translate  The translate
-     */
-    UNICORN_EXPORT void Translate(glm::vec3 translate);
-
-    /**
      * @brief Sets translate
      *
-     * @param[in]  translate new translate
+     * @param[in]  translate new translate vector
      */
-    UNICORN_EXPORT void SetTranslate(glm::vec3 translate);
+    UNICORN_EXPORT void SetTranslation(glm::vec3 translate);
 
     /**
      * @brief Returns direction
@@ -101,14 +94,14 @@ public:
      *
      * @return translate
      */
-    UNICORN_EXPORT glm::vec3 GetTranslate() const;
+    UNICORN_EXPORT glm::vec3 GetTranslation() const;
 
     /**
      * @brief Returns model matrix
      *
-     * @return model matrix
+     * @attention Don't forget to recalculate @sa Calculate before
      *
-     * Don't forget to recalculate @sa Calculate
+     * @return model matrix
      */
     UNICORN_EXPORT glm::mat4 const& GetModelMatrix() const;
 
@@ -190,15 +183,6 @@ public:
     UNICORN_EXPORT void Rotate(glm::quat rotation);
 
     /**
-     * @brief Rotates around point
-     *
-     * @param[in] radians amount of radians in frame
-     * @param[in] axis axis of rotation
-     * @param[in] point point of interest
-     */
-    UNICORN_EXPORT void RotateAroundPoint(float radians, glm::vec3 axis, glm::vec3 point);
-
-    /**
      * @brief Rotates around axis
      *
      * @param[in] angleRadians amount of radians to rotate
@@ -208,10 +192,10 @@ public:
 protected:
 
     /** @brief Abstract method to calculate orientation quaternion */
-    virtual void CalculateOrientation();
+    virtual void UpdateOrientation();
 
     /** @brief Recalculates model matrix */
-    void Update();
+    void UpdateModelMatrix();
 
     glm::vec3 m_rotation;
     glm::vec3 m_translation;

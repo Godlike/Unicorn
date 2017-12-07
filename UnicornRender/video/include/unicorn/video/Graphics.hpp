@@ -143,8 +143,8 @@ public:
     UNICORN_EXPORT void SetWindowCreationHint(system::WindowHint hint, int32_t value) const;
 
     /** @brief  Spawn new Vulkan based Renderer, which contain VulkanDevice
-    *  @param  window Output window.
-    *  @param  window Output window.
+    *  @param  window output window
+    *  @param  camera main camera
     *  @return Pointer to newly created Renderer, nullptr if any error occured.
     */
     UNICORN_EXPORT Renderer* SpawnRenderer(system::Window* window, Camera& camera);

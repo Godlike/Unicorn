@@ -40,14 +40,14 @@ public:
     UNICORN_EXPORT void SetIsWired(bool wireframe);
 
     /**
-     * @brief Sets mesh in visible state
+     * @brief Sets material visibility flag
      *
      * @param[in] visible visibility flag
      */
     UNICORN_EXPORT void SetIsVisible(bool visible);
 
     /**
-     * @brief Determines if visible
+     * @brief Returns visibility flag
      *
      * @return True if visible, False otherwise.
      */
@@ -62,7 +62,7 @@ public:
      */
     UNICORN_EXPORT void SetIsColored(bool colored);
 
-    /** @brief Sets IsColored mode to true and removes binded texture */
+    /** @brief Sets IsColored mode to true and removes bound texture */
     UNICORN_EXPORT void RemoveAlbedo();
 
     /** Returns @c true if colored mode is enabled and @false otherwise */
