@@ -115,16 +115,31 @@ Mesh Model::ProcessMesh(aiMesh* mesh, aiScene const* scene)
     if(mesh->mMaterialIndex >= 0)
     {
         aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-        std::vector<std::string> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        std::vector<std::string> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "diffuse");
         for(auto& diffuse : diffuseMaps)
         {
             LOG_ERROR("Diffuse %s ", diffuse.c_str());
         }
         //textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        std::vector<std::string> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_metalRoughness");
-        for(auto& specular : specularMaps)
+        std::vector<std::string> normal = LoadMaterialTextures(material, aiTextureType_NORMALS, "normal");
+        for(auto& n : normal)
         {
-            LOG_ERROR("Specular %s ", specular.c_str());
+            LOG_ERROR("normal %s ", n.c_str());
+        }
+        std::vector<std::string> aoMaps = LoadMaterialTextures(material, aiTextureType_LIGHTMAP, "ambient_occlusion");
+        for(auto& ao : aoMaps)
+        {
+            LOG_ERROR("aoMaps %s ", ao.c_str());
+        }
+        std::vector<std::string> emissive = LoadMaterialTextures(material, aiTextureType_EMISSIVE, "emissive");
+        for(auto& e : emissive)
+        {
+            LOG_ERROR("emissive %s ", e.c_str());
+        }
+        std::vector<std::string> metalRougness = LoadMaterialTextures(material, aiTextureType_SHININESS, "metal_roughness");
+        for(auto& mr : metalRougness)
+        {
+            LOG_ERROR("metalRougness %s ", mr.c_str());
         }
         //textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
