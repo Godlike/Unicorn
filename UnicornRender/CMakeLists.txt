@@ -95,7 +95,7 @@ include_directories( SYSTEM
     ${GLM_INCLUDE_DIR}
     ${LOGURU_INCLUDE_DIR}
     ${STB_INCLUDE_DIR}
-    ${ASSIMP_INCLUDE_DIR}
+    ${ASSIMP_INCLUDE_DIRS}
 )
 
 if (BUILD_SHARED_LIBS)
@@ -129,6 +129,8 @@ if (MSVC)
         ${CMAKE_CURRENT_BINARY_DIR}/UnicornVersionInfo.rc
     )
 endif()
+
+link_directories(${ASSIMP_LIBRARY_DIRS})
 
 add_library(${UNICORN_RENDER_LIB}
     ${UNICORN_RENDER_HEADERS}
