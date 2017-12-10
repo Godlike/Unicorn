@@ -11,10 +11,10 @@ namespace unicorn
 namespace video
 {
 
-CameraProjection::CameraProjection(system::Window* window, glm::mat4& cameraProj) :
-    m_aspect(static_cast<float>(window->GetSize().first) / window->GetSize().second),
+CameraProjection::CameraProjection(system::Window& window, glm::mat4& cameraProj) :
+    m_aspect(static_cast<float>(window.GetSize().first) / window.GetSize().second),
     m_cameraProjection(cameraProj),
-    m_pWindow(window)
+    m_pWindow(&window)
 {
     m_pWindow->Destroyed.connect(this, &CameraProjection::OnWindowDestroyed);
     m_pWindow->SizeChanged.connect(this, &CameraProjection::OnWindowSizeChanged);

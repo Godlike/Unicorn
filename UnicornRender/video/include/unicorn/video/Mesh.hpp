@@ -13,10 +13,6 @@
 
 #include <wink/signal.hpp>
 #include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-#include <list>
 
 namespace unicorn
 {
@@ -44,9 +40,6 @@ public:
      */
     UNICORN_EXPORT Mesh(Material const& material);
 
-    /** @brief Default destructor */
-    UNICORN_EXPORT ~Mesh() = default;
-
     /**
     * @brief Updates vertices and indices geometry
      *
@@ -58,7 +51,7 @@ public:
     /**
     * @brief Sets new material
     *
-    * @param[in] material updated material for current mesh
+    * @param[in] material material to be used for current mesh
     */
     UNICORN_EXPORT void SetMaterial(Material const& material);
 
@@ -83,21 +76,6 @@ public:
     */
     UNICORN_EXPORT Material const& GetMaterial() const;
 
-    /**
-     * @brief Scales mesh
-     *
-     * @param[in] scale Each axis scale factor
-     *
-     * {1,1,1} is origin scale, {0.5, 0.5, 2} is x and y diminished twice
-     * and z is twice bigger
-     */
-    UNICORN_EXPORT void Scale(glm::vec3 scale);
-
-    /**
-     * @brief Calculates model matrix for model view projection calculation
-     */
-    UNICORN_EXPORT void Calculate();
-
     /** @brief Event triggered when material is changed */
     wink::signal<wink::slot<void()>> MaterialUpdated;
 
@@ -107,7 +85,6 @@ private:
     std::vector<Vertex> m_vertices;
     std::vector<uint32_t> m_indices;
     Material m_material;
-    glm::vec3 m_scale;
 };
 }
 }

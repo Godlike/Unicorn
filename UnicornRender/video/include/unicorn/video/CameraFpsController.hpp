@@ -8,7 +8,7 @@
 #define UNICORN_VIDEO_CAMERAFPSCONTROLLER_HPP
 
 #include <unicorn/utility/SharedMacros.hpp>
-#include <unicorn/video/CameraController.hpp>
+#include <unicorn/video/Transform.hpp>
 
 namespace unicorn
 {
@@ -16,7 +16,7 @@ namespace video
 {
 
 /** @brief FPS style camera controller */
-class CameraFpsController : public CameraController
+class CameraFpsController : public Transform
 {
 public:
     /**
@@ -30,16 +30,22 @@ public:
     UNICORN_EXPORT void UpdateView(float x, float y);
 
     /** @brief Sets mouse coordinates without updating view matrix */
-    UNICORN_EXPORT void SetViewPositions(double x, double y);
+    UNICORN_EXPORT void SetViewPositions(float x, float y);
 
-    /** @brief Resets camera to provide setting new mouse coordinates */
+    /** @brief Sets flag to update mouse position without recalculation of orientation
+     * in next UpdateView call */
     UNICORN_EXPORT void ResetView();
+
+    /** @brief Calculates and updates camera view matrix */
+    UNICORN_EXPORT void Update();
 private:
     /** @brief Calculates orientation in space */
-    virtual void CalculateOrientation() override;
+    virtual void UpdateOrientation() override;
 
     glm::vec2 m_mousePosition;
     bool m_dirtyViewPosition;
+
+    glm::mat4& m_cameraView;
 };
 
 } // namespace video

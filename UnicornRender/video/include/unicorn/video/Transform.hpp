@@ -19,7 +19,7 @@ namespace unicorn
 namespace video
 {
 /**
- * @brief Base class for every object that can translate or rotate
+ * @brief Base class for every object that can be translated or rotated
  */
 class Transform
 {
@@ -31,14 +31,14 @@ public:
     virtual ~Transform() = default;
 
     /**
-     * @brief Sets look at provided direction
+     * @brief Sets the direction of the view
      *
-     * @param[in] direction new direction vector
+     * @param[in] direction new direction vectorr
      */
     UNICORN_EXPORT void LookAtDirection(glm::vec3 direction);
 
     /**
-     * @brief Sets look at provided direction
+     * @brief Sets the direction of the view
      *
      * @param[in] direction new direction vector
      * @param[in] upVector new up vector
@@ -62,18 +62,11 @@ public:
     UNICORN_EXPORT void SetWorldCoordinates(glm::vec3 x, glm::vec3 y, glm::vec3 z);
 
     /**
-     * @brief Translates object
-     *
-     * @param[in]  translate  The translate
-     */
-    UNICORN_EXPORT void Translate(glm::vec3 translate);
-
-    /**
      * @brief Sets translate
      *
-     * @param[in]  translate new translate
+     * @param[in]  translate new translate vector
      */
-    UNICORN_EXPORT void SetTranslate(glm::vec3 translate);
+    UNICORN_EXPORT void SetTranslation(glm::vec3 translate);
 
     /**
      * @brief Returns direction
@@ -101,58 +94,40 @@ public:
      *
      * @return translate
      */
-    UNICORN_EXPORT glm::vec3 GetTranslate() const;
+    UNICORN_EXPORT glm::vec3 GetTranslation() const;
 
     /**
      * @brief Returns model matrix
      *
-     * @return model matrix
+     * @attention Don't forget to recalculate @sa Calculate before
      *
-     * Don't forget to recalculate @sa Calculate
+     * @return model matrix
      */
     UNICORN_EXPORT glm::mat4 const& GetModelMatrix() const;
 
     /**
-     * @brief Translates by local X - right vector
+     * @brief Scales object
      *
-     * @param[in] distance distance to translate
+     * @param[in] scale basis scale factors
+     *
+     * Lineary scales each basis component of the mesh vectors by the given scale factors
+     * {1,1,1} is origin scale, {0.5, 0.5, 2} is x and y diminished twice
+     * and z is twice bigger
      */
-    UNICORN_EXPORT void TranslateLocalX(float distance);
+    UNICORN_EXPORT void Scale(glm::vec3 scale);
 
     /**
-     * @brief Translates by local Y - up vector
+     * @brief Translates by axises
      *
-     * @param[in] distance distance to translate
+     * @param[in] distance per component distance
      */
-    UNICORN_EXPORT void TranslateLocalY(float distance);
-
+    UNICORN_EXPORT void TranslateLocal(glm::vec3 distance);
     /**
-     * @brief Translates by local Z - direction vector
+     * @brief Translates by world axises
      *
-     * @param[in] distance distance to translate
+     * @param[in] distance per component distance
      */
-    UNICORN_EXPORT void TranslateLocalZ(float distance);
-
-    /**
-     * @brief Translates by local X
-     *
-     * @param[in] distance distance to translate
-     */
-    UNICORN_EXPORT void TranslateWorldX(float distance);
-
-    /**
-     * @brief Translates by local Y
-     *
-     * @param[in] distance distance to translate
-     */
-    UNICORN_EXPORT void TranslateWorldY(float distance);
-
-    /**
-     * @brief Translates by local Z
-     *
-     * @param[in] distance distance to translate
-     */
-    UNICORN_EXPORT void TranslateWorldZ(float distance);
+    UNICORN_EXPORT void TranslateWorld(glm::vec3 distance);
 
     /**
      * @brief Rotates by X axis counterclockwise
@@ -190,35 +165,40 @@ public:
     UNICORN_EXPORT void Rotate(glm::quat rotation);
 
     /**
-     * @brief Rotates around point
-     *
-     * @param[in] radians amount of radians in frame
-     * @param[in] axis axis of rotation
-     * @param[in] point point of interest
-     */
-    UNICORN_EXPORT void RotateAroundPoint(float radians, glm::vec3 axis, glm::vec3 point);
-
-    /**
      * @brief Rotates around axis
      *
      * @param[in] angleRadians amount of radians to rotate
      * @param[in] axis axis of rotation
      */
     UNICORN_EXPORT void Rotate(float angleRadians, glm::vec3 axis);
-protected:
+
+    /**
+     * @brief Sets orientation quaternion
+     *
+     * @param[in] quat new orientation
+     */
+    UNICORN_EXPORT void SetOrientation(glm::quat quat);
+
+    /**
+     * @brief Constructs orientation from per component rotation
+     *
+     * @param[in] rotation per axis rotation
+     */
+    UNICORN_EXPORT void SetRotation(glm::vec3 rotation);
 
     /** @brief Abstract method to calculate orientation quaternion */
-    virtual void CalculateOrientation();
+    virtual void UpdateOrientation();
 
     /** @brief Recalculates model matrix */
-    void Update();
-
+    void UpdateModelMatrix();
+protected:
     glm::vec3 m_rotation;
     glm::vec3 m_translation;
     glm::quat m_orientation;
     glm::vec3 m_upVector;
     glm::vec3 m_direction;
     glm::vec3 m_rightVector;
+    glm::vec3 m_scale;
 
     glm::vec3 m_worldX;
     glm::vec3 m_worldY;

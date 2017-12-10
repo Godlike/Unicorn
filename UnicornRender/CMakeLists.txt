@@ -26,7 +26,7 @@ elseif(WIN32)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS -DVULKAN_HPP_TYPESAFE_CONVERSION)
+add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS -DVULKAN_HPP_TYPESAFE_CONVERSION -DVULKAN_HPP_NO_SMART_HANDLE)
 
 ## GLM
 include(GlmConfig)
@@ -129,8 +129,6 @@ if (MSVC)
         ${CMAKE_CURRENT_BINARY_DIR}/UnicornVersionInfo.rc
     )
 endif()
-
-link_directories(${ASSIMP_LIBRARY_DIRS})
 
 add_library(${UNICORN_RENDER_LIB}
     ${UNICORN_RENDER_HEADERS}

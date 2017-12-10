@@ -20,28 +20,29 @@ namespace math
 
 glm::quat RotationBetweenVectors(glm::vec3 start, glm::vec3 dest, glm::vec3 worldX, glm::vec3 worldZ)
 {
-    start = normalize(start);
-    dest = normalize(dest);
+    start = glm::normalize(start);
+    dest = glm::normalize(dest);
 
-    float cosTheta = dot(start, dest);
+    float const cosTheta = glm::dot(start, dest);
     glm::vec3 rotationAxis;
 
-    if (cosTheta < -1 + 0.001f)
-    {
-        rotationAxis = cross(worldZ, start);
-        if (length2(rotationAxis) < 0.01 )
-        {
-            rotationAxis = cross(worldX, start);
-        }
-        rotationAxis = normalize(rotationAxis);
 
-        return angleAxis(glm::radians(180.0f), rotationAxis);
+    if (cosTheta < -1 + SystemAccuracy()) // they look in different sides
+    {
+        rotationAxis = glm::cross(worldZ, start);
+        if (glm::length2(rotationAxis) < SystemAccuracy()) // they are parallel
+        {
+            rotationAxis = glm::cross(worldX, start);
+        }
+        rotationAxis = glm::normalize(rotationAxis);
+
+        return glm::angleAxis(glm::radians(180.0f), rotationAxis);
     }
 
-    rotationAxis = cross(start, dest);
+    rotationAxis = glm::cross(start, dest);
 
-    float s = sqrt((1 + cosTheta) * 2);
-    float invs = 1 / s;
+    float const s = glm::sqrt((1 + cosTheta) * 2);
+    float const invs = 1 / s;
 
     return glm::quat(
         s * 0.5f,
@@ -51,23 +52,31 @@ glm::quat RotationBetweenVectors(glm::vec3 start, glm::vec3 dest, glm::vec3 worl
     );
 }
 
-glm::quat LookAt(glm::vec3 direction, glm::vec3 desiredUp, glm::vec3 worldY, glm::vec3 worldZ)
+glm::quat CalculateOrientationQuaternion(glm::vec3 direction, glm::vec3 desiredUp, glm::vec3 worldY, glm::vec3 worldZ)
 {
-
-    if (length2(direction) < 0.0001f )
+    if (length2(direction) < SystemAccuracy()) // Already look at desired direction
     {
         return glm::quat();
     }
 
-    glm::vec3 right = cross(direction, desiredUp);
+    glm::vec3 const right = cross(direction, desiredUp);
     desiredUp = cross(right, direction);
 
-    glm::quat rot1 = RotationBetweenVectors(worldZ, direction);
-    glm::quat rot2 = RotationBetweenVectors(worldY, desiredUp);
-
+    glm::quat const rot1 = RotationBetweenVectors(worldZ, direction);
+    glm::quat const rot2 = RotationBetweenVectors(worldY, desiredUp);
 
     return rot2 * rot1;
 }
+
+glm::vec3 RotateAroundPoint(glm::vec3 originalTranslation, float radians, glm::vec3 axis, glm::vec3 point)
+{
+    glm::vec3 dir = point - originalTranslation;
+    glm::vec3 outputTranslation = originalTranslation + dir;
+    glm::quat q = glm::angleAxis(radians, axis);
+    outputTranslation = outputTranslation + q * -dir;
+    return outputTranslation;
+}
+
 }
 }
 }

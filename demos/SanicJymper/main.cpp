@@ -19,6 +19,7 @@
 #include <unicorn/video/Texture.hpp>
 #include <unicorn/video/Material.hpp>
 #include <unicorn/video/Model.hpp>
+#include <unicorn/utility/Math.hpp>
 
 #include <unicorn/video/Camera.hpp>
 #include <unicorn/video/Camera2DController.hpp>
@@ -75,18 +76,20 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     deltaTime = newDeltatime;
 
     // Applying transforms
-    earth->RotateAroundPoint(static_cast<float>(glm::radians(90.)) * deltaTime , { 0, 1, 0 }, sun->GetTranslate());
-    sun->RotateAroundPoint(static_cast<float>(glm::radians(90.)) * deltaTime, { 0, 1, 0 }, earth->GetTranslate());
+    earth->SetTranslation(unicorn::utility::math::RotateAroundPoint(earth->GetTranslation(),
+        static_cast<float>(glm::radians(90.)) * deltaTime , { 0, 1, 0 }, sun->GetTranslation()));
+    sun->SetTranslation(unicorn::utility::math::RotateAroundPoint(sun->GetTranslation(),
+        static_cast<float>(glm::radians(90.)) * deltaTime , { 0, 1, 0 }, earth->GetTranslation()));
 
     // Updating transformations for meshes
     for(auto& mesh : meshes)
     {
-        mesh->Calculate();
+        mesh->UpdateModelMatrix();
     }
 
     // Updating transformations for cameras
-    pCameraFpsController->Calculate();
-    pCamera2DController->Calculate();
+    pCameraFpsController->Update();
+    pCamera2DController->Update();
 
     lastFrame = currentFrame;
 }
@@ -112,7 +115,8 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
             unicorn::video::Material cubematerial;
             cubematerial.color = {static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255};
             unicorn::video::Mesh* mesh = &unicorn::video::Primitives::Sphere(*vkRenderer->SpawnMesh(cubematerial), 1, 32, 32);
-            mesh->Translate({ std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 });
+            glm::vec3 randomTranslate = { std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 };
+            mesh->SetTranslation(mesh->GetTranslation() + randomTranslate);
             meshes.push_back(mesh);
             break;
         }
@@ -180,11 +184,13 @@ void onMouseScrolled(unicorn::system::Window* pWindow, std::pair<double, double>
 {
     if (isPerspective)
     {
-        pPerspectiveProjection->Zoom(static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
+        pPerspectiveProjection->SetFov(pPerspectiveProjection->GetFov() -
+            static_cast<float>(pos.second / 50)); // 50 is zoom coefficient
     }
     else
     {
-        pOrthoProjection->Scale(static_cast<float>(pos.second * 10)); // 10 is scale speed
+        pOrthoProjection->SetScale(pOrthoProjection->GetScale() +
+            static_cast<float>(pos.second * 10)); // 10 is scale speed
     }
 }
 
@@ -240,11 +246,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocalZ(time * speed);
+                pCameraFpsController->TranslateLocal(glm::vec3(0, 0, time * speed));
             }
             else
             {
-                pCamera2DController->TranslateLocalY(time * speed);
+                pCamera2DController->TranslateLocal(glm::vec3(0, time * speed, 0));
             }
             break;
         }
@@ -252,11 +258,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocalZ(-time * speed);
+                pCameraFpsController->TranslateLocal(glm::vec3(0, 0, time * -speed));
             }
             else
             {
-                pCamera2DController->TranslateLocalY(-time * speed);
+                pCamera2DController->TranslateLocal(glm::vec3(0, time * -speed, 0));
             }
             break;
         }
@@ -264,11 +270,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocalX(time * speed);
+                pCameraFpsController->TranslateLocal(glm::vec3(time * speed, 0, 0));
             }
             else
             {
-                pCamera2DController->TranslateLocalX(time * speed);
+                pCamera2DController->TranslateLocal(glm::vec3(time * speed, 0, 0));
             }
             break;
         }
@@ -276,11 +282,27 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocalX(-time * speed);
+                pCameraFpsController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
             }
             else
             {
-                pCamera2DController->TranslateLocalX(-time * speed);
+                pCamera2DController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
+            }
+            break;
+        }
+        case Key::Space:
+            {
+            if (isPerspective)
+            {
+                pCameraFpsController->TranslateLocal(glm::vec3(0, time * speed, 0));
+            }
+            break;
+        }
+        case Key::LeftControl:
+        {
+            if (isPerspective)
+            {
+                pCameraFpsController->TranslateLocal(glm::vec3(0, time * -speed, 0));
             }
             break;
         }
@@ -308,22 +330,6 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
             }
             break;
         }
-         case Key::Space:
-         {
-             if (isPerspective)
-             {
-                 pCameraFpsController->TranslateLocalY(time * speed);
-             }
-             break;
-         }
-         case Key::LeftControl:
-         {
-             if (isPerspective)
-             {
-                 pCameraFpsController->TranslateLocalY(-time * speed);
-             }
-             break;
-         }
         case Key::Up:
         {
             pCameraFpsController->RotateX(static_cast<float>(glm::radians(-1.)));
@@ -465,18 +471,18 @@ bool MakeCubeMap()
     const float skyBoxScaleFactor = 500;
     const float skyBoxDistance = skyBoxScaleFactor / 2 - 1;
 
-    frontBox->Translate({ 0, 0, skyBoxDistance });
-    backBox->Translate({ 0, 0, -skyBoxDistance });
+    frontBox->SetTranslation({ 0, 0, skyBoxDistance });
+    backBox->SetTranslation({ 0, 0, -skyBoxDistance });
     backBox->Rotate(static_cast<float>(glm::radians(-180.0)), { 0.0, 1.0, 0.0 });
 
-    upBox->Translate({ 0, skyBoxDistance, 0 });
+    upBox->SetTranslation({ 0, skyBoxDistance, 0 });
     upBox->Rotate(static_cast<float>(glm::radians(-90.0)), { 1.0, 0.0, 0.0 });
-    bottomBox->Translate({ 0, -skyBoxDistance, 0 });
+    bottomBox->SetTranslation({ 0, -skyBoxDistance, 0 });
     bottomBox->Rotate(static_cast<float>(glm::radians(90.0)), { 1.0, 0.0, 0.0 });
 
-    leftBox->Translate({ -skyBoxDistance, 0, 0 });
+    leftBox->SetTranslation({ -skyBoxDistance, 0, 0 });
     leftBox->Rotate(static_cast<float>(glm::radians(-90.0)), { 0.0, 1.0, 0.0 });
-    rightBox->Translate({ skyBoxDistance, 0, 0 });
+    rightBox->SetTranslation({ skyBoxDistance, 0, 0 });
     rightBox->Rotate(static_cast<float>(glm::radians(90.0)), { 0.0, 1.0, 0.0 });
 
     frontBox->Scale({ skyBoxScaleFactor, skyBoxScaleFactor, 0 });
@@ -533,8 +539,8 @@ int main(int argc, char* argv[])
         vkRenderer->Destroyed.connect(&onRendererDestroyed);
 
         // Configuring cameras
-        pPerspectiveProjection = new unicorn::video::PerspectiveCamera(pWindow0, perspective->projection);
-        pOrthoProjection = new unicorn::video::OrthographicCamera(pWindow0, ortho->projection);
+        pPerspectiveProjection = new unicorn::video::PerspectiveCamera(*pWindow0, perspective->projection);
+        pOrthoProjection = new unicorn::video::OrthographicCamera(*pWindow0, ortho->projection);
 
         pCameraFpsController = new unicorn::video::CameraFpsController(perspective->view);
         pCamera2DController = new unicorn::video::Camera2DController(ortho->view);
@@ -576,9 +582,9 @@ int main(int argc, char* argv[])
             mat.color = unicorn::video::Color::Blue();
             auto z_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
 
-            x_minus->Translate({ -250, 0, 0 });
-            x_plus->Translate({ 250, 0, 0 });
-            z_plus->Translate({ 0, 0, 250 });
+            x_minus->SetTranslation({ -250, 0, 0 });
+            x_plus->SetTranslation({ 250, 0, 0 });
+            z_plus->SetTranslation({ 0, 0, 250 });
 
             mat.color = unicorn::video::Color::Red();
             sun = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
@@ -587,8 +593,8 @@ int main(int argc, char* argv[])
             mat.SetAlbedo(&texture);
             earth = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
             earth->Scale({ 2, 2, 2 });
-            earth->Translate({ -15, 0, 50 });
-            sun->Translate({ 15, 0, 50 });
+            earth->SetTranslation({ -15, 0, 50 });
+            sun->SetTranslation({ 15, 0, 50 });
 
             unicorn::video::Mesh* box = &Primitives::Box(*vkRenderer->SpawnMesh(mat));
 
