@@ -51,7 +51,7 @@ void CameraFpsController::ResetView()
 void CameraFpsController::UpdateOrientation()
 {
     glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
-    glm::quat y = glm::angleAxis(m_rotation.y, conjugate(m_orientation) * m_worldY);
+    glm::quat y = glm::angleAxis(m_rotation.y, glm::conjugate(m_orientation) * m_worldY);
 
     m_orientation = normalize(m_orientation * y * x);
 
@@ -60,7 +60,7 @@ void CameraFpsController::UpdateOrientation()
 
 void CameraFpsController::Update()
 {
-    UpdateModelMatrix();
+    UpdateTransformMatrix();
     m_cameraView = glm::lookAt(m_translation, m_translation + m_direction, m_upVector);
 }
 

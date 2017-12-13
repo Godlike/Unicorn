@@ -58,7 +58,7 @@ struct SwapChainSupportDetails
 struct UniformCameraData
 {
     glm::mat4 view = glm::mat4();
-    glm::mat4 proj = glm::mat4();
+    glm::mat4 projection = glm::mat4();
 };
 
 /** @brief Struct which holds all models uniform data for sending to shader */
@@ -81,7 +81,7 @@ public:
      * @param[in, out] window output window
      * @param[in] camera main camera
      */
-    Renderer(system::Manager& manager, system::Window* window, Camera& camera);
+    Renderer(system::Manager& manager, system::Window* window, Camera const& camera);
 
     /**
      * @brief Destructor which calls Deinit()

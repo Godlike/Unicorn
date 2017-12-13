@@ -16,6 +16,10 @@ namespace unicorn
 namespace video
 {
 
+static float constexpr BACK_ORTHO_FRUSTRUM_PLANE = -1000.f;
+static float constexpr FRONT_ORTHO_FRUSTRUM_PLANE = 1000.f;
+static float constexpr DEFAULT_ORTHO_BOX_SCALE = 100.f;
+
 /** @brief Orthographic camera projection controller */
 class OrthographicCamera final : public CameraProjection
 {

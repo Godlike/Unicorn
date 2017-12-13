@@ -59,7 +59,7 @@ public:
 
     /** @brief  Initializes the graphics system
     *
-    *  Ensures that window management system supports Vulkan
+    *  Ensures that window management system supports DriverType
     *
     *  @param  driver Driver type
     *
@@ -142,7 +142,7 @@ public:
     */
     UNICORN_EXPORT void SetWindowCreationHint(system::WindowHint hint, int32_t value) const;
 
-    /** @brief  Spawn new Vulkan based Renderer, which contain VulkanDevice
+    /** @brief  Spawn new DriverType based Renderer
     *  @param  window output window
     *  @param  camera main camera
     *  @return Pointer to newly created Renderer, nullptr if any error occured.

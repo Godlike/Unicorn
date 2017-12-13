@@ -54,13 +54,13 @@ glm::quat RotationBetweenVectors(glm::vec3 start, glm::vec3 dest, glm::vec3 worl
 
 glm::quat CalculateOrientationQuaternion(glm::vec3 direction, glm::vec3 desiredUp, glm::vec3 worldY, glm::vec3 worldZ)
 {
-    if (length2(direction) < SystemAccuracy()) // Already look at desired direction
+    if (glm::length2(direction) < SystemAccuracy()) // Already look at desired direction
     {
         return glm::quat();
     }
 
-    glm::vec3 const right = cross(direction, desiredUp);
-    desiredUp = cross(right, direction);
+    glm::vec3 const right = glm::cross(direction, desiredUp);
+    desiredUp = glm::cross(right, direction);
 
     glm::quat const rot1 = RotationBetweenVectors(worldZ, direction);
     glm::quat const rot2 = RotationBetweenVectors(worldY, desiredUp);

@@ -32,8 +32,10 @@ public:
     /** @brief Sets mouse coordinates without updating view matrix */
     UNICORN_EXPORT void SetViewPositions(float x, float y);
 
-    /** @brief Sets flag to update mouse position without recalculation of orientation
-     * in next UpdateView call */
+    /** @brief Sets flag to update mouse position in next UpdateView call
+     *
+     *  Mouse position updating without orientation recalculation
+     */
     UNICORN_EXPORT void ResetView();
 
     /** @brief Calculates and updates camera view matrix */

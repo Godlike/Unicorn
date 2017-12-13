@@ -83,7 +83,7 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     // Updating transformations for meshes
     for(auto& mesh : meshes)
     {
-        mesh->UpdateModelMatrix();
+        mesh->UpdateTransformMatrix();
     }
 
     // Updating transformations for cameras
@@ -309,7 +309,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateY(glm::radians(1.f));
+                pCameraFpsController->Rotate(static_cast<float>(glm::radians(1.f)), glm::vec3(0., 1., 0.));
             }
             break;
         }
@@ -317,7 +317,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateZ(static_cast<float>(-glm::radians(1.)));
+                pCameraFpsController->Rotate(static_cast<float>(-glm::radians(1.)), glm::vec3(0., 0., 1.));
             }
             break;
         }
@@ -325,28 +325,28 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->RotateZ(static_cast<float>(glm::radians(1.)));
+                pCameraFpsController->Rotate(static_cast<float>(glm::radians(1.)), glm::vec3(0., 0., 1.));
             }
             break;
         }
         case Key::Up:
         {
-            pCameraFpsController->RotateX(static_cast<float>(glm::radians(-1.)));
+            pCameraFpsController->Rotate(static_cast<float>(glm::radians(-1.)), glm::vec3(1., 0., 0.));
             break;
         }
         case Key::Down:
         {
-            pCameraFpsController->RotateX(static_cast<float>(glm::radians(1.)));
+            pCameraFpsController->Rotate(static_cast<float>(glm::radians(1.)), glm::vec3(1., 0., 0.));
             break;
         }
         case Key::Left:
         {
-            pCameraFpsController->RotateY(static_cast<float>(glm::radians(1.)));
+            pCameraFpsController->Rotate(static_cast<float>(glm::radians(1.)), glm::vec3(0., 1., 0.));
             break;
         }
         case Key::Right:
         {
-            pCameraFpsController->RotateY(static_cast<float>(glm::radians(-1.)));
+            pCameraFpsController->Rotate(static_cast<float>(glm::radians(-1.)), glm::vec3(0., 1., 0.));
             break;
         }
         case Key::C:

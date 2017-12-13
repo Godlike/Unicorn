@@ -16,6 +16,9 @@ namespace unicorn
 namespace video
 {
 
+static float constexpr NEAR_PERSPECTIVE_FRUSTRUM_PLANE = 0.1f;
+static float constexpr FAR_PERSPECTIVE_FRUSTRUM_PLANE = 100000.f;
+
 /** @brief Perspective camera projection controller */
 class PerspectiveCamera final : public CameraProjection
 {

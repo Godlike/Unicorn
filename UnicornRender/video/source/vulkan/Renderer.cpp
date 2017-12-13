@@ -44,7 +44,7 @@ bool QueueFamilyIndices::IsComplete() const
     return graphicsFamily >= 0 && presentFamily >= 0;
 }
 
-Renderer::Renderer(system::Manager& manager, system::Window* window, Camera& camera)
+Renderer::Renderer(system::Manager& manager, system::Window* window, Camera const& camera)
     : video::Renderer(manager, window, camera)
     , m_pDepthImage(nullptr)
     , m_contextInstance(Context::Instance().GetVkInstance())
@@ -616,7 +616,7 @@ bool Renderer::PrepareUniformBuffers()
     size_t uboAlignment = static_cast<size_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
     m_dynamicAlignment = (sizeof(glm::mat4) / uboAlignment) * uboAlignment + ((sizeof(glm::mat4) % uboAlignment) > 0 ? uboAlignment : 0);
 
-    m_uniformCameraData.proj = camera->projection;
+    m_uniformCameraData.projection = camera->projection;
     m_uniformCameraData.view = camera->view;
 
     m_uniformViewProjection.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, sizeof(UniformCameraData));
@@ -653,7 +653,7 @@ void Renderer::UpdateModelDescriptorSet() const
 
 void Renderer::UpdateUniformBuffer()
 {
-    m_uniformCameraData.proj = camera->projection;
+    m_uniformCameraData.projection = camera->projection;
     m_uniformCameraData.view = camera->view;
     m_uniformViewProjection.Write(&m_uniformCameraData);
 }
@@ -1304,7 +1304,7 @@ bool Renderer::CreateCommandBuffers()
 
             for(auto pVkMesh : m_vkMeshes)
             {
-                if (!pVkMesh->isVisible())
+                if (!pVkMesh->IsVisible())
                 {
                     ++j;
                     continue;
