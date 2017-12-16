@@ -75,11 +75,11 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
 
     deltaTime = newDeltatime;
 
-    // Applying transforms
-    earth->SetTranslation(unicorn::utility::math::RotateAroundPoint(earth->GetTranslation(),
-        static_cast<float>(glm::radians(90.)) * deltaTime , { 0, 1, 0 }, sun->GetTranslation()));
-    sun->SetTranslation(unicorn::utility::math::RotateAroundPoint(sun->GetTranslation(),
-        static_cast<float>(glm::radians(90.)) * deltaTime , { 0, 1, 0 }, earth->GetTranslation()));
+//    // Applying transforms
+//    earth->SetTranslation(unicorn::utility::math::RotateAroundPoint(earth->GetTranslation(),
+//        static_cast<float>(glm::radians(90.)) * deltaTime , { 0, 1, 0 }, sun->GetTranslation()));
+//    sun->SetTranslation(unicorn::utility::math::RotateAroundPoint(sun->GetTranslation(),
+//        static_cast<float>(glm::radians(90.)) * deltaTime , { 0, 1, 0 }, earth->GetTranslation()));
 
     // Updating transformations for meshes
     for(auto& mesh : meshes)
@@ -501,7 +501,7 @@ int main(int argc, char* argv[])
 
     settings.Init(argc, argv, "Sanic_Jymper.log");
     settings.SetApplicationName("SANIC JYMPER");
-    unicorn::UnicornRender* unicornRender = new unicorn::UnicornRender();
+    auto* unicornRender = new unicorn::UnicornRender;
     timer = new unicorn::system::Timer(true);
     if (unicornRender->Init())
     {
@@ -518,8 +518,8 @@ int main(int argc, char* argv[])
 
         auto h = pGraphics->GetMonitors().back()->GetActiveVideoMode().height;
         auto w = pGraphics->GetMonitors().back()->GetActiveVideoMode().width;
-        settings.SetApplicationHeight(h);
-        settings.SetApplicationWidth(w);
+        settings.SetApplicationHeight(static_cast<uint32_t>(h));
+        settings.SetApplicationWidth(static_cast<uint32_t>(w));
 
         unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(settings.GetApplicationWidth(),
            settings.GetApplicationHeight(),
@@ -558,52 +558,59 @@ int main(int argc, char* argv[])
                 return -1;
             }
 
-            if (!MakeCubeMap())
-            {
-                return -1;
-            }
+//            if (!MakeCubeMap())
+//            {
+//                return -1;
+//            }
 
             using unicorn::video::Primitives;
 
-            unicorn::video::Material mat;
+//            unicorn::video::Material mat;
 
-            mat.color = unicorn::video::Color::LightPink();
-            auto x_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
+//            mat.color = unicorn::video::Color::LightPink();
+//            auto x_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
 
             unicorn::video::Model gltfModel;
-            if(!gltfModel.LoadModel("data/models/glTF/DamagedHelmet.gltf"))
+            std::string helmet = "data/models/glTF/DamagedHelmet.gltf";
+            std::string sponza = "data/models/obj/sponza/sponza.obj";
+            if(!gltfModel.LoadModel(sponza))
             {
                 return -1;
             }
 
-            mat.color = unicorn::video::Color::Green();
-            auto x_minus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
-
-            mat.color = unicorn::video::Color::Blue();
-            auto z_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
-
-            x_minus->SetTranslation({ -250, 0, 0 });
-            x_plus->SetTranslation({ 250, 0, 0 });
-            z_plus->SetTranslation({ 0, 0, 250 });
-
-            mat.color = unicorn::video::Color::Red();
-            sun = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
-            sun->Scale({ 1, 1, 1 });
-            mat.color = unicorn::video::Color::Green();
-            mat.SetAlbedo(&texture);
-            earth = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
-            earth->Scale({ 2, 2, 2 });
-            earth->SetTranslation({ -15, 0, 50 });
-            sun->SetTranslation({ 15, 0, 50 });
-
-            unicorn::video::Mesh* box = &Primitives::Box(*vkRenderer->SpawnMesh(mat));
-
-            meshes.push_back(box);
-            meshes.push_back(earth);
-            meshes.push_back(sun);
-            meshes.push_back(x_plus);
-            meshes.push_back(x_minus);
-            meshes.push_back(z_plus);
+            vkRenderer->AddModel(gltfModel);
+            for(auto mesh : gltfModel.m_meshes)
+            {
+                mesh->UpdateModelMatrix();
+            }
+//            mat.color = unicorn::video::Color::Green();
+//            auto x_minus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
+//
+//            mat.color = unicorn::video::Color::Blue();
+//            auto z_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
+//
+//            x_minus->SetTranslation({ -250, 0, 0 });
+//            x_plus->SetTranslation({ 250, 0, 0 });
+//            z_plus->SetTranslation({ 0, 0, 250 });
+//
+//            mat.color = unicorn::video::Color::Red();
+//            sun = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
+//            sun->Scale({ 1, 1, 1 });
+//            mat.color = unicorn::video::Color::Green();
+//            mat.SetAlbedo(&texture);
+//            earth = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
+//            earth->Scale({ 2, 2, 2 });
+                                                                                                                    //            earth->SetTranslation({ -15, 0, 50 });
+//            sun->SetTranslation({ 15, 0, 50 });
+//
+//            unicorn::video::Mesh* box = &Primitives::Box(*vkRenderer->SpawnMesh(mat));
+//
+//            meshes.push_back(box);
+//            meshes.push_back(earth);
+//            meshes.push_back(sun);
+//            meshes.push_back(x_plus);
+//            meshes.push_back(x_minus);
+//            meshes.push_back(z_plus);
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);

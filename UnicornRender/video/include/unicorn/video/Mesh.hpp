@@ -14,6 +14,9 @@
 #include <wink/signal.hpp>
 #include <glm/glm.hpp>
 
+#include <string>
+#include <vector>
+
 namespace unicorn
 {
 namespace video
@@ -33,11 +36,7 @@ struct Vertex
 class Mesh : public Transform
 {
 public:
-    /**
-     * @brief Constructs mesh
-     *
-     * @param[in] material visual describing material
-     */
+    /** @brief Constructs mesh */
     UNICORN_EXPORT Mesh(Material const& material);
 
     /**
@@ -81,6 +80,12 @@ public:
 
     /** @brief Event triggered when vertices are changed */
     wink::signal<wink::slot<void()>> VerticesUpdated;
+
+    std::vector<std::string> m_diffuse;
+    std::vector<std::string> m_normal;
+    std::vector<std::string> m_aoMaps;
+    std::vector<std::string> m_emissive;
+    std::vector<std::string> m_metalRougness;
 private:
     std::vector<Vertex> m_vertices;
     std::vector<uint32_t> m_indices;

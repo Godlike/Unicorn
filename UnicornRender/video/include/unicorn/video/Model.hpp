@@ -14,6 +14,7 @@
 class aiNode;
 class aiScene;
 class aiMesh;
+class aiMaterial;
 
 namespace unicorn
 {
@@ -24,12 +25,12 @@ class Model
 {
 public:
     bool LoadModel(std::string const& pathToModel);
+    std::vector<Mesh*> m_meshes;
 private:
     std::string m_directory;
-    std::vector<Mesh> m_meshes;
 
     void ProcessNode(aiNode* node, aiScene const* scene);
-    Mesh ProcessMesh(aiMesh* mesh, aiScene const* scene);
+    Mesh* ProcessMesh(aiMesh* mesh, aiScene const* scene);
 };
 }
 }

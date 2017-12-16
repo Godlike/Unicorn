@@ -10,6 +10,7 @@
 #include <unicorn/video/Mesh.hpp>
 #include <unicorn/video/Color.hpp>
 #include <unicorn/video/Camera.hpp>
+#include <unicorn/video/Model.hpp>
 
 #include <glm/glm.hpp>
 
@@ -85,6 +86,8 @@ public:
     *  @sa DeleteMesh
     */
     UNICORN_EXPORT virtual Mesh* SpawnMesh(Material const& material) = 0;
+
+    UNICORN_EXPORT virtual void AddModel(Model const& model) = 0;
 
     /**
     * @brief Removes mesh from rendering system

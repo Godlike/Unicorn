@@ -171,7 +171,7 @@ QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
             indices.graphicsFamily = index;
         }
 
-        std::tie(result, presentSupport) = device.getSurfaceSupportKHR(index, m_vkWindowSurface);
+        std::tie(result, presentSupport) = device.getSurfaceSupportKHR(static_cast<uint32_t>(index), m_vkWindowSurface);
 
         if(queueFamily.queueCount > 0 && presentSupport)
         {
@@ -187,7 +187,8 @@ QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
     return indices;
 }
 
-bool Renderer::FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features, vk::Format& returnFormat) const
+bool Renderer::FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling,
+                                   vk::FormatFeatureFlags features, vk::Format& returnFormat) const
 {
     for(const auto& format : candidates)
     {
@@ -336,17 +337,13 @@ bool Renderer::RecreateSwapChain()
 {
     m_vkLogicalDevice.waitIdle();
 
-    if(CreateSwapChain() &&
-        CreateImageViews() &&
-        CreateDepthBuffer() &&
-        CreateRenderPass() &&
-        CreateGraphicsPipeline() &&
-        CreateFramebuffers() &&
-        CreateCommandBuffers())
-    {
-        return true;
-    }
-    return false;
+    return CreateSwapChain() &&
+           CreateImageViews() &&
+           CreateDepthBuffer() &&
+           CreateRenderPass() &&
+           CreateGraphicsPipeline() &&
+           CreateFramebuffers() &&
+           CreateCommandBuffers();
 }
 
 Mesh* Renderer::SpawnMesh(unicorn::video::Material const& material)
@@ -427,6 +424,25 @@ bool Renderer::DeleteMesh(const Mesh* pMesh)
     }
 
     return false;
+}
+
+void Renderer::AddModel(Model const& model)
+{
+    for(auto mesh : model.m_meshes)
+    {
+        auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
+        if(!AllocateMaterial(*mesh, *vkmesh))
+        {
+            LOG_ERROR("Can't allocate material!");
+        }
+        vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
+        vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
+        vkmesh->AllocateOnGPU();
+        m_vkMeshes.push_back(vkmesh);
+        m_meshes.push_back(mesh);
+
+        ResizeUnifromModelBuffer(vkmesh);
+    }
 }
 
 void Renderer::SetDepthTest(bool enabled)
@@ -613,7 +629,7 @@ void Renderer::FreeEngineHelpData()
 
 bool Renderer::PrepareUniformBuffers()
 {
-    size_t uboAlignment = static_cast<size_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
+    auto uboAlignment = static_cast<size_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
     m_dynamicAlignment = (sizeof(glm::mat4) / uboAlignment) * uboAlignment + ((sizeof(glm::mat4) % uboAlignment) > 0 ? uboAlignment : 0);
 
     m_uniformCameraData.proj = camera->projection;
@@ -724,7 +740,7 @@ bool Renderer::CreateLogicalDevice()
     std::set<int> uniqueQueueFamilies = {indices.graphicsFamily, indices.presentFamily};
     float queuePriority = 1.0f;
 
-    for(int queueFamily : uniqueQueueFamilies)
+    for(uint32_t queueFamily : uniqueQueueFamilies)
     {
         vk::DeviceQueueCreateInfo queueCreateInfo({}, queueFamily, 1, &queuePriority);
         queueCreateInfos.push_back(queueCreateInfo);
@@ -757,8 +773,8 @@ bool Renderer::CreateLogicalDevice()
         LOG_ERROR("Can't initialize Vulkan logical device!");
         return false;
     }
-    m_graphicsQueue = m_vkLogicalDevice.getQueue(indices.graphicsFamily, 0);
-    m_presentQueue = m_vkLogicalDevice.getQueue(indices.presentFamily, 0);
+    m_graphicsQueue = m_vkLogicalDevice.getQueue(static_cast<uint32_t>(indices.graphicsFamily), 0);
+    m_presentQueue = m_vkLogicalDevice.getQueue(static_cast<uint32_t>(indices.presentFamily), 0);
 
     return true;
 }

@@ -7,6 +7,7 @@
 #include <unicorn/video/Model.hpp>
 #include <unicorn/utility/Logger.hpp>
 #include <unicorn/video/Material.hpp>
+#include <unicorn/video/Texture.hpp>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -57,23 +58,21 @@ void Model::ProcessNode(aiNode* node, aiScene const* scene)
     }
 }
 
-std::vector<std::string> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
+std::vector<std::string> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string directory)
 {
     std::vector<std::string> textures;
-    for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+    for(unsigned int i = 0; i < mat->GetTextureCount(type); ++i)
     {
         aiString str;
         mat->GetTexture(type, i, &str);
-        //Texture texture;
-        //texture.id = TextureFromFile(str.C_Str(), directory);
-        //texture.type = typeName;
-        //texture.path = str;
-        textures.push_back(str.C_Str());
+        std::string path = str.C_Str();
+        std::replace(path.begin(), path.end(), '\\', '/');
+        textures.emplace_back(directory + "/" + path);
     }
     return textures;
 }
 
-Mesh Model::ProcessMesh(aiMesh* mesh, aiScene const* scene)
+Mesh* Model::ProcessMesh(aiMesh* mesh, aiScene const* scene)
 {
     std::vector<uint32_t> indices;
     std::vector<Vertex> vertices;
@@ -112,43 +111,27 @@ Mesh Model::ProcessMesh(aiMesh* mesh, aiScene const* scene)
         }
     }
 
-    if(mesh->mMaterialIndex >= 0)
-    {
+    Material mat;
+    Mesh* unicornMesh = new Mesh(mat);
+
+    if(mesh->mMaterialIndex >= 0) {
         aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-        std::vector<std::string> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "diffuse");
-        for(auto& diffuse : diffuseMaps)
-        {
-            LOG_ERROR("Diffuse %s ", diffuse.c_str());
-        }
-        //textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        std::vector<std::string> normal = LoadMaterialTextures(material, aiTextureType_NORMALS, "normal");
-        for(auto& n : normal)
-        {
-            LOG_ERROR("normal %s ", n.c_str());
-        }
-        std::vector<std::string> aoMaps = LoadMaterialTextures(material, aiTextureType_LIGHTMAP, "ambient_occlusion");
-        for(auto& ao : aoMaps)
-        {
-            LOG_ERROR("aoMaps %s ", ao.c_str());
-        }
-        std::vector<std::string> emissive = LoadMaterialTextures(material, aiTextureType_EMISSIVE, "emissive");
-        for(auto& e : emissive)
-        {
-            LOG_ERROR("emissive %s ", e.c_str());
-        }
-        std::vector<std::string> metalRougness = LoadMaterialTextures(material, aiTextureType_SHININESS, "metal_roughness");
-        for(auto& mr : metalRougness)
-        {
-            LOG_ERROR("metalRougness %s ", mr.c_str());
-        }
-        //textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+        unicornMesh->m_diffuse = LoadMaterialTextures(material, aiTextureType_DIFFUSE, m_directory);
+        unicornMesh->m_normal = LoadMaterialTextures(material, aiTextureType_NORMALS, m_directory);
+        unicornMesh->m_aoMaps = LoadMaterialTextures(material, aiTextureType_LIGHTMAP, m_directory);
+        unicornMesh->m_emissive = LoadMaterialTextures(material, aiTextureType_EMISSIVE, m_directory);
+        unicornMesh->m_metalRougness = LoadMaterialTextures(material, aiTextureType_UNKNOWN, m_directory);
     }
 
+    if(unicornMesh->m_diffuse.size() > 0)
+    {
+        Texture* diffuseTex = new Texture;
+        diffuseTex->Load(unicornMesh->m_diffuse.at(0));
+        mat.SetAlbedo(diffuseTex);
+        unicornMesh->SetMaterial(mat);
+    }
 
-    Material mat;
-    Mesh unicornMesh(mat);
-
-    unicornMesh.SetMeshData(vertices, indices);
+    unicornMesh->SetMeshData(vertices, indices);
 
     return unicornMesh;
 }
