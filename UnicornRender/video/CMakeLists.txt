@@ -36,24 +36,33 @@ set(VIDEO_HEADERS
     include/unicorn/video/Graphics.hpp
     include/unicorn/video/Renderer.hpp
     include/unicorn/video/Camera.hpp
+    include/unicorn/video/Camera2DController.hpp
+    include/unicorn/video/CameraProjection.hpp
+    include/unicorn/video/OrthographicCamera.hpp
+    include/unicorn/video/PerspectiveCamera.hpp
     include/unicorn/video/CameraFpsController.hpp
     include/unicorn/video/Color.hpp
     include/unicorn/video/Texture.hpp
     include/unicorn/video/Mesh.hpp
     include/unicorn/video/Material.hpp
     include/unicorn/video/Primitives.hpp
+    include/unicorn/video/Transform.hpp
 )
 
 set(VIDEO_SOURCES
     source/Graphics.cpp
     source/Renderer.cpp
-    source/Camera.cpp
+    source/Camera2DController.cpp
+    source/CameraProjection.cpp
+    source/OrthographicCamera.cpp
+    source/PerspectiveCamera.cpp
     source/CameraFpsController.cpp
     source/Color.cpp
     source/Texture.cpp
     source/Mesh.cpp
     source/Material.cpp
     source/Primitives.cpp
+    source/Transform.cpp
 )
 
 add_library(video OBJECT

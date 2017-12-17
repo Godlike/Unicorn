@@ -90,6 +90,9 @@ public:
     /** @brief Returns @c true if mesh is in wired mode and @c false otherwise */
     bool IsWired() const;
 
+    /** @brief Returns true if mesh is visible, false otherwise */
+    bool IsVisible() const;
+
     /**
      * @brief Returns color of mesh in RGB format
      * @return color of mesh in RGB format
@@ -102,7 +105,7 @@ public:
     void OnMaterialUpdated();
 
     /**
-     * @brief Material in vulkan is combination of descriptor set and binded data   
+     * @brief Material in vulkan is a combination of descriptor set and bound data
      */
     std::shared_ptr<VkMaterial> pMaterial;
 

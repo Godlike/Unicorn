@@ -15,9 +15,7 @@ namespace unicorn
 {
 namespace video
 {
-/**
- * @brief Class with some predefined colors
- */
+/** @brief Class with some predefined colors */
 struct Color
 {
     UNICORN_EXPORT static glm::vec3 Red();

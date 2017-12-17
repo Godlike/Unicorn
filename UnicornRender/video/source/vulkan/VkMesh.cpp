@@ -39,7 +39,7 @@ bool VkMesh::operator==(const Mesh& mesh) const
 
 const glm::mat4& VkMesh::GetModelMatrix() const
 {
-    return m_mesh.modelMatrix;
+    return m_mesh.GetModelMatrix();
 }
 
 void VkMesh::AllocateOnGPU()
@@ -61,7 +61,7 @@ void VkMesh::AllocateOnGPU()
 
     stagingBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, size);
     stagingBuffer.Map();
-    m_indexBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, size);
+    m_indexBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, size);
     stagingBuffer.Write(m_mesh.GetIndices().data());
     stagingBuffer.CopyToBuffer(m_pool, m_queue, m_indexBuffer, m_indexBuffer.GetSize());
     stagingBuffer.Destroy();
@@ -104,6 +104,11 @@ bool VkMesh::IsColored() const
 bool VkMesh::IsWired() const
 {
     return m_mesh.GetMaterial().IsWired();
+}
+
+bool VkMesh::IsVisible() const
+{
+    return m_mesh.GetMaterial().IsVisible();
 }
 
 glm::vec3 VkMesh::GetColor() const

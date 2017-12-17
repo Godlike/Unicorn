@@ -10,7 +10,8 @@ namespace unicorn
 {
 namespace video
 {
-Mesh::Mesh(Material const& material) : modelMatrix(glm::mat4(1.0)), m_material(material)
+Mesh::Mesh(Material material)
+    : m_material(material)
 {
 }
 
@@ -22,7 +23,7 @@ void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<ui
     VerticesUpdated.emit();
 }
 
-void Mesh::SetMaterial(Material const& material)
+void Mesh::SetMaterial(Material material)
 {
     m_material = material;
 
@@ -43,5 +44,6 @@ const Material& Mesh::GetMaterial() const
 {
     return m_material;
 }
+
 }
 }
