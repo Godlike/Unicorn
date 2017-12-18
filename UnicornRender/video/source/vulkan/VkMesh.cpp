@@ -106,7 +106,7 @@ bool VkMesh::IsWired() const
     return m_mesh.GetMaterial().IsWired();
 }
 
-bool VkMesh::isVisible() const
+bool VkMesh::IsVisible() const
 {
     return m_mesh.GetMaterial().IsVisible();
 }

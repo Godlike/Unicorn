@@ -28,21 +28,14 @@ Transform::Transform()
 {
 }
 
-void Transform::LookAtDirection(glm::vec3 direction)
+bool Transform::IsDirty() const
 {
-    LookAtDirection(direction, m_upVector);
-}
-
-void Transform::LookAtDirection(glm::vec3 direction, glm::vec3 upVector)
-{
-    m_orientation = utility::math::CalculateOrientationQuaternion(direction, upVector);
-
-    m_isDirty = true;
+    return m_isDirty;
 }
 
 void Transform::SetUp(glm::vec3 upVector)
 {
-    LookAtDirection(m_direction, upVector);
+    SetOrientation(m_direction, upVector);
 }
 
 void Transform::SetTranslation(glm::vec3 translate)
@@ -52,11 +45,13 @@ void Transform::SetTranslation(glm::vec3 translate)
     m_isDirty = true;
 }
 
-void Transform::SetWorldCoordinates(glm::vec3 x, glm::vec3 y, glm::vec3 z)
+void Transform::SetWorldAxes(glm::vec3 x, glm::vec3 y, glm::vec3 z)
 {
     m_worldX = x;
     m_worldY = y;
     m_worldZ = z;
+
+    m_isDirty = true;
 }
 
 glm::vec3 Transform::GetDirection() const
@@ -94,6 +89,7 @@ void Transform::TranslateLocal(glm::vec3 distance)
     glm::vec3 const rightTranslation = m_rightVector * distance.x;
     glm::vec3 const upTranslation = m_upVector * distance.y;
     glm::vec3 const forwardTranslation = m_direction * distance.z;
+
     SetTranslation(GetTranslation() + rightTranslation + upTranslation + forwardTranslation);
 }
 
@@ -102,30 +98,14 @@ void Transform::TranslateWorld(glm::vec3 distance)
     glm::vec3 const xTranslation = m_worldX * distance.x;
     glm::vec3 const yTranslation = m_worldY * distance.y;
     glm::vec3 const zTranslation = m_worldZ * distance.z;
+
     SetTranslation(GetTranslation() + xTranslation + yTranslation + zTranslation);
-}
-
-void Transform::RotateX(float radians)
-{
-    m_rotation.x += radians;
-    m_isDirty = true;
-}
-
-void Transform::RotateY(float radians)
-{
-    m_rotation.y += radians;
-    m_isDirty = true;
-}
-
-void Transform::RotateZ(float radians)
-{
-    m_rotation.z += radians;
-    m_isDirty = true;
 }
 
 void Transform::Rotate(glm::vec3 rotation)
 {
     m_rotation += rotation;
+
     m_isDirty = true;
 }
 
@@ -136,20 +116,36 @@ void Transform::Rotate(glm::quat rotation)
     m_isDirty = true;
 }
 
-void Transform::Rotate(float angleRadians, glm::vec3 axis) {
-    glm::quat const q = glm::angleAxis(angleRadians, axis);
-    Rotate(q);
+void Transform::Rotate(float angleRadians, glm::vec3 axis)
+{
+    m_rotation += angleRadians * axis;
+
+    m_isDirty = true;
 }
 
 void Transform::SetOrientation(glm::quat quat)
 {
     m_orientation = quat;
+
+    m_isDirty = true;
+}
+
+void Transform::SetOrientation(glm::vec3 direction)
+{
+    SetOrientation(direction, m_upVector);
+}
+
+void Transform::SetOrientation(glm::vec3 direction, glm::vec3 upVector)
+{
+    m_orientation = utility::math::CalculateOrientationQuaternion(direction, upVector);
+
     m_isDirty = true;
 }
 
 void Transform::SetRotation(glm::vec3 rotation)
 {
     m_rotation = rotation;
+
     m_isDirty = true;
 }
 
@@ -164,7 +160,7 @@ void Transform::UpdateOrientation()
     m_rotation = glm::vec3(0);
 }
 
-void Transform::UpdateModelMatrix()
+void Transform::UpdateTransformMatrix()
 {
     if (m_isDirty)
     {

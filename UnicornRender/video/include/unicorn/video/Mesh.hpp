@@ -36,8 +36,12 @@ struct Vertex
 class Mesh : public Transform
 {
 public:
-    /** @brief Constructs mesh */
-    UNICORN_EXPORT Mesh(Material const& material);
+    /**
+     * @brief Constructs mesh
+     *
+     * @param[in] material visual appearance description
+     */
+    UNICORN_EXPORT Mesh(Material material);
 
     /**
     * @brief Updates vertices and indices geometry
@@ -52,7 +56,7 @@ public:
     *
     * @param[in] material material to be used for current mesh
     */
-    UNICORN_EXPORT void SetMaterial(Material const& material);
+    UNICORN_EXPORT void SetMaterial(Material material);
 
     /**
      * @brief Returns mesh vertices

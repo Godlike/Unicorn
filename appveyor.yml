@@ -8,10 +8,10 @@ configuration:
 platform: x64
 clone_folder: "c:\\UnicornEngine"
 environment:
-  VULKAN_SDK: "c:\\VulkanSDK\\1.0.42.2\\"
+  VULKAN_SDK: "c:\\VulkanSDK\\1.0.65.1\\"
 init:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-  - curl -fsS -o vulkan-installer.exe https://vulkan.lunarg.com/sdk/download/1.0.42.2/windows/VulkanSDK-1.0.42.2-Installer.exe?Human=true
+  - appveyor DownloadFile https://www.dropbox.com/s/m2pqrnvu637z6to/VulkanSDK-1.0.65.1-Installer.exe?dl=1 -FileName vulkan-installer.exe
   - vulkan-installer.exe /S
   - rm -f vulkan-installer.exe
 install:

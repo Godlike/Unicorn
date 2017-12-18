@@ -37,11 +37,11 @@ class Renderer
 public:
     /**
      * @brief Constructor
-     * @param manager Describes required extensions
-     * @param window Render into
+     * @param[in,out] manager Describes required extensions, creates window surface
+     * @param[in,out] window output window
      * @param[in] camera main camera
      */
-    Renderer(system::Manager& manager, system::Window* window, Camera& camera);
+    Renderer(system::Manager& manager, system::Window* window, Camera const& camera);
 
     virtual ~Renderer();
 
@@ -97,7 +97,7 @@ public:
     UNICORN_EXPORT virtual bool DeleteMesh(Mesh const* mesh) = 0;
 
     //! Main view camera, must never be nullptr
-    Camera* camera;
+    Camera const* camera;
 protected:
     bool m_isInitialized;
 

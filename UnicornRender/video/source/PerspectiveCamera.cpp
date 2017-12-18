@@ -18,8 +18,8 @@ PerspectiveCamera::PerspectiveCamera(system::Window& window, glm::mat4& cameraPr
     , m_fov(45.f)
     , m_fovLowerBound(44.f)
     , m_fovUpperBound(45.f)
-    , m_znear(0.1f)
-    , m_zfar(100000.f) // 100 kilometers
+    , m_znear(NEAR_PERSPECTIVE_FRUSTRUM_PLANE)
+    , m_zfar(FAR_PERSPECTIVE_FRUSTRUM_PLANE)
 {
     UpdateProjection();
 }
