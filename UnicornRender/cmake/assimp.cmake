@@ -18,4 +18,6 @@ set(ASSIMP_ROOT_DIR "${UNICORN_RENDER_ROOT}/external/assimp" CACHE STRING "Path 
 set(ASSIMP_INCLUDE_DIR "${ASSIMP_ROOT_DIR}/include" CACHE STRING "Path to Assimp include directory")
 set(ASSIMP_LIB "assimp" CACHE STRING "Name of ASSIMP library")
 
-set(ASSIMP_INCLUDE_DIRS "lib/assimp/include" "lib/assimp/build/include" ${ASSIMP_INCLUDE_DIR})
+set(ASSIMP_CONFIG_PATH "${CMAKE_CURRENT_BINARY_DIR}/external/assimp/include" CACHE STRING "Path to generated config file")
+
+set(ASSIMP_INCLUDE_DIRS ${ASSIMP_INCLUDE_DIR} ${ASSIMP_CONFIG_PATH})

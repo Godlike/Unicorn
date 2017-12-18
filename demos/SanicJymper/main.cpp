@@ -581,7 +581,7 @@ int main(int argc, char* argv[])
             vkRenderer->AddModel(gltfModel);
             for(auto mesh : gltfModel.m_meshes)
             {
-                mesh->UpdateModelMatrix();
+                mesh->UpdateTransformMatrix();
             }
 //            mat.color = unicorn::video::Color::Green();
 //            auto x_minus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
