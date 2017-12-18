@@ -2,8 +2,8 @@
 # This code is licensed under the MIT license (MIT)
 # (http://opensource.org/licenses/MIT)
 
-cmake_minimum_required(VERSION 3.0)
-cmake_policy(VERSION 3.0)
+cmake_minimum_required(VERSION 3.2)
+cmake_policy(VERSION 3.2)
 
 if (NOT DEFINED UNICORN_RENDER_NAME)
     set(UNICORN_RENDER_NAME "UnicornRender" CACHE STRING "Project name for Unicorn Render library")
@@ -18,7 +18,7 @@ if (NOT CMAKE_BUILD_TYPE)
 endif (NOT CMAKE_BUILD_TYPE)
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Werror -pedantic") # TODO: assimp fail -Wall -Werror -pedantic
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14") # TODO: assimp fail -Wall -Werror -pedantic
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s -O3")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb3 -O0")
 elseif(WIN32)
@@ -231,6 +231,25 @@ elseif(WIN32)
     else()
         set(GLSL_VALIDATOR "$ENV{VULKAN_SDK}/Bin32/glslangValidator.exe")
     endif()
+endif()
+
+add_custom_target(UNZIP COMMAND
+    ${CMAKE_COMMAND} -E tar "xf"
+    "${CMAKE_CURRENT_SOURCE_DIR}/data.7z" --format=zip
+       "${CMAKE_CURRENT_SOURCE_DIR}/mraz")
+
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/data.7z")
+    message("Data already exists")
+else()
+    message("Downloading engine data...")
+
+    file(DOWNLOAD
+        https://www.dropbox.com/s/8f515ada0k9ush2/data.7z?dl=1
+        ${CMAKE_CURRENT_SOURCE_DIR}/data.7z
+        STATUS
+        SHOW_PROGRESS)
+
+    message("Downloaded. Unzipping...")
 endif()
 
 file(GLOB_RECURSE GLSL_SOURCE_FILES
