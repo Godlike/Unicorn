@@ -16,8 +16,36 @@ set(ASSIMP_COVERALLS OFF CACHE BOOL "Flag to override default ASSIMP_COVERALLS v
 
 set(ASSIMP_ROOT_DIR "${UNICORN_RENDER_ROOT}/external/assimp" CACHE STRING "Path to Assimp root directory")
 set(ASSIMP_INCLUDE_DIR "${ASSIMP_ROOT_DIR}/include" CACHE STRING "Path to Assimp include directory")
-set(ASSIMP_LIB "assimp" CACHE STRING "Name of ASSIMP library")
 
 set(ASSIMP_CONFIG_PATH "${CMAKE_CURRENT_BINARY_DIR}/external/assimp/include" CACHE STRING "Path to generated config file")
+set(ASSIMP_INCLUDE_DIRS  ${ASSIMP_CONFIG_PATH} ${ASSIMP_INCLUDE_DIR})
 
-set(ASSIMP_INCLUDE_DIRS ${ASSIMP_INCLUDE_DIR} ${ASSIMP_CONFIG_PATH})
+set(ASSIMP_LIB "assimp" CACHE STRING "Name of Assimp library")
+
+# if(WIN32)
+#     if(MSVC12)
+#         set(ASSIMP_MSVC_VERSION "vc120")
+#     elseif(MSVC14)
+#         set(ASSIMP_MSVC_VERSION "vc140")
+#     else()
+#         set(ASSIMP_MSVC_VERSION "vc141")
+#     endif(MSVC12)
+
+#     set(ASSIMP_LIBRARY_RELEASE "assimp-${ASSIMP_MSVC_VERSION}-mt.lib")
+#     set(ASSIMP_LIBRARY_DEBUG "assimp-${ASSIMP_MSVC_VERSION}-mtd.lib")
+
+#     if(CMAKE_BUILD_TYPE MATCHES RELEASE)
+#         set(ASSIMP_LIB ${ASSIMP_LIBRARY_RELEASE})
+#     else()
+#         set(ASSIMP_LIB ${ASSIMP_LIBRARY_DEBUG})
+#     endif()
+
+#         # FUNCTION(ASSIMP_COPY_BINARIES TargetDirectory)
+#         #     ADD_CUSTOM_TARGET(AssimpCopyBinaries
+#         #         COMMAND ${CMAKE_COMMAND} -E copy ${ASSIMP_ROOT_DIR}/bin${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mtd.dll     ${TargetDirectory}/Debug/assimp-${ASSIMP_MSVC_VERSION}-mtd.dll
+#         #         COMMAND ${CMAKE_COMMAND} -E copy ${ASSIMP_ROOT_DIR}/bin${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mt.dll      ${TargetDirectory}/Release/assimp-${ASSIMP_MSVC_VERSION}-mt.dll
+#         #     COMMENT "Copying Assimp binaries to '${TargetDirectory}'"
+#         #     VERBATIM)
+#         # ENDFUNCTION(ASSIMP_COPY_BINARIES)
+# else()
+# endif()

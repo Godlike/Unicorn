@@ -24,7 +24,7 @@ namespace video
 class Model
 {
 public:
-    bool LoadModel(std::string const& pathToModel);
+    UNICORN_EXPORT bool LoadModel(std::string const& pathToModel);
     std::vector<Mesh*> m_meshes;
 private:
     std::string m_directory;

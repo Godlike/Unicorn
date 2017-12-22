@@ -43,6 +43,7 @@ include(system)
 include(video)
 include(WinkSignals)
 include(assimp)
+#find_package(assimp REQUIRED)
 add_subdirectory(${ASSIMP_ROOT_DIR})
 
 ## Installation info

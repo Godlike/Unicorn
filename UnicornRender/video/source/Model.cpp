@@ -8,6 +8,8 @@
 #include <unicorn/utility/Logger.hpp>
 #include <unicorn/video/Material.hpp>
 #include <unicorn/video/Texture.hpp>
+#include <unicorn/utility/asset/SimpleStorage.hpp>
+#include <unicorn/utility/Logger.hpp>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -23,17 +25,30 @@ namespace video
 
 bool Model::LoadModel(std::string const& pathToModel)
 {
+    utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
+    utility::asset::Handler modelHandler = storage.Get(pathToModel);
 
-    Assimp::Importer importer;
+    if (!modelHandler.IsValid())
+    {
+        LOG_ERROR("Can't find model - %s", pathToModel.c_str());
+        return false;
+    }
 
-    aiScene const* scene = importer.ReadFile(pathToModel,
+    Assimp::Importer* importer = new Assimp::Importer;;
+
+    aiScene const* scene = importer->ReadFileFromMemory(modelHandler.GetContent().GetBuffer().data(),
+        modelHandler.GetContent().GetBuffer().size(),
         aiProcess_Triangulate |
         aiProcess_FlipUVs);
+
+    //aiScene const* scene = importer.ReadFile(pathToModel,
+    //    aiProcess_Triangulate |
+    //    aiProcess_FlipUVs);
 
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         LOG_ERROR("ERROR importing %s mesh : %s", pathToModel.c_str(),
-            importer.GetErrorString());
+            importer->GetErrorString());
         return false;
     }
 
