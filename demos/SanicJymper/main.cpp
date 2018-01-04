@@ -577,8 +577,8 @@ int main(int argc, char* argv[])
                 return -1;
             }
 
-            pCameraFpsController->TranslateLocal({ 0, 0, -5 });
-            pCameraFpsController->SetOrientation({ 0,0,1 });
+            pCameraFpsController->TranslateLocal({ 0, 0, 5 });
+            pCameraFpsController->SetOrientation({ 0, 0, 1 });
 
             vkRenderer->AddModel(gltfModel);
             for(auto mesh : gltfModel.m_meshes)
