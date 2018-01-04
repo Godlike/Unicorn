@@ -62,6 +62,7 @@ void CameraFpsController::Update()
 {
     UpdateTransformMatrix();
     m_cameraView = glm::lookAt(m_translation, m_translation + m_direction, m_upVector);
+    m_cameraView = m_transformMatrix;
 }
 
 } // namespace video

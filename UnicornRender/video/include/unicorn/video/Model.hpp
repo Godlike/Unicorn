@@ -12,7 +12,7 @@
 #include <string>
 
 class aiNode;
-class aiScene;
+struct aiScene;
 class aiMesh;
 class aiMaterial;
 

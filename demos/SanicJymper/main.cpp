@@ -572,8 +572,7 @@ int main(int argc, char* argv[])
 
             unicorn::video::Model gltfModel;
             std::string helmet = "data/models/glTF/DamagedHelmet.gltf";
-            std::string sponza = "data/models/obj/sponza/sponza.obj";
-            if(!gltfModel.LoadModel(sponza))
+            if(!gltfModel.LoadModel(helmet))
             {
                 return -1;
             }

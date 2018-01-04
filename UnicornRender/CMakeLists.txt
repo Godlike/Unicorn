@@ -234,25 +234,6 @@ elseif(WIN32)
     endif()
 endif()
 
-add_custom_target(UNZIP COMMAND
-    ${CMAKE_COMMAND} -E tar "xf"
-    "${CMAKE_CURRENT_SOURCE_DIR}/data.7z" --format=zip
-       "${CMAKE_CURRENT_SOURCE_DIR}/mraz")
-
-if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/data.7z")
-    message("Data already exists")
-else()
-    message("Downloading engine data...")
-
-    file(DOWNLOAD
-        https://www.dropbox.com/s/8f515ada0k9ush2/data.7z?dl=1
-        ${CMAKE_CURRENT_SOURCE_DIR}/data.7z
-        STATUS
-        SHOW_PROGRESS)
-
-    message("Downloaded. Unzipping...")
-endif()
-
 file(GLOB_RECURSE GLSL_SOURCE_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/data/shaders/*.frag"
     "${CMAKE_CURRENT_SOURCE_DIR}/data/shaders/*.vert"
