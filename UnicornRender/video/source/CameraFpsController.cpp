@@ -60,9 +60,24 @@ void CameraFpsController::UpdateOrientation()
 
 void CameraFpsController::Update()
 {
-    UpdateTransformMatrix();
+    /*UpdateTransformMatrix();
     m_cameraView = glm::lookAt(m_translation, m_translation + m_direction, m_upVector);
-    m_cameraView = m_transformMatrix;
+    m_cameraView = m_transformMatrix;*/
+    if (m_isDirty)
+    {
+        UpdateOrientation();
+
+        m_direction = m_orientation * m_worldZ;
+        m_upVector = m_orientation * m_worldY;
+        m_rightVector = m_orientation * m_worldX;
+
+        auto T = glm::translate(glm::mat4(1.), m_translation);
+        auto R = glm::mat4_cast(m_orientation);
+
+        m_cameraView = R * T;
+
+        //m_cameraView = glm::lookAt(m_translation, m_translation + m_direction, m_upVector); // TODO: fix camera
+    }
 }
 
 } // namespace video

@@ -558,10 +558,10 @@ int main(int argc, char* argv[])
                 return -1;
             }
 
-//            if (!MakeCubeMap())
-//            {
-//                return -1;
-//            }
+            if (!MakeCubeMap())
+            {
+                return -1;
+            }
 
             using unicorn::video::Primitives;
 
@@ -577,39 +577,15 @@ int main(int argc, char* argv[])
                 return -1;
             }
 
+            pCameraFpsController->TranslateLocal({ 0, 0, -5 });
+            pCameraFpsController->SetOrientation({ 0,0,1 });
+
             vkRenderer->AddModel(gltfModel);
             for(auto mesh : gltfModel.m_meshes)
             {
+                mesh->TranslateLocal({ -2, 0, 0 });
                 mesh->UpdateTransformMatrix();
             }
-//            mat.color = unicorn::video::Color::Green();
-//            auto x_minus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
-//
-//            mat.color = unicorn::video::Color::Blue();
-//            auto z_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
-//
-//            x_minus->SetTranslation({ -250, 0, 0 });
-//            x_plus->SetTranslation({ 250, 0, 0 });
-//            z_plus->SetTranslation({ 0, 0, 250 });
-//
-//            mat.color = unicorn::video::Color::Red();
-//            sun = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
-//            sun->Scale({ 1, 1, 1 });
-//            mat.color = unicorn::video::Color::Green();
-//            mat.SetAlbedo(&texture);
-//            earth = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
-//            earth->Scale({ 2, 2, 2 });
-                                                                                                                    //            earth->SetTranslation({ -15, 0, 50 });
-//            sun->SetTranslation({ 15, 0, 50 });
-//
-//            unicorn::video::Mesh* box = &Primitives::Box(*vkRenderer->SpawnMesh(mat));
-//
-//            meshes.push_back(box);
-//            meshes.push_back(earth);
-//            meshes.push_back(sun);
-//            meshes.push_back(x_plus);
-//            meshes.push_back(x_minus);
-//            meshes.push_back(z_plus);
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);
