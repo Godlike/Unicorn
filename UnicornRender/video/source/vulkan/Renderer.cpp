@@ -346,27 +346,27 @@ bool Renderer::RecreateSwapChain()
            CreateCommandBuffers();
 }
 
-Mesh* Renderer::SpawnMesh(unicorn::video::Material const& material)
-{
-    auto mesh = new Mesh(material);
-    auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
-
-    if(!AllocateMaterial(*mesh, *vkmesh))
-    {
-        LOG_ERROR("Can't allocate material!");
-        return nullptr;
-    }
-
-    vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
-    vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
-
-    m_vkMeshes.push_back(vkmesh);
-    m_meshes.push_back(mesh);
-
-    ResizeUnifromModelBuffer(vkmesh);
-
-    return mesh;
-}
+//Mesh* Renderer::SpawnMesh(unicorn::video::Material const& material)
+//{
+//    auto mesh = new Mesh(material);
+//    auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
+//
+//    if(!AllocateMaterial(*mesh, *vkmesh))
+//    {
+//        LOG_ERROR("Can't allocate material!");
+//        return nullptr;
+//    }
+//
+//    vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
+//    vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
+//
+//    m_vkMeshes.push_back(vkmesh);
+//    m_meshes.push_back(mesh);
+//
+//    ResizeUnifromModelBuffer(vkmesh);
+//
+//    return mesh;
+//}
 
 void Renderer::ResizeUnifromModelBuffer(VkMesh* /*vkmesh*/)
 {
@@ -1499,16 +1499,16 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
 {
     auto& meshMaterial = mesh.GetMaterial();
 
-    if(meshMaterial.GetAlbedo() != nullptr)
+    if(meshMaterial->GetAlbedo() != nullptr)
     {
-        uint32_t meshAlbedoHandle = meshMaterial.GetAlbedo()->GetId();
+        uint32_t meshAlbedoHandle = meshMaterial->GetAlbedo()->GetId();
 
         auto meshMaterialIt = std::find_if(m_materials.begin(), m_materials.end(), [=](std::weak_ptr<VkMaterial> material) ->bool { return material.lock()->handle == meshAlbedoHandle; });
 
         if(meshMaterialIt == m_materials.end())
         {
             VkTexture* vkTexture = new VkTexture(m_vkLogicalDevice);
-            vkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, meshMaterial.GetAlbedo());
+            vkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, meshMaterial->GetAlbedo());
 
             vk::DescriptorSetAllocateInfo allocInfo;
             allocInfo.descriptorPool = m_descriptorPool;

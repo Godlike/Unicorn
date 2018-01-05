@@ -85,7 +85,7 @@ public:
     *
     *  @sa DeleteMesh
     */
-    UNICORN_EXPORT virtual Mesh* SpawnMesh(Material const& material) = 0;
+    //UNICORN_EXPORT virtual Mesh* SpawnMesh(Material const& material) = 0;
 
     UNICORN_EXPORT virtual void AddModel(Model const& model) = 0;
 

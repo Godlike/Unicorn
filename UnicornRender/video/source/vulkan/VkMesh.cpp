@@ -98,22 +98,22 @@ uint32_t VkMesh::IndicesSize() const
 
 bool VkMesh::IsColored() const
 {
-    return m_mesh.GetMaterial().IsColored();
+    return m_mesh.GetMaterial()->IsColored();
 }
 
 bool VkMesh::IsWired() const
 {
-    return m_mesh.GetMaterial().IsWired();
+    return m_mesh.GetMaterial()->IsWired();
 }
 
 bool VkMesh::IsVisible() const
 {
-    return m_mesh.GetMaterial().IsVisible();
+    return m_mesh.GetMaterial()->IsVisible();
 }
 
 glm::vec3 VkMesh::GetColor() const
 {
-    return m_mesh.GetMaterial().color;
+    return m_mesh.GetMaterial()->GetColor();
 }
 
 void VkMesh::OnMaterialUpdated()

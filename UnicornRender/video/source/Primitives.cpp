@@ -18,8 +18,10 @@ namespace unicorn
 {
 namespace video
 {
-Mesh& Primitives::Box(Mesh& mesh)
+Mesh Primitives::Box()
 {
+    Mesh mesh;
+
     std::vector<Vertex> vertices{{
         //front
         {{-0.5f, -0.5f, 0.5f}, {0.0f, 1.0f}},
@@ -69,8 +71,10 @@ Mesh& Primitives::Box(Mesh& mesh)
     return mesh;
 }
 
-Mesh& Primitives::Quad(Mesh& mesh)
+Mesh Primitives::Quad()
 {
+    Mesh mesh;
+
     std::vector<Vertex> vertices{{
         {{-0.5f, -0.5f, 0.0f},{0.0f, 1.0f}} ,
         {{0.5f, -0.5f, 0.0f},{1.0f, 1.0f}} ,
@@ -83,8 +87,10 @@ Mesh& Primitives::Quad(Mesh& mesh)
     return mesh;
 }
 
-Mesh& Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors)
+Mesh Primitives::Sphere(float radius, uint32_t rings, uint32_t sectors)
 {
+    Mesh mesh;
+
     assert(radius > 0);
     assert(rings > 4 || sectors > 4);
 

@@ -18,7 +18,7 @@ namespace math
 
 constexpr static float SystemAccuracy()
 {
-    return 0.0001;
+    return 0.0001f;
 }
 
 /**

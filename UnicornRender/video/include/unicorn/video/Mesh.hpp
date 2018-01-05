@@ -16,6 +16,7 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 namespace unicorn
 {
@@ -36,12 +37,8 @@ struct Vertex
 class Mesh : public Transform
 {
 public:
-    /**
-     * @brief Constructs mesh
-     *
-     * @param[in] material visual appearance description
-     */
-    UNICORN_EXPORT Mesh(Material material);
+    /** @brief Constructs mesh */
+    UNICORN_EXPORT Mesh();
 
     /**
     * @brief Updates vertices and indices geometry
@@ -56,7 +53,7 @@ public:
     *
     * @param[in] material material to be used for current mesh
     */
-    UNICORN_EXPORT void SetMaterial(Material material);
+    UNICORN_EXPORT void SetMaterial(std::shared_ptr<Material> material);
 
     /**
      * @brief Returns mesh vertices
@@ -77,7 +74,12 @@ public:
     *
     * @return mesh material data
     */
-    UNICORN_EXPORT Material const& GetMaterial() const;
+    UNICORN_EXPORT std::shared_ptr<Material> GetMaterial() const;
+
+    void OnMaterialUpdated()
+    {
+        MaterialUpdated.emit();
+    }
 
     /** @brief Event triggered when material is changed */
     wink::signal<wink::slot<void()>> MaterialUpdated;
@@ -93,7 +95,7 @@ public:
 private:
     std::vector<Vertex> m_vertices;
     std::vector<uint32_t> m_indices;
-    Material m_material;
+    std::shared_ptr<Material> m_material;
 };
 }
 }

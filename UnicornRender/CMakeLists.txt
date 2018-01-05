@@ -11,6 +11,8 @@ endif()
 
 project(${UNICORN_RENDER_NAME})
 
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 if (NOT CMAKE_BUILD_TYPE)
@@ -46,6 +48,16 @@ include(WinkSignals)
 include(assimp)
 #find_package(assimp REQUIRED)
 add_subdirectory(${ASSIMP_ROOT_DIR})
+
+set_target_properties (
+    UpdateAssimpLibsDebugSymbolsAndDLLs
+    assimp
+    IrrXML
+    uninstall
+    zlib
+    zlibstatic
+    PROPERTIES FOLDER Assimp
+)
 
 ## Installation info
 include(InstallInfo)
@@ -269,4 +281,13 @@ add_dependencies(${UNICORN_RENDER_LIB} Shaders)
 install( FILES ${SPIRV_BINARY_FILES}
     DESTINATION ${UNICORN_INSTALL_DATA_DIR}/data/shaders
     COMPONENT unicorn_data
+)
+
+set_target_properties (
+    Shaders
+    UnicornRender
+    system
+    utility
+    video
+    PROPERTIES FOLDER Unicorn
 )

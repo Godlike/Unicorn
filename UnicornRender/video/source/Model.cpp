@@ -23,6 +23,11 @@ namespace unicorn
 namespace video
 {
 
+void Model::AddMesh(Mesh& mesh)
+{
+    m_meshes.push_back(&mesh);
+}
+
 bool Model::LoadModel(std::string const& pathToModel)
 {
     /*utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
@@ -126,8 +131,7 @@ Mesh* Model::ProcessMesh(aiMesh* mesh, aiScene const* scene)
         }
     }
 
-    Material mat;
-    Mesh* unicornMesh = new Mesh(mat);
+    Mesh* unicornMesh = new Mesh;
 
     if(mesh->mMaterialIndex >= 0) {
         aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
@@ -138,11 +142,13 @@ Mesh* Model::ProcessMesh(aiMesh* mesh, aiScene const* scene)
         unicornMesh->m_metalRougness = LoadMaterialTextures(material, aiTextureType_UNKNOWN, m_directory);
     }
 
+    auto mat = std::make_shared<Material>();
+
     if(unicornMesh->m_diffuse.size() > 0)
     {
         Texture* diffuseTex = new Texture;
         diffuseTex->Load(unicornMesh->m_diffuse.at(0));
-        mat.SetAlbedo(diffuseTex);
+        mat->SetAlbedo(diffuseTex);
         unicornMesh->SetMaterial(mat);
     }
 

@@ -24,6 +24,8 @@ namespace video
 class Model
 {
 public:
+    UNICORN_EXPORT void AddMesh(Mesh& mesh);
+
     UNICORN_EXPORT bool LoadModel(std::string const& pathToModel);
     std::vector<Mesh*> m_meshes;
 private:

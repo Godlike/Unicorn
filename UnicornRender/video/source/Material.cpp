@@ -13,7 +13,7 @@ namespace unicorn
 namespace video
 {
 Material::Material()
-    : color(Color::Red())
+    : m_color(Color::Red())
     , m_isColored(true)
     , m_isWired(false)
     , m_isVisible(true)
@@ -30,22 +30,28 @@ void Material::SetAlbedo(Texture const* albedo)
         return;
     }
     m_albedo = albedo;
+
+    MaterialUpdated.emit();
 }
 
 void Material::SetIsWired(bool wireframe)
 {
     m_isWired = wireframe;
+
+    MaterialUpdated.emit();
 }
 
 void Material::SetIsColored(bool colored)
 {
     m_isColored = colored;
+
+    MaterialUpdated.emit();
 }
 
 void Material::RemoveAlbedo()
 {
     SetAlbedo(nullptr);
-    m_isColored = true;
+    SetIsColored(true);
 }
 
 bool Material::IsColored() const
@@ -61,6 +67,8 @@ bool Material::IsWired() const
 void Material::SetIsVisible(bool visible)
 {
     m_isVisible = visible;
+
+    MaterialUpdated.emit();
 }
 
 bool Material::IsVisible() const
@@ -72,5 +80,18 @@ const Texture* Material::GetAlbedo() const
 {
     return m_albedo;
 }
+
+UNICORN_EXPORT void Material::SetColor(glm::vec3 color)
+{
+    m_color = color;
+
+    MaterialUpdated.emit();
+}
+
+UNICORN_EXPORT glm::vec3 Material::GetColor() const
+{
+    return m_color;
+}
+
 }
 }

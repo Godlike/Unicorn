@@ -9,6 +9,8 @@
 
 #include <unicorn/video/Color.hpp>
 
+#include <wink/signal.hpp>
+
 #include <glm/glm.hpp>
 
 namespace unicorn
@@ -74,13 +76,18 @@ public:
     /**
      * @brief Returns pointer to albedo texture
      *
-     * @return pointer to binded albdeo texture
+     * @return pointer to binded albedo texture
      */
     UNICORN_EXPORT Texture const* GetAlbedo() const;
 
-    /** @brief Color of object */
-    glm::vec3 color;
-private:
+    UNICORN_EXPORT void SetColor(glm::vec3 color);
+
+    UNICORN_EXPORT glm::vec3 GetColor() const;
+
+    wink::signal<wink::slot<void()>> MaterialUpdated;
+protected:
+    glm::vec3 m_color;
+
     bool m_isColored;
     bool m_isWired;
     bool m_isVisible;
