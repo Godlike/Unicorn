@@ -270,7 +270,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(time * speed, 0, 0));
+                pCameraFpsController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
             }
             else
             {
@@ -282,7 +282,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
+                pCameraFpsController->TranslateLocal(glm::vec3(time * speed, 0, 0));
             }
             else
             {
@@ -577,13 +577,11 @@ int main(int argc, char* argv[])
                 return -1;
             }
 
-            pCameraFpsController->TranslateLocal({ 0, 0, 5 });
-            pCameraFpsController->SetOrientation({ 0, 0, 1 });
+            pCameraFpsController->TranslateLocal({ 0, 0, -5 });
 
             vkRenderer->AddModel(gltfModel);
             for(auto mesh : gltfModel.m_meshes)
             {
-                mesh->TranslateLocal({ -2, 0, 0 });
                 mesh->UpdateTransformMatrix();
             }
 

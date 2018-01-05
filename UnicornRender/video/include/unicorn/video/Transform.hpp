@@ -199,14 +199,15 @@ protected:
     glm::vec3 m_rotation;
     glm::vec3 m_translation;
     glm::quat m_orientation;
-    glm::vec3 m_upVector;
-    glm::vec3 m_direction;
-    glm::vec3 m_rightVector;
     glm::vec3 m_scale;
 
     glm::vec3 m_worldX;
     glm::vec3 m_worldY;
     glm::vec3 m_worldZ;
+
+    glm::vec3 m_rightVector;
+    glm::vec3 m_upVector;
+    glm::vec3 m_direction;
 
     glm::mat4 m_transformMatrix;
 

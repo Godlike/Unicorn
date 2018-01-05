@@ -20,7 +20,7 @@ CameraFpsController::CameraFpsController(glm::mat4& cameraView) :
 
 void CameraFpsController::UpdateView(float x, float y)
 {
-    const float xoffset = m_mousePosition.x - x;
+    const float xoffset = x - m_mousePosition.x;
     const float yoffset = y - m_mousePosition.y;
 
     m_mousePosition.x = x;
@@ -51,9 +51,9 @@ void CameraFpsController::ResetView()
 void CameraFpsController::UpdateOrientation()
 {
     glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
-    glm::quat y = glm::angleAxis(m_rotation.y, m_orientation * m_worldY);
+    glm::quat y = glm::angleAxis(m_rotation.y, glm::conjugate(m_orientation) * m_worldY);
 
-    m_orientation = normalize(m_orientation * y * x);
+    m_orientation = glm::normalize(m_orientation * y * x);
 
     m_rotation = glm::vec3(0);
 }
@@ -68,20 +68,7 @@ void CameraFpsController::Update()
         m_upVector = m_orientation * m_worldY;
         m_rightVector = m_orientation * m_worldX;
 
-        m_cameraView = glm::mat4(1.0);
-
-        m_cameraView[0][0] = m_rightVector.x;
-        m_cameraView[1][0] = m_rightVector.y;
-        m_cameraView[2][0] = m_rightVector.z;
-        m_cameraView[0][1] = m_upVector.x;
-        m_cameraView[1][1] = m_upVector.y;
-        m_cameraView[2][1] = m_upVector.z;
-        m_cameraView[0][2] = m_direction.x;
-        m_cameraView[1][2] = m_direction.y;
-        m_cameraView[2][2] = m_direction.z;
-        m_cameraView[3][0] = -dot(m_rightVector, m_translation);
-        m_cameraView[3][1] = -dot(m_upVector, m_translation);
-        m_cameraView[3][2] = -dot(m_direction, m_translation); // TODO: FIX CAMERA
+        m_cameraView = lookAt(m_translation, m_translation + m_direction, m_upVector);
     }
 }
 
