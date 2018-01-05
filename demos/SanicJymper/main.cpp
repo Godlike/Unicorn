@@ -61,9 +61,6 @@ unicorn::video::Camera2DController* pCamera2DController = nullptr;
 unicorn::video::PerspectiveCamera* pPerspectiveProjection = nullptr;
 unicorn::video::OrthographicCamera* pOrthoProjection = nullptr;
 
-static unicorn::video::Mesh* earth;
-static unicorn::video::Mesh* sun;
-
 void onLogicFrame(unicorn::UnicornRender* /*render*/)
 {
     float currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
@@ -75,12 +72,6 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     }
 
     deltaTime = newDeltatime;
-
-//    // Applying transforms
-//    earth->SetTranslation(unicorn::utility::math::RotateAroundPoint(earth->GetTranslation(),
-//        static_cast<float>(glm::radians(90.)) * deltaTime , { 0, 1, 0 }, sun->GetTranslation()));
-//    sun->SetTranslation(unicorn::utility::math::RotateAroundPoint(sun->GetTranslation(),
-//        static_cast<float>(glm::radians(90.)) * deltaTime , { 0, 1, 0 }, earth->GetTranslation()));
 
     // Updating transformations for meshes
     for(auto& mesh : meshes)
@@ -217,7 +208,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
     std::pair<int32_t, int32_t> position = pWindow->GetPosition();
 
     float time = deltaTime * 0.1f;
-    float speed = 1000.f;
+    float speed = 50.f;
 
     if(Modifier::Shift & modifiers)
     {
@@ -275,7 +266,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
             }
             else
             {
-                pCamera2DController->TranslateLocal(glm::vec3(time * speed, 0, 0));
+                pCamera2DController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
             }
             break;
         }
@@ -287,7 +278,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
             }
             else
             {
-                pCamera2DController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
+                pCamera2DController->TranslateLocal(glm::vec3(time * speed, 0, 0));
             }
             break;
         }
@@ -587,9 +578,9 @@ int main(int argc, char* argv[])
 
 
             vkRenderer->AddModel(gltfModel);
-            vkRenderer->AddModel(pinkBoxModel);
+            //vkRenderer->AddModel(pinkBoxModel);
 
-            for(auto mesh : gltfModel.m_meshes)
+            for (auto mesh : gltfModel.m_meshes)
             {
                 mesh->UpdateTransformMatrix();
             }

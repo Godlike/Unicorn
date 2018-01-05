@@ -67,12 +67,14 @@ set(VIDEO_SOURCES
     source/Model.cpp
 )
 
-add_library(video OBJECT
+set(VIDEO_ALL_SOURCES
     ${VIDEO_HEADERS}
     ${VIDEO_SOURCES}
     ${VULKAN_HEADERS}
     ${VULKAN_SOURCES}
 )
+
+add_library(video OBJECT ${VIDEO_ALL_SOURCES})
 
 include(InstallInfo)
 
@@ -88,3 +90,9 @@ install( DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/"
 if (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()
+
+foreach(_source IN ITEMS ${VIDEO_ALL_SOURCES})
+    get_filename_component(_source_path "${_source}" PATH)
+    string(REPLACE "/" "\\" _source_path_msvc "${_source_path}")
+    source_group("${_source_path_msvc}" FILES "${_source}")
+endforeach()

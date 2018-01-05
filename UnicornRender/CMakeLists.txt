@@ -250,7 +250,7 @@ endif()
 file(GLOB_RECURSE GLSL_SOURCE_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/data/shaders/*.frag"
     "${CMAKE_CURRENT_SOURCE_DIR}/data/shaders/*.vert"
-    )
+)
 
 foreach(GLSL ${GLSL_SOURCE_FILES})
     get_filename_component(FILE_NAME ${GLSL} NAME)
@@ -271,20 +271,44 @@ foreach(GLSL ${GLSL_SOURCE_FILES})
     list(APPEND SPIRV_BINARY_FILES ${SPIRV})
 endforeach(GLSL)
 
-add_custom_target(
-    Shaders
-    DEPENDS ${SPIRV_BINARY_FILES}
-    )
+file(GLOB_RECURSE TEXTURES_FILES
+    "${UNICORN_RENDER_ROOT}/data/textures/*.png"
+    "${UNICORN_RENDER_ROOT}/data/textures/*.jpg"
+)
 
-add_dependencies(${UNICORN_RENDER_LIB} Shaders)
+file(GLOB_RECURSE MODELS_FILES
+    "${UNICORN_RENDER_ROOT}/data/models/*.png"
+    "${UNICORN_RENDER_ROOT}/data/models/*.jpg"
+    "${UNICORN_RENDER_ROOT}/data/models/*.bin"
+    "${UNICORN_RENDER_ROOT}/data/models/*.gltf"
+    "${UNICORN_RENDER_ROOT}/data/models/*.glb"
+    "${UNICORN_RENDER_ROOT}/data/models/*.obj"
+    "${UNICORN_RENDER_ROOT}/data/models/*.fbx"
+)
+
+add_custom_target(
+    CompileEngineData
+    DEPENDS
+    ${SPIRV_BINARY_FILES}
+    SOURCES
+    ${GLSL_SOURCE_FILES}
+    ${TEXTURES_FILES}
+    ${MODELS_FILES}
+)
+
+add_dependencies(${UNICORN_RENDER_LIB} CompileEngineData)
 
 install( FILES ${SPIRV_BINARY_FILES}
     DESTINATION ${UNICORN_INSTALL_DATA_DIR}/data/shaders
     COMPONENT unicorn_data
 )
 
+source_group("Shaders" FILES ${GLSL_SOURCE_FILES})
+source_group("Textures" FILES ${TEXTURES_FILES})
+source_group("Models" FILES ${MODELS_FILES})
+
 set_target_properties (
-    Shaders
+    CompileEngineData
     UnicornRender
     system
     utility
