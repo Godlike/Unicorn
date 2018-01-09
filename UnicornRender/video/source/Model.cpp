@@ -146,7 +146,7 @@ Mesh* Model::ProcessMesh(aiMesh* mesh, aiScene const* scene)
 
     if(unicornMesh->m_diffuse.size() > 0)
     {
-        Texture* diffuseTex = new Texture;
+        auto diffuseTex = std::make_shared<Texture>();
         diffuseTex->Load(unicornMesh->m_diffuse.at(0));
         mat->SetAlbedo(diffuseTex);
         unicornMesh->SetMaterial(mat);

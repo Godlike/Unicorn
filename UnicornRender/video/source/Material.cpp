@@ -21,7 +21,7 @@ Material::Material()
 {
 }
 
-void Material::SetAlbedo(Texture const* albedo)
+void Material::SetAlbedo(std::shared_ptr<Texture> albedo)
 {
     m_isColored = false;
     if(albedo == nullptr || !albedo->IsLoaded())
@@ -76,7 +76,7 @@ bool Material::IsVisible() const
     return m_isVisible;
 }
 
-const Texture* Material::GetAlbedo() const
+std::shared_ptr<Texture> Material::GetAlbedo() const
 {
     return m_albedo;
 }

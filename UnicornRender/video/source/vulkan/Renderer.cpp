@@ -1407,16 +1407,16 @@ bool Renderer::CreatePipelineCache()
 
 bool Renderer::LoadEngineHelpData()
 {
-    unicorn::video::Texture texture;
+    auto texture = std::make_shared<Texture>();
     static std::string const path = "data/textures/replace_me.jpg";
-    if(!texture.Load(path))
+    if(!texture->Load(path))
     {
         LOG_ERROR( "Can't find texture with path - %s", path.c_str() );
         return false;
     }
     VkTexture* replaceMeTexture = new VkTexture(m_vkLogicalDevice);
 
-    if(!replaceMeTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, &texture))
+    if(!replaceMeTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, texture))
     {
         LOG_ERROR("Can't create 'replace me' texture - %s", path.c_str());
 
@@ -1461,13 +1461,13 @@ bool Renderer::LoadEngineHelpData()
 
     m_pReplaceMeMaterial->texture = replaceMeTexture;
     m_pReplaceMeMaterial->descriptorSet = descriptorSet;
-    m_pReplaceMeMaterial->handle = texture.GetId();
+    m_pReplaceMeMaterial->handle = texture->GetId();
     m_pReplaceMeMaterial->device = m_vkLogicalDevice;
     m_pReplaceMeMaterial->pool = m_descriptorPool;
 
     m_materials.push_back(m_pReplaceMeMaterial);
 
-    texture.Delete();
+    texture->Delete();
     return true;
 }
 

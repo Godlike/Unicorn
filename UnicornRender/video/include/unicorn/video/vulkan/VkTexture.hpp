@@ -39,14 +39,14 @@ public:
     /**
      * @brief Creates vulkan render texture
      * @param physicalDevice physical device for staging buffer
-     * @param device device which allocate from 
+     * @param device device which allocate from
      * @param commandPool pool which allocate commands from
      * @param queue queue where push commands
      * @param texture texture data
      * @return true if creation was successful and false if not
      */
     bool Create(vk::PhysicalDevice const& physicalDevice, vk::Device const& device,
-                vk::CommandPool const& commandPool, vk::Queue const& queue, Texture const* texture);
+                vk::CommandPool const& commandPool, vk::Queue const& queue, std::shared_ptr<Texture> texture);
 
     /**
      * @brief Removes texture from GPU and destroys sampler

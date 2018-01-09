@@ -27,7 +27,7 @@ const vk::DescriptorImageInfo& VkTexture::GetDescriptorImageInfo() const
 }
 
 bool VkTexture::Create(const vk::PhysicalDevice& physicalDevice, const vk::Device& device,
-                       const vk::CommandPool& commandPool, const vk::Queue& queue, const Texture* texture)
+                       const vk::CommandPool& commandPool, const vk::Queue& queue, std::shared_ptr<Texture> texture)
 {
     if(!m_isInitialized)
     {
