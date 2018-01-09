@@ -40,6 +40,8 @@ public:
     /** @brief Constructs mesh */
     UNICORN_EXPORT Mesh();
 
+    UNICORN_EXPORT ~Mesh();
+
     /**
     * @brief Updates vertices and indices geometry
      *

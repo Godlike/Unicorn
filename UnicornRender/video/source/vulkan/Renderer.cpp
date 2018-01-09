@@ -445,6 +445,14 @@ void Renderer::AddModel(Model const& model)
     }
 }
 
+void Renderer::DeleteModel(Model const & model)
+{
+    for (auto& mesh : model.m_meshes)
+    {
+        DeleteMesh(mesh);
+    }
+}
+
 void Renderer::SetDepthTest(bool enabled)
 {
     m_depthTestEnabled = enabled;

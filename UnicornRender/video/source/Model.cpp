@@ -23,9 +23,9 @@ namespace unicorn
 namespace video
 {
 
-void Model::AddMesh(Mesh& mesh)
+void Model::AddMesh(Mesh* mesh)
 {
-    m_meshes.push_back(&mesh);
+    m_meshes.push_back(mesh);
 }
 
 bool Model::LoadModel(std::string const& pathToModel)

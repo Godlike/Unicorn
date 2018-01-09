@@ -100,6 +100,7 @@ public:
     //Mesh* SpawnMesh(Material const& material) override;
     bool DeleteMesh(Mesh const* pMesh) override;
     void AddModel(Model const& model) override;
+    void DeleteModel(Model const& model) override;
     void SetDepthTest(bool enabled) override;
 private:
     vk::PhysicalDevice m_vkPhysicalDevice;

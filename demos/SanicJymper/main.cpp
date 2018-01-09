@@ -563,9 +563,9 @@ int main(int argc, char* argv[])
 
 
             unicorn::video::Model pinkBoxModel;
-            unicorn::video::Mesh pinkBoxGeometry = Primitives::Box();
+            unicorn::video::Mesh* pinkBoxGeometry = new  unicorn::video::Mesh(Primitives::Box());
 
-            pinkBoxGeometry.SetMaterial(colorMaterial);
+            pinkBoxGeometry->SetMaterial(colorMaterial);
             pinkBoxModel.AddMesh(pinkBoxGeometry);
 
             unicorn::video::Model gltfModel;
@@ -577,8 +577,8 @@ int main(int argc, char* argv[])
             pCameraFpsController->TranslateLocal({ 0, 0, -5 });
 
 
-            vkRenderer->AddModel(gltfModel);
-            //vkRenderer->AddModel(pinkBoxModel);
+            //vkRenderer->AddModel(gltfModel);
+            vkRenderer->AddModel(pinkBoxModel);
 
             for (auto mesh : gltfModel.m_meshes)
             {
