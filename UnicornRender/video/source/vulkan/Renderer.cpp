@@ -1467,7 +1467,7 @@ bool Renderer::LoadEngineHelpData()
 
     m_materials.push_back(m_pReplaceMeMaterial);
 
-    texture->Delete();
+    texture->FreeData();
     return true;
 }
 

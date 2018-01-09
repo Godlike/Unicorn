@@ -541,7 +541,7 @@ int main(int argc, char* argv[])
             //Loading textures
             unicorn::video::Texture texture, textureMandrill;
 
-            texture.Load("data/textures/texture.jpg");
+            texture.Load("data/models/obj/sponza/textures/lion.png");
             textureMandrill.Load("data/textures/mandrill.png");
 
             if (!texture.IsLoaded()
@@ -568,8 +568,10 @@ int main(int argc, char* argv[])
             pinkBoxGeometry->SetMaterial(colorMaterial);
             pinkBoxModel.AddMesh(pinkBoxGeometry);
 
+
+
             unicorn::video::Model gltfModel;
-            if(!gltfModel.LoadModel("data/models/glTF/DamagedHelmet.gltf"))
+            if (!gltfModel.LoadModel("data/models/obj/sponza/sponza.obj"))
             {
                 return -1;
             }
@@ -577,7 +579,7 @@ int main(int argc, char* argv[])
             pCameraFpsController->TranslateLocal({ 0, 0, -5 });
 
 
-            //vkRenderer->AddModel(gltfModel);
+            vkRenderer->AddModel(gltfModel);
             vkRenderer->AddModel(pinkBoxModel);
 
             for (auto mesh : gltfModel.m_meshes)

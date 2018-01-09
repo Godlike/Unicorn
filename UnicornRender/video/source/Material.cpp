@@ -23,12 +23,12 @@ Material::Material()
 
 void Material::SetAlbedo(std::shared_ptr<Texture> albedo)
 {
-    m_isColored = false;
     if(albedo == nullptr || !albedo->IsLoaded())
     {
         LOG_ERROR("Setting not loaded texture to material!");
         return;
     }
+    m_isColored = false;
     m_albedo = albedo;
 
     MaterialUpdated.emit();

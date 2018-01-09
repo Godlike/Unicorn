@@ -31,9 +31,14 @@ Texture::Texture(const std::string& path)
     }
 }
 
+Texture::~Texture()
+{
+    FreeData();
+}
+
 bool Texture::Load(const std::string& path)
 {
-    Delete();
+    FreeData();
 
     m_path = path;
 
@@ -72,7 +77,7 @@ bool Texture::IsLoaded() const
     return m_initialized;
 }
 
-void Texture::Delete()
+void Texture::FreeData()
 {
     if(m_initialized && m_data)
     {

@@ -28,6 +28,8 @@ public:
      */
     UNICORN_EXPORT Texture(std::string const& path = std::string());
 
+    UNICORN_EXPORT ~Texture();
+
     /**
      * @brief Loads texture from provided path
      * @param path path to texture
@@ -44,7 +46,7 @@ public:
     /**
      * @brief Remove texture data from memory
      */
-    UNICORN_EXPORT void Delete();
+    UNICORN_EXPORT void FreeData();
 
     /**
      * @brief Returns size of texture
