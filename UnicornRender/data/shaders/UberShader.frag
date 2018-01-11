@@ -18,8 +18,6 @@ void main() {
     else
     {
         vec4 texColor = texture(inTextureSampler, inTextureCoordinate);
-        if(texColor.a < 0.1)
-            discard;
         outColor = texColor;
     }
 }
