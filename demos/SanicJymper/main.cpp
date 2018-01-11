@@ -568,7 +568,7 @@ int main(int argc, char* argv[])
 
             pinkBoxGeometry->SetMaterial(colorMaterial);
 
-            auto gltfModel = Primitives::LoadModel("data/models/Godli ke.gltf");
+            auto gltfModel = Primitives::LoadModel("data/models/glTF/DamagedHelmet.gltf");
 
             pCameraFpsController->TranslateLocal({ 0, 0, -5 });
 

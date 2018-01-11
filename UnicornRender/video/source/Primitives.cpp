@@ -217,15 +217,15 @@ Mesh* ProcessMesh(aiMesh* mesh, aiScene const* scene, std::string const& dir)
 
     auto mat = std::make_shared<Material>();
 
-    if (mesh->mMaterialIndex >= 0) {
+    if (mesh->mMaterialIndex >= 0)
+    {
         aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
         unicornMesh->m_diffuse = LoadMaterialTextures(material, aiTextureType_DIFFUSE, dir);
         unicornMesh->m_normal = LoadMaterialTextures(material, aiTextureType_NORMALS, dir);
         unicornMesh->m_aoMaps = LoadMaterialTextures(material, aiTextureType_LIGHTMAP, dir);
         unicornMesh->m_emissive = LoadMaterialTextures(material, aiTextureType_EMISSIVE, dir);
         unicornMesh->m_metalRougness = LoadMaterialTextures(material, aiTextureType_UNKNOWN, dir);
-
-        aiColor3D color(0.f, 0.f, 1.f);
+        aiColor3D color(0.f, 0.f, 0.f);
         material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
         mat->SetColor({ color.r, color.g, color.b });
     }
