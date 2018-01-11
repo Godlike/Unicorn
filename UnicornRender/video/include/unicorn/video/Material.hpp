@@ -81,10 +81,13 @@ public:
      */
     UNICORN_EXPORT std::shared_ptr<Texture> GetAlbedo() const;
 
+    /** @brief Sets color */
     UNICORN_EXPORT void SetColor(glm::vec3 color);
 
+    /** @brief Returns color */
     UNICORN_EXPORT glm::vec3 GetColor() const;
 
+    /** @brief Signal for material update notification */
     wink::signal<wink::slot<void()>> MaterialUpdated;
 protected:
     glm::vec3 m_color;

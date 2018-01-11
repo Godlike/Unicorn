@@ -97,12 +97,13 @@ public:
     void Deinit() override;
     bool Render() override;
     bool RecreateSwapChain();
-    //Mesh* SpawnMesh(Material const& material) override;
+    void AddMesh(Mesh* mesh) override;
+    void AddMeshes(std::list<Mesh*> const& meshes) override;
     bool DeleteMesh(Mesh const* pMesh) override;
-    void AddModel(Model const& model) override;
-    void DeleteModel(Model const& model) override;
+    bool DeleteMeshes(std::list<Mesh*> const& meshes) override;
     void SetDepthTest(bool enabled) override;
 private:
+
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;
     vk::SwapchainKHR m_vkSwapChain;

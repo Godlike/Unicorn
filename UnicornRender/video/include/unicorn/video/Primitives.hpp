@@ -11,12 +11,13 @@
 #include <unicorn/video/Mesh.hpp>
 
 #include <string>
+#include <list>
 
 namespace unicorn
 {
 namespace video
 {
-/** @brief  Fills meshes with geometric primitive's data */
+/** @brief  Fills meshes with geometric primitives data */
 class Primitives
 {
 public:
@@ -26,7 +27,7 @@ public:
     *  @param[out] mesh    geometry mesh
     *  @return reference to updated mesh
     */
-    UNICORN_EXPORT static Mesh Box();
+    UNICORN_EXPORT static Mesh* Box();
 
     /**
     *  @brief Fills given mesh with quad data
@@ -34,7 +35,7 @@ public:
     *  @param[out] mesh    geometry mesh
     *  @return reference to updated mesh
     */
-    UNICORN_EXPORT static Mesh Quad();
+    UNICORN_EXPORT static Mesh* Quad();
 
     /**
     *  @brief Fills given mesh with sphere data
@@ -46,7 +47,9 @@ public:
     *  @attention `rings * sectors` must be less than `std::vector<Vertex>::max_size()`
     *  @return reference to updated mesh
     */
-    UNICORN_EXPORT static Mesh Sphere(float radius, uint32_t rings, uint32_t sectors);
+    UNICORN_EXPORT static Mesh* Sphere(float radius, uint32_t rings, uint32_t sectors);
+
+    UNICORN_EXPORT static std::list<Mesh*> LoadModel(std::string const& path);
 };
 }
 }

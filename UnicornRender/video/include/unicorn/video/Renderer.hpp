@@ -10,13 +10,13 @@
 #include <unicorn/video/Mesh.hpp>
 #include <unicorn/video/Color.hpp>
 #include <unicorn/video/Camera.hpp>
-#include <unicorn/video/Model.hpp>
 
 #include <glm/glm.hpp>
 
 #include <cstdint>
 #include <memory>
 #include <array>
+#include <list>
 
 namespace unicorn
 {
@@ -87,15 +87,10 @@ public:
     */
     //UNICORN_EXPORT virtual Mesh* SpawnMesh(Material const& material) = 0;
 
-    UNICORN_EXPORT virtual void AddModel(Model const& model) = 0;
-    UNICORN_EXPORT virtual void DeleteModel(Model const& model) = 0;
-
-    /**
-    * @brief Removes mesh from rendering system
-    * @param [in] mesh pointer to mesh
-    * @return true if mesh was sucessfully deleted from system and false if not
-    */
-    UNICORN_EXPORT virtual bool DeleteMesh(Mesh const* mesh) = 0;
+    UNICORN_EXPORT virtual void AddMesh(Mesh* mesh) = 0;
+    UNICORN_EXPORT virtual void AddMeshes(std::list<Mesh*> const& meshes) = 0;
+    UNICORN_EXPORT virtual bool DeleteMesh(Mesh const* pMesh) = 0;
+    UNICORN_EXPORT virtual bool DeleteMeshes(std::list<Mesh*> const& meshes) = 0;
 
     //! Main view camera, must never be nullptr
     Camera const* camera;

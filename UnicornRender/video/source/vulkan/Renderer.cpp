@@ -346,27 +346,6 @@ bool Renderer::RecreateSwapChain()
            CreateCommandBuffers();
 }
 
-//Mesh* Renderer::SpawnMesh(unicorn::video::Material const& material)
-//{
-//    auto mesh = new Mesh(material);
-//    auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
-//
-//    if(!AllocateMaterial(*mesh, *vkmesh))
-//    {
-//        LOG_ERROR("Can't allocate material!");
-//        return nullptr;
-//    }
-//
-//    vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
-//    vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
-//
-//    m_vkMeshes.push_back(vkmesh);
-//    m_meshes.push_back(mesh);
-//
-//    ResizeUnifromModelBuffer(vkmesh);
-//
-//    return mesh;
-//}
 
 void Renderer::ResizeUnifromModelBuffer(VkMesh* /*vkmesh*/)
 {
@@ -400,11 +379,51 @@ void Renderer::OnMeshMaterialUpdated(Mesh* mesh, VkMesh* vkMesh)
     CreateCommandBuffers();
 }
 
+void Renderer::AddMesh(Mesh* mesh)
+{
+    auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
+    if (!AllocateMaterial(*mesh, *vkmesh))
+    {
+        LOG_ERROR("Can't allocate material!");
+    }
+    vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
+    vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
+
+    vkmesh->AllocateOnGPU();
+
+    m_vkMeshes.push_back(vkmesh);
+    m_meshes.push_back(mesh);
+
+    ResizeUnifromModelBuffer(vkmesh);
+}
+
+void Renderer::AddMeshes(std::list<Mesh*> const& meshes)
+{
+    for (Mesh* mesh : meshes)
+    {
+        auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
+        if (!AllocateMaterial(*mesh, *vkmesh))
+        {
+            LOG_ERROR("Can't allocate material!");
+        }
+        vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
+        vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
+
+        vkmesh->AllocateOnGPU();
+
+        m_vkMeshes.push_back(vkmesh);
+        m_meshes.push_back(mesh);
+
+        ResizeUnifromModelBuffer(vkmesh);
+    }
+}
+
+
 bool Renderer::DeleteMesh(const Mesh* pMesh)
 {
     auto vkMeshIt = std::find_if(m_vkMeshes.begin(), m_vkMeshes.end(), [=](VkMesh* p) ->bool { return *p == *pMesh; });
 
-    if(vkMeshIt != m_vkMeshes.end())
+    if (vkMeshIt != m_vkMeshes.end())
     {
         DeleteVkMesh(*vkMeshIt);
 
@@ -415,7 +434,7 @@ bool Renderer::DeleteMesh(const Mesh* pMesh)
 
     auto meshIt = std::find(m_meshes.begin(), m_meshes.end(), pMesh);
 
-    if(meshIt != m_meshes.end())
+    if (meshIt != m_meshes.end())
     {
         delete *meshIt;
         m_meshes.erase(meshIt);
@@ -426,31 +445,16 @@ bool Renderer::DeleteMesh(const Mesh* pMesh)
     return false;
 }
 
-void Renderer::AddModel(Model const& model)
+bool Renderer::DeleteMeshes(std::list<Mesh*> const & meshes)
 {
-    for(auto mesh : model.m_meshes)
+    for (Mesh* mesh : meshes)
     {
-        auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
-        if(!AllocateMaterial(*mesh, *vkmesh))
+        if (!DeleteMesh(mesh))
         {
-            LOG_ERROR("Can't allocate material!");
+            return false;
         }
-        vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
-        vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
-        vkmesh->AllocateOnGPU();
-        m_vkMeshes.push_back(vkmesh);
-        m_meshes.push_back(mesh);
-
-        ResizeUnifromModelBuffer(vkmesh);
     }
-}
-
-void Renderer::DeleteModel(Model const & model)
-{
-    for (auto& mesh : model.m_meshes)
-    {
-        DeleteMesh(mesh);
-    }
+    return true;
 }
 
 void Renderer::SetDepthTest(bool enabled)
@@ -1505,7 +1509,7 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
 
 bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
 {
-    auto& meshMaterial = mesh.GetMaterial();
+    auto meshMaterial = mesh.GetMaterial();
 
     if(meshMaterial->GetAlbedo() != nullptr)
     {
@@ -1527,9 +1531,9 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
 
             auto result = m_vkLogicalDevice.allocateDescriptorSets(&allocInfo, &descriptorSet);
 
-            if(result != vk::Result::eSuccess)
+            if(result != vk::Result::eSuccess || !vkTexture->IsInitialized())
             {
-                LOG_ERROR("Can't allocate descriptor sets!");
+                LOG_ERROR("Can't allocate sampler descriptor sets!");
 
                 vkTexture->Delete();
                 delete vkTexture;

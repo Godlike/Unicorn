@@ -1,4 +1,5 @@
-*.TMP .vs/
+*.TMP
+.vs/
 CMakeSettings.json
 *.kdev4
 *.spv

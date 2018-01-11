@@ -11,8 +11,6 @@ endif()
 
 project(${UNICORN_RENDER_NAME})
 
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 if (NOT CMAKE_BUILD_TYPE)
@@ -46,11 +44,10 @@ include(system)
 include(video)
 include(WinkSignals)
 include(assimp)
-#find_package(assimp REQUIRED)
+
 add_subdirectory(${ASSIMP_ROOT_DIR})
 
 set_target_properties (
-    UpdateAssimpLibsDebugSymbolsAndDLLs
     assimp
     IrrXML
     uninstall
@@ -58,6 +55,13 @@ set_target_properties (
     zlibstatic
     PROPERTIES FOLDER Assimp
 )
+
+if(WIN32)
+    set_target_properties (
+        UpdateAssimpLibsDebugSymbolsAndDLLs
+        PROPERTIES FOLDER Assimp
+    )
+endif()
 
 ## Installation info
 include(InstallInfo)

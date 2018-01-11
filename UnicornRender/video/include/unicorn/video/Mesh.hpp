@@ -40,6 +40,7 @@ public:
     /** @brief Constructs mesh */
     UNICORN_EXPORT Mesh();
 
+    /** @brief Destructs mesh */
     UNICORN_EXPORT ~Mesh();
 
     /**
@@ -78,11 +79,6 @@ public:
     */
     UNICORN_EXPORT std::shared_ptr<Material> GetMaterial() const;
 
-    void OnMaterialUpdated()
-    {
-        MaterialUpdated.emit();
-    }
-
     /** @brief Event triggered when material is changed */
     wink::signal<wink::slot<void()>> MaterialUpdated;
 
@@ -94,7 +90,12 @@ public:
     std::vector<std::string> m_aoMaps;
     std::vector<std::string> m_emissive;
     std::vector<std::string> m_metalRougness;
+
+    std::string name;
 private:
+    /** @brief Updates renderer info about this mesh */
+    void OnMaterialUpdated();
+
     std::vector<Vertex> m_vertices;
     std::vector<uint32_t> m_indices;
     std::shared_ptr<Material> m_material;

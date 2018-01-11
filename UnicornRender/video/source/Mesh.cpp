@@ -51,5 +51,10 @@ std::shared_ptr<Material> Mesh::GetMaterial() const
     return m_material;
 }
 
+void Mesh::OnMaterialUpdated()
+{
+    MaterialUpdated.emit();
+}
+
 }
 }
