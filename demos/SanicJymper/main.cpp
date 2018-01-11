@@ -560,18 +560,26 @@ int main(int argc, char* argv[])
             using unicorn::video::Primitives;
 
             auto cubemap = MakeCubeMap();
+            auto grassTexture = std::make_shared<unicorn::video::Texture>();
+            grassTexture->Load("data/textures/grass.png");
+
+            auto grassMaterial = std::make_shared<unicorn::video::Material>();
+            grassMaterial->SetAlbedo(grassTexture);
 
             auto colorMaterial = std::make_shared<unicorn::video::Material>();
             colorMaterial->SetColor(unicorn::video::Color::LightPink());
 
             unicorn::video::Mesh* pinkBoxGeometry = Primitives::Box();
+            unicorn::video::Mesh* grassQuad = Primitives::Quad();
+            grassQuad->SetMaterial(grassMaterial);
+
 
             pinkBoxGeometry->SetMaterial(colorMaterial);
 
             auto gltfModel = Primitives::LoadModel("data/models/glTF/DamagedHelmet.gltf");
 
             pCameraFpsController->TranslateLocal({ 0, 0, -5 });
-
+            grassQuad->TranslateLocal({ 0, -0.1, -2 });
             for (auto mesh : gltfModel)
             {
                 mesh->UpdateTransformMatrix();
@@ -582,8 +590,10 @@ int main(int argc, char* argv[])
             vkRenderer->AddMesh(pinkBoxGeometry);
             vkRenderer->AddMeshes(gltfModel);
             vkRenderer->AddMeshes(cubemap);
+            vkRenderer->AddMesh(grassQuad);
 
             meshes.push_back(pinkBoxGeometry);
+            meshes.push_back(grassQuad);
             meshes.insert(meshes.end(), gltfModel.begin(), gltfModel.end());
             meshes.insert(meshes.end(), cubemap.begin(), cubemap.end());
 
