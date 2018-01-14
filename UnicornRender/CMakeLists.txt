@@ -17,17 +17,11 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
 endif (NOT CMAKE_BUILD_TYPE)
 
-if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14") # TODO: assimp fail -Wall -Werror -pedantic
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s -O3")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb3 -O0")
-elseif(WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /MP /W3") # TODO set WX (warning as error)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-endif()
-
-add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS -DVULKAN_HPP_TYPESAFE_CONVERSION -DVULKAN_HPP_NO_SMART_HANDLE)
-add_definitions(-DGLM_DEPTH_ZERO_TO_ONE -DGLM_FORCE_LEFT_HANDED)
+add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS
+    -DGLM_FORCE_LEFT_HANDED
+    -DVULKAN_HPP_TYPESAFE_CONVERSION
+    -DVULKAN_HPP_NO_SMART_HANDLE
+)
 
 ## GLM
 include(GlmConfig)
@@ -37,6 +31,7 @@ if (NOT GLM_FOUND)
     add_subdirectory(${GLM_ROOT_DIR})
 endif()
 
+include(Utils)
 include(loguru)
 include(stb)
 include(utility)
@@ -47,17 +42,13 @@ include(assimp)
 
 add_subdirectory(${ASSIMP_ROOT_DIR})
 
-set_target_properties (
-    assimp
-    IrrXML
-    uninstall
-    zlib
-    zlibstatic
-    PROPERTIES FOLDER Assimp
-)
-
 if(WIN32)
     set_target_properties (
+        assimp
+        IrrXML
+        uninstall
+        zlib
+        zlibstatic
         UpdateAssimpLibsDebugSymbolsAndDLLs
         PROPERTIES FOLDER Assimp
     )
@@ -118,6 +109,15 @@ include_directories( SYSTEM
 
 if (BUILD_SHARED_LIBS)
     add_definitions(-D${UNICORN_RENDER_LIB}_EXPORTS)
+endif()
+
+if (UNIX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Werror -pedantic")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s -O3")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb3 -O0")
+elseif(WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /MP /W3") # remove loguru and put spdlog -> /WX
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
 add_subdirectory(system)
@@ -311,11 +311,22 @@ source_group("Shaders" FILES ${GLSL_SOURCE_FILES})
 source_group("Textures" FILES ${TEXTURES_FILES})
 source_group("Models" FILES ${MODELS_FILES})
 
-set_target_properties (
-    CompileEngineData
-    UnicornRender
-    system
-    utility
-    video
+if(WIN32)
+    set_target_properties (
+        assimp
+        IrrXML
+        uninstall
+        zlib
+        zlibstatic
+        UpdateAssimpLibsDebugSymbolsAndDLLs
+        PROPERTIES FOLDER Assimp
+    )
+    set_target_properties (
+        CompileEngineData
+        UnicornRender
+        system
+        utility
+        video
     PROPERTIES FOLDER Unicorn
 )
+endif()

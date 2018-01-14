@@ -52,7 +52,7 @@ bool Texture::Load(const std::string& path)
     }
 
     m_data = stbi_load_from_memory(textureHandler.GetContent().GetBuffer().data(),
-        textureHandler.GetContent().GetBuffer().size(),
+        static_cast<int>(textureHandler.GetContent().GetBuffer().size()),
         reinterpret_cast<int32_t*>(&m_width),
         reinterpret_cast<int32_t*>(&m_height),
         reinterpret_cast<int32_t*>(&m_channels),
@@ -66,7 +66,7 @@ bool Texture::Load(const std::string& path)
         return false;
     }
 
-    m_id = std::hash<std::string>{}(path);
+    m_id = static_cast<uint32_t>(std::hash<std::string>{}(path));
     m_initialized = true;
 
     return true;

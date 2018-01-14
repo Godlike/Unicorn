@@ -131,7 +131,6 @@ private:
     struct
     {
         vk::Pipeline solid;
-        vk::Pipeline blend;
         vk::Pipeline wired;
     } m_pipelines;
 

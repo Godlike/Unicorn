@@ -535,11 +535,6 @@ void Renderer::FreeGraphicsPipeline()
             m_vkLogicalDevice.destroyPipeline(m_pipelines.solid);
             m_pipelines.solid = nullptr;
         }
-        if(m_pipelines.blend)
-        {
-            m_vkLogicalDevice.destroyPipeline(m_pipelines.blend);
-            m_pipelines.blend = nullptr;
-        }
         if(m_pipelines.wired)
         {
             m_vkLogicalDevice.destroyPipeline(m_pipelines.wired);
@@ -647,7 +642,8 @@ bool Renderer::PrepareUniformBuffers()
     m_uniformCameraData.projection = camera->projection;
     m_uniformCameraData.view = camera->view;
 
-    m_uniformViewProjection.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, sizeof(UniformCameraData));
+    m_uniformViewProjection.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible
+        | vk::MemoryPropertyFlagBits::eHostCoherent, sizeof(UniformCameraData));
     m_uniformViewProjection.Map();
     m_uniformViewProjection.Write(&m_uniformCameraData);
 
@@ -746,7 +742,7 @@ bool Renderer::PickPhysicalDevice()
 
 bool Renderer::CreateLogicalDevice()
 {
-    QueueFamilyIndices indices = FindQueueFamilies(m_vkPhysicalDevice);
+    QueueFamilyIndices const indices = FindQueueFamilies(m_vkPhysicalDevice);
 
     std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
     std::set<int> uniqueQueueFamilies = {indices.graphicsFamily, indices.presentFamily};
@@ -754,7 +750,7 @@ bool Renderer::CreateLogicalDevice()
 
     for(uint32_t queueFamily : uniqueQueueFamilies)
     {
-        vk::DeviceQueueCreateInfo queueCreateInfo({}, queueFamily, 1, &queuePriority);
+        vk::DeviceQueueCreateInfo const queueCreateInfo({}, queueFamily, 1, &queuePriority);
         queueCreateInfos.push_back(queueCreateInfo);
     }
 
@@ -1178,25 +1174,10 @@ bool Renderer::CreateGraphicsPipeline()
     pipelineInfo.basePipelineIndex = -1; // Optional
 
     //Solid pipeline
-
     std::tie(result, m_pipelines.solid) = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo);
     if(result != vk::Result::eSuccess)
     {
         LOG_ERROR("Can't create solid pipeline.");
-        return false;
-    }
-
-    // Alpha blended pipeline
-
-    colorBlendAttachment.blendEnable = VK_TRUE;
-    colorBlendAttachment.colorBlendOp = vk::BlendOp::eAdd;
-    colorBlendAttachment.srcColorBlendFactor = vk::BlendFactor::eSrcColor;
-    colorBlendAttachment.dstColorBlendFactor = vk::BlendFactor::eOneMinusSrcColor;
-
-    std::tie(result, m_pipelines.blend) = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo);
-    if(result != vk::Result::eSuccess)
-    {
-        LOG_ERROR("Can't create blend pipeline.");
         return false;
     }
 
@@ -1500,8 +1481,7 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
         swapChainAcceptable = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
     }
 
-    if(deviceProperties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu &&
-        indices.IsComplete() && extensionsSupported && swapChainAcceptable && deviceFeatures.samplerAnisotropy)
+    if(indices.IsComplete() && extensionsSupported && swapChainAcceptable && deviceFeatures.samplerAnisotropy)
     {
         LOG_INFO("Picked as main GPU : %s", deviceProperties.deviceName);
         m_gpuName = deviceProperties.deviceName;

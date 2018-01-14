@@ -13,7 +13,7 @@ fi
 cmake $CMAKE_FLAGS ..
 
 if [ "$BUILD_DOCUMENTATION" != "true" ]; then
-    make -j${nproc}
+    make -j2
     ctest -VV
 else
     make docs
