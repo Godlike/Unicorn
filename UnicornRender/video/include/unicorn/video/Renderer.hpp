@@ -69,28 +69,23 @@ public:
      */
     UNICORN_EXPORT virtual void SetDepthTest(bool enabled) = 0;
 
-    /** @brief  Creates new geometry mesh
-    *
-    *  Creates and subscribes to mesh.
-    *  Mesh shall be deleted via DeleteMesh().
-    *
-    *  @param [in] material describes mesh visual representation
-    *
-    *  @attention  Mesh lifetime is bound by its renderer's lifetime.
-    *              Using meshes after their renderer was destroyed is undefined behaviour.
-    *              If you're storing mesh pointers, consider storing them with a reference
-    *              to their renderer and listening for its Destroyed event for proper cleanup.
-    *
-    *  @return pointer to newly created geometry::Mesh
-    *
-    *  @sa DeleteMesh
+    /**
+    * @brief Adds mesh to the rendering system
+    * @param [in] mesh mesh data
+    * @return true if mesh was successfully added to the system
     */
-    //UNICORN_EXPORT virtual Mesh* SpawnMesh(Material const& material) = 0;
+    UNICORN_EXPORT virtual bool AddMesh(Mesh* mesh) = 0;
 
-    UNICORN_EXPORT virtual void AddMesh(Mesh* mesh) = 0;
-    UNICORN_EXPORT virtual void AddMeshes(std::list<Mesh*> const& meshes) = 0;
+    /**
+    * @brief Removes internal rendering mesh data from rendering system
+    *
+    * @note pMesh is not invalidated within the method
+    *
+    * @param [in] pMesh pointer to mesh
+    *
+    * @return true if data was found and succesfully deleted
+    */
     UNICORN_EXPORT virtual bool DeleteMesh(Mesh const* pMesh) = 0;
-    UNICORN_EXPORT virtual bool DeleteMeshes(std::list<Mesh*> const& meshes) = 0;
 
     //! Main view camera, must never be nullptr
     Camera const* camera;

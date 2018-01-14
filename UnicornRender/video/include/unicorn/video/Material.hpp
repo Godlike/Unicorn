@@ -88,7 +88,7 @@ public:
     UNICORN_EXPORT glm::vec3 GetColor() const;
 
     /** @brief Signal for material update notification */
-    wink::signal<wink::slot<void()>> MaterialUpdated;
+    wink::signal<wink::slot<void()>> DataUpdated;
 protected:
     glm::vec3 m_color;
 

@@ -18,7 +18,6 @@
 #include <unicorn/video/Primitives.hpp>
 #include <unicorn/video/Texture.hpp>
 #include <unicorn/video/Material.hpp>
-#include <unicorn/utility/Math.hpp>
 
 #include <unicorn/video/Camera.hpp>
 #include <unicorn/video/Camera2DController.hpp>
@@ -27,7 +26,6 @@
 #include <unicorn/video/PerspectiveCamera.hpp>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 #include <ctime>
 #include <array>
@@ -49,7 +47,6 @@ float lastFrame = 0.0f; // Time of last frame
 
 const float xSens = 0.05f;
 const float ySens = 0.05f;
-const float zSens = 0.05f;
 
 //Camera settings
 bool isPerspective = true;
@@ -62,8 +59,8 @@ unicorn::video::OrthographicCamera* pOrthoProjection = nullptr;
 
 void onLogicFrame(unicorn::UnicornRender* /*render*/)
 {
-    float currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
-    float newDeltatime = currentFrame - lastFrame;
+    float const currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
+    float const newDeltatime = currentFrame - lastFrame;
 
     if(newDeltatime <= 0.0)
     {
@@ -104,12 +101,13 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
         case MouseButton::MouseLeft:
         {
             auto cubematerial = std::make_shared<unicorn::video::Material>();
-            glm::vec3 color = { static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255 };
+            glm::vec3 const color = { static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255 };
             cubematerial->SetColor(color);
 
-            unicorn::video::Mesh* mesh = unicorn::video::Primitives::Sphere(1, 32, 32);
+            unicorn::video::Mesh* mesh = new unicorn::video::Mesh;
+            unicorn::video::Primitives::Sphere(*mesh, 1, 32, 32);
             mesh->SetMaterial(cubematerial);
-            glm::vec3 randomTranslate = { std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 };
+            glm::vec3 const randomTranslate = { std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 };
             mesh->SetTranslation(mesh->GetTranslation() + randomTranslate);
 
             vkRenderer->AddMesh(mesh);
@@ -118,7 +116,7 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
         }
         case MouseButton::MouseMiddle:
         {
-            if(meshes.size())
+            if(!meshes.empty())
             {
                 // Get random cube
                 auto meshIt = meshes.begin();
@@ -136,14 +134,14 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
         }
         case MouseButton::MouseRight:
         {
-            if(meshes.size())
+            if(!meshes.empty())
             {
                 // Get random cube
                 auto meshIt = meshes.begin();
 
                 std::advance(meshIt, std::rand() % meshes.size());
 
-                auto mesh = *meshIt;
+                auto const mesh = *meshIt;
 
                 // Release cube's mesh
                 vkRenderer->DeleteMesh(mesh);
@@ -204,13 +202,10 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
     }
 
     unicorn::system::Window* const& pWindow = keyboardEvent.pWindow;
-    unicorn::system::input::Key const& key = keyboardEvent.key;
-    uint32_t const& scancode = keyboardEvent.scancode;
-    unicorn::system::input::Modifier::Mask const& modifiers = keyboardEvent.modifiers;
+    auto const& key = keyboardEvent.key;
+    auto const& modifiers = keyboardEvent.modifiers;
 
-    std::pair<int32_t, int32_t> position = pWindow->GetPosition();
-
-    float time = deltaTime * 0.1f;
+    float const time = deltaTime * 0.1f;
     float speed = 50.f;
 
     if(Modifier::Shift & modifiers)
@@ -408,16 +403,12 @@ std::list<unicorn::video::Mesh*> MakeCubeMap()
 {
     std::list<unicorn::video::Mesh*> cubemapMeshes;
 
-    //Loading textures
-    std::shared_ptr<unicorn::video::Texture> frontSkyBox, backSkyBox, leftSkyBox,
-        rightSkyBox, topSkyBox, bottomSkyBox;
-
-    frontSkyBox = std::make_shared<unicorn::video::Texture>();
-    backSkyBox = std::make_shared<unicorn::video::Texture>();
-    leftSkyBox = std::make_shared<unicorn::video::Texture>();
-    rightSkyBox = std::make_shared<unicorn::video::Texture>();
-    topSkyBox = std::make_shared<unicorn::video::Texture>();
-    bottomSkyBox = std::make_shared<unicorn::video::Texture>();
+    auto frontSkyBox = std::make_shared<unicorn::video::Texture>();
+    auto backSkyBox = std::make_shared<unicorn::video::Texture>();
+    auto leftSkyBox = std::make_shared<unicorn::video::Texture>();
+    auto rightSkyBox = std::make_shared<unicorn::video::Texture>();
+    auto topSkyBox = std::make_shared<unicorn::video::Texture>();
+    auto bottomSkyBox = std::make_shared<unicorn::video::Texture>();
 
     frontSkyBox->Load("data/textures/cubemap/posz.jpg");
     backSkyBox->Load("data/textures/cubemap/negz.jpg");
@@ -438,15 +429,12 @@ std::list<unicorn::video::Mesh*> MakeCubeMap()
         return cubemapMeshes;
     }
 
-    std::shared_ptr<unicorn::video::Material> frontTextureMat, backTextureMat, leftTextureMat,
-        rightTextureMat, upTextureMat, bottomTextureMat;
-
-    frontTextureMat = std::make_shared<unicorn::video::Material>();
-    backTextureMat = std::make_shared<unicorn::video::Material>();
-    leftTextureMat = std::make_shared<unicorn::video::Material>();
-    rightTextureMat = std::make_shared<unicorn::video::Material>();
-    upTextureMat = std::make_shared<unicorn::video::Material>();
-    bottomTextureMat = std::make_shared<unicorn::video::Material>();
+    auto frontTextureMat = std::make_shared<unicorn::video::Material>();
+    auto backTextureMat = std::make_shared<unicorn::video::Material>();
+    auto leftTextureMat = std::make_shared<unicorn::video::Material>();
+    auto rightTextureMat = std::make_shared<unicorn::video::Material>();
+    auto upTextureMat = std::make_shared<unicorn::video::Material>();
+    auto bottomTextureMat = std::make_shared<unicorn::video::Material>();
 
     frontTextureMat->SetAlbedo(frontSkyBox);
     backTextureMat->SetAlbedo(backSkyBox);
@@ -457,12 +445,18 @@ std::list<unicorn::video::Mesh*> MakeCubeMap()
 
     using unicorn::video::Primitives;
 
-    unicorn::video::Mesh* frontBox = Primitives::Quad();
-    unicorn::video::Mesh* backBox = Primitives::Quad();
-    unicorn::video::Mesh* leftBox = Primitives::Quad();
-    unicorn::video::Mesh* rightBox = Primitives::Quad();
-    unicorn::video::Mesh* upBox = Primitives::Quad();
-    unicorn::video::Mesh* bottomBox = Primitives::Quad();
+    unicorn::video::Mesh* frontBox = new unicorn::video::Mesh;
+    Primitives::Quad(*frontBox);
+    unicorn::video::Mesh* backBox = new unicorn::video::Mesh;
+    Primitives::Quad(*backBox);
+    unicorn::video::Mesh* leftBox = new unicorn::video::Mesh;
+    Primitives::Quad(*leftBox);
+    unicorn::video::Mesh* rightBox = new unicorn::video::Mesh;
+    Primitives::Quad(*rightBox);
+    unicorn::video::Mesh* upBox = new unicorn::video::Mesh;
+    Primitives::Quad(*upBox);
+    unicorn::video::Mesh* bottomBox = new unicorn::video::Mesh;
+    Primitives::Quad(*bottomBox);
 
     frontBox->SetMaterial(frontTextureMat);
     backBox->SetMaterial(backTextureMat);
@@ -527,12 +521,12 @@ int main(int argc, char* argv[])
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Resizable,
                                          unicorn::system::CustomValue::True);
 
-        auto h = pGraphics->GetMonitors().back()->GetActiveVideoMode().height;
-        auto w = pGraphics->GetMonitors().back()->GetActiveVideoMode().width;
+        auto const h = pGraphics->GetMonitors().back()->GetActiveVideoMode().height;
+        auto const w = pGraphics->GetMonitors().back()->GetActiveVideoMode().width;
         settings.SetApplicationHeight(static_cast<uint32_t>(h));
         settings.SetApplicationWidth(static_cast<uint32_t>(w));
 
-        unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(settings.GetApplicationWidth(),
+        auto pWindow0 = pGraphics->SpawnWindow(settings.GetApplicationWidth(),
            settings.GetApplicationHeight(),
            settings.GetApplicationName(),
            nullptr,
@@ -555,7 +549,6 @@ int main(int argc, char* argv[])
 
         pCameraFpsController = new unicorn::video::CameraFpsController(perspective->view);
         pCamera2DController = new unicorn::video::Camera2DController(ortho->view);
-
         {
             using unicorn::video::Primitives;
 
@@ -569,33 +562,35 @@ int main(int argc, char* argv[])
             auto colorMaterial = std::make_shared<unicorn::video::Material>();
             colorMaterial->SetColor(unicorn::video::Color::LightPink());
 
-            unicorn::video::Mesh* pinkBoxGeometry = Primitives::Box();
-            unicorn::video::Mesh* grassQuad = Primitives::Quad();
+            unicorn::video::Mesh* pinkBoxGeometry = new unicorn::video::Mesh;
+            Primitives::Box(*pinkBoxGeometry);
+            unicorn::video::Mesh* grassQuad = new unicorn::video::Mesh;
+            Primitives::Quad(*grassQuad);
             grassQuad->SetMaterial(grassMaterial);
-
 
             pinkBoxGeometry->SetMaterial(colorMaterial);
 
             auto gltfModel = Primitives::LoadModel("data/models/glTF/DamagedHelmet.gltf");
 
-            pCameraFpsController->TranslateLocal({ 0, 0, -5 });
-            grassQuad->TranslateLocal({ 0, -0.1, -2 });
+            pCameraFpsController->TranslateLocal({ 0, 0, 1 });
+            pCameraFpsController->SetOrientation({ 0, 0, -1 });
+            grassQuad->TranslateLocal({ 0, 0, -4 });
             for (auto mesh : gltfModel)
             {
+                mesh->TranslateLocal({ 0, 0, -5});
                 mesh->UpdateTransformMatrix();
             }
-
-            pinkBoxGeometry->UpdateTransformMatrix();
-
-            vkRenderer->AddMesh(pinkBoxGeometry);
-            vkRenderer->AddMeshes(gltfModel);
-            vkRenderer->AddMeshes(cubemap);
-            vkRenderer->AddMesh(grassQuad);
+            pinkBoxGeometry->TranslateLocal({ -5, 0, -5 });
 
             meshes.push_back(pinkBoxGeometry);
-            meshes.push_back(grassQuad);
             meshes.insert(meshes.end(), gltfModel.begin(), gltfModel.end());
             meshes.insert(meshes.end(), cubemap.begin(), cubemap.end());
+            meshes.push_back(grassQuad);
+
+            for(auto mesh : meshes)
+            {
+                vkRenderer->AddMesh(mesh);
+            }
 
             colorMaterial->SetColor(unicorn::video::Color::Blue());
 
@@ -613,7 +608,10 @@ int main(int argc, char* argv[])
     delete pPerspectiveProjection;
     delete pOrthoProjection;
     delete ortho;
-
+    for(auto* mesh : meshes)
+    {
+        delete mesh;
+    }
     unicornRender->Deinit();
     delete unicornRender;
 

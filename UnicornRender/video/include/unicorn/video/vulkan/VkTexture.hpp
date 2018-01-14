@@ -46,7 +46,7 @@ public:
      * @return true if creation was successful and false if not
      */
     bool Create(vk::PhysicalDevice const& physicalDevice, vk::Device const& device,
-                vk::CommandPool const& commandPool, vk::Queue const& queue, std::shared_ptr<Texture> texture);
+                vk::CommandPool const& commandPool, vk::Queue const& queue, Texture const& texture);
 
     /**
      * @brief Removes texture from GPU and destroys sampler

@@ -38,9 +38,6 @@ Memory::Memory(vk::Device device, uint32_t typeFilter,
     {
         m_initialized = true;
     }
-    else {
-        m_initialized = false;
-    }
 }
 
 Memory::~Memory()

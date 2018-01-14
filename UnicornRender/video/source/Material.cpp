@@ -23,35 +23,46 @@ Material::Material()
 
 void Material::SetAlbedo(std::shared_ptr<Texture> albedo)
 {
-    if(albedo == nullptr || !albedo->IsLoaded())
+    if(nullptr == albedo)
     {
-        LOG_ERROR("Setting not loaded texture to material!");
+        m_isColored = true;
+
+        m_albedo = nullptr;
+
         return;
     }
+
+    if(!albedo->IsLoaded())
+    {
+        LOG_ERROR("Setting not loaded texture to material!");
+
+        return;
+    }
+
     m_isColored = false;
+
     m_albedo = albedo;
 
-    MaterialUpdated.emit();
+    DataUpdated.emit();
 }
 
 void Material::SetIsWired(bool wireframe)
 {
     m_isWired = wireframe;
 
-    MaterialUpdated.emit();
+    DataUpdated.emit();
 }
 
 void Material::SetIsColored(bool colored)
 {
     m_isColored = colored;
 
-    MaterialUpdated.emit();
+    DataUpdated.emit();
 }
 
 void Material::RemoveAlbedo()
 {
     SetAlbedo(nullptr);
-    SetIsColored(true);
 }
 
 bool Material::IsColored() const
@@ -68,7 +79,7 @@ void Material::SetIsVisible(bool visible)
 {
     m_isVisible = visible;
 
-    MaterialUpdated.emit();
+    DataUpdated.emit();
 }
 
 bool Material::IsVisible() const
@@ -81,14 +92,14 @@ std::shared_ptr<Texture> Material::GetAlbedo() const
     return m_albedo;
 }
 
-UNICORN_EXPORT void Material::SetColor(glm::vec3 color)
+void Material::SetColor(glm::vec3 color)
 {
     m_color = color;
 
-    MaterialUpdated.emit();
+    DataUpdated.emit();
 }
 
-UNICORN_EXPORT glm::vec3 Material::GetColor() const
+glm::vec3 Material::GetColor() const
 {
     return m_color;
 }

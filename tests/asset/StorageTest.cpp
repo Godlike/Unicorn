@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 {
     unicorn::Settings& settings = unicorn::Settings::Instance();
 
-    settings.Init(argc, argv, "");
+    settings.Init(argc, argv, "StorageTest.log");
     settings.SetApplicationName("Asset storage test");
 
     unicorn::utility::asset::Storage& storage = unicorn::utility::asset::Storage::Instance();

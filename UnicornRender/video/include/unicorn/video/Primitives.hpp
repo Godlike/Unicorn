@@ -17,25 +17,25 @@ namespace unicorn
 {
 namespace video
 {
-/** @brief  Fills meshes with geometric primitives data */
+/** @brief  Fills meshes with geometric primitive's data */
 class Primitives
 {
 public:
     /**
     *  @brief Fills given mesh with cube data
     *
-    *  @param[out] mesh    geometry mesh
-    *  @return reference to updated mesh
+    *  @param[in, out] mesh geometry mesh
+    *  @return reference to filled mesh
     */
-    UNICORN_EXPORT static Mesh* Box();
+    UNICORN_EXPORT static Mesh& Box(Mesh& mesh);
 
     /**
     *  @brief Fills given mesh with quad data
     *
-    *  @param[out] mesh    geometry mesh
+    *  @param[in, out] mesh geometry mesh
     *  @return reference to updated mesh
     */
-    UNICORN_EXPORT static Mesh* Quad();
+    UNICORN_EXPORT static Mesh& Quad(Mesh& mesh);
 
     /**
     *  @brief Fills given mesh with sphere data
@@ -47,8 +47,22 @@ public:
     *  @attention `rings * sectors` must be less than `std::vector<Vertex>::max_size()`
     *  @return reference to updated mesh
     */
-    UNICORN_EXPORT static Mesh* Sphere(float radius, uint32_t rings, uint32_t sectors);
+    UNICORN_EXPORT static Mesh& Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors);
 
+    /**
+    @brief Loads and processes model
+
+    * Loads model from given filepath, initializes Materials and Meshes from the model
+    *
+    * Supported formats:
+    * - gltf 2.0 (without binary glb)
+    * - obj
+    *
+    * @todo use storage handler when assimp's issues regarding loading from memory are fixed
+    *
+    *  @param[in] path path to model
+    *  @return list of pointers to meshes
+    */
     UNICORN_EXPORT static std::list<Mesh*> LoadModel(std::string const& path);
 };
 }

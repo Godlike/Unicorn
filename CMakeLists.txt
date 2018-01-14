@@ -42,9 +42,4 @@ if (${UNICORN_BUILD_TESTS})
     include(CTest)
 
     add_subdirectory(tests)
-    set_target_properties (
-        SimpleStorageTest
-        StorageTest
-        PROPERTIES FOLDER UnicornTests
-    )
 endif()

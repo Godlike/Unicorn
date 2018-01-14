@@ -116,6 +116,16 @@ public:
      * @param[in] distance per component distance
      */
     UNICORN_EXPORT void TranslateLocal(glm::vec3 distance);
+
+    /**
+    * @brief Applies transform from given matrix
+    *
+    * @attention Don't forget to recalculate @sa UpdateTransformMatrix to commit all changes to the object
+    *
+    * @param[in] transformMatrix matrix containing the transformation
+    */
+    UNICORN_EXPORT void TransformByMatrix(glm::mat4 const& transformMatrix);
+
     /**
      * @brief Translates by world axes
      *

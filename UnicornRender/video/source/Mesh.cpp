@@ -5,19 +5,24 @@
 */
 
 #include <unicorn/video/Mesh.hpp>
+#include <unicorn/utility/Logger.hpp>
 
 namespace unicorn
 {
 namespace video
 {
 Mesh::Mesh() :
-    m_material(new Material)
+    name("DefaultName"),
+    m_material(nullptr)
 {
+    m_material = std::make_shared<Material>();
+
+    m_material->DataUpdated.connect(this, &Mesh::OnMaterialUpdated);
 }
 
 Mesh::~Mesh()
 {
-    m_material->MaterialUpdated.disconnect(this, &Mesh::OnMaterialUpdated);
+    m_material->DataUpdated.disconnect(this, &Mesh::OnMaterialUpdated);
 }
 
 void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
@@ -30,10 +35,15 @@ void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<ui
 
 void Mesh::SetMaterial(std::shared_ptr<Material> material)
 {
-    m_material = material;
-    m_material->MaterialUpdated.connect(this, &Mesh::OnMaterialUpdated);
+    assert(nullptr != material);
 
-    this->MaterialUpdated.emit();
+    m_material->DataUpdated.disconnect(this, &Mesh::OnMaterialUpdated);
+
+    m_material = material;
+
+    m_material->DataUpdated.connect(this, &Mesh::OnMaterialUpdated);
+
+    MaterialUpdated.emit();
 }
 
 std::vector<Vertex> const& Mesh::GetVertices() const
