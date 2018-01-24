@@ -17,7 +17,7 @@ Mesh::Mesh() :
 
 Mesh::~Mesh()
 {
-    m_material->MaterialUpdated.disconnect(this, &Mesh::OnMaterialUpdated);
+    m_material->DataUpdated.disconnect(this, &Mesh::OnMaterialUpdated);
 }
 
 void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
@@ -31,7 +31,7 @@ void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<ui
 void Mesh::SetMaterial(std::shared_ptr<Material> material)
 {
     m_material = material;
-    m_material->MaterialUpdated.connect(this, &Mesh::OnMaterialUpdated);
+    m_material->DataUpdated.connect(this, &Mesh::OnMaterialUpdated);
 
     this->MaterialUpdated.emit();
 }

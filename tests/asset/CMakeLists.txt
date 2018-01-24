@@ -28,3 +28,9 @@ add_test(
     WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/TestInput"
     COMMAND StorageTest
 )
+
+set_target_properties (
+    SimpleStorageTest
+    StorageTest
+    PROPERTIES FOLDER UnicornTests
+)

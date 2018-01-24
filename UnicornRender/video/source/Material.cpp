@@ -31,21 +31,21 @@ void Material::SetAlbedo(std::shared_ptr<Texture> albedo)
     m_isColored = false;
     m_albedo = albedo;
 
-    MaterialUpdated.emit();
+    DataUpdated.emit();
 }
 
 void Material::SetIsWired(bool wireframe)
 {
     m_isWired = wireframe;
 
-    MaterialUpdated.emit();
+    DataUpdated.emit();
 }
 
 void Material::SetIsColored(bool colored)
 {
     m_isColored = colored;
 
-    MaterialUpdated.emit();
+    DataUpdated.emit();
 }
 
 void Material::RemoveAlbedo()
@@ -68,7 +68,7 @@ void Material::SetIsVisible(bool visible)
 {
     m_isVisible = visible;
 
-    MaterialUpdated.emit();
+    DataUpdated.emit();
 }
 
 bool Material::IsVisible() const
@@ -85,7 +85,7 @@ UNICORN_EXPORT void Material::SetColor(glm::vec3 color)
 {
     m_color = color;
 
-    MaterialUpdated.emit();
+    DataUpdated.emit();
 }
 
 UNICORN_EXPORT glm::vec3 Material::GetColor() const

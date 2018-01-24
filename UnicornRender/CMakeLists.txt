@@ -327,6 +327,6 @@ if(WIN32)
         system
         utility
         video
-    PROPERTIES FOLDER Unicorn
+        PROPERTIES FOLDER Unicorn
 )
 endif()
