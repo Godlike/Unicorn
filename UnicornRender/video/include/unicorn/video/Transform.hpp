@@ -109,13 +109,13 @@ public:
     UNICORN_EXPORT void Scale(glm::vec3 scale);
 
     /**
-     * @brief Translates by axes
+     * @brief Adds given @p distance to the translation vector with respect to current up, right and forward orientation vectors
      *
      * @attention Don't forget to recalculate @sa UpdateTransformMatrix to commit all changes to the object
      *
      * @param[in] distance per component distance
      */
-    UNICORN_EXPORT void TranslateLocal(glm::vec3 distance);
+    UNICORN_EXPORT void TranslateByBasis(glm::vec3 distance);
 
     /**
     * @brief Applies transform from given matrix

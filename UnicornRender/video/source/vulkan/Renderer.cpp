@@ -1014,7 +1014,7 @@ bool Renderer::CreateDescriptionSetLayout()
     pipelineLayoutInfo.pSetLayouts = m_descriptorSetLayouts.data();
 
     vk::PushConstantRange pushConstanRange;
-    pushConstanRange.setSize(sizeof( glm::vec4));
+    pushConstanRange.setSize(sizeof(glm::vec4) * 2); // color and texture coordinates
     pushConstanRange.setStageFlags(vk::ShaderStageFlagBits::eVertex);
 
     pipelineLayoutInfo.pushConstantRangeCount = 1;
@@ -1293,7 +1293,11 @@ bool Renderer::CreateCommandBuffers()
                         m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_pipelines.solid);
                     }
 
-                    m_commandBuffers[i].pushConstants(m_pipelineLayout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(colorPush), glm::value_ptr(colorPush));
+                    m_commandBuffers[i].pushConstants(m_pipelineLayout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(glm::vec4), glm::value_ptr(colorPush));
+
+                    m_commandBuffers[i].pushConstants(m_pipelineLayout, vk::ShaderStageFlagBits::eVertex, sizeof(glm::vec4), sizeof(glm::vec4),
+                        glm::value_ptr(vkMeshMaterial->GetNormalizedSpriteArea()));
+
                     vk::Buffer vertexBuffer[] = {pVkMesh->GetVertexBuffer()};
                     uint32_t dynamicOffset = j * static_cast<uint32_t>(m_dynamicAlignment);
                     m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);

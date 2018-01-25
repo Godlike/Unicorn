@@ -57,6 +57,8 @@ unicorn::video::Camera2DController* pCamera2DController = nullptr;
 unicorn::video::PerspectiveCamera* pPerspectiveProjection = nullptr;
 unicorn::video::OrthographicCamera* pOrthoProjection = nullptr;
 
+std::shared_ptr<unicorn::video::Material> spriteMaterial;
+
 void onLogicFrame(unicorn::UnicornRender* /*render*/)
 {
     float const currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
@@ -236,11 +238,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(0, 0, time * speed));
+                pCameraFpsController->TranslateByBasis(glm::vec3(0, 0, time * speed));
             }
             else
             {
-                pCamera2DController->TranslateLocal(glm::vec3(0, time * speed, 0));
+                pCamera2DController->TranslateByBasis(glm::vec3(0, time * speed, 0));
             }
             break;
         }
@@ -248,11 +250,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(0, 0, time * -speed));
+                pCameraFpsController->TranslateByBasis(glm::vec3(0, 0, time * -speed));
             }
             else
             {
-                pCamera2DController->TranslateLocal(glm::vec3(0, time * -speed, 0));
+                pCamera2DController->TranslateByBasis(glm::vec3(0, time * -speed, 0));
             }
             break;
         }
@@ -260,11 +262,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
+                pCameraFpsController->TranslateByBasis(glm::vec3(time * -speed, 0, 0));
             }
             else
             {
-                pCamera2DController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
+                pCamera2DController->TranslateByBasis(glm::vec3(time * -speed, 0, 0));
             }
             break;
         }
@@ -272,11 +274,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(time * speed, 0, 0));
+                pCameraFpsController->TranslateByBasis(glm::vec3(time * speed, 0, 0));
             }
             else
             {
-                pCamera2DController->TranslateLocal(glm::vec3(time * speed, 0, 0));
+                pCamera2DController->TranslateByBasis(glm::vec3(time * speed, 0, 0));
             }
             break;
         }
@@ -284,7 +286,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
             {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(0, time * speed, 0));
+                pCameraFpsController->TranslateByBasis(glm::vec3(0, time * speed, 0));
             }
             break;
         }
@@ -292,7 +294,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(0, time * -speed, 0));
+                pCameraFpsController->TranslateByBasis(glm::vec3(0, time * -speed, 0));
             }
             break;
         }
@@ -318,26 +320,6 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
             {
                 pCameraFpsController->Rotate(static_cast<float>(glm::radians(1.)), glm::vec3(0., 0., 1.));
             }
-            break;
-        }
-        case Key::Up:
-        {
-            pCameraFpsController->Rotate(static_cast<float>(glm::radians(-1.)), glm::vec3(1., 0., 0.));
-            break;
-        }
-        case Key::Down:
-        {
-            pCameraFpsController->Rotate(static_cast<float>(glm::radians(1.)), glm::vec3(1., 0., 0.));
-            break;
-        }
-        case Key::Left:
-        {
-            pCameraFpsController->Rotate(static_cast<float>(glm::radians(1.)), glm::vec3(0., 1., 0.));
-            break;
-        }
-        case Key::Right:
-        {
-            pCameraFpsController->Rotate(static_cast<float>(glm::radians(-1.)), glm::vec3(0., 1., 0.));
             break;
         }
         case Key::C:
@@ -553,8 +535,14 @@ int main(int argc, char* argv[])
             using unicorn::video::Primitives;
 
             auto cubemap = MakeCubeMap();
+            auto spriteTexture = std::make_shared<unicorn::video::Texture>();
+            spriteTexture->Load("data/textures/sprite.png");
+
             auto grassTexture = std::make_shared<unicorn::video::Texture>();
             grassTexture->Load("data/textures/grass.png");
+
+            spriteMaterial = std::make_shared<unicorn::video::Material>();
+            spriteMaterial->SetAlbedo(spriteTexture);
 
             auto grassMaterial = std::make_shared<unicorn::video::Material>();
             grassMaterial->SetAlbedo(grassTexture);
@@ -564,35 +552,36 @@ int main(int argc, char* argv[])
 
             unicorn::video::Mesh* pinkBoxGeometry = new unicorn::video::Mesh;
             Primitives::Box(*pinkBoxGeometry);
-            unicorn::video::Mesh* grassQuad = new unicorn::video::Mesh;
-            Primitives::Quad(*grassQuad);
-            grassQuad->SetMaterial(grassMaterial);
 
-            pinkBoxGeometry->SetMaterial(colorMaterial);
+            spriteMaterial->SetSpriteArea(0, 0, 32, 32);
+
+            pinkBoxGeometry->SetMaterial(spriteMaterial);
 
             auto gltfModel = Primitives::LoadModel("data/models/glTF/DamagedHelmet.gltf");
 
-            pCameraFpsController->TranslateLocal({ 0, 0, 1 });
-            pCameraFpsController->SetOrientation({ 0, 0, -1 });
-            grassQuad->TranslateLocal({ 0, 0, -4 });
-            for (auto mesh : gltfModel)
-            {
-                mesh->TranslateLocal({ 0, 0, -5});
-                mesh->UpdateTransformMatrix();
-            }
-            pinkBoxGeometry->TranslateLocal({ -5, 0, -5 });
+            pCameraFpsController->TranslateWorld({ 0, 0, 10 });
+            pinkBoxGeometry->TranslateWorld({ -5, 0, -10 });
 
-            meshes.push_back(pinkBoxGeometry);
             meshes.insert(meshes.end(), gltfModel.begin(), gltfModel.end());
             meshes.insert(meshes.end(), cubemap.begin(), cubemap.end());
-            meshes.push_back(grassQuad);
+            meshes.push_back(pinkBoxGeometry);
+
+            for (uint32_t i = 0; i < 32; ++i)
+            {
+                unicorn::video::Mesh* grassQuad = new unicorn::video::Mesh;
+                Primitives::Quad(*grassQuad);
+                grassQuad->SetMaterial(grassMaterial);
+                glm::vec3 const randomTranslate = { std::rand() % 10 - 5, 0, std::rand() % 10 - 5 };
+                grassQuad->TranslateWorld(randomTranslate);
+                meshes.push_back(grassQuad);
+            }
 
             for(auto mesh : meshes)
             {
                 vkRenderer->AddMesh(mesh);
             }
 
-            colorMaterial->SetColor(unicorn::video::Color::Blue());
+            spriteMaterial->SetSpriteArea(32, 32, 32, 32);
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);

@@ -7,6 +7,8 @@
 #include <unicorn/video/Transform.hpp>
 #include <unicorn/utility/Math.hpp>
 
+#include <glm/gtx/matrix_decompose.hpp>
+
 namespace unicorn
 {
 namespace video
@@ -19,7 +21,7 @@ Transform::Transform()
     , m_scale(glm::vec3(1.f))
     , m_worldX({ 1., 0.f, 0.f })
     , m_worldY({ 0.f, 1.f, 0.f })
-    , m_worldZ({ 0.f, 0.f, 1.f })
+    , m_worldZ({ 0.f, 0.f, -1.f })
     , m_rightVector(m_worldX)
     , m_upVector(m_worldY)
     , m_direction(m_worldZ)
@@ -85,8 +87,10 @@ void Transform::Scale(glm::vec3 scale)
     m_scale = scale;
 }
 
-void Transform::TranslateLocal(glm::vec3 distance)
+void Transform::TranslateByBasis(glm::vec3 distance)
 {
+    UpdateTransformMatrix();
+
     glm::vec3 const rightTranslation = m_rightVector * distance.x;
     glm::vec3 const upTranslation = m_upVector * distance.y;
     glm::vec3 const forwardTranslation = m_direction * distance.z;
@@ -96,18 +100,23 @@ void Transform::TranslateLocal(glm::vec3 distance)
 
 void Transform::TransformByMatrix(glm::mat4 const& transformMatrix)
 {
-    m_transformMatrix = transformMatrix * m_transformMatrix;
+    glm::vec3 s;
+    glm::vec3 t;
+    glm::quat q;
+    glm::vec3 skew;
+    glm::vec4 per;
+    glm::decompose(transformMatrix, s, q, t, skew, per);
+
+    TranslateWorld(t);
+    Rotate(q);
+    Scale(s);
 
     m_isDirty = true;
 }
 
 void Transform::TranslateWorld(glm::vec3 distance)
 {
-    glm::vec3 const xTranslation = m_worldX * distance.x;
-    glm::vec3 const yTranslation = m_worldY * distance.y;
-    glm::vec3 const zTranslation = m_worldZ * distance.z;
-
-    SetTranslation(GetTranslation() + xTranslation + yTranslation + zTranslation);
+    SetTranslation(GetTranslation() + distance);
 }
 
 void Transform::Rotate(glm::vec3 rotation)
@@ -182,7 +191,7 @@ void Transform::UpdateTransformMatrix()
         auto const R = glm::mat4_cast(m_orientation) * glm::mat4(1.0);
         auto const S = glm::scale(glm::mat4(1.0), { m_scale });
 
-        m_transformMatrix = T * R * S * m_transformMatrix;
+        m_transformMatrix = T * R * S;
 
         m_isDirty = false;
     }

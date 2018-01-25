@@ -7,6 +7,7 @@ layout(set = 1, binding = 0) uniform sampler2D inTextureSampler;
 
 layout(location = 0) in vec2 inTextureCoordinate;
 layout(location = 1) in vec4 inColor;
+layout(location = 2) in vec4 inSpriteCoord;
 
 layout(location = 0) out vec4 outColor;
 
@@ -17,6 +18,8 @@ void main() {
     }
     else
     {
-        outColor = texture(inTextureSampler, inTextureCoordinate);
+        vec2 spriteUV = inSpriteCoord.xy + (inTextureCoordinate * inSpriteCoord.zw);
+        vec4 texColor = texture(inTextureSampler, spriteUV);
+        outColor = texColor;
     }
 }

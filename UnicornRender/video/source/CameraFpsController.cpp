@@ -20,8 +20,8 @@ CameraFpsController::CameraFpsController(glm::mat4& cameraView) :
 
 void CameraFpsController::UpdateView(float x, float y)
 {
-    const float xoffset = x - m_mousePosition.x;
-    const float yoffset = y - m_mousePosition.y;
+    const float xoffset = m_mousePosition.x - x;
+    const float yoffset = m_mousePosition.y - y;
 
     m_mousePosition.x = x;
     m_mousePosition.y = y;
