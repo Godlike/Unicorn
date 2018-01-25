@@ -24,31 +24,39 @@ public:
     /**
     *  @brief Fills given mesh with cube data
     *
-    *  @param[out] mesh    geometry mesh
-    *  @return reference to updated mesh
+    *  @param[in, out] mesh geometry mesh
+    *  @return pointer to filled mesh
     */
-    UNICORN_EXPORT static Mesh* Box();
+    UNICORN_EXPORT static Mesh* Box(Mesh* mesh = nullptr);
 
     /**
     *  @brief Fills given mesh with quad data
     *
-    *  @param[out] mesh    geometry mesh
-    *  @return reference to updated mesh
+    *  @param[in, out] mesh geometry mesh
+    *  @return pointer to updated mesh
     */
-    UNICORN_EXPORT static Mesh* Quad();
+    UNICORN_EXPORT static Mesh* Quad(Mesh* mesh = nullptr);
 
     /**
     *  @brief Fills given mesh with sphere data
     *
-    *  @param[out] mesh geometry mesh
     *  @param[in] radius radius of sphere (> 0)
     *  @param[in] rings horizontal slices count (>= 4)
     *  @param[in] sectors vertical slices count (>= 4)
+    *  @param[out] mesh geometry mesh
     *  @attention `rings * sectors` must be less than `std::vector<Vertex>::max_size()`
-    *  @return reference to updated mesh
+    *  @return pointer to updated mesh
     */
-    UNICORN_EXPORT static Mesh* Sphere(float radius, uint32_t rings, uint32_t sectors);
+    UNICORN_EXPORT static Mesh* Sphere(float radius, uint32_t rings, uint32_t sectors, Mesh* mesh = nullptr);
 
+    /**
+    *  @brief Loading model from file, fills materials and returns list of pointers to meshes
+    *
+    *  Supported formats: gltf 2.0 (only gltf for now); obj
+    *
+    *  @param[in] path path to model
+    *  @return list of pointers to meshes
+    */
     UNICORN_EXPORT static std::list<Mesh*> LoadModel(std::string const& path);
 };
 }

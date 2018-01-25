@@ -104,7 +104,8 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
             glm::vec3 const color = { static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255 };
             cubematerial->SetColor(color);
 
-            unicorn::video::Mesh* mesh = unicorn::video::Primitives::Sphere(1, 32, 32);
+            unicorn::video::Mesh* mesh = new unicorn::video::Mesh;
+            unicorn::video::Primitives::Sphere(1, 32, 32, mesh);
             mesh->SetMaterial(cubematerial);
             glm::vec3 const randomTranslate = { std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 };
             mesh->SetTranslation(mesh->GetTranslation() + randomTranslate);
@@ -600,7 +601,10 @@ int main(int argc, char* argv[])
     delete pPerspectiveProjection;
     delete pOrthoProjection;
     delete ortho;
-
+    for(auto* mesh : meshes)
+    {
+        delete mesh;
+    }
     unicornRender->Deinit();
     delete unicornRender;
 

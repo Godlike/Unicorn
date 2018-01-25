@@ -13,7 +13,7 @@ fi
 cmake $CMAKE_FLAGS ..
 
 if [ "$BUILD_DOCUMENTATION" != "true" ]; then
-    make -j2
+    make -j2 # Assimp with lot of cores eats too much RAM and build fails
     ctest -VV
 else
     make docs

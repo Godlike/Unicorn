@@ -111,19 +111,8 @@ void Renderer::Deinit()
     if(m_isInitialized)
     {
         {
-            // Create a copy of mesh list to delete all meshes
-            std::list<Mesh*> meshes(m_meshes);
-
-            for(auto& pMesh : meshes)
-            {
-                DeleteMesh(pMesh);
-            }
-
-            LOG_DEBUG("Deleted %u meshes", static_cast<uint32_t>(meshes.size()));
-
             if(!m_vkMeshes.empty())
             {
-                // Also free up all remaining vk meshes
                 for(auto& pVkMesh : m_vkMeshes)
                 {
                     DeleteVkMesh(pVkMesh);
@@ -381,6 +370,8 @@ void Renderer::OnMeshMaterialUpdated(Mesh* mesh, VkMesh* vkMesh)
 
 void Renderer::AddMesh(Mesh* mesh)
 {
+    assert(nullptr != mesh);
+
     auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
     if (!AllocateMaterial(*mesh, *vkmesh))
     {
@@ -401,26 +392,14 @@ void Renderer::AddMeshes(std::list<Mesh*> const& meshes)
 {
     for (Mesh* mesh : meshes)
     {
-        auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
-        if (!AllocateMaterial(*mesh, *vkmesh))
-        {
-            LOG_ERROR("Can't allocate material!");
-        }
-        vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
-        vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
-
-        vkmesh->AllocateOnGPU();
-
-        m_vkMeshes.push_back(vkmesh);
-        m_meshes.push_back(mesh);
-
-        ResizeUnifromModelBuffer(vkmesh);
+        AddMesh(mesh);
     }
 }
 
-
 bool Renderer::DeleteMesh(const Mesh* pMesh)
 {
+    assert(nullptr != pMesh);
+
     auto vkMeshIt = std::find_if(m_vkMeshes.begin(), m_vkMeshes.end(), [=](VkMesh* p) ->bool { return *p == *pMesh; });
 
     if (vkMeshIt != m_vkMeshes.end())
@@ -445,7 +424,7 @@ bool Renderer::DeleteMesh(const Mesh* pMesh)
     return false;
 }
 
-bool Renderer::DeleteMeshes(std::list<Mesh*> const & meshes)
+bool Renderer::DeleteMeshes(std::list<Mesh*> const& meshes)
 {
     for (Mesh* mesh : meshes)
     {

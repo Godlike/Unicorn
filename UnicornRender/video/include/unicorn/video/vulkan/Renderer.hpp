@@ -102,8 +102,8 @@ public:
     bool DeleteMesh(Mesh const* pMesh) override;
     bool DeleteMeshes(std::list<Mesh*> const& meshes) override;
     void SetDepthTest(bool enabled) override;
-private:
 
+private:
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;
     vk::SwapchainKHR m_vkSwapChain;

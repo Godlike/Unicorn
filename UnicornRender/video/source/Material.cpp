@@ -81,14 +81,14 @@ std::shared_ptr<Texture> Material::GetAlbedo() const
     return m_albedo;
 }
 
-UNICORN_EXPORT void Material::SetColor(glm::vec3 color)
+void Material::SetColor(glm::vec3 color)
 {
     m_color = color;
 
     DataUpdated.emit();
 }
 
-UNICORN_EXPORT glm::vec3 Material::GetColor() const
+glm::vec3 Material::GetColor() const
 {
     return m_color;
 }
