@@ -87,10 +87,19 @@ public:
     /** @brief Returns color */
     UNICORN_EXPORT glm::vec3 GetColor() const;
 
+    UNICORN_EXPORT void SetSpriteCoordinates(int32_t x, int32_t y, int32_t width, int32_t height);
+
+    UNICORN_EXPORT void SetNormalizedSpriteCoordinates(float x, float y, float width, float height);
+
+    UNICORN_EXPORT glm::vec4 GetSpriteCoordinates() const;
+
+    UNICORN_EXPORT glm::vec4 GetNormalizedSpriteCoordinates() const;
+
     /** @brief Signal for material update notification */
     wink::signal<wink::slot<void()>> DataUpdated;
 protected:
     glm::vec3 m_color;
+    glm::vec4 m_spriteCoordinates;
 
     bool m_isColored;
     bool m_isWired;

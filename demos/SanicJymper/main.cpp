@@ -57,6 +57,8 @@ unicorn::video::Camera2DController* pCamera2DController = nullptr;
 unicorn::video::PerspectiveCamera* pPerspectiveProjection = nullptr;
 unicorn::video::OrthographicCamera* pOrthoProjection = nullptr;
 
+std::shared_ptr<unicorn::video::Material> spriteMaterial;
+
 void onLogicFrame(unicorn::UnicornRender* /*render*/)
 {
     float const currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
@@ -196,7 +198,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
 
     unicorn::system::input::Action const& action = keyboardEvent.action;
 
-    if(Action::Release == action)
+    if(action == Action::Release || action == Action::Repeat)
     {
         return;
     }
@@ -322,22 +324,23 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         }
         case Key::Up:
         {
-            pCameraFpsController->Rotate(static_cast<float>(glm::radians(-1.)), glm::vec3(1., 0., 0.));
             break;
         }
         case Key::Down:
         {
-            pCameraFpsController->Rotate(static_cast<float>(glm::radians(1.)), glm::vec3(1., 0., 0.));
             break;
         }
         case Key::Left:
         {
-            pCameraFpsController->Rotate(static_cast<float>(glm::radians(1.)), glm::vec3(0., 1., 0.));
             break;
         }
         case Key::Right:
         {
-            pCameraFpsController->Rotate(static_cast<float>(glm::radians(-1.)), glm::vec3(0., 1., 0.));
+            auto sc = spriteMaterial->GetSpriteCoordinates();
+            if (sc.x > 63)
+                sc.x = -32;
+            sc.x += 32;
+            spriteMaterial->SetSpriteCoordinates(sc.x, sc.y, sc.z, sc.w);
             break;
         }
         case Key::C:
@@ -547,26 +550,27 @@ int main(int argc, char* argv[])
             using unicorn::video::Primitives;
 
             auto cubemap = MakeCubeMap();
-            auto grassTexture = std::make_shared<unicorn::video::Texture>();
-            grassTexture->Load("data/textures/grass.png");
+            auto spriteTexture = std::make_shared<unicorn::video::Texture>();
+            spriteTexture->Load("data/textures/sprite.png");
 
-            auto grassMaterial = std::make_shared<unicorn::video::Material>();
-            grassMaterial->SetAlbedo(grassTexture);
+            spriteMaterial = std::make_shared<unicorn::video::Material>();
+            spriteMaterial->SetAlbedo(spriteTexture);
 
             auto colorMaterial = std::make_shared<unicorn::video::Material>();
             colorMaterial->SetColor(unicorn::video::Color::LightPink());
 
             unicorn::video::Mesh* pinkBoxGeometry = Primitives::Box();
-            unicorn::video::Mesh* grassQuad = Primitives::Quad();
-            grassQuad->SetMaterial(grassMaterial);
+            unicorn::video::Mesh* spriteQuad = Primitives::Quad();
+            spriteQuad->SetMaterial(spriteMaterial);
 
+            spriteMaterial->SetSpriteCoordinates(0, 0, 32, 32);
 
             pinkBoxGeometry->SetMaterial(colorMaterial);
 
             auto gltfModel = Primitives::LoadModel("data/models/glTF/DamagedHelmet.gltf");
 
             pCameraFpsController->TranslateLocal({ 0, 0, -5 });
-            grassQuad->TranslateLocal({ 0, -0.1, -2 });
+            spriteQuad->TranslateLocal({ 0, -0.1, -2 });
             for (auto mesh : gltfModel)
             {
                 mesh->TranslateLocal({ -5, 0, 0});
@@ -578,10 +582,10 @@ int main(int argc, char* argv[])
             vkRenderer->AddMesh(pinkBoxGeometry);
             vkRenderer->AddMeshes(gltfModel);
             vkRenderer->AddMeshes(cubemap);
-            vkRenderer->AddMesh(grassQuad);
+            vkRenderer->AddMesh(spriteQuad);
 
             meshes.push_back(pinkBoxGeometry);
-            meshes.push_back(grassQuad);
+            meshes.push_back(spriteQuad);
             meshes.insert(meshes.end(), gltfModel.begin(), gltfModel.end());
             meshes.insert(meshes.end(), cubemap.begin(), cubemap.end());
 

@@ -99,6 +99,9 @@ public:
      */
     glm::vec3 GetColor() const;
 
+    /** @brief Returns sprite coordinates */
+    glm::vec4 GetSpriteCoordinates() const;
+
     /**
      * @brief Updates data if material of mesh was updated
      */

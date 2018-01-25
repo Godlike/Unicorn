@@ -14,13 +14,15 @@ layout(set = 0, binding = 1) uniform UniformModel {
 
 layout(push_constant) uniform PushConstants {
     vec4 color;
+    vec4 spriteCoord;
 } pushConstants;
 
 layout(location = 0) in vec3 inPos;
 layout(location = 1) in vec2 inTextureCoordinates;
 
 layout(location = 0) out vec2 outTextureCoordinates;
-layout(location = 1) out vec4 outColor;
+layout(location = 1) out vec4 outColor; //put in fragment this
+layout(location = 2) out vec4 outSpriteCoord; //put in fragment this
 
 out gl_PerVertex {
     vec4 gl_Position;
@@ -31,4 +33,5 @@ void main() {
     gl_Position.y = -gl_Position.y; // For Vulkan rendering
     outTextureCoordinates = inTextureCoordinates;
     outColor = pushConstants.color;
+    outSpriteCoord = pushConstants.spriteCoord;
 }

@@ -116,6 +116,11 @@ glm::vec3 VkMesh::GetColor() const
     return m_mesh.GetMaterial()->GetColor();
 }
 
+glm::vec4 VkMesh::GetSpriteCoordinates() const
+{
+    return m_mesh.GetMaterial()->GetNormalizedSpriteCoordinates();
+}
+
 void VkMesh::OnMaterialUpdated()
 {
     MaterialUpdated.emit(&m_mesh, this);

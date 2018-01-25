@@ -14,6 +14,7 @@ namespace video
 {
 Material::Material()
     : m_color(Color::Red())
+    , m_spriteCoordinates(0, 0, 1, 1)
     , m_isColored(true)
     , m_isWired(false)
     , m_isVisible(true)
@@ -91,6 +92,49 @@ void Material::SetColor(glm::vec3 color)
 glm::vec3 Material::GetColor() const
 {
     return m_color;
+}
+
+void Material::SetSpriteCoordinates(int32_t x, int32_t y, int32_t width, int32_t height)
+{
+    if (!m_albedo->IsLoaded())
+    {
+        LOG_WARNING("Setting sprite coordinates, when texture was not set, nothing will be set.");
+        return;
+    }
+
+    m_spriteCoordinates = { static_cast<float>(x) / m_albedo->Width(),
+        static_cast<float>(y) / m_albedo->Height(),
+        static_cast<float>(width) / m_albedo->Width(),
+        static_cast<float>(height) / m_albedo->Height() };
+
+    DataUpdated.emit();
+}
+
+void Material::SetNormalizedSpriteCoordinates(float x, float y, float width, float height)
+{
+    if (!m_albedo->IsLoaded())
+    {
+        LOG_WARNING("Setting sprite coordinates, when texture was not set, nothing will be set.");
+        return;
+    }
+
+    m_spriteCoordinates = { x, y, width, height };
+
+    DataUpdated.emit();
+}
+
+UNICORN_EXPORT glm::vec4 Material::GetSpriteCoordinates() const
+{
+    glm::vec4 const denormalized = { m_spriteCoordinates.x * m_albedo->Width(),
+        m_spriteCoordinates.y * m_albedo->Height(),
+        m_spriteCoordinates.z * m_albedo->Width(),
+        m_spriteCoordinates.w * m_albedo->Height() };
+    return denormalized;
+}
+
+glm::vec4 Material::GetNormalizedSpriteCoordinates() const
+{
+    return m_spriteCoordinates;
 }
 
 }
