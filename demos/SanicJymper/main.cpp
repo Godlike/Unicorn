@@ -105,7 +105,7 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
             cubematerial->SetColor(color);
 
             unicorn::video::Mesh* mesh = new unicorn::video::Mesh;
-            unicorn::video::Primitives::Sphere(1, 32, 32, mesh);
+            unicorn::video::Primitives::Sphere(*mesh, 1, 32, 32);
             mesh->SetMaterial(cubematerial);
             glm::vec3 const randomTranslate = { std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 };
             mesh->SetTranslation(mesh->GetTranslation() + randomTranslate);
@@ -445,12 +445,18 @@ std::list<unicorn::video::Mesh*> MakeCubeMap()
 
     using unicorn::video::Primitives;
 
-    unicorn::video::Mesh* frontBox = Primitives::Quad();
-    unicorn::video::Mesh* backBox = Primitives::Quad();
-    unicorn::video::Mesh* leftBox = Primitives::Quad();
-    unicorn::video::Mesh* rightBox = Primitives::Quad();
-    unicorn::video::Mesh* upBox = Primitives::Quad();
-    unicorn::video::Mesh* bottomBox = Primitives::Quad();
+    unicorn::video::Mesh* frontBox = new unicorn::video::Mesh;
+    Primitives::Quad(*frontBox);
+    unicorn::video::Mesh* backBox = new unicorn::video::Mesh;
+    Primitives::Quad(*backBox);
+    unicorn::video::Mesh* leftBox = new unicorn::video::Mesh;
+    Primitives::Quad(*leftBox);
+    unicorn::video::Mesh* rightBox = new unicorn::video::Mesh;
+    Primitives::Quad(*rightBox);
+    unicorn::video::Mesh* upBox = new unicorn::video::Mesh;
+    Primitives::Quad(*upBox);
+    unicorn::video::Mesh* bottomBox = new unicorn::video::Mesh;
+    Primitives::Quad(*bottomBox);
 
     frontBox->SetMaterial(frontTextureMat);
     backBox->SetMaterial(backTextureMat);
@@ -556,8 +562,10 @@ int main(int argc, char* argv[])
             auto colorMaterial = std::make_shared<unicorn::video::Material>();
             colorMaterial->SetColor(unicorn::video::Color::LightPink());
 
-            unicorn::video::Mesh* pinkBoxGeometry = Primitives::Box();
-            unicorn::video::Mesh* grassQuad = Primitives::Quad();
+            unicorn::video::Mesh* pinkBoxGeometry = new unicorn::video::Mesh;
+            Primitives::Box(*pinkBoxGeometry);
+            unicorn::video::Mesh* grassQuad = new unicorn::video::Mesh;
+            Primitives::Quad(*grassQuad);
             grassQuad->SetMaterial(grassMaterial);
 
 

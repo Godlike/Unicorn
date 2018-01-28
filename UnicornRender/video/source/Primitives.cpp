@@ -19,13 +19,8 @@ namespace unicorn
 {
 namespace video
 {
-Mesh* Primitives::Box(Mesh* mesh)
+Mesh& Primitives::Box(Mesh& mesh)
 {
-    if (nullptr == mesh)
-    {
-        mesh = new Mesh;
-    }
-
     std::vector<Vertex> vertices{{
         //front
         {{-0.5f, -0.5f, 0.5f}, {0.0f, 1.0f}},
@@ -64,7 +59,7 @@ Mesh* Primitives::Box(Mesh* mesh)
         {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
     }};
 
-    mesh->SetMeshData(vertices, {
+    mesh.SetMeshData(vertices, {
                          0, 1, 2, 0, 2, 3,
                          4, 5, 6, 4, 6, 7,
                          8, 9, 10, 8, 10, 11,
@@ -75,13 +70,8 @@ Mesh* Primitives::Box(Mesh* mesh)
     return mesh;
 }
 
-Mesh* Primitives::Quad(Mesh* mesh)
+Mesh& Primitives::Quad(Mesh& mesh)
 {
-    if (nullptr == mesh)
-    {
-        mesh = new Mesh;
-    }
-
     std::vector<Vertex> vertices{{
         {{-0.5f, -0.5f, 0.0f},{0.0f, 1.0f}} ,
         {{0.5f, -0.5f, 0.0f},{1.0f, 1.0f}} ,
@@ -89,18 +79,13 @@ Mesh* Primitives::Quad(Mesh* mesh)
         {{-0.5f, 0.5f, 0.0f},{0.0f, 0.0f}},
     }};
 
-    mesh->SetMeshData(vertices, {0, 1, 2, 2, 3, 0});
+    mesh.SetMeshData(vertices, {0, 1, 2, 2, 3, 0});
 
     return mesh;
 }
 
-Mesh* Primitives::Sphere(float radius, uint32_t rings, uint32_t sectors, Mesh* mesh)
+Mesh& Primitives::Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors)
 {
-    if (nullptr == mesh)
-    {
-        mesh = new Mesh;
-    }
-
     assert(radius > 0);
     assert(rings > 4 || sectors > 4);
 
@@ -147,7 +132,7 @@ Mesh* Primitives::Sphere(float radius, uint32_t rings, uint32_t sectors, Mesh* m
         }
     }
 
-    mesh->SetMeshData(vertices, indices);
+    mesh.SetMeshData(vertices, indices);
 
     return mesh;
 }
@@ -155,9 +140,24 @@ Mesh* Primitives::Sphere(float radius, uint32_t rings, uint32_t sectors, Mesh* m
 namespace
 {
 
-Mesh* ProcessMesh(aiMesh* mesh, aiScene const* scene, std::string const& dir);
+/**
+ * @brief Reads mesh from assimp and creates unicorn::Mesh.
+ * @param [in] mesh pointer to assimp mesh
+ * @param [in] scene assimp hierarhy scene
+ * @param [in] dir directory, where mesh is locating
+ *
+ * @return created unicorn::Mesh
+ */
+Mesh* ProcessMesh(aiMesh const* mesh, aiScene const* scene, std::string const& dir);
 
-void ProcessNode(aiNode* node, aiScene const* scene, std::string const& dir, std::list<Mesh*>& meshes)
+/**
+* @brief Reads each node recursively and calls ProcessMesh for each aiMesh
+* @param [in] node node in scene hierarchy
+* @param [in] scene assimp hierarhy scene
+* @param [in] dir directory, where mesh is locating
+* @param [out] meshes fills list with create meshes
+*/
+void ProcessNode(aiNode const* node, aiScene const* scene, std::string const& dir, std::list<Mesh*>& meshes)
 {
     assert(nullptr != node);
     assert(nullptr != scene);
@@ -173,7 +173,15 @@ void ProcessNode(aiNode* node, aiScene const* scene, std::string const& dir, std
     }
 }
 
-std::vector<std::string> LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string const& directory)
+/**
+* @brief Reads from assimp materials and returns path to texture with given type
+* @param [in] mat assimp material, which holds all visual appearance info
+* @param [in] type texture visual type (albedo, normal map, ao map and so on)
+* @param [in] directory directory, where mesh is locating
+*
+* @return vector of paths
+*/
+std::vector<std::string> LoadMaterialTextures(aiMaterial const* mat, aiTextureType type, std::string const& directory)
 {
     assert(nullptr != mat);
 
@@ -189,7 +197,7 @@ std::vector<std::string> LoadMaterialTextures(aiMaterial* mat, aiTextureType typ
     return textures;
 }
 
-Mesh* ProcessMesh(aiMesh* mesh, aiScene const* scene, std::string const& dir)
+Mesh* ProcessMesh(aiMesh const* mesh, aiScene const* scene, std::string const& dir)
 {
     assert(nullptr != mesh);
     assert(nullptr != scene);
@@ -238,19 +246,16 @@ Mesh* ProcessMesh(aiMesh* mesh, aiScene const* scene, std::string const& dir)
     auto mat = std::make_shared<Material>();
 
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-    unicornMesh->m_diffuse = LoadMaterialTextures(material, aiTextureType_DIFFUSE, dir);
-    unicornMesh->m_normal = LoadMaterialTextures(material, aiTextureType_NORMALS, dir);
-    unicornMesh->m_aoMaps = LoadMaterialTextures(material, aiTextureType_LIGHTMAP, dir);
-    unicornMesh->m_emissive = LoadMaterialTextures(material, aiTextureType_EMISSIVE, dir);
-    unicornMesh->m_metalRougness = LoadMaterialTextures(material, aiTextureType_UNKNOWN, dir);
+    auto diffuseTexture = LoadMaterialTextures(material, aiTextureType_DIFFUSE, dir);
+
     aiColor3D color(0.f, 0.f, 0.f);
     material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
     mat->SetColor({ color.r, color.g, color.b });
 
-    if (!unicornMesh->m_diffuse.empty())
+    if (!diffuseTexture.empty())
     {
         auto diffuseTex = std::make_shared<Texture>();
-        diffuseTex->Load(unicornMesh->m_diffuse.at(0));
+        diffuseTex->Load(diffuseTexture.at(0));
         mat->SetAlbedo(diffuseTex);
     }
     unicornMesh->SetMaterial(mat);

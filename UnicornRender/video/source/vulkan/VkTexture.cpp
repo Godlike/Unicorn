@@ -27,7 +27,7 @@ const vk::DescriptorImageInfo& VkTexture::GetDescriptorImageInfo() const
 }
 
 bool VkTexture::Create(const vk::PhysicalDevice& physicalDevice, const vk::Device& device,
-                       const vk::CommandPool& commandPool, const vk::Queue& queue, std::shared_ptr<Texture> texture)
+                       const vk::CommandPool& commandPool, const vk::Queue& queue, Texture const& texture)
 {
     if(!m_isInitialized)
     {
@@ -36,15 +36,15 @@ bool VkTexture::Create(const vk::PhysicalDevice& physicalDevice, const vk::Devic
             physicalDevice, device,
             vk::BufferUsageFlagBits::eTransferSrc,
             vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent,
-            texture->Size());
+            texture.Size());
         if(!result)
         {
-            LOG_ERROR("Can't allocate staging buffer for texture - %s", texture->Path().c_str());
+            LOG_ERROR("Can't allocate staging buffer for texture - %s", texture.Path().c_str());
             return false;
         }
 
         imageStagingBuffer.Map();
-        imageStagingBuffer.Write(texture->Data());
+        imageStagingBuffer.Write(texture.Data());
         imageStagingBuffer.Unmap();
 
         m_vkImage = new Image(
@@ -52,11 +52,11 @@ bool VkTexture::Create(const vk::PhysicalDevice& physicalDevice, const vk::Devic
             device,
             vk::Format::eR8G8B8A8Unorm,
             vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled | vk::ImageUsageFlagBits::eColorAttachment,
-            texture->Width(),
-            texture->Height());
+            texture.Width(),
+            texture.Height());
         if(!m_vkImage->IsInitialized())
         {
-            LOG_ERROR("Can't allocate vulkan based image for texture - %s", texture->Path().c_str());
+            LOG_ERROR("Can't allocate vulkan based image for texture - %s", texture.Path().c_str());
             delete m_vkImage;
             m_vkImage = nullptr;
             return false;
@@ -91,7 +91,7 @@ bool VkTexture::Create(const vk::PhysicalDevice& physicalDevice, const vk::Devic
 
         if(!result)
         {
-            LOG_ERROR("Can't create sampler for texture - %s", texture->Path().c_str());
+            LOG_ERROR("Can't create sampler for texture - %s", texture.Path().c_str());
             delete m_vkImage;
             m_vkImage = nullptr;
             return false;

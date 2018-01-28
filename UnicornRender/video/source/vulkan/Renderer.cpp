@@ -339,9 +339,9 @@ bool Renderer::RecreateSwapChain()
 void Renderer::ResizeUnifromModelBuffer(VkMesh* /*vkmesh*/)
 {
     m_uniformModel.Destroy();
-    auto nMeshes = m_vkMeshes.size();
+    auto const nMeshes = m_vkMeshes.size();
 
-    size_t bufferSize = (nMeshes == 0) ? m_dynamicAlignment : (nMeshes * m_dynamicAlignment);
+    size_t const bufferSize = (nMeshes == 0) ? m_dynamicAlignment : (nMeshes * m_dynamicAlignment);
 
     m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, bufferSize);
 
@@ -368,7 +368,7 @@ void Renderer::OnMeshMaterialUpdated(Mesh* mesh, VkMesh* vkMesh)
     CreateCommandBuffers();
 }
 
-void Renderer::AddMesh(Mesh* mesh)
+bool Renderer::AddMesh(Mesh* mesh)
 {
     assert(nullptr != mesh);
 
@@ -376,6 +376,7 @@ void Renderer::AddMesh(Mesh* mesh)
     if (!AllocateMaterial(*mesh, *vkmesh))
     {
         LOG_ERROR("Can't allocate material!");
+        return false;
     }
     vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
     vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
@@ -386,17 +387,23 @@ void Renderer::AddMesh(Mesh* mesh)
     m_meshes.push_back(mesh);
 
     ResizeUnifromModelBuffer(vkmesh);
+
+    return true;
 }
 
-void Renderer::AddMeshes(std::list<Mesh*> const& meshes)
+bool Renderer::AddMeshes(std::list<Mesh*> const& meshes)
 {
     for (Mesh* mesh : meshes)
     {
-        AddMesh(mesh);
+        if(!AddMesh(mesh))
+        {
+            return false;
+        }
     }
+    return true;
 }
 
-bool Renderer::DeleteMesh(const Mesh* pMesh)
+void Renderer::DeleteMesh(const Mesh* pMesh)
 {
     assert(nullptr != pMesh);
 
@@ -410,30 +417,14 @@ bool Renderer::DeleteMesh(const Mesh* pMesh)
 
         m_hasDirtyMeshes = true;
     }
-
-    auto meshIt = std::find(m_meshes.begin(), m_meshes.end(), pMesh);
-
-    if (meshIt != m_meshes.end())
-    {
-        delete *meshIt;
-        m_meshes.erase(meshIt);
-
-        return true;
-    }
-
-    return false;
 }
 
-bool Renderer::DeleteMeshes(std::list<Mesh*> const& meshes)
+void Renderer::DeleteMeshes(std::list<Mesh*> const& meshes)
 {
     for (Mesh* mesh : meshes)
     {
-        if (!DeleteMesh(mesh))
-        {
-            return false;
-        }
+        DeleteMesh(mesh);
     }
-    return true;
 }
 
 void Renderer::SetDepthTest(bool enabled)
@@ -1295,7 +1286,7 @@ bool Renderer::CreateCommandBuffers()
 
             for(auto pVkMesh : m_vkMeshes)
             {
-                if (!pVkMesh->IsVisible())
+                if (!pVkMesh->GetMesh().GetMaterial()->IsVisible())
                 {
                     ++j;
                     continue;
@@ -1304,11 +1295,11 @@ bool Renderer::CreateCommandBuffers()
                 if(pVkMesh->IsValid())
                 {
                     glm::vec4 colorPush(
-                        pVkMesh->GetColor(), // xyz - color
-                        pVkMesh->IsColored() // w - boolean flag for 1 enabled color or 0 disabled color
+                        pVkMesh->GetMesh().GetMaterial()->GetColor(), // xyz - color
+                        pVkMesh->GetMesh().GetMaterial()->IsColored() // w - boolean flag for 1 enabled color or 0 disabled color
                     );
 
-                    if(pVkMesh->IsWired())
+                    if(pVkMesh->GetMesh().GetMaterial()->IsWired())
                     {
                         m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_pipelines.wired);
                     }
@@ -1333,7 +1324,7 @@ bool Renderer::CreateCommandBuffers()
                         0, static_cast<uint32_t>(descriptorSets.size()),
                         descriptorSets.data(), 1, &dynamicOffset);
 
-                    m_commandBuffers[i].drawIndexed(pVkMesh->IndicesSize(), 1, 0, 0, 0);
+                    m_commandBuffers[i].drawIndexed(static_cast<uint32_t>(pVkMesh->GetMesh().GetIndices().size()), 1, 0, 0, 0);
 
                     ++j;
                 }
@@ -1374,9 +1365,9 @@ bool Renderer::CreatePipelineCache()
 
 bool Renderer::LoadEngineHelpData()
 {
-    auto texture = std::make_shared<Texture>();
+    Texture texture;
     static std::string const path = "data/textures/replace_me.jpg";
-    if(!texture->Load(path))
+    if(!texture.Load(path))
     {
         LOG_ERROR( "Can't find texture with path - %s", path.c_str() );
         return false;
@@ -1428,13 +1419,12 @@ bool Renderer::LoadEngineHelpData()
 
     m_pReplaceMeMaterial->texture = replaceMeTexture;
     m_pReplaceMeMaterial->descriptorSet = descriptorSet;
-    m_pReplaceMeMaterial->handle = texture->GetId();
+    m_pReplaceMeMaterial->handle = texture.GetId();
     m_pReplaceMeMaterial->device = m_vkLogicalDevice;
     m_pReplaceMeMaterial->pool = m_descriptorPool;
 
     m_materials.push_back(m_pReplaceMeMaterial);
 
-    texture->FreeData();
     return true;
 }
 
@@ -1482,7 +1472,16 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
         if(meshMaterialIt == m_materials.end())
         {
             VkTexture* vkTexture = new VkTexture(m_vkLogicalDevice);
-            vkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, meshMaterial->GetAlbedo());
+            vkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, *meshMaterial->GetAlbedo().get());
+
+            if(!vkTexture->IsInitialized())
+            {
+                LOG_ERROR("Can't allocate vulkan texture!");
+
+                delete vkTexture;
+
+                return false;
+            }
 
             vk::DescriptorSetAllocateInfo allocInfo;
             allocInfo.descriptorPool = m_descriptorPool;
@@ -1493,12 +1492,9 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
 
             auto result = m_vkLogicalDevice.allocateDescriptorSets(&allocInfo, &descriptorSet);
 
-            if(result != vk::Result::eSuccess || !vkTexture->IsInitialized())
+            if(result != vk::Result::eSuccess)
             {
                 LOG_ERROR("Can't allocate sampler descriptor sets!");
-
-                vkTexture->Delete();
-                delete vkTexture;
 
                 return false;
             }

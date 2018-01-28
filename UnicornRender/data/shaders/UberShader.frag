@@ -17,7 +17,6 @@ void main() {
     }
     else
     {
-        vec4 texColor = texture(inTextureSampler, inTextureCoordinate);
-        outColor = texColor;
+        outColor = texture(inTextureSampler, inTextureCoordinate);
     }
 }

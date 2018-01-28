@@ -28,6 +28,7 @@ public:
      */
     UNICORN_EXPORT Texture(std::string const& path = std::string());
 
+    /** @brief Destructs texture, calls FreeData() */
     UNICORN_EXPORT ~Texture();
 
     /**

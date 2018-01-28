@@ -85,12 +85,7 @@ public:
     /** @brief Event triggered when vertices are changed */
     wink::signal<wink::slot<void()>> VerticesUpdated;
 
-    std::vector<std::string> m_diffuse;
-    std::vector<std::string> m_normal;
-    std::vector<std::string> m_aoMaps;
-    std::vector<std::string> m_emissive;
-    std::vector<std::string> m_metalRougness;
-
+    /** @brief Name of mesh */
     std::string name;
 private:
     /** @brief Updates renderer info about this mesh */

@@ -78,26 +78,10 @@ public:
     /** @brief Returns model matrix */
     const glm::mat4& GetModelMatrix() const;
 
-    /** @brief Returns vertices count */
-    uint32_t VerticesSize() const;
-
-    /** @brief Returns indices count */
-    uint32_t IndicesSize() const;
-
-    /** @brief Returns @c true if mesh is colored and @c false otherwise */
-    bool IsColored() const;
-
-    /** @brief Returns @c true if mesh is in wired mode and @c false otherwise */
-    bool IsWired() const;
-
-    /** @brief Returns true if mesh is visible, false otherwise */
-    bool IsVisible() const;
-
-    /**
-     * @brief Returns color of mesh in RGB format
-     * @return color of mesh in RGB format
-     */
-    glm::vec3 GetColor() const;
+    Mesh const& GetMesh() const
+    {
+        return m_mesh;
+    }
 
     /**
      * @brief Updates data if material of mesh was updated

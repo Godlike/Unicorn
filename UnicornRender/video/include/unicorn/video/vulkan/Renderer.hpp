@@ -97,10 +97,10 @@ public:
     void Deinit() override;
     bool Render() override;
     bool RecreateSwapChain();
-    void AddMesh(Mesh* mesh) override;
-    void AddMeshes(std::list<Mesh*> const& meshes) override;
-    bool DeleteMesh(Mesh const* pMesh) override;
-    bool DeleteMeshes(std::list<Mesh*> const& meshes) override;
+    bool AddMesh(Mesh* mesh) override;
+    bool AddMeshes(std::list<Mesh*> const& meshes) override;
+    void DeleteMesh(Mesh const* pMesh) override;
+    void DeleteMeshes(std::list<Mesh*> const& meshes) override;
     void SetDepthTest(bool enabled) override;
 
 private:
