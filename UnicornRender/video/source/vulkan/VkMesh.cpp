@@ -42,6 +42,11 @@ const glm::mat4& VkMesh::GetModelMatrix() const
     return m_mesh.GetModelMatrix();
 }
 
+Mesh const& VkMesh::GetMesh() const
+{
+    return m_mesh;
+}
+
 void VkMesh::AllocateOnGPU()
 {
     m_vertexBuffer.Destroy();

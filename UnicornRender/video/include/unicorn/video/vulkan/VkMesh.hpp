@@ -78,10 +78,8 @@ public:
     /** @brief Returns model matrix */
     const glm::mat4& GetModelMatrix() const;
 
-    Mesh const& GetMesh() const
-    {
-        return m_mesh;
-    }
+    /** @brief Returns constant reference to unciron::Mesh */
+    Mesh const& GetMesh() const;
 
     /**
      * @brief Updates data if material of mesh was updated

@@ -23,14 +23,7 @@ add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS
     -DVULKAN_HPP_NO_SMART_HANDLE
 )
 
-## GLM
 include(GlmConfig)
-find_package(GLM REQUIRED)
-
-if (NOT GLM_FOUND)
-    add_subdirectory(${GLM_ROOT_DIR})
-endif()
-
 include(Utils)
 include(loguru)
 include(stb)
