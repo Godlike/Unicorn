@@ -198,7 +198,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
 
     unicorn::system::input::Action const& action = keyboardEvent.action;
 
-    if(action == Action::Release || action == Action::Repeat)
+    if(action == Action::Release)
     {
         return;
     }
@@ -320,27 +320,6 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
             {
                 pCameraFpsController->Rotate(static_cast<float>(glm::radians(1.)), glm::vec3(0., 0., 1.));
             }
-            break;
-        }
-        case Key::Up:
-        {
-            break;
-        }
-        case Key::Down:
-        {
-            break;
-        }
-        case Key::Left:
-        {
-            break;
-        }
-        case Key::Right:
-        {
-            auto sc = spriteMaterial->GetSpriteCoordinates();
-            if (sc.x > 63)
-                sc.x = -32;
-            sc.x += 32;
-            spriteMaterial->SetSpriteCoordinates(sc.x, sc.y, sc.z, sc.w);
             break;
         }
         case Key::C:
@@ -553,8 +532,14 @@ int main(int argc, char* argv[])
             auto spriteTexture = std::make_shared<unicorn::video::Texture>();
             spriteTexture->Load("data/textures/sprite.png");
 
+            auto grassTexture = std::make_shared<unicorn::video::Texture>();
+            grassTexture->Load("data/textures/grass.png");
+
             spriteMaterial = std::make_shared<unicorn::video::Material>();
             spriteMaterial->SetAlbedo(spriteTexture);
+
+            auto grassMaterial = std::make_shared<unicorn::video::Material>();
+            grassMaterial->SetAlbedo(grassTexture);
 
             auto colorMaterial = std::make_shared<unicorn::video::Material>();
             colorMaterial->SetColor(unicorn::video::Color::LightPink());
@@ -575,6 +560,16 @@ int main(int argc, char* argv[])
             {
                 mesh->TranslateLocal({ -5, 0, 0});
                 mesh->UpdateTransformMatrix();
+            }
+
+            for(uint32_t i = 0; i < 64; ++i)
+            {
+                unicorn::video::Mesh* grassQuad = Primitives::Quad();
+                grassQuad->SetMaterial(grassMaterial);
+                glm::vec3 const randomTranslate = { std::rand() % 80 - 20, 0, std::rand() % 80 - 20 };
+                grassQuad->TranslateLocal(randomTranslate);
+                vkRenderer->AddMesh(grassQuad);
+                meshes.push_back(grassQuad);
             }
 
             pinkBoxGeometry->UpdateTransformMatrix();

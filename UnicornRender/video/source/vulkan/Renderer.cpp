@@ -19,6 +19,7 @@
 #include <unicorn/video/Material.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 #include <set>
 #include <algorithm>
@@ -382,6 +383,9 @@ void Renderer::AddMesh(Mesh* mesh)
 
     vkmesh->AllocateOnGPU();
 
+    glm::vec3 cameraPosition;
+
+    //glm::decompose(camera)
     m_vkMeshes.push_back(vkmesh);
     m_meshes.push_back(mesh);
 
