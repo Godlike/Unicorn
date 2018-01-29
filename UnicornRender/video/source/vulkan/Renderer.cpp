@@ -19,7 +19,6 @@
 #include <unicorn/video/Material.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/matrix_decompose.hpp>
 
 #include <set>
 #include <algorithm>
@@ -383,9 +382,6 @@ void Renderer::AddMesh(Mesh* mesh)
 
     vkmesh->AllocateOnGPU();
 
-    glm::vec3 cameraPosition;
-
-    //glm::decompose(camera)
     m_vkMeshes.push_back(vkmesh);
     m_meshes.push_back(mesh);
 
@@ -1126,6 +1122,8 @@ bool Renderer::CreateGraphicsPipeline()
     colorBlendAttachment.colorBlendOp = vk::BlendOp::eAdd;
     colorBlendAttachment.srcColorBlendFactor = vk::BlendFactor::eSrcAlpha;
     colorBlendAttachment.dstColorBlendFactor = vk::BlendFactor::eOneMinusSrcAlpha;
+    //colorBlendAttachment.srcAlphaBlendFactor = vk::BlendFactor::eOne;
+    //colorBlendAttachment.dstAlphaBlendFactor = vk::BlendFactor::eOneMinusSrcAlpha;
 
     vk::PipelineColorBlendStateCreateInfo colorBlending;
     colorBlending.attachmentCount = 1;

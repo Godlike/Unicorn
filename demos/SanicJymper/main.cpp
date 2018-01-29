@@ -562,27 +562,21 @@ int main(int argc, char* argv[])
                 mesh->UpdateTransformMatrix();
             }
 
-            for(uint32_t i = 0; i < 64; ++i)
+            meshes.push_back(pinkBoxGeometry);
+            meshes.insert(meshes.end(), gltfModel.begin(), gltfModel.end());
+            meshes.insert(meshes.end(), cubemap.begin(), cubemap.end());
+
+            for (uint32_t i = 0; i < 512; ++i)
             {
                 unicorn::video::Mesh* grassQuad = Primitives::Quad();
                 grassQuad->SetMaterial(grassMaterial);
                 glm::vec3 const randomTranslate = { std::rand() % 80 - 20, 0, std::rand() % 80 - 20 };
+                //glm::vec3 const predictedTranslate = { 0, 0, i * 2 + 5 };
                 grassQuad->TranslateLocal(randomTranslate);
-                vkRenderer->AddMesh(grassQuad);
                 meshes.push_back(grassQuad);
             }
 
-            pinkBoxGeometry->UpdateTransformMatrix();
-
-            vkRenderer->AddMesh(pinkBoxGeometry);
-            vkRenderer->AddMeshes(gltfModel);
-            vkRenderer->AddMeshes(cubemap);
-            vkRenderer->AddMesh(spriteQuad);
-
-            meshes.push_back(pinkBoxGeometry);
-            meshes.push_back(spriteQuad);
-            meshes.insert(meshes.end(), gltfModel.begin(), gltfModel.end());
-            meshes.insert(meshes.end(), cubemap.begin(), cubemap.end());
+            vkRenderer->AddMeshes(meshes);
 
             colorMaterial->SetColor(unicorn::video::Color::Blue());
 
