@@ -11,9 +11,13 @@ namespace unicorn
 namespace video
 {
 Mesh::Mesh() :
-    m_material(nullptr)
+    m_material(new Material)
+    /* Here we initialize with new Material
+       When we will call SetMaterial first time in constructor,
+       m_material will be nullptr and m_material->DataUpdated.disconnect will crash. */
 {
     auto const defaultMaterial = std::make_shared<Material>();
+
     SetMaterial(defaultMaterial);
 }
 
@@ -32,7 +36,7 @@ void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<ui
 
 void Mesh::SetMaterial(std::shared_ptr<Material> material)
 {
-    // TODO: m_material->DataUpdated.clear();
+    m_material->DataUpdated.disconnect(this, &Mesh::OnMaterialUpdated);
 
     m_material = material;
 
