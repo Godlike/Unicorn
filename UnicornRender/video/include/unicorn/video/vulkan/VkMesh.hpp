@@ -78,7 +78,7 @@ public:
     /** @brief Returns model matrix */
     const glm::mat4& GetModelMatrix() const;
 
-    /** @brief Returns constant reference to unciron::Mesh */
+    /** @brief Returns constant reference to unicorn::Mesh */
     Mesh const& GetMesh() const;
 
     /**

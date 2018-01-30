@@ -5,16 +5,14 @@
 */
 
 #include <unicorn/video/Mesh.hpp>
+#include <unicorn/utility/Logger.hpp>
 
 namespace unicorn
 {
 namespace video
 {
-Mesh::Mesh() :
-    m_material(new Material)
-    /* Here we initialize with new Material
-       When we will call SetMaterial first time in constructor,
-       m_material will be nullptr and m_material->DataUpdated.disconnect will crash. */
+Mesh::Mesh() : name("DefaultName"), m_material(nullptr)
+
 {
     auto const defaultMaterial = std::make_shared<Material>();
 
@@ -23,7 +21,7 @@ Mesh::Mesh() :
 
 Mesh::~Mesh()
 {
-    m_material->DataUpdated.clear();
+    m_material->DataUpdated.disconnect(this, &Mesh::OnMaterialUpdated);
 }
 
 void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
@@ -36,7 +34,16 @@ void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<ui
 
 void Mesh::SetMaterial(std::shared_ptr<Material> material)
 {
-    m_material->DataUpdated.disconnect(this, &Mesh::OnMaterialUpdated);
+    if (material == nullptr)
+    {
+        LOG_WARNING("Can't set new material to mesh %s", name);
+        return;
+    }
+
+    if (m_material != nullptr)
+    {
+        m_material->DataUpdated.disconnect(this, &Mesh::OnMaterialUpdated);
+    }
 
     m_material = material;
 

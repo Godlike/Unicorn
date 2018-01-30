@@ -45,11 +45,6 @@ public:
     UNICORN_EXPORT bool IsLoaded() const;
 
     /**
-     * @brief Remove texture data from memory
-     */
-    UNICORN_EXPORT void FreeData();
-
-    /**
      * @brief Returns size of texture
      * @return size of texture, 0 if was not loaded
      */
@@ -85,6 +80,9 @@ public:
      */
     UNICORN_EXPORT uint32_t GetId() const;
 private:
+    /** @brief Remove texture data from memory */
+    void FreeData();
+
     uint32_t m_width;
     uint32_t m_height;
     uint32_t m_channels;

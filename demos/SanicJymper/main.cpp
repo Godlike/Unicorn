@@ -583,15 +583,15 @@ int main(int argc, char* argv[])
 
             pinkBoxGeometry->UpdateTransformMatrix();
 
-            vkRenderer->AddMesh(pinkBoxGeometry);
-            vkRenderer->AddMeshes(gltfModel);
-            vkRenderer->AddMeshes(cubemap);
-            vkRenderer->AddMesh(grassQuad);
-
             meshes.push_back(pinkBoxGeometry);
-            meshes.push_back(grassQuad);
             meshes.insert(meshes.end(), gltfModel.begin(), gltfModel.end());
             meshes.insert(meshes.end(), cubemap.begin(), cubemap.end());
+            meshes.push_back(grassQuad);
+
+            for(auto mesh : meshes)
+            {
+                vkRenderer->AddMesh(mesh);
+            }
 
             colorMaterial->SetColor(unicorn::video::Color::Blue());
 

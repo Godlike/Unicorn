@@ -384,22 +384,9 @@ bool Renderer::AddMesh(Mesh* mesh)
     vkmesh->AllocateOnGPU();
 
     m_vkMeshes.push_back(vkmesh);
-    m_meshes.push_back(mesh);
 
     ResizeUnifromModelBuffer(vkmesh);
 
-    return true;
-}
-
-bool Renderer::AddMeshes(std::list<Mesh*> const& meshes)
-{
-    for (Mesh* mesh : meshes)
-    {
-        if(!AddMesh(mesh))
-        {
-            return false;
-        }
-    }
     return true;
 }
 
@@ -416,14 +403,6 @@ void Renderer::DeleteMesh(const Mesh* pMesh)
         m_vkMeshes.erase(vkMeshIt);
 
         m_hasDirtyMeshes = true;
-    }
-}
-
-void Renderer::DeleteMeshes(std::list<Mesh*> const& meshes)
-{
-    for (Mesh* mesh : meshes)
-    {
-        DeleteMesh(mesh);
     }
 }
 

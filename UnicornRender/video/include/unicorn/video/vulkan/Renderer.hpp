@@ -98,9 +98,7 @@ public:
     bool Render() override;
     bool RecreateSwapChain();
     bool AddMesh(Mesh* mesh) override;
-    bool AddMeshes(std::list<Mesh*> const& meshes) override;
     void DeleteMesh(Mesh const* pMesh) override;
-    void DeleteMeshes(std::list<Mesh*> const& meshes) override;
     void SetDepthTest(bool enabled) override;
 
 private:
@@ -139,9 +137,6 @@ private:
     std::shared_ptr<VkMaterial> m_pReplaceMeMaterial;
 
     std::list<std::weak_ptr<VkMaterial>> m_materials;
-
-    //! Array of geometry meshes
-    std::list<Mesh*> m_meshes;
 
     std::array<vk::DescriptorSetLayout, 2> m_descriptorSetLayouts; // 0 - mvp, 1 - albedo
     vk::DescriptorSet m_mvpDescriptorSet;

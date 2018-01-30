@@ -70,30 +70,17 @@ public:
     UNICORN_EXPORT virtual void SetDepthTest(bool enabled) = 0;
 
     /**
-    * @brief Adds mesh to rendering system
+    * @brief Adds mesh to the rendering system
     * @param [in] mesh mesh data
-    * @return true if mesh was successfully added to system
+    * @return true if mesh was successfully added to the system
     */
     UNICORN_EXPORT virtual bool AddMesh(Mesh* mesh) = 0;
-
-    /**
-    * @brief Adds multiple meshes simultaneously to rendering system
-    * @param [in] meshes meshes data
-    * @return true if meshes was successfully added to system
-    */
-    UNICORN_EXPORT virtual bool AddMeshes(std::list<Mesh*> const& meshes) = 0;
 
     /**
     * @brief Removes mesh from rendering system
     * @param [in] pMesh pointer to mesh
     */
     UNICORN_EXPORT virtual void DeleteMesh(Mesh const* pMesh) = 0;
-
-    /**
-    * @brief Removes multiple meshes simultaneously from rendering system
-    * @param [in] meshes list of pointer to meshes
-    */
-    UNICORN_EXPORT virtual void DeleteMeshes(std::list<Mesh*> const& meshes) = 0;
 
     //! Main view camera, must never be nullptr
     Camera const* camera;

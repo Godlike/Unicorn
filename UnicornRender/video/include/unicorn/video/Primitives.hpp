@@ -25,7 +25,7 @@ public:
     *  @brief Fills given mesh with cube data
     *
     *  @param[in, out] mesh geometry mesh
-    *  @return pointer to filled mesh
+    *  @return reference to filled mesh
     */
     UNICORN_EXPORT static Mesh& Box(Mesh& mesh);
 
@@ -33,7 +33,7 @@ public:
     *  @brief Fills given mesh with quad data
     *
     *  @param[in, out] mesh geometry mesh
-    *  @return pointer to updated mesh
+    *  @return reference to updated mesh
     */
     UNICORN_EXPORT static Mesh& Quad(Mesh& mesh);
 
@@ -57,6 +57,8 @@ public:
     * Supported formats:
     * - gltf 2.0 (without binary glb)
     * - obj
+    *
+    * @todo use storage handler when assimp's issues regarding loading from memory are fixed
     *
     *  @param[in] path path to model
     *  @return list of pointers to meshes
