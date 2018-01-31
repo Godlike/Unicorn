@@ -14,9 +14,7 @@ namespace video
 Mesh::Mesh() : name("DefaultName"), m_material(nullptr)
 
 {
-    auto const defaultMaterial = std::make_shared<Material>();
-
-    SetMaterial(defaultMaterial);
+    SetMaterial(std::make_shared<Material>());
 }
 
 Mesh::~Mesh()
@@ -36,7 +34,7 @@ void Mesh::SetMaterial(std::shared_ptr<Material> material)
 {
     if (material == nullptr)
     {
-        LOG_WARNING("Can't set new material to mesh %s", name);
+        LOG_WARNING("Can't set new material to mesh %s", name.c_str());
         return;
     }
 
