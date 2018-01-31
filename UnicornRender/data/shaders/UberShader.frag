@@ -19,7 +19,6 @@ void main() {
     else
     {
         vec2 spriteUV = inSpriteCoord.xy + (inTextureCoordinate * inSpriteCoord.zw);
-        vec4 texColor = texture(inTextureSampler, spriteUV);
-        outColor = texColor;
+        outColor = texture(inTextureSampler, spriteUV);
     }
 }

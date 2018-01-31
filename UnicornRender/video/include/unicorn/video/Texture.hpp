@@ -28,6 +28,7 @@ public:
      */
     UNICORN_EXPORT Texture(std::string const& path = std::string());
 
+    /** @brief Destructs texture, calls FreeData() */
     UNICORN_EXPORT ~Texture();
 
     /**
@@ -42,11 +43,6 @@ public:
      * @return true if loaded and false if not
      */
     UNICORN_EXPORT bool IsLoaded() const;
-
-    /**
-     * @brief Remove texture data from memory
-     */
-    UNICORN_EXPORT void FreeData();
 
     /**
      * @brief Returns size of texture
@@ -84,6 +80,9 @@ public:
      */
     UNICORN_EXPORT uint32_t GetId() const;
 private:
+    /** @brief Remove texture data from memory */
+    void FreeData();
+
     uint32_t m_width;
     uint32_t m_height;
     uint32_t m_channels;

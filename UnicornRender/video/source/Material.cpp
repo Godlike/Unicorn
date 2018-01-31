@@ -123,8 +123,14 @@ void Material::SetNormalizedSpriteCoordinates(float x, float y, float width, flo
     DataUpdated.emit();
 }
 
-UNICORN_EXPORT glm::vec4 Material::GetSpriteCoordinates() const
+glm::vec4 Material::GetSpriteCoordinates() const
 {
+    if(m_albedo == nullptr)
+    {
+        LOG_WARNING("Asks for sprite coordinates without albedo texture!");
+        return GetNormalizedSpriteCoordinates();
+    }
+
     glm::vec4 const denormalized = { m_spriteCoordinates.x * m_albedo->Width(),
         m_spriteCoordinates.y * m_albedo->Height(),
         m_spriteCoordinates.z * m_albedo->Width(),

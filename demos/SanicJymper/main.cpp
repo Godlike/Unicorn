@@ -107,7 +107,7 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
             cubematerial->SetColor(color);
 
             unicorn::video::Mesh* mesh = new unicorn::video::Mesh;
-            unicorn::video::Primitives::Sphere(1, 32, 32, mesh);
+            unicorn::video::Primitives::Sphere(*mesh, 1, 32, 32);
             mesh->SetMaterial(cubematerial);
             glm::vec3 const randomTranslate = { std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 };
             mesh->SetTranslation(mesh->GetTranslation() + randomTranslate);
@@ -427,12 +427,18 @@ std::list<unicorn::video::Mesh*> MakeCubeMap()
 
     using unicorn::video::Primitives;
 
-    unicorn::video::Mesh* frontBox = Primitives::Quad();
-    unicorn::video::Mesh* backBox = Primitives::Quad();
-    unicorn::video::Mesh* leftBox = Primitives::Quad();
-    unicorn::video::Mesh* rightBox = Primitives::Quad();
-    unicorn::video::Mesh* upBox = Primitives::Quad();
-    unicorn::video::Mesh* bottomBox = Primitives::Quad();
+    unicorn::video::Mesh* frontBox = new unicorn::video::Mesh;
+    Primitives::Quad(*frontBox);
+    unicorn::video::Mesh* backBox = new unicorn::video::Mesh;
+    Primitives::Quad(*backBox);
+    unicorn::video::Mesh* leftBox = new unicorn::video::Mesh;
+    Primitives::Quad(*leftBox);
+    unicorn::video::Mesh* rightBox = new unicorn::video::Mesh;
+    Primitives::Quad(*rightBox);
+    unicorn::video::Mesh* upBox = new unicorn::video::Mesh;
+    Primitives::Quad(*upBox);
+    unicorn::video::Mesh* bottomBox = new unicorn::video::Mesh;
+    Primitives::Quad(*bottomBox);
 
     frontBox->SetMaterial(frontTextureMat);
     backBox->SetMaterial(backTextureMat);
@@ -544,9 +550,8 @@ int main(int argc, char* argv[])
             auto colorMaterial = std::make_shared<unicorn::video::Material>();
             colorMaterial->SetColor(unicorn::video::Color::LightPink());
 
-            unicorn::video::Mesh* pinkBoxGeometry = Primitives::Box();
-            unicorn::video::Mesh* spriteQuad = Primitives::Quad();
-            spriteQuad->SetMaterial(spriteMaterial);
+            unicorn::video::Mesh* pinkBoxGeometry = new unicorn::video::Mesh;
+            Primitives::Box(*pinkBoxGeometry);
 
             spriteMaterial->SetSpriteCoordinates(0, 0, 32, 32);
 
@@ -555,7 +560,7 @@ int main(int argc, char* argv[])
             auto gltfModel = Primitives::LoadModel("data/models/glTF/DamagedHelmet.gltf");
 
             pCameraFpsController->TranslateLocal({ 0, 0, -5 });
-            spriteQuad->TranslateLocal({ 0, -0.1, -2 });
+
             for (auto mesh : gltfModel)
             {
                 mesh->TranslateLocal({ -5, 0, 0});
@@ -568,15 +573,19 @@ int main(int argc, char* argv[])
 
             for (uint32_t i = 0; i < 512; ++i)
             {
-                unicorn::video::Mesh* grassQuad = Primitives::Quad();
+                unicorn::video::Mesh* grassQuad = new unicorn::video::Mesh;
+                Primitives::Quad(*grassQuad);
+
                 grassQuad->SetMaterial(grassMaterial);
                 glm::vec3 const randomTranslate = { std::rand() % 80 - 20, 0, std::rand() % 80 - 20 };
-                //glm::vec3 const predictedTranslate = { 0, 0, i * 2 + 5 };
                 grassQuad->TranslateLocal(randomTranslate);
                 meshes.push_back(grassQuad);
             }
 
-            vkRenderer->AddMeshes(meshes);
+            for(auto mesh : meshes)
+            {
+                vkRenderer->AddMesh(mesh);
+            }
 
             colorMaterial->SetColor(unicorn::video::Color::Blue());
 
