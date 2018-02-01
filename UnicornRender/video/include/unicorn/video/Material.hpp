@@ -87,13 +87,42 @@ public:
     /** @brief Returns color */
     UNICORN_EXPORT glm::vec3 GetColor() const;
 
-    UNICORN_EXPORT void SetSpriteCoordinates(int32_t x, int32_t y, int32_t width, int32_t height);
+    /**
+     * @brief Sets texture cordinates
+     *
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
+    UNICORN_EXPORT void SetTextureCoordinates(int32_t x, int32_t y, int32_t width, int32_t height);
 
-    UNICORN_EXPORT void SetNormalizedSpriteCoordinates(float x, float y, float width, float height);
+    /**
+    * @brief Sets normalized texture cordinates
+    *
+    * @param x
+    * @param y
+    * @param width
+    * @param height
+    */
+    UNICORN_EXPORT void SetNormalizedTextureCoordinates(float x, float y, float width, float height);
 
-    UNICORN_EXPORT glm::vec4 GetSpriteCoordinates() const;
+    /** @brief Drops previous set texture coordinates */
+    UNICORN_EXPORT void SetDefaultTextureCoodinates();
 
-    UNICORN_EXPORT glm::vec4 GetNormalizedSpriteCoordinates() const;
+    /**
+    * @brief Returns texture coordinates
+    *
+    * @return texture coordinates
+    */
+    UNICORN_EXPORT glm::vec4 GetTextureCoordinates() const;
+
+    /**
+    * @brief Returns normalized texture coordinates
+    *
+    * @return normalized texture coordinates
+    */
+    UNICORN_EXPORT glm::vec4 GetNormalizedTextureCoordinates() const;
 
     /** @brief Signal for material update notification */
     wink::signal<wink::slot<void()>> DataUpdated;

@@ -94,7 +94,7 @@ glm::vec3 Material::GetColor() const
     return m_color;
 }
 
-void Material::SetSpriteCoordinates(int32_t x, int32_t y, int32_t width, int32_t height)
+void Material::SetTextureCoordinates(int32_t x, int32_t y, int32_t width, int32_t height)
 {
     if (!m_albedo->IsLoaded())
     {
@@ -110,7 +110,7 @@ void Material::SetSpriteCoordinates(int32_t x, int32_t y, int32_t width, int32_t
     DataUpdated.emit();
 }
 
-void Material::SetNormalizedSpriteCoordinates(float x, float y, float width, float height)
+void Material::SetNormalizedTextureCoordinates(float x, float y, float width, float height)
 {
     if (!m_albedo->IsLoaded())
     {
@@ -123,12 +123,23 @@ void Material::SetNormalizedSpriteCoordinates(float x, float y, float width, flo
     DataUpdated.emit();
 }
 
-glm::vec4 Material::GetSpriteCoordinates() const
+void Material::SetDefaultTextureCoodinates()
+{
+    if (m_albedo == nullptr)
+    {
+        LOG_WARNING("Trying to set default coordinates without albedo texture set!");
+    }
+    m_spriteCoordinates = { 0, 0, m_albedo->Width(), m_albedo->Height() };
+
+    DataUpdated.emit();
+}
+
+glm::vec4 Material::GetTextureCoordinates() const
 {
     if(m_albedo == nullptr)
     {
         LOG_WARNING("Asks for sprite coordinates without albedo texture!");
-        return GetNormalizedSpriteCoordinates();
+        return GetNormalizedTextureCoordinates();
     }
 
     glm::vec4 const denormalized = { m_spriteCoordinates.x * m_albedo->Width(),
@@ -138,7 +149,7 @@ glm::vec4 Material::GetSpriteCoordinates() const
     return denormalized;
 }
 
-glm::vec4 Material::GetNormalizedSpriteCoordinates() const
+glm::vec4 Material::GetNormalizedTextureCoordinates() const
 {
     return m_spriteCoordinates;
 }

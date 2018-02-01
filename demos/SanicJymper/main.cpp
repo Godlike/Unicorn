@@ -553,7 +553,7 @@ int main(int argc, char* argv[])
             unicorn::video::Mesh* pinkBoxGeometry = new unicorn::video::Mesh;
             Primitives::Box(*pinkBoxGeometry);
 
-            spriteMaterial->SetSpriteCoordinates(0, 0, 32, 32);
+            spriteMaterial->SetTextureCoordinates(0, 0, 32, 32);
 
             pinkBoxGeometry->SetMaterial(colorMaterial);
 

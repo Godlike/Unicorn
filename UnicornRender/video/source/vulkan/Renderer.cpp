@@ -1291,7 +1291,7 @@ bool Renderer::CreateCommandBuffers()
 
                     m_commandBuffers[i].pushConstants(m_pipelineLayout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(glm::vec4), glm::value_ptr(colorPush));
                     m_commandBuffers[i].pushConstants(m_pipelineLayout, vk::ShaderStageFlagBits::eVertex, sizeof(glm::vec4), sizeof(glm::vec4),
-                        glm::value_ptr(pVkMesh->GetMesh().GetMaterial()->GetNormalizedSpriteCoordinates()));
+                        glm::value_ptr(pVkMesh->GetMesh().GetMaterial()->GetNormalizedTextureCoordinates()));
                     vk::Buffer vertexBuffer[] = {pVkMesh->GetVertexBuffer()};
                     uint32_t dynamicOffset = j * static_cast<uint32_t>(m_dynamicAlignment);
                     m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);
