@@ -151,25 +151,33 @@ namespace
 Mesh* ProcessMesh(aiMesh const* mesh, aiScene const* scene, std::string const& dir);
 
 /**
-* @brief Reads each node recursively and calls ProcessMesh for each aiMesh
-* @param [in] node node in scene hierarchy
+* @brief Reads each node and calls ProcessMesh for each aiMesh
+* @param [in] root the root node in the scene tree
 * @param [in] scene assimp hierarhy scene
 * @param [in] dir directory, where mesh is locating
 * @param [out] meshes fills list with create meshes
 */
-void ProcessNode(aiNode const* node, aiScene const* scene, std::string const& dir, std::list<Mesh*>& meshes)
+void ProcessNodes(aiNode const* root, aiScene const* scene, std::string const& dir, std::list<Mesh*>& meshes)
 {
-    assert(nullptr != node);
+    assert(nullptr != root);
     assert(nullptr != scene);
 
-    for (unsigned int i = 0; i < node->mNumMeshes; i++)
+    std::vector<aiNode const*> stack{ root };
+    while (!stack.empty())
     {
-        aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.push_back(ProcessMesh(mesh, scene, dir));
-    }
-    for (unsigned int i = 0; i < node->mNumChildren; i++)
-    {
-        ProcessNode(node->mChildren[i], scene, dir, meshes);
+        aiNode const* currentNode = stack.back();
+        stack.pop_back();
+
+        for (unsigned int i = 0; i < currentNode->mNumMeshes; ++i)
+        {
+            aiMesh* mesh = scene->mMeshes[currentNode->mMeshes[i]];
+            meshes.push_back(ProcessMesh(mesh, scene, dir));
+        }
+
+        for (unsigned int i = 0; i < currentNode->mNumChildren; ++i)
+        {
+            stack.push_back(currentNode->mChildren[i]);
+        }
     }
 }
 
@@ -285,7 +293,7 @@ std::list<Mesh*> Primitives::LoadModel(std::string const& path)
 
     std::string dir = path.substr(0, path.find_last_of('/'));
 
-    ProcessNode(scene->mRootNode, scene, dir, meshes);
+    ProcessNodes(scene->mRootNode, scene, dir, meshes);
 
     return meshes;
 }
