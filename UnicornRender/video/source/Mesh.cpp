@@ -14,7 +14,11 @@ namespace video
 Mesh::Mesh() : name("DefaultName"), m_material(nullptr)
 
 {
-    SetMaterial(std::make_shared<Material>());
+    m_material = std::make_shared<Material>();
+
+    m_material->DataUpdated.connect(this, &Mesh::OnMaterialUpdated);
+
+    SetMaterial(m_material);
 }
 
 Mesh::~Mesh()
@@ -32,16 +36,9 @@ void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<ui
 
 void Mesh::SetMaterial(std::shared_ptr<Material> material)
 {
-    if (material == nullptr)
-    {
-        LOG_WARNING("Can't set new material to mesh %s", name.c_str());
-        return;
-    }
+    assert(nullptr != material);
 
-    if (m_material != nullptr)
-    {
-        m_material->DataUpdated.disconnect(this, &Mesh::OnMaterialUpdated);
-    }
+    m_material->DataUpdated.disconnect(this, &Mesh::OnMaterialUpdated);
 
     m_material = material;
 
