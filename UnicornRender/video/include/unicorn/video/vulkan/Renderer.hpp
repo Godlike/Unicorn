@@ -98,7 +98,7 @@ public:
     bool Render() override;
     bool RecreateSwapChain();
     bool AddMesh(Mesh* mesh) override;
-    void DeleteMesh(Mesh const* pMesh) override;
+    bool DeleteMesh(Mesh const* pMesh) override;
     void SetDepthTest(bool enabled) override;
 
 private:

@@ -17,7 +17,7 @@ namespace unicorn
 {
 namespace video
 {
-/** @brief  Fills meshes with geometric primitives data */
+/** @brief  Fills meshes with geometric primitive's data */
 class Primitives
 {
 public:

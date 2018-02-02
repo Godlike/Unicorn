@@ -18,7 +18,7 @@ Mesh::Mesh() : name("DefaultName"), m_material(nullptr)
 
     m_material->DataUpdated.connect(this, &Mesh::OnMaterialUpdated);
 
-    SetMaterial(m_material);
+    MaterialUpdated.emit();
 }
 
 Mesh::~Mesh()

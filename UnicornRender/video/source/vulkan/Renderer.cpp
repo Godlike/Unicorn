@@ -390,7 +390,7 @@ bool Renderer::AddMesh(Mesh* mesh)
     return true;
 }
 
-void Renderer::DeleteMesh(const Mesh* pMesh)
+bool Renderer::DeleteMesh(const Mesh* pMesh)
 {
     assert(nullptr != pMesh);
 
@@ -403,7 +403,11 @@ void Renderer::DeleteMesh(const Mesh* pMesh)
         m_vkMeshes.erase(vkMeshIt);
 
         m_hasDirtyMeshes = true;
+
+        return true;
     }
+
+    return false;
 }
 
 void Renderer::SetDepthTest(bool enabled)
