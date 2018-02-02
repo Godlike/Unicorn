@@ -573,15 +573,15 @@ int main(int argc, char* argv[])
 
             auto gltfModel = Primitives::LoadModel("data/models/glTF/DamagedHelmet.gltf");
 
-            pCameraFpsController->TranslateLocal({ 0, 0, -5 });
-            grassQuad->TranslateLocal({ 0, -0.1, -2 });
+            pCameraFpsController->TranslateLocal({ 0, 0, 1 });
+            pCameraFpsController->SetOrientation({ 0, 0, -1 });
+            grassQuad->TranslateLocal({ 0, 0, -4 });
             for (auto mesh : gltfModel)
             {
-                mesh->TranslateLocal({ -5, 0, 0});
+                mesh->TranslateLocal({ 0, 0, -5});
                 mesh->UpdateTransformMatrix();
             }
-
-            pinkBoxGeometry->UpdateTransformMatrix();
+            pinkBoxGeometry->TranslateLocal({ -5, 0, -5 });
 
             meshes.push_back(pinkBoxGeometry);
             meshes.insert(meshes.end(), gltfModel.begin(), gltfModel.end());

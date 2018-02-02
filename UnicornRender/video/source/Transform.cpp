@@ -94,6 +94,13 @@ void Transform::TranslateLocal(glm::vec3 distance)
     SetTranslation(GetTranslation() + rightTranslation + upTranslation + forwardTranslation);
 }
 
+void Transform::TransformByMatrix(glm::mat4 const& transformMatrix)
+{
+    m_transformMatrix = transformMatrix * m_transformMatrix;
+
+    m_isDirty = true;
+}
+
 void Transform::TranslateWorld(glm::vec3 distance)
 {
     glm::vec3 const xTranslation = m_worldX * distance.x;
@@ -175,7 +182,7 @@ void Transform::UpdateTransformMatrix()
         auto const R = glm::mat4_cast(m_orientation) * glm::mat4(1.0);
         auto const S = glm::scale(glm::mat4(1.0), { m_scale });
 
-        m_transformMatrix = T * R * S;
+        m_transformMatrix = T * R * S * m_transformMatrix;
 
         m_isDirty = false;
     }

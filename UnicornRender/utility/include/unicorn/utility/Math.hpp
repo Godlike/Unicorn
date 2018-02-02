@@ -8,6 +8,7 @@
 #define UNICORN_UTILITY_MATH_HPP
 
 #include <glm/glm.hpp>
+#include <assimp/matrix4x4.h>
 
 namespace unicorn
 {
@@ -64,6 +65,15 @@ glm::quat CalculateOrientationQuaternion(glm::vec3 direction, glm::vec3 desiredU
  */
 glm::vec3 RotateAroundPoint(glm::vec3 originalTranslation, float radians,
     glm::vec3 axis, glm::vec3 point);
+
+/**
+* @brief Casts assimp matrix to glm
+*
+* @param [in] from assimp matrix
+*
+* @return casted assimp to glm matrix
+*/
+glm::mat4 AssimpMatrixToGlm(aiMatrix4x4 const& from);
 
 }
 }
