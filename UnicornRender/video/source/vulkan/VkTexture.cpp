@@ -6,7 +6,7 @@
 
 #include <unicorn/video/vulkan/VkTexture.hpp>
 #include <unicorn/video/Texture.hpp>
-#include <unicorn/utility/Logger.hpp>
+#include <mule/Logger.hpp>
 
 namespace unicorn
 {

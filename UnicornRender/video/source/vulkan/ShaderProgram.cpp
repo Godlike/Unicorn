@@ -5,8 +5,8 @@
 */
 
 #include <unicorn/video/vulkan/ShaderProgram.hpp>
-#include <unicorn/utility/asset/SimpleStorage.hpp>
-#include <unicorn/utility/Logger.hpp>
+#include <mule/asset/SimpleStorage.hpp>
+#include <mule/Logger.hpp>
 #include <unicorn/video/Mesh.hpp>
 
 namespace unicorn
@@ -18,7 +18,7 @@ namespace unicorn
             ShaderProgram::ShaderProgram(vk::Device device, const std::string& vertShader, const std::string& fragShader)
                 : m_isCreated(false), m_device(device)
             {
-                using namespace unicorn::utility::asset;
+                using namespace mule::asset;
 
                 SimpleStorage& storage = SimpleStorage::Instance();
                 Handler simpleVertShaderHandler = storage.Get(vertShader);

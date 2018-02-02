@@ -1,6 +1,6 @@
 /*
 * Copyright (C) 2017 by Godlike
-* This code is licensed under the MIT license (MIT) 
+* This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
 
@@ -8,7 +8,7 @@
 #define UNICORN_SETTINGS_HPP
 
 #include <unicorn/utility/SharedMacros.hpp>
-#include <unicorn/utility/templates/Singleton.hpp>
+#include <mule/templates/Singleton.hpp>
 
 #include <string>
 #include <cstdint>
@@ -17,7 +17,7 @@ namespace unicorn
 {
 
 /** @brief  Provides an access to application settings */
-class Settings : public utility::templates::Singleton<Settings>
+class Settings : public mule::templates::Singleton<Settings>
 {
 public:
     /** @brief  Initializes logging system
@@ -76,7 +76,7 @@ public:
      */
     UNICORN_EXPORT void SetUnicornEngineName(const std::string&& name) { m_unicornEngineName = name; }
 private:
-    friend class utility::templates::Singleton<Settings>;
+    friend class mule::templates::Singleton<Settings>;
 
     /** @brief  Constructs an object with default settings */
     UNICORN_EXPORT Settings();

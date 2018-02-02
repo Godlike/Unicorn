@@ -5,7 +5,7 @@
 */
 
 #include <unicorn/video/vulkan/Buffer.hpp>
-#include <unicorn/utility/Logger.hpp>
+#include <mule/Logger.hpp>
 #include <unicorn/video/vulkan/VulkanHelper.hpp>
 #include <unicorn/video/vulkan/Image.hpp>
 

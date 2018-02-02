@@ -27,6 +27,11 @@ include(GlmConfig)
 include(Utils)
 include(loguru)
 
+if (NOT MULE_FOUND)
+    option(MULE_BUILD_TESTS "Build Mule tests." OFF)
+    add_subdirectory(godlike/Mule)
+endif()
+
 include(stb)
 include(utility)
 include(system)
@@ -52,12 +57,6 @@ endif()
 include(InstallInfo)
 
 message(STATUS "Version: ${UNICORN_VERSION}")
-
-install( FILES ${LOGURU_INCLUDE_DIR}/loguru.hpp
-    DESTINATION ${UNICORN_INSTALL_INCLUDE_DIR}
-    COMPONENT unicorn_extra
-    PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
-)
 
 install( DIRECTORY ${WINK_SIGNALS_INCLUDE_DIR}/wink
     DESTINATION ${UNICORN_INSTALL_INCLUDE_DIR}
@@ -91,6 +90,7 @@ include_directories(
 
 include_directories(
     ${UNICORN_RENDER_INCLUDE_DIRS}
+    ${MULE_INCLUDE_DIR}
 )
 
 include_directories( SYSTEM
@@ -161,6 +161,7 @@ set_target_properties(
 
 target_link_libraries(${UNICORN_RENDER_LIB}
     ${WINDOW_MANAGER_LIBS}
+    ${MULE_UTILITIES_LIB}
     ${VULKAN_LIBRARY}
     ${ASSIMP_LIB}
 )

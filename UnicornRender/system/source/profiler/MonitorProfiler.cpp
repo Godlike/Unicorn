@@ -8,7 +8,7 @@
 
 #include <unicorn/system/Manager.hpp>
 
-#include <unicorn/utility/Logger.hpp>
+#include <mule/Logger.hpp>
 
 #include <vector>
 #include <cmath>

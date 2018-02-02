@@ -15,7 +15,7 @@
 
 #include <unicorn/system/input/Gamepad.hpp>
 
-#include <unicorn/utility/Logger.hpp>
+#include <mule/Logger.hpp>
 
 namespace unicorn
 {

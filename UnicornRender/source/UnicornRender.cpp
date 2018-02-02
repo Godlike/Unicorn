@@ -5,9 +5,9 @@
 */
 
 #include <unicorn/UnicornRender.hpp>
-#include <unicorn/utility/Logger.hpp>
+#include <mule/Logger.hpp>
 #include <unicorn/video/Graphics.hpp>
-#include <unicorn/utility/asset/SimpleStorage.hpp>
+#include <mule/asset/SimpleStorage.hpp>
 
 #include <unicorn/system/Input.hpp>
 #include <unicorn/system/Manager.hpp>
@@ -58,7 +58,7 @@ bool UnicornRender::Init(ProfilingMask::MaskType profilingMask)
         return false;
     }
 
-    unicorn::utility::asset::SimpleStorage::Instance();
+    mule::asset::SimpleStorage::Instance();
     LOG_INFO("Engine initialization started.");
 
     m_pSystemManager = new system::Manager();

@@ -9,7 +9,7 @@
 
 #include <vulkan/vulkan.hpp>
 #include <unicorn/system/Manager.hpp>
-#include <unicorn/utility/templates/Singleton.hpp>
+#include <mule/templates/Singleton.hpp>
 
 namespace unicorn
 {
@@ -22,7 +22,7 @@ class Device;
 /**
  * @brief Vulkan API context which creates vk::Instance once
  */
-class Context : public utility::templates::Singleton<Context>
+class Context : public mule::templates::Singleton<Context>
 {
 public:
     Context();
@@ -66,7 +66,7 @@ public:
     */
     std::vector<char const*> const& GetInstanceExtensions();
 private:
-    friend class utility::templates::Singleton<Context>;
+    friend class mule::templates::Singleton<Context>;
 
     Context(Context const& other) = delete;
     Context& operator=(Context const& other) = delete;

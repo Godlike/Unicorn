@@ -4,9 +4,9 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#include <unicorn/utility/Logger.hpp>
+#include <mule/Logger.hpp>
 #include <unicorn/video/Texture.hpp>
-#include <unicorn/utility/asset/SimpleStorage.hpp>
+#include <mule/asset/SimpleStorage.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -42,8 +42,8 @@ bool Texture::Load(const std::string& path)
 
     m_path = path;
 
-    utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
-    utility::asset::Handler textureHandler = storage.Get(m_path);
+    mule::asset::SimpleStorage& storage = mule::asset::SimpleStorage::Instance();
+    mule::asset::Handler textureHandler = storage.Get(m_path);
 
     if (!textureHandler.IsValid())
     {

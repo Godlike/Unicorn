@@ -5,9 +5,10 @@
 */
 
 #include <unicorn/video/Primitives.hpp>
-#include <unicorn/utility/Logger.hpp>
 #include <unicorn/video/Texture.hpp>
 #include <unicorn/utility/Math.hpp>
+
+#include <mule/Logger.hpp>
 
 #include <glm/gtc/constants.hpp>
 #include <assimp/Importer.hpp>

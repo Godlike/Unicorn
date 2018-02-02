@@ -7,7 +7,7 @@
 #include <unicorn/video/Graphics.hpp>
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/video/Camera.hpp>
-#include <unicorn/utility/Logger.hpp>
+#include <mule/Logger.hpp>
 
 #include <unicorn/system/Manager.hpp>
 #include <unicorn/system/Window.hpp>

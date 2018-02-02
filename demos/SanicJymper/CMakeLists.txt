@@ -9,7 +9,7 @@ project(SanicJymper)
 
 include(UnicornRenderConfig)
 
-include_directories(${UNICORN_RENDER_INCLUDE_DIRS})
+include_directories(${UNICORN_RENDER_INCLUDE_DIRS} ${MULE_INCLUDE_DIR})
 include_directories(SYSTEM ${UNICORN_RENDER_EXTERNAL_INCLUDE_DEPENDENCIES})
 
 if (UNIX)
@@ -18,4 +18,4 @@ endif ()
 
 add_executable(${PROJECT_NAME} main.cpp)
 
-target_link_libraries(${PROJECT_NAME} ${UNICORN_RENDER_LIB})
+target_link_libraries(${PROJECT_NAME} ${UNICORN_RENDER_LIB} ${MULE_UTILITIES_LIB})

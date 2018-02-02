@@ -7,7 +7,7 @@
 #include <unicorn/system/Window.hpp>
 
 #include <unicorn/system/adapter/Helper.hpp>
-#include <unicorn/utility/Logger.hpp>
+#include <mule/Logger.hpp>
 
 namespace unicorn
 {

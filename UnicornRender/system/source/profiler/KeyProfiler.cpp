@@ -10,7 +10,7 @@
 
 #include <unicorn/system/input/Modifier.hpp>
 
-#include <unicorn/utility/Logger.hpp>
+#include <mule/Logger.hpp>
 
 namespace unicorn
 {

@@ -5,7 +5,7 @@
 */
 
 #include <unicorn/video/vulkan/Image.hpp>
-#include <unicorn/utility/Logger.hpp>
+#include <mule/Logger.hpp>
 #include <unicorn/video/vulkan/VulkanHelper.hpp>
 
 namespace unicorn

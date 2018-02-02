@@ -6,7 +6,7 @@
 
 #include <unicorn/video/vulkan/Context.hpp>
 #include <unicorn/Settings.hpp>
-#include <unicorn/utility/Logger.hpp>
+#include <mule/Logger.hpp>
 
 namespace unicorn
 {
