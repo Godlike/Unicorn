@@ -79,6 +79,8 @@ public:
     /**
     * @brief Removes internal rendering mesh data from rendering system
     *
+    * @note pMesh is not invalidated within the method
+    *
     * @param [in] pMesh pointer to mesh
     *
     * @return true if data was found and succesfully deleted

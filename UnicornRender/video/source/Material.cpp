@@ -23,12 +23,24 @@ Material::Material()
 
 void Material::SetAlbedo(std::shared_ptr<Texture> albedo)
 {
+    if(nullptr == albedo)
+    {
+        m_isColored = true;
+
+        m_albedo = nullptr;
+
+        return;
+    }
+
     if(!albedo->IsLoaded())
     {
         LOG_ERROR("Setting not loaded texture to material!");
+
         return;
     }
+
     m_isColored = false;
+
     m_albedo = albedo;
 
     DataUpdated.emit();
@@ -51,7 +63,6 @@ void Material::SetIsColored(bool colored)
 void Material::RemoveAlbedo()
 {
     SetAlbedo(nullptr);
-    SetIsColored(true);
 }
 
 bool Material::IsColored() const

@@ -11,14 +11,13 @@ namespace unicorn
 {
 namespace video
 {
-Mesh::Mesh() : name("DefaultName"), m_material(nullptr)
-
+Mesh::Mesh() :
+    name("DefaultName"),
+    m_material(nullptr)
 {
     m_material = std::make_shared<Material>();
 
     m_material->DataUpdated.connect(this, &Mesh::OnMaterialUpdated);
-
-    MaterialUpdated.emit();
 }
 
 Mesh::~Mesh()

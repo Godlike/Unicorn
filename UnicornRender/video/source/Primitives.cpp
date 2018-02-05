@@ -173,7 +173,7 @@ void ProcessNodes(aiNode const* root, aiScene const* scene, std::string const& d
 
         for (uint32_t i = 0; i < frame.first->mNumMeshes; ++i)
         {
-            aiMesh* mesh = scene->mMeshes[frame.first->mMeshes[i]];
+            aiMesh const* mesh = scene->mMeshes[frame.first->mMeshes[i]];
             auto unicornMesh = ProcessMesh(mesh, scene, dir);
 
             unicornMesh->TransformByMatrix(frame.second);
