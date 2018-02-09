@@ -81,6 +81,9 @@ public:
     /** @brief Returns constant reference to unicorn::Mesh */
     Mesh const& GetMesh() const;
 
+    /** @brief Returns constant shared pointer to unicorn::Material */
+    std::shared_ptr<Material> const GetMaterial() const;
+
     /**
      * @brief Updates data if material of mesh was updated
      */

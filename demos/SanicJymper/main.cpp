@@ -568,7 +568,6 @@ int main(int argc, char* argv[])
             Primitives::Quad(*grassQuad);
             grassQuad->SetMaterial(grassMaterial);
 
-
             pinkBoxGeometry->SetMaterial(colorMaterial);
 
             auto gltfModel = Primitives::LoadModel("data/models/glTF/DamagedHelmet.gltf");

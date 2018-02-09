@@ -47,6 +47,11 @@ Mesh const& VkMesh::GetMesh() const
     return m_mesh;
 }
 
+std::shared_ptr<Material> const VkMesh::GetMaterial() const
+{
+    return m_mesh.GetMaterial();
+}
+
 void VkMesh::AllocateOnGPU()
 {
     m_vertexBuffer.Destroy();
