@@ -42,6 +42,16 @@ const glm::mat4& VkMesh::GetModelMatrix() const
     return m_mesh.GetModelMatrix();
 }
 
+Mesh const& VkMesh::GetMesh() const
+{
+    return m_mesh;
+}
+
+std::shared_ptr<Material> const VkMesh::GetMaterial() const
+{
+    return m_mesh.GetMaterial();
+}
+
 void VkMesh::AllocateOnGPU()
 {
     m_vertexBuffer.Destroy();
@@ -81,39 +91,9 @@ vk::Buffer VkMesh::GetVertexBuffer() const
     return m_vertexBuffer.GetVkBuffer();
 }
 
-uint32_t VkMesh::VerticesSize() const
-{
-    return static_cast<uint32_t>(m_mesh.GetVertices().size());
-}
-
 vk::Buffer VkMesh::GetIndexBuffer() const
 {
     return m_indexBuffer.GetVkBuffer();
-}
-
-uint32_t VkMesh::IndicesSize() const
-{
-    return static_cast<uint32_t>(m_mesh.GetIndices().size());
-}
-
-bool VkMesh::IsColored() const
-{
-    return m_mesh.GetMaterial().IsColored();
-}
-
-bool VkMesh::IsWired() const
-{
-    return m_mesh.GetMaterial().IsWired();
-}
-
-bool VkMesh::IsVisible() const
-{
-    return m_mesh.GetMaterial().IsVisible();
-}
-
-glm::vec3 VkMesh::GetColor() const
-{
-    return m_mesh.GetMaterial().color;
 }
 
 void VkMesh::OnMaterialUpdated()

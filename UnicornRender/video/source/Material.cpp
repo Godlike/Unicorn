@@ -13,7 +13,8 @@ namespace unicorn
 namespace video
 {
 Material::Material()
-    : color(Color::Red())
+    : m_color(Color::Red())
+    , m_spriteCoordinates(0, 0, 1, 1)
     , m_isColored(true)
     , m_isWired(false)
     , m_isVisible(true)
@@ -21,31 +22,48 @@ Material::Material()
 {
 }
 
-void Material::SetAlbedo(Texture const* albedo)
+void Material::SetAlbedo(std::shared_ptr<Texture> albedo)
 {
-    m_isColored = false;
-    if(albedo == nullptr || !albedo->IsLoaded())
+    if(nullptr == albedo)
     {
-        LOG_ERROR("Setting not loaded texture to material!");
+        m_isColored = true;
+
+        m_albedo = nullptr;
+
         return;
     }
+
+    if(!albedo->IsLoaded())
+    {
+        LOG_ERROR("Setting not loaded texture to material!");
+
+        return;
+    }
+
+    m_isColored = false;
+
     m_albedo = albedo;
+
+    DataUpdated.emit();
 }
 
 void Material::SetIsWired(bool wireframe)
 {
     m_isWired = wireframe;
+
+    DataUpdated.emit();
 }
 
 void Material::SetIsColored(bool colored)
 {
     m_isColored = colored;
+
+    DataUpdated.emit();
 }
 
 void Material::RemoveAlbedo()
 {
     SetAlbedo(nullptr);
-    m_isColored = true;
 }
 
 bool Material::IsColored() const
@@ -61,6 +79,8 @@ bool Material::IsWired() const
 void Material::SetIsVisible(bool visible)
 {
     m_isVisible = visible;
+
+    DataUpdated.emit();
 }
 
 bool Material::IsVisible() const
@@ -68,9 +88,82 @@ bool Material::IsVisible() const
     return m_isVisible;
 }
 
-const Texture* Material::GetAlbedo() const
+std::shared_ptr<Texture> Material::GetAlbedo() const
 {
     return m_albedo;
 }
+
+void Material::SetColor(glm::vec3 color)
+{
+    m_color = color;
+
+    DataUpdated.emit();
+}
+
+glm::vec3 Material::GetColor() const
+{
+    return m_color;
+}
+
+void Material::SetTextureCoordinates(int32_t x, int32_t y, int32_t width, int32_t height)
+{
+    if (!m_albedo->IsLoaded())
+    {
+        LOG_WARNING("Setting sprite coordinates, when texture was not set, nothing will be set.");
+        return;
+    }
+
+    m_spriteCoordinates = { static_cast<float>(x) / m_albedo->Width(),
+        static_cast<float>(y) / m_albedo->Height(),
+        static_cast<float>(width) / m_albedo->Width(),
+        static_cast<float>(height) / m_albedo->Height() };
+
+    DataUpdated.emit();
+}
+
+void Material::SetNormalizedTextureCoordinates(float x, float y, float width, float height)
+{
+    if (!m_albedo->IsLoaded())
+    {
+        LOG_WARNING("Setting sprite coordinates, when texture was not set, nothing will be set.");
+        return;
+    }
+
+    m_spriteCoordinates = { x, y, width, height };
+
+    DataUpdated.emit();
+}
+
+void Material::SetDefaultTextureCoodinates()
+{
+    if (m_albedo == nullptr)
+    {
+        LOG_WARNING("Trying to set default coordinates without albedo texture set!");
+    }
+    m_spriteCoordinates = { 0, 0, m_albedo->Width(), m_albedo->Height() };
+
+    DataUpdated.emit();
+}
+
+glm::vec4 Material::GetTextureCoordinates() const
+{
+    if(m_albedo == nullptr)
+    {
+        LOG_WARNING("Asks for sprite coordinates without albedo texture!");
+        return GetNormalizedTextureCoordinates();
+    }
+
+    glm::vec4 const denormalized = { m_spriteCoordinates.x * m_albedo->Width(),
+        m_spriteCoordinates.y * m_albedo->Height(),
+        m_spriteCoordinates.z * m_albedo->Width(),
+        m_spriteCoordinates.w * m_albedo->Height() };
+    return denormalized;
+}
+
+glm::vec4 Material::GetNormalizedTextureCoordinates() const
+{
+    return m_spriteCoordinates;
+}
+
 }
 }

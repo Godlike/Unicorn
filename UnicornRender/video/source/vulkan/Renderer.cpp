@@ -111,19 +111,8 @@ void Renderer::Deinit()
     if(m_isInitialized)
     {
         {
-            // Create a copy of mesh list to delete all meshes
-            std::list<Mesh*> meshes(m_meshes);
-
-            for(auto& pMesh : meshes)
-            {
-                DeleteMesh(pMesh);
-            }
-
-            LOG_DEBUG("Deleted %u meshes", static_cast<uint32_t>(meshes.size()));
-
             if(!m_vkMeshes.empty())
             {
-                // Also free up all remaining vk meshes
                 for(auto& pVkMesh : m_vkMeshes)
                 {
                     DeleteVkMesh(pVkMesh);
@@ -171,7 +160,7 @@ QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
             indices.graphicsFamily = index;
         }
 
-        std::tie(result, presentSupport) = device.getSurfaceSupportKHR(index, m_vkWindowSurface);
+        std::tie(result, presentSupport) = device.getSurfaceSupportKHR(static_cast<uint32_t>(index), m_vkWindowSurface);
 
         if(queueFamily.queueCount > 0 && presentSupport)
         {
@@ -187,7 +176,8 @@ QueueFamilyIndices Renderer::FindQueueFamilies(const vk::PhysicalDevice& device)
     return indices;
 }
 
-bool Renderer::FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features, vk::Format& returnFormat) const
+bool Renderer::FindSupportedFormat(const std::vector<vk::Format>& candidates, vk::ImageTiling tiling,
+                                   vk::FormatFeatureFlags features, vk::Format& returnFormat) const
 {
     for(const auto& format : candidates)
     {
@@ -336,47 +326,22 @@ bool Renderer::RecreateSwapChain()
 {
     m_vkLogicalDevice.waitIdle();
 
-    if(CreateSwapChain() &&
-        CreateImageViews() &&
-        CreateDepthBuffer() &&
-        CreateRenderPass() &&
-        CreateGraphicsPipeline() &&
-        CreateFramebuffers() &&
-        CreateCommandBuffers())
-    {
-        return true;
-    }
-    return false;
+    return CreateSwapChain() &&
+           CreateImageViews() &&
+           CreateDepthBuffer() &&
+           CreateRenderPass() &&
+           CreateGraphicsPipeline() &&
+           CreateFramebuffers() &&
+           CreateCommandBuffers();
 }
 
-Mesh* Renderer::SpawnMesh(unicorn::video::Material const& material)
-{
-    auto mesh = new Mesh(material);
-    auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
-
-    if(!AllocateMaterial(*mesh, *vkmesh))
-    {
-        LOG_ERROR("Can't allocate material!");
-        return nullptr;
-    }
-
-    vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
-    vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
-
-    m_vkMeshes.push_back(vkmesh);
-    m_meshes.push_back(mesh);
-
-    ResizeUnifromModelBuffer(vkmesh);
-
-    return mesh;
-}
 
 void Renderer::ResizeUnifromModelBuffer(VkMesh* /*vkmesh*/)
 {
     m_uniformModel.Destroy();
-    auto nMeshes = m_vkMeshes.size();
+    auto const nMeshes = m_vkMeshes.size();
 
-    size_t bufferSize = (nMeshes == 0) ? m_dynamicAlignment : (nMeshes * m_dynamicAlignment);
+    size_t const bufferSize = (nMeshes == 0) ? m_dynamicAlignment : (nMeshes * m_dynamicAlignment);
 
     m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, bufferSize);
 
@@ -403,25 +368,41 @@ void Renderer::OnMeshMaterialUpdated(Mesh* mesh, VkMesh* vkMesh)
     CreateCommandBuffers();
 }
 
+bool Renderer::AddMesh(Mesh* mesh)
+{
+    assert(nullptr != mesh);
+
+    auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
+    if (!AllocateMaterial(*mesh, *vkmesh))
+    {
+        LOG_ERROR("Can't allocate material!");
+        return false;
+    }
+    vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
+    vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
+
+    vkmesh->AllocateOnGPU();
+
+    m_vkMeshes.push_back(vkmesh);
+
+    ResizeUnifromModelBuffer(vkmesh);
+
+    return true;
+}
+
 bool Renderer::DeleteMesh(const Mesh* pMesh)
 {
+    assert(nullptr != pMesh);
+
     auto vkMeshIt = std::find_if(m_vkMeshes.begin(), m_vkMeshes.end(), [=](VkMesh* p) ->bool { return *p == *pMesh; });
 
-    if(vkMeshIt != m_vkMeshes.end())
+    if (vkMeshIt != m_vkMeshes.end())
     {
         DeleteVkMesh(*vkMeshIt);
 
         m_vkMeshes.erase(vkMeshIt);
 
         m_hasDirtyMeshes = true;
-    }
-
-    auto meshIt = std::find(m_meshes.begin(), m_meshes.end(), pMesh);
-
-    if(meshIt != m_meshes.end())
-    {
-        delete *meshIt;
-        m_meshes.erase(meshIt);
 
         return true;
     }
@@ -506,11 +487,6 @@ void Renderer::FreeGraphicsPipeline()
         {
             m_vkLogicalDevice.destroyPipeline(m_pipelines.solid);
             m_pipelines.solid = nullptr;
-        }
-        if(m_pipelines.blend)
-        {
-            m_vkLogicalDevice.destroyPipeline(m_pipelines.blend);
-            m_pipelines.blend = nullptr;
         }
         if(m_pipelines.wired)
         {
@@ -613,13 +589,14 @@ void Renderer::FreeEngineHelpData()
 
 bool Renderer::PrepareUniformBuffers()
 {
-    size_t uboAlignment = static_cast<size_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
+    auto uboAlignment = static_cast<size_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
     m_dynamicAlignment = (sizeof(glm::mat4) / uboAlignment) * uboAlignment + ((sizeof(glm::mat4) % uboAlignment) > 0 ? uboAlignment : 0);
 
     m_uniformCameraData.projection = camera->projection;
     m_uniformCameraData.view = camera->view;
 
-    m_uniformViewProjection.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, sizeof(UniformCameraData));
+    m_uniformViewProjection.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible
+        | vk::MemoryPropertyFlagBits::eHostCoherent, sizeof(UniformCameraData));
     m_uniformViewProjection.Map();
     m_uniformViewProjection.Write(&m_uniformCameraData);
 
@@ -718,15 +695,15 @@ bool Renderer::PickPhysicalDevice()
 
 bool Renderer::CreateLogicalDevice()
 {
-    QueueFamilyIndices indices = FindQueueFamilies(m_vkPhysicalDevice);
+    QueueFamilyIndices const indices = FindQueueFamilies(m_vkPhysicalDevice);
 
     std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
     std::set<int> uniqueQueueFamilies = {indices.graphicsFamily, indices.presentFamily};
     float queuePriority = 1.0f;
 
-    for(int queueFamily : uniqueQueueFamilies)
+    for(uint32_t queueFamily : uniqueQueueFamilies)
     {
-        vk::DeviceQueueCreateInfo queueCreateInfo({}, queueFamily, 1, &queuePriority);
+        vk::DeviceQueueCreateInfo const queueCreateInfo({}, queueFamily, 1, &queuePriority);
         queueCreateInfos.push_back(queueCreateInfo);
     }
 
@@ -757,8 +734,8 @@ bool Renderer::CreateLogicalDevice()
         LOG_ERROR("Can't initialize Vulkan logical device!");
         return false;
     }
-    m_graphicsQueue = m_vkLogicalDevice.getQueue(indices.graphicsFamily, 0);
-    m_presentQueue = m_vkLogicalDevice.getQueue(indices.presentFamily, 0);
+    m_graphicsQueue = m_vkLogicalDevice.getQueue(static_cast<uint32_t>(indices.graphicsFamily), 0);
+    m_presentQueue = m_vkLogicalDevice.getQueue(static_cast<uint32_t>(indices.presentFamily), 0);
 
     return true;
 }
@@ -1037,7 +1014,7 @@ bool Renderer::CreateDescriptionSetLayout()
     pipelineLayoutInfo.pSetLayouts = m_descriptorSetLayouts.data();
 
     vk::PushConstantRange pushConstanRange;
-    pushConstanRange.setSize(sizeof( glm::vec4));
+    pushConstanRange.setSize(sizeof(glm::vec4) * 2); // color and texture coordinates
     pushConstanRange.setStageFlags(vk::ShaderStageFlagBits::eVertex);
 
     pipelineLayoutInfo.pushConstantRangeCount = 1;
@@ -1088,7 +1065,7 @@ bool Renderer::CreateGraphicsPipeline()
     vk::PipelineRasterizationStateCreateInfo rasterizer;
     rasterizer.lineWidth = 1.0f;
     rasterizer.cullMode = vk::CullModeFlagBits::eNone;
-    rasterizer.frontFace = vk::FrontFace::eCounterClockwise;
+    rasterizer.frontFace = vk::FrontFace::eClockwise;
     rasterizer.polygonMode = vk::PolygonMode::eFill;
 
     vk::PipelineMultisampleStateCreateInfo multisampling; // TODO: configure MSAA at global level.
@@ -1115,7 +1092,12 @@ bool Renderer::CreateGraphicsPipeline()
 
     vk::PipelineColorBlendAttachmentState colorBlendAttachment;
     colorBlendAttachment.colorWriteMask = vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
-    colorBlendAttachment.blendEnable = VK_FALSE;
+    colorBlendAttachment.blendEnable = VK_TRUE;
+    colorBlendAttachment.colorBlendOp = vk::BlendOp::eAdd;
+    colorBlendAttachment.srcColorBlendFactor = vk::BlendFactor::eSrcAlpha;
+    colorBlendAttachment.dstColorBlendFactor = vk::BlendFactor::eOneMinusSrcAlpha;
+    //colorBlendAttachment.srcAlphaBlendFactor = vk::BlendFactor::eOne;
+    //colorBlendAttachment.dstAlphaBlendFactor = vk::BlendFactor::eOneMinusSrcAlpha;
 
     vk::PipelineColorBlendStateCreateInfo colorBlending;
     colorBlending.attachmentCount = 1;
@@ -1147,25 +1129,10 @@ bool Renderer::CreateGraphicsPipeline()
     pipelineInfo.basePipelineIndex = -1; // Optional
 
     //Solid pipeline
-
     std::tie(result, m_pipelines.solid) = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo);
     if(result != vk::Result::eSuccess)
     {
         LOG_ERROR("Can't create solid pipeline.");
-        return false;
-    }
-
-    // Alpha blended pipeline
-
-    colorBlendAttachment.blendEnable = VK_TRUE;
-    colorBlendAttachment.colorBlendOp = vk::BlendOp::eAdd;
-    colorBlendAttachment.srcColorBlendFactor = vk::BlendFactor::eSrcColor;
-    colorBlendAttachment.dstColorBlendFactor = vk::BlendFactor::eOneMinusSrcColor;
-
-    std::tie(result, m_pipelines.blend) = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo);
-    if(result != vk::Result::eSuccess)
-    {
-        LOG_ERROR("Can't create blend pipeline.");
         return false;
     }
 
@@ -1304,7 +1271,7 @@ bool Renderer::CreateCommandBuffers()
 
             for(auto pVkMesh : m_vkMeshes)
             {
-                if (!pVkMesh->IsVisible())
+                if (!pVkMesh->GetMaterial()->IsVisible())
                 {
                     ++j;
                     continue;
@@ -1313,11 +1280,11 @@ bool Renderer::CreateCommandBuffers()
                 if(pVkMesh->IsValid())
                 {
                     glm::vec4 colorPush(
-                        pVkMesh->GetColor(), // xyz - color
-                        pVkMesh->IsColored() // w - boolean flag for 1 enabled color or 0 disabled color
+                        pVkMesh->GetMaterial()->GetColor(), // xyz - color
+                        pVkMesh->GetMaterial()->IsColored() // w - boolean flag for 1 enabled color or 0 disabled color
                     );
 
-                    if(pVkMesh->IsWired())
+                    if(pVkMesh->GetMaterial()->IsWired())
                     {
                         m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_pipelines.wired);
                     }
@@ -1326,7 +1293,9 @@ bool Renderer::CreateCommandBuffers()
                         m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_pipelines.solid);
                     }
 
-                    m_commandBuffers[i].pushConstants(m_pipelineLayout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(colorPush), glm::value_ptr(colorPush));
+                    m_commandBuffers[i].pushConstants(m_pipelineLayout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(glm::vec4), glm::value_ptr(colorPush));
+                    m_commandBuffers[i].pushConstants(m_pipelineLayout, vk::ShaderStageFlagBits::eVertex, sizeof(glm::vec4), sizeof(glm::vec4),
+                        glm::value_ptr(pVkMesh->GetMesh().GetMaterial()->GetNormalizedTextureCoordinates()));
                     vk::Buffer vertexBuffer[] = {pVkMesh->GetVertexBuffer()};
                     uint32_t dynamicOffset = j * static_cast<uint32_t>(m_dynamicAlignment);
                     m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);
@@ -1342,7 +1311,7 @@ bool Renderer::CreateCommandBuffers()
                         0, static_cast<uint32_t>(descriptorSets.size()),
                         descriptorSets.data(), 1, &dynamicOffset);
 
-                    m_commandBuffers[i].drawIndexed(pVkMesh->IndicesSize(), 1, 0, 0, 0);
+                    m_commandBuffers[i].drawIndexed(static_cast<uint32_t>(pVkMesh->GetMesh().GetIndices().size()), 1, 0, 0, 0);
 
                     ++j;
                 }
@@ -1383,7 +1352,7 @@ bool Renderer::CreatePipelineCache()
 
 bool Renderer::LoadEngineHelpData()
 {
-    unicorn::video::Texture texture;
+    Texture texture;
     static std::string const path = "data/textures/replace_me.jpg";
     if(!texture.Load(path))
     {
@@ -1392,7 +1361,7 @@ bool Renderer::LoadEngineHelpData()
     }
     VkTexture* replaceMeTexture = new VkTexture(m_vkLogicalDevice);
 
-    if(!replaceMeTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, &texture))
+    if(!replaceMeTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, texture))
     {
         LOG_ERROR("Can't create 'replace me' texture - %s", path.c_str());
 
@@ -1443,7 +1412,6 @@ bool Renderer::LoadEngineHelpData()
 
     m_materials.push_back(m_pReplaceMeMaterial);
 
-    texture.Delete();
     return true;
 }
 
@@ -1469,8 +1437,7 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
         swapChainAcceptable = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
     }
 
-    if(deviceProperties.deviceType == vk::PhysicalDeviceType::eDiscreteGpu &&
-        indices.IsComplete() && extensionsSupported && swapChainAcceptable && deviceFeatures.samplerAnisotropy)
+    if(indices.IsComplete() && extensionsSupported && swapChainAcceptable && deviceFeatures.samplerAnisotropy)
     {
         LOG_INFO("Picked as main GPU : %s", deviceProperties.deviceName);
         m_gpuName = deviceProperties.deviceName;
@@ -1481,18 +1448,27 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
 
 bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
 {
-    auto& meshMaterial = mesh.GetMaterial();
+    auto meshMaterial = mesh.GetMaterial();
 
-    if(meshMaterial.GetAlbedo() != nullptr)
+    if(meshMaterial->GetAlbedo() != nullptr)
     {
-        uint32_t meshAlbedoHandle = meshMaterial.GetAlbedo()->GetId();
+        uint32_t meshAlbedoHandle = meshMaterial->GetAlbedo()->GetId();
 
         auto meshMaterialIt = std::find_if(m_materials.begin(), m_materials.end(), [=](std::weak_ptr<VkMaterial> material) ->bool { return material.lock()->handle == meshAlbedoHandle; });
 
         if(meshMaterialIt == m_materials.end())
         {
             VkTexture* vkTexture = new VkTexture(m_vkLogicalDevice);
-            vkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, meshMaterial.GetAlbedo());
+            vkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, *meshMaterial->GetAlbedo().get());
+
+            if(!vkTexture->IsInitialized())
+            {
+                LOG_ERROR("Can't allocate vulkan texture!");
+
+                delete vkTexture;
+
+                return false;
+            }
 
             vk::DescriptorSetAllocateInfo allocInfo;
             allocInfo.descriptorPool = m_descriptorPool;
@@ -1505,10 +1481,7 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
 
             if(result != vk::Result::eSuccess)
             {
-                LOG_ERROR("Can't allocate descriptor sets!");
-
-                vkTexture->Delete();
-                delete vkTexture;
+                LOG_ERROR("Can't allocate sampler descriptor sets!");
 
                 return false;
             }

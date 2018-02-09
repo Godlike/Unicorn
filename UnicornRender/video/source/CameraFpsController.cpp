@@ -20,7 +20,7 @@ CameraFpsController::CameraFpsController(glm::mat4& cameraView) :
 
 void CameraFpsController::UpdateView(float x, float y)
 {
-    const float xoffset = m_mousePosition.x - x;
+    const float xoffset = x - m_mousePosition.x;
     const float yoffset = y - m_mousePosition.y;
 
     m_mousePosition.x = x;
@@ -53,15 +53,23 @@ void CameraFpsController::UpdateOrientation()
     glm::quat x = glm::angleAxis(m_rotation.x, m_worldX);
     glm::quat y = glm::angleAxis(m_rotation.y, glm::conjugate(m_orientation) * m_worldY);
 
-    m_orientation = normalize(m_orientation * y * x);
+    m_orientation = glm::normalize(m_orientation * y * x);
 
     m_rotation = glm::vec3(0);
 }
 
 void CameraFpsController::Update()
 {
-    UpdateTransformMatrix();
-    m_cameraView = glm::lookAt(m_translation, m_translation + m_direction, m_upVector);
+    if (m_isDirty)
+    {
+        UpdateOrientation();
+
+        m_direction = m_orientation * m_worldZ;
+        m_upVector = m_orientation * m_worldY;
+        m_rightVector = m_orientation * m_worldX;
+
+        m_cameraView = lookAt(m_translation, m_translation + m_direction, m_upVector);
+    }
 }
 
 } // namespace video

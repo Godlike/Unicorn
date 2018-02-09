@@ -10,6 +10,9 @@
 #include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/video/Mesh.hpp>
 
+#include <string>
+#include <list>
+
 namespace unicorn
 {
 namespace video
@@ -21,15 +24,15 @@ public:
     /**
     *  @brief Fills given mesh with cube data
     *
-    *  @param[out] mesh    geometry mesh
-    *  @return reference to updated mesh
+    *  @param[in, out] mesh geometry mesh
+    *  @return reference to filled mesh
     */
     UNICORN_EXPORT static Mesh& Box(Mesh& mesh);
 
     /**
     *  @brief Fills given mesh with quad data
     *
-    *  @param[out] mesh    geometry mesh
+    *  @param[in, out] mesh geometry mesh
     *  @return reference to updated mesh
     */
     UNICORN_EXPORT static Mesh& Quad(Mesh& mesh);
@@ -45,6 +48,22 @@ public:
     *  @return reference to updated mesh
     */
     UNICORN_EXPORT static Mesh& Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors);
+
+    /**
+    @brief Loads and processes model
+
+    * Loads model from given filepath, initializes Materials and Meshes from the model
+    *
+    * Supported formats:
+    * - gltf 2.0 (without binary glb)
+    * - obj
+    *
+    * @todo use storage handler when assimp's issues regarding loading from memory are fixed
+    *
+    *  @param[in] path path to model
+    *  @return list of pointers to meshes
+    */
+    UNICORN_EXPORT static std::list<Mesh*> LoadModel(std::string const& path);
 };
 }
 }

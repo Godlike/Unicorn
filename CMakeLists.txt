@@ -2,7 +2,7 @@
 # This code is licensed under the MIT license (MIT)
 # (http://opensource.org/licenses/MIT)
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.2)
 
 project(Unicorn)
 
@@ -43,5 +43,3 @@ if (${UNICORN_BUILD_TESTS})
 
     add_subdirectory(tests)
 endif()
-
-set(UNICORN_RENDER_LIB ${UNICORN_RENDER_LIB} PARENT_SCOPE)

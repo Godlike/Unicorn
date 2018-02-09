@@ -116,6 +116,16 @@ public:
      * @param[in] distance per component distance
      */
     UNICORN_EXPORT void TranslateLocal(glm::vec3 distance);
+
+    /**
+    * @brief Applies transform from given matrix
+    *
+    * @attention Don't forget to recalculate @sa UpdateTransformMatrix to commit all changes to the object
+    *
+    * @param[in] transformMatrix matrix containing the transformation
+    */
+    UNICORN_EXPORT void TransformByMatrix(glm::mat4 const& transformMatrix);
+
     /**
      * @brief Translates by world axes
      *
@@ -199,14 +209,15 @@ protected:
     glm::vec3 m_rotation;
     glm::vec3 m_translation;
     glm::quat m_orientation;
-    glm::vec3 m_upVector;
-    glm::vec3 m_direction;
-    glm::vec3 m_rightVector;
     glm::vec3 m_scale;
 
     glm::vec3 m_worldX;
     glm::vec3 m_worldY;
     glm::vec3 m_worldZ;
+
+    glm::vec3 m_rightVector;
+    glm::vec3 m_upVector;
+    glm::vec3 m_direction;
 
     glm::mat4 m_transformMatrix;
 

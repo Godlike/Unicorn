@@ -5,14 +5,24 @@
 */
 
 #include <unicorn/video/Mesh.hpp>
+#include <unicorn/utility/Logger.hpp>
 
 namespace unicorn
 {
 namespace video
 {
-Mesh::Mesh(Material material)
-    : m_material(material)
+Mesh::Mesh() :
+    name("DefaultName"),
+    m_material(nullptr)
 {
+    m_material = std::make_shared<Material>();
+
+    m_material->DataUpdated.connect(this, &Mesh::OnMaterialUpdated);
+}
+
+Mesh::~Mesh()
+{
+    m_material->DataUpdated.disconnect(this, &Mesh::OnMaterialUpdated);
 }
 
 void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
@@ -23,26 +33,37 @@ void Mesh::SetMeshData(const std::vector<Vertex>& vertices, const std::vector<ui
     VerticesUpdated.emit();
 }
 
-void Mesh::SetMaterial(Material material)
+void Mesh::SetMaterial(std::shared_ptr<Material> material)
 {
+    assert(nullptr != material);
+
+    m_material->DataUpdated.disconnect(this, &Mesh::OnMaterialUpdated);
+
     m_material = material;
+
+    m_material->DataUpdated.connect(this, &Mesh::OnMaterialUpdated);
 
     MaterialUpdated.emit();
 }
 
-const std::vector<Vertex>& Mesh::GetVertices() const
+std::vector<Vertex> const& Mesh::GetVertices() const
 {
     return m_vertices;
 }
 
-const std::vector<uint32_t>& Mesh::GetIndices() const
+std::vector<uint32_t> const& Mesh::GetIndices() const
 {
     return m_indices;
 }
 
-const Material& Mesh::GetMaterial() const
+std::shared_ptr<Material> Mesh::GetMaterial() const
 {
     return m_material;
+}
+
+void Mesh::OnMaterialUpdated()
+{
+    MaterialUpdated.emit();
 }
 
 }

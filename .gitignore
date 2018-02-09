@@ -8,7 +8,6 @@ CMakeSettings.json
 *.a
 *.core
 *.moc
-*.obj
 *.orig
 *.rej
 *_pch.h.cpp

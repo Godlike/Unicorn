@@ -16,16 +16,17 @@ Transform::Transform()
     : m_rotation(0)
     , m_translation(0)
     , m_orientation(glm::vec3(0))
-    , m_upVector({ 0.f, 1.f, 0.f })
-    , m_direction({ 0.f, 0.f, 1.f })
-    , m_rightVector({ 1., 0.f, 0.f })
     , m_scale(glm::vec3(1.f))
     , m_worldX({ 1., 0.f, 0.f })
     , m_worldY({ 0.f, 1.f, 0.f })
     , m_worldZ({ 0.f, 0.f, 1.f })
+    , m_rightVector(m_worldX)
+    , m_upVector(m_worldY)
+    , m_direction(m_worldZ)
     , m_transformMatrix(1.f)
     , m_isDirty(true)
 {
+    UpdateTransformMatrix();
 }
 
 bool Transform::IsDirty() const
@@ -91,6 +92,13 @@ void Transform::TranslateLocal(glm::vec3 distance)
     glm::vec3 const forwardTranslation = m_direction * distance.z;
 
     SetTranslation(GetTranslation() + rightTranslation + upTranslation + forwardTranslation);
+}
+
+void Transform::TransformByMatrix(glm::mat4 const& transformMatrix)
+{
+    m_transformMatrix = transformMatrix * m_transformMatrix;
+
+    m_isDirty = true;
 }
 
 void Transform::TranslateWorld(glm::vec3 distance)
@@ -170,11 +178,11 @@ void Transform::UpdateTransformMatrix()
         m_upVector = m_orientation * m_worldY;
         m_rightVector = m_orientation * m_worldX;
 
-        auto T = glm::translate(glm::mat4(1.0), m_translation);
-        auto R = glm::mat4_cast(m_orientation) * glm::mat4(1.0);
-        auto S = glm::scale(glm::mat4(1.0), { m_scale });
+        auto const T = glm::translate(glm::mat4(1.0), m_translation);
+        auto const R = glm::mat4_cast(m_orientation) * glm::mat4(1.0);
+        auto const S = glm::scale(glm::mat4(1.0), { m_scale });
 
-        m_transformMatrix = T * R * S;
+        m_transformMatrix = T * R * S * m_transformMatrix;
 
         m_isDirty = false;
     }

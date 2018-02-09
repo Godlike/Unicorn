@@ -11,7 +11,7 @@ environment:
   VULKAN_SDK: "c:\\VulkanSDK\\1.0.65.1\\"
 init:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-  - appveyor DownloadFile https://www.dropbox.com/s/m2pqrnvu637z6to/VulkanSDK-1.0.65.1-Installer.exe?dl=1 -FileName vulkan-installer.exe
+  - appveyor DownloadFile https://www.dropbox.com/s/2zwzd7vy1dy2309/VulkanSDK-1.0.65.1-Installer.exe?dl=1 -FileName vulkan-installer.exe
   - vulkan-installer.exe /S
   - rm -f vulkan-installer.exe
 install:
