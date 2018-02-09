@@ -555,7 +555,7 @@ int main(int argc, char* argv[])
 
             spriteMaterial->SetTextureCoordinates(0, 0, 32, 32);
 
-            pinkBoxGeometry->SetMaterial(colorMaterial);
+            pinkBoxGeometry->SetMaterial(spriteMaterial);
 
             auto gltfModel = Primitives::LoadModel("data/models/glTF/DamagedHelmet.gltf");
 
@@ -563,13 +563,13 @@ int main(int argc, char* argv[])
 
             for (auto mesh : gltfModel)
             {
-                mesh->TranslateLocal({ -5, 0, 0});
+                mesh->TranslateLocal({ 0, 0, 5});
                 mesh->UpdateTransformMatrix();
             }
 
-            meshes.push_back(pinkBoxGeometry);
             meshes.insert(meshes.end(), gltfModel.begin(), gltfModel.end());
             meshes.insert(meshes.end(), cubemap.begin(), cubemap.end());
+            meshes.push_back(pinkBoxGeometry);
 
             for (uint32_t i = 0; i < 512; ++i)
             {

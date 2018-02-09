@@ -7,6 +7,7 @@
 #include <unicorn/video/Primitives.hpp>
 #include <unicorn/utility/Logger.hpp>
 #include <unicorn/video/Texture.hpp>
+#include <unicorn/utility/Math.hpp>
 
 #include <glm/gtc/constants.hpp>
 #include <assimp/Importer.hpp>
@@ -162,21 +163,29 @@ void ProcessNodes(aiNode const* root, aiScene const* scene, std::string const& d
     assert(nullptr != root);
     assert(nullptr != scene);
 
-    std::vector<aiNode const*> stack{ root };
+    glm::mat4 matrix = utility::math::AssimpMatrixToGlm(root->mTransformation);
+    std::vector<std::pair<aiNode const*, glm::mat4>> stack{ { root, matrix } };
+
     while (!stack.empty())
     {
-        aiNode const* currentNode = stack.back();
+        auto const frame = stack.back();
         stack.pop_back();
 
-        for (unsigned int i = 0; i < currentNode->mNumMeshes; ++i)
+        for (uint32_t i = 0; i < frame.first->mNumMeshes; ++i)
         {
-            aiMesh* mesh = scene->mMeshes[currentNode->mMeshes[i]];
-            meshes.push_back(ProcessMesh(mesh, scene, dir));
+            aiMesh const* mesh = scene->mMeshes[frame.first->mMeshes[i]];
+            auto unicornMesh = ProcessMesh(mesh, scene, dir);
+
+            unicornMesh->TransformByMatrix(frame.second);
+            unicornMesh->UpdateTransformMatrix();
+
+            meshes.push_back(unicornMesh);
         }
 
-        for (unsigned int i = 0; i < currentNode->mNumChildren; ++i)
+        for (uint32_t i = 0; i < frame.first->mNumChildren; ++i)
         {
-            stack.push_back(currentNode->mChildren[i]);
+            matrix = utility::math::AssimpMatrixToGlm(frame.first->mChildren[i]->mTransformation) * frame.second;
+            stack.emplace_back( frame.first->mChildren[i], matrix );
         }
     }
 }
@@ -291,7 +300,7 @@ std::list<Mesh*> Primitives::LoadModel(std::string const& path)
         return meshes;
     }
 
-    std::string dir = path.substr(0, path.find_last_of('/'));
+    std::string const dir = path.substr(0, path.find_last_of('/'));
 
     ProcessNodes(scene->mRootNode, scene, dir, meshes);
 

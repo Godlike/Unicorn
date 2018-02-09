@@ -77,10 +77,15 @@ public:
     UNICORN_EXPORT virtual bool AddMesh(Mesh* mesh) = 0;
 
     /**
-    * @brief Removes mesh from rendering system
+    * @brief Removes internal rendering mesh data from rendering system
+    *
+    * @note pMesh is not invalidated within the method
+    *
     * @param [in] pMesh pointer to mesh
+    *
+    * @return true if data was found and succesfully deleted
     */
-    UNICORN_EXPORT virtual void DeleteMesh(Mesh const* pMesh) = 0;
+    UNICORN_EXPORT virtual bool DeleteMesh(Mesh const* pMesh) = 0;
 
     //! Main view camera, must never be nullptr
     Camera const* camera;

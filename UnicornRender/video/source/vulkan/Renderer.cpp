@@ -390,7 +390,7 @@ bool Renderer::AddMesh(Mesh* mesh)
     return true;
 }
 
-void Renderer::DeleteMesh(const Mesh* pMesh)
+bool Renderer::DeleteMesh(const Mesh* pMesh)
 {
     assert(nullptr != pMesh);
 
@@ -403,7 +403,11 @@ void Renderer::DeleteMesh(const Mesh* pMesh)
         m_vkMeshes.erase(vkMeshIt);
 
         m_hasDirtyMeshes = true;
+
+        return true;
     }
+
+    return false;
 }
 
 void Renderer::SetDepthTest(bool enabled)
@@ -1267,7 +1271,7 @@ bool Renderer::CreateCommandBuffers()
 
             for(auto pVkMesh : m_vkMeshes)
             {
-                if (!pVkMesh->GetMesh().GetMaterial()->IsVisible())
+                if (!pVkMesh->GetMaterial()->IsVisible())
                 {
                     ++j;
                     continue;
@@ -1276,11 +1280,11 @@ bool Renderer::CreateCommandBuffers()
                 if(pVkMesh->IsValid())
                 {
                     glm::vec4 colorPush(
-                        pVkMesh->GetMesh().GetMaterial()->GetColor(), // xyz - color
-                        pVkMesh->GetMesh().GetMaterial()->IsColored() // w - boolean flag for 1 enabled color or 0 disabled color
+                        pVkMesh->GetMaterial()->GetColor(), // xyz - color
+                        pVkMesh->GetMaterial()->IsColored() // w - boolean flag for 1 enabled color or 0 disabled color
                     );
 
-                    if(pVkMesh->GetMesh().GetMaterial()->IsWired())
+                    if(pVkMesh->GetMaterial()->IsWired())
                     {
                         m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_pipelines.wired);
                     }
