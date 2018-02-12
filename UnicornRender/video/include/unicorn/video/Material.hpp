@@ -9,7 +9,10 @@
 
 #include <unicorn/video/Color.hpp>
 
+#include <wink/signal.hpp>
 #include <glm/glm.hpp>
+
+#include <memory>
 
 namespace unicorn
 {
@@ -29,7 +32,7 @@ public:
      * @param[in] texture albedo texture
      * @attention Updates flags IsColored to false
      */
-    UNICORN_EXPORT void SetAlbedo(Texture const* texture);
+    UNICORN_EXPORT void SetAlbedo(std::shared_ptr<Texture> texture);
 
     /**
      * @brief Sets rendering mode to wireframe
@@ -74,18 +77,26 @@ public:
     /**
      * @brief Returns pointer to albedo texture
      *
-     * @return pointer to binded albdeo texture
+     * @return pointer to binded albedo texture
      */
-    UNICORN_EXPORT Texture const* GetAlbedo() const;
+    UNICORN_EXPORT std::shared_ptr<Texture> GetAlbedo() const;
 
-    /** @brief Color of object */
-    glm::vec3 color;
-private:
+    /** @brief Sets color */
+    UNICORN_EXPORT void SetColor(glm::vec3 color);
+
+    /** @brief Returns color */
+    UNICORN_EXPORT glm::vec3 GetColor() const;
+
+    /** @brief Signal for material update notification */
+    wink::signal<wink::slot<void()>> DataUpdated;
+protected:
+    glm::vec3 m_color;
+
     bool m_isColored;
     bool m_isWired;
     bool m_isVisible;
 
-    Texture const* m_albedo;
+    std::shared_ptr<Texture> m_albedo;
 };
 }
 }

@@ -97,9 +97,10 @@ public:
     void Deinit() override;
     bool Render() override;
     bool RecreateSwapChain();
-    Mesh* SpawnMesh(Material const& material) override;
+    bool AddMesh(Mesh* mesh) override;
     bool DeleteMesh(Mesh const* pMesh) override;
     void SetDepthTest(bool enabled) override;
+
 private:
     vk::PhysicalDevice m_vkPhysicalDevice;
     vk::Device m_vkLogicalDevice;
@@ -128,7 +129,6 @@ private:
     struct
     {
         vk::Pipeline solid;
-        vk::Pipeline blend;
         vk::Pipeline wired;
     } m_pipelines;
 
@@ -137,9 +137,6 @@ private:
     std::shared_ptr<VkMaterial> m_pReplaceMeMaterial;
 
     std::list<std::weak_ptr<VkMaterial>> m_materials;
-
-    //! Array of geometry meshes
-    std::list<Mesh*> m_meshes;
 
     std::array<vk::DescriptorSetLayout, 2> m_descriptorSetLayouts; // 0 - mvp, 1 - albedo
     vk::DescriptorSet m_mvpDescriptorSet;

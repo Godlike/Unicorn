@@ -2,8 +2,8 @@
 # This code is licensed under the MIT license (MIT)
 # (http://opensource.org/licenses/MIT)
 
-cmake_minimum_required(VERSION 3.0)
-cmake_policy(VERSION 3.0)
+cmake_minimum_required(VERSION 3.2)
+cmake_policy(VERSION 3.2)
 
 if (NOT DEFINED UNICORN_RENDER_NAME)
     set(UNICORN_RENDER_NAME "UnicornRender" CACHE STRING "Project name for Unicorn Render library")
@@ -17,42 +17,35 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
 endif (NOT CMAKE_BUILD_TYPE)
 
-if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Werror -pedantic")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s -O3")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb3 -O0")
-elseif(WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /MP /W3") # TODO set WX (warning as error)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-endif()
+add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS
+    -DGLM_FORCE_LEFT_HANDED
+    -DVULKAN_HPP_TYPESAFE_CONVERSION
+    -DVULKAN_HPP_NO_SMART_HANDLE
+)
 
-add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS -DVULKAN_HPP_TYPESAFE_CONVERSION -DVULKAN_HPP_NO_SMART_HANDLE)
-
-## GLM
 include(GlmConfig)
-find_package(GLM)
-
-if (NOT GLM_FOUND)
-    add_subdirectory(${GLM_ROOT_DIR})
-endif()
-
-## Loguru
+include(Utils)
 include(loguru)
-
-## STB
 include(stb)
-
-## utility
 include(utility)
-
-## system
 include(system)
-
-## video
 include(video)
-
-## Wink Signals
 include(WinkSignals)
+include(assimp)
+
+add_subdirectory(${ASSIMP_ROOT_DIR})
+
+if(WIN32)
+    set_target_properties (
+        assimp
+        IrrXML
+        uninstall
+        zlib
+        zlibstatic
+        UpdateAssimpLibsDebugSymbolsAndDLLs
+        PROPERTIES FOLDER Assimp
+    )
+endif()
 
 ## Installation info
 include(InstallInfo)
@@ -104,10 +97,20 @@ include_directories( SYSTEM
     ${GLM_INCLUDE_DIR}
     ${LOGURU_INCLUDE_DIR}
     ${STB_INCLUDE_DIR}
+    ${ASSIMP_INCLUDE_DIRS}
 )
 
 if (BUILD_SHARED_LIBS)
     add_definitions(-D${UNICORN_RENDER_LIB}_EXPORTS)
+endif()
+
+if (UNIX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Werror -pedantic")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s -O3")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb3 -O0")
+elseif(WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /MP /W3") # remove loguru and put spdlog -> /WX
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
 add_subdirectory(system)
@@ -158,6 +161,7 @@ set_target_properties(
 target_link_libraries(${UNICORN_RENDER_LIB}
     ${WINDOW_MANAGER_LIBS}
     ${VULKAN_LIBRARY}
+    ${ASSIMP_LIB}
 )
 
 install( TARGETS ${UNICORN_RENDER_LIB}
@@ -243,7 +247,7 @@ endif()
 file(GLOB_RECURSE GLSL_SOURCE_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/data/shaders/*.frag"
     "${CMAKE_CURRENT_SOURCE_DIR}/data/shaders/*.vert"
-    )
+)
 
 foreach(GLSL ${GLSL_SOURCE_FILES})
     get_filename_component(FILE_NAME ${GLSL} NAME)
@@ -252,22 +256,70 @@ foreach(GLSL ${GLSL_SOURCE_FILES})
         OUTPUT ${SPIRV}
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/shaders/"
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/textures/"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/models/"
         COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${UNICORN_RENDER_ROOT}/data/textures"
             "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/textures"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${UNICORN_RENDER_ROOT}/data/models"
+            "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/models"
         DEPENDS ${GLSL})
     list(APPEND SPIRV_BINARY_FILES ${SPIRV})
 endforeach(GLSL)
 
-add_custom_target(
-    Shaders
-    DEPENDS ${SPIRV_BINARY_FILES}
-    )
+file(GLOB_RECURSE TEXTURES_FILES
+    "${UNICORN_RENDER_ROOT}/data/textures/*.png"
+    "${UNICORN_RENDER_ROOT}/data/textures/*.jpg"
+)
 
-add_dependencies(${UNICORN_RENDER_LIB} Shaders)
+file(GLOB_RECURSE MODELS_FILES
+    "${UNICORN_RENDER_ROOT}/data/models/*.png"
+    "${UNICORN_RENDER_ROOT}/data/models/*.jpg"
+    "${UNICORN_RENDER_ROOT}/data/models/*.bin"
+    "${UNICORN_RENDER_ROOT}/data/models/*.gltf"
+    "${UNICORN_RENDER_ROOT}/data/models/*.glb"
+    "${UNICORN_RENDER_ROOT}/data/models/*.obj"
+    "${UNICORN_RENDER_ROOT}/data/models/*.fbx"
+)
+
+add_custom_target(
+    CompileEngineData
+    DEPENDS
+    ${SPIRV_BINARY_FILES}
+    SOURCES
+    ${GLSL_SOURCE_FILES}
+    ${TEXTURES_FILES}
+    ${MODELS_FILES}
+)
+
+add_dependencies(${UNICORN_RENDER_LIB} CompileEngineData)
 
 install( FILES ${SPIRV_BINARY_FILES}
     DESTINATION ${UNICORN_INSTALL_DATA_DIR}/data/shaders
     COMPONENT unicorn_data
 )
+
+source_group("Shaders" FILES ${GLSL_SOURCE_FILES})
+source_group("Textures" FILES ${TEXTURES_FILES})
+source_group("Models" FILES ${MODELS_FILES})
+
+if(WIN32)
+    set_target_properties (
+        assimp
+        IrrXML
+        uninstall
+        zlib
+        zlibstatic
+        UpdateAssimpLibsDebugSymbolsAndDLLs
+        PROPERTIES FOLDER Assimp
+    )
+    set_target_properties (
+        CompileEngineData
+        UnicornRender
+        system
+        utility
+        video
+        PROPERTIES FOLDER Unicorn
+)
+endif()

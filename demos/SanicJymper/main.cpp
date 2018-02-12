@@ -18,7 +18,6 @@
 #include <unicorn/video/Primitives.hpp>
 #include <unicorn/video/Texture.hpp>
 #include <unicorn/video/Material.hpp>
-#include <unicorn/utility/Math.hpp>
 
 #include <unicorn/video/Camera.hpp>
 #include <unicorn/video/Camera2DController.hpp>
@@ -27,13 +26,13 @@
 #include <unicorn/video/PerspectiveCamera.hpp>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 #include <ctime>
 #include <array>
 #include <cstdlib>
 #include <iostream>
 #include <list>
+#include <memory>
 
 static unicorn::video::Graphics* pGraphics = nullptr;
 static unicorn::system::Timer* timer = nullptr;
@@ -48,7 +47,6 @@ float lastFrame = 0.0f; // Time of last frame
 
 const float xSens = 0.05f;
 const float ySens = 0.05f;
-const float zSens = 0.05f;
 
 //Camera settings
 bool isPerspective = true;
@@ -59,13 +57,10 @@ unicorn::video::Camera2DController* pCamera2DController = nullptr;
 unicorn::video::PerspectiveCamera* pPerspectiveProjection = nullptr;
 unicorn::video::OrthographicCamera* pOrthoProjection = nullptr;
 
-static unicorn::video::Mesh* earth;
-static unicorn::video::Mesh* sun;
-
 void onLogicFrame(unicorn::UnicornRender* /*render*/)
 {
-    float currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
-    float newDeltatime = currentFrame - lastFrame;
+    float const currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
+    float const newDeltatime = currentFrame - lastFrame;
 
     if(newDeltatime <= 0.0)
     {
@@ -73,12 +68,6 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     }
 
     deltaTime = newDeltatime;
-
-    // Applying transforms
-    earth->SetTranslation(unicorn::utility::math::RotateAroundPoint(earth->GetTranslation(),
-        static_cast<float>(glm::radians(90.)) * deltaTime , { 0, 1, 0 }, sun->GetTranslation()));
-    sun->SetTranslation(unicorn::utility::math::RotateAroundPoint(sun->GetTranslation(),
-        static_cast<float>(glm::radians(90.)) * deltaTime , { 0, 1, 0 }, earth->GetTranslation()));
 
     // Updating transformations for meshes
     for(auto& mesh : meshes)
@@ -111,17 +100,23 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
     {
         case MouseButton::MouseLeft:
         {
-            unicorn::video::Material cubematerial;
-            cubematerial.color = {static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255};
-            unicorn::video::Mesh* mesh = &unicorn::video::Primitives::Sphere(*vkRenderer->SpawnMesh(cubematerial), 1, 32, 32);
-            glm::vec3 randomTranslate = { std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 };
+            auto cubematerial = std::make_shared<unicorn::video::Material>();
+            glm::vec3 const color = { static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255 };
+            cubematerial->SetColor(color);
+
+            unicorn::video::Mesh* mesh = new unicorn::video::Mesh;
+            unicorn::video::Primitives::Sphere(*mesh, 1, 32, 32);
+            mesh->SetMaterial(cubematerial);
+            glm::vec3 const randomTranslate = { std::rand() % 40 - 20, std::rand() % 40 - 20, std::rand() % 40 - 20 };
             mesh->SetTranslation(mesh->GetTranslation() + randomTranslate);
+
+            vkRenderer->AddMesh(mesh);
             meshes.push_back(mesh);
             break;
         }
         case MouseButton::MouseMiddle:
         {
-            if(meshes.size())
+            if(!meshes.empty())
             {
                 // Get random cube
                 auto meshIt = meshes.begin();
@@ -130,24 +125,23 @@ void onMouseButton(unicorn::system::Window::MouseButtonEvent const& mouseButtonE
 
                 auto mesh = *meshIt;
 
-                unicorn::video::Material cubeMaterial;
-                cubeMaterial.color = {static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255};
-                cubeMaterial.SetIsWired(true);
-                cubeMaterial.SetIsVisible(false);
+                auto cubeMaterial = std::make_shared<unicorn::video::Material>();
+                cubeMaterial->SetColor({ static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255, static_cast<float>(std::rand() % 255) / 255 });
+                cubeMaterial->SetIsWired(true);
                 mesh->SetMaterial(cubeMaterial);
             }
             break;
         }
         case MouseButton::MouseRight:
         {
-            if(meshes.size())
+            if(!meshes.empty())
             {
                 // Get random cube
                 auto meshIt = meshes.begin();
 
                 std::advance(meshIt, std::rand() % meshes.size());
 
-                auto mesh = *meshIt;
+                auto const mesh = *meshIt;
 
                 // Release cube's mesh
                 vkRenderer->DeleteMesh(mesh);
@@ -208,14 +202,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
     }
 
     unicorn::system::Window* const& pWindow = keyboardEvent.pWindow;
-    unicorn::system::input::Key const& key = keyboardEvent.key;
-    uint32_t const& scancode = keyboardEvent.scancode;
-    unicorn::system::input::Modifier::Mask const& modifiers = keyboardEvent.modifiers;
+    auto const& key = keyboardEvent.key;
+    auto const& modifiers = keyboardEvent.modifiers;
 
-    std::pair<int32_t, int32_t> position = pWindow->GetPosition();
-
-    float time = deltaTime * 0.1f;
-    float speed = 1000.f;
+    float const time = deltaTime * 0.1f;
+    float speed = 50.f;
 
     if(Modifier::Shift & modifiers)
     {
@@ -269,11 +260,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(time * speed, 0, 0));
+                pCameraFpsController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
             }
             else
             {
-                pCamera2DController->TranslateLocal(glm::vec3(time * speed, 0, 0));
+                pCamera2DController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
             }
             break;
         }
@@ -281,11 +272,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
+                pCameraFpsController->TranslateLocal(glm::vec3(time * speed, 0, 0));
             }
             else
             {
-                pCamera2DController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
+                pCamera2DController->TranslateLocal(glm::vec3(time * speed, 0, 0));
             }
             break;
         }
@@ -408,63 +399,78 @@ void onRendererDestroyed(unicorn::video::Renderer* pRenderer)
     }
 }
 
-bool MakeCubeMap()
+std::list<unicorn::video::Mesh*> MakeCubeMap()
 {
-    //Loading textures
-    unicorn::video::Texture texture, textureMandrill;
-    unicorn::video::Texture frontSkyBox, backSkyBox, leftSkyBox, rightSkyBox, topSkyBox, bottomSkyBox;
+    std::list<unicorn::video::Mesh*> cubemapMeshes;
 
-    frontSkyBox.Load("data/textures/cubemap/posz.jpg");
-    backSkyBox.Load("data/textures/cubemap/negz.jpg");
-    leftSkyBox.Load("data/textures/cubemap/negx.jpg");
-    rightSkyBox.Load("data/textures/cubemap/posx.jpg");
-    topSkyBox.Load("data/textures/cubemap/posy.jpg");
-    bottomSkyBox.Load("data/textures/cubemap/negy.jpg");
+    auto frontSkyBox = std::make_shared<unicorn::video::Texture>();
+    auto backSkyBox = std::make_shared<unicorn::video::Texture>();
+    auto leftSkyBox = std::make_shared<unicorn::video::Texture>();
+    auto rightSkyBox = std::make_shared<unicorn::video::Texture>();
+    auto topSkyBox = std::make_shared<unicorn::video::Texture>();
+    auto bottomSkyBox = std::make_shared<unicorn::video::Texture>();
 
-    texture.Load("data/textures/texture.jpg");
-    textureMandrill.Load("data/textures/mandrill.png");
+    frontSkyBox->Load("data/textures/cubemap/posz.jpg");
+    backSkyBox->Load("data/textures/cubemap/negz.jpg");
+    leftSkyBox->Load("data/textures/cubemap/negx.jpg");
+    rightSkyBox->Load("data/textures/cubemap/posx.jpg");
+    topSkyBox->Load("data/textures/cubemap/posy.jpg");
+    bottomSkyBox->Load("data/textures/cubemap/negy.jpg");
+
 
     //Checks data
-    if (!texture.IsLoaded()
-        || !textureMandrill.IsLoaded()
-        || !frontSkyBox.IsLoaded()
-        || !backSkyBox.IsLoaded()
-        || !leftSkyBox.IsLoaded()
-        || !rightSkyBox.IsLoaded()
-        || !topSkyBox.IsLoaded()
-        || !bottomSkyBox.IsLoaded())
+    if (!frontSkyBox->IsLoaded()
+        || !backSkyBox->IsLoaded()
+        || !leftSkyBox->IsLoaded()
+        || !rightSkyBox->IsLoaded()
+        || !topSkyBox->IsLoaded()
+        || !bottomSkyBox->IsLoaded())
     {
-        return false;
+        return cubemapMeshes;
     }
 
-    unicorn::video::Material textureMaterial,
-        mandrillMaterial, frontTexture, backTexture,
-        leftTexture, rightTexture, upTexture, bottomTexture;
+    auto frontTextureMat = std::make_shared<unicorn::video::Material>();
+    auto backTextureMat = std::make_shared<unicorn::video::Material>();
+    auto leftTextureMat = std::make_shared<unicorn::video::Material>();
+    auto rightTextureMat = std::make_shared<unicorn::video::Material>();
+    auto upTextureMat = std::make_shared<unicorn::video::Material>();
+    auto bottomTextureMat = std::make_shared<unicorn::video::Material>();
 
-    textureMaterial.SetAlbedo(&texture);
-    mandrillMaterial.SetAlbedo(&textureMandrill);
-    frontTexture.SetAlbedo(&frontSkyBox);
-    backTexture.SetAlbedo(&backSkyBox);
-    leftTexture.SetAlbedo(&leftSkyBox);
-    rightTexture.SetAlbedo(&rightSkyBox);
-    upTexture.SetAlbedo(&topSkyBox);
-    bottomTexture.SetAlbedo(&bottomSkyBox);
+    frontTextureMat->SetAlbedo(frontSkyBox);
+    backTextureMat->SetAlbedo(backSkyBox);
+    leftTextureMat->SetAlbedo(leftSkyBox);
+    rightTextureMat->SetAlbedo(rightSkyBox);
+    upTextureMat->SetAlbedo(topSkyBox);
+    bottomTextureMat->SetAlbedo(bottomSkyBox);
 
     using unicorn::video::Primitives;
 
-    unicorn::video::Mesh* frontBox = &Primitives::Quad(*vkRenderer->SpawnMesh(frontTexture));
-    unicorn::video::Mesh* backBox = &Primitives::Quad(*vkRenderer->SpawnMesh(backTexture));
-    unicorn::video::Mesh* leftBox = &Primitives::Quad(*vkRenderer->SpawnMesh(leftTexture));
-    unicorn::video::Mesh* rightBox = &Primitives::Quad(*vkRenderer->SpawnMesh(rightTexture));
-    unicorn::video::Mesh* upBox = &Primitives::Quad(*vkRenderer->SpawnMesh(upTexture));
-    unicorn::video::Mesh* bottomBox = &Primitives::Quad(*vkRenderer->SpawnMesh(bottomTexture));
+    unicorn::video::Mesh* frontBox = new unicorn::video::Mesh;
+    Primitives::Quad(*frontBox);
+    unicorn::video::Mesh* backBox = new unicorn::video::Mesh;
+    Primitives::Quad(*backBox);
+    unicorn::video::Mesh* leftBox = new unicorn::video::Mesh;
+    Primitives::Quad(*leftBox);
+    unicorn::video::Mesh* rightBox = new unicorn::video::Mesh;
+    Primitives::Quad(*rightBox);
+    unicorn::video::Mesh* upBox = new unicorn::video::Mesh;
+    Primitives::Quad(*upBox);
+    unicorn::video::Mesh* bottomBox = new unicorn::video::Mesh;
+    Primitives::Quad(*bottomBox);
 
-    meshes.push_back(frontBox);
-    meshes.push_back(backBox);
-    meshes.push_back(leftBox);
-    meshes.push_back(rightBox);
-    meshes.push_back(upBox);
-    meshes.push_back(bottomBox);
+    frontBox->SetMaterial(frontTextureMat);
+    backBox->SetMaterial(backTextureMat);
+    leftBox->SetMaterial(leftTextureMat);
+    rightBox->SetMaterial(rightTextureMat);
+    upBox->SetMaterial(upTextureMat);
+    bottomBox->SetMaterial(bottomTextureMat);
+
+    cubemapMeshes.push_back(frontBox);
+    cubemapMeshes.push_back(backBox);
+    cubemapMeshes.push_back(leftBox);
+    cubemapMeshes.push_back(rightBox);
+    cubemapMeshes.push_back(upBox);
+    cubemapMeshes.push_back(bottomBox);
 
     //Skybox
     const float skyBoxScaleFactor = 500;
@@ -491,7 +497,7 @@ bool MakeCubeMap()
     leftBox->Scale({ skyBoxScaleFactor, skyBoxScaleFactor, 0 });
     rightBox->Scale({ skyBoxScaleFactor, skyBoxScaleFactor, 0 });
 
-    return true;
+    return cubemapMeshes;
 }
 
 int main(int argc, char* argv[])
@@ -500,7 +506,7 @@ int main(int argc, char* argv[])
 
     settings.Init(argc, argv, "Sanic_Jymper.log");
     settings.SetApplicationName("SANIC JYMPER");
-    unicorn::UnicornRender* unicornRender = new unicorn::UnicornRender();
+    auto* unicornRender = new unicorn::UnicornRender;
     timer = new unicorn::system::Timer(true);
     if (unicornRender->Init())
     {
@@ -515,17 +521,17 @@ int main(int argc, char* argv[])
         pGraphics->SetWindowCreationHint(unicorn::system::WindowHint::Resizable,
                                          unicorn::system::CustomValue::True);
 
-        auto h = pGraphics->GetMonitors().back()->GetActiveVideoMode().height;
-        auto w = pGraphics->GetMonitors().back()->GetActiveVideoMode().width;
-        settings.SetApplicationHeight(h);
-        settings.SetApplicationWidth(w);
+        auto const h = pGraphics->GetMonitors().back()->GetActiveVideoMode().height;
+        auto const w = pGraphics->GetMonitors().back()->GetActiveVideoMode().width;
+        settings.SetApplicationHeight(static_cast<uint32_t>(h));
+        settings.SetApplicationWidth(static_cast<uint32_t>(w));
 
-        unicorn::system::Window* pWindow0 = pGraphics->SpawnWindow(settings.GetApplicationWidth(),
+        auto pWindow0 = pGraphics->SpawnWindow(settings.GetApplicationWidth(),
            settings.GetApplicationHeight(),
            settings.GetApplicationName(),
            nullptr,
            nullptr);
-        pWindow0->SetMouseMode(unicorn::system::MouseMode::Captured);
+        pWindow0->SetMouseMode(unicorn::system::MouseMode::Normal);
 
         perspective = new unicorn::video::Camera;
         ortho = new unicorn::video::Camera;
@@ -543,62 +549,50 @@ int main(int argc, char* argv[])
 
         pCameraFpsController = new unicorn::video::CameraFpsController(perspective->view);
         pCamera2DController = new unicorn::video::Camera2DController(ortho->view);
-
         {
-            //Loading textures
-            unicorn::video::Texture texture, textureMandrill;
-
-            texture.Load("data/textures/texture.jpg");
-            textureMandrill.Load("data/textures/mandrill.png");
-
-            if (!texture.IsLoaded()
-                || !textureMandrill.IsLoaded())
-            {
-                return -1;
-            }
-
-            if (!MakeCubeMap())
-            {
-                return -1;
-            }
-
             using unicorn::video::Primitives;
 
-            unicorn::video::Material mat;
+            auto cubemap = MakeCubeMap();
+            auto grassTexture = std::make_shared<unicorn::video::Texture>();
+            grassTexture->Load("data/textures/grass.png");
 
-            mat.color = unicorn::video::Color::LightPink();
-            auto x_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
+            auto grassMaterial = std::make_shared<unicorn::video::Material>();
+            grassMaterial->SetAlbedo(grassTexture);
 
+            auto colorMaterial = std::make_shared<unicorn::video::Material>();
+            colorMaterial->SetColor(unicorn::video::Color::LightPink());
 
-            mat.color = unicorn::video::Color::Green();
-            auto x_minus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
+            unicorn::video::Mesh* pinkBoxGeometry = new unicorn::video::Mesh;
+            Primitives::Box(*pinkBoxGeometry);
+            unicorn::video::Mesh* grassQuad = new unicorn::video::Mesh;
+            Primitives::Quad(*grassQuad);
+            grassQuad->SetMaterial(grassMaterial);
 
-            mat.color = unicorn::video::Color::Blue();
-            auto z_plus = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 40, 16, 16);
+            pinkBoxGeometry->SetMaterial(colorMaterial);
 
-            x_minus->SetTranslation({ -250, 0, 0 });
-            x_plus->SetTranslation({ 250, 0, 0 });
-            z_plus->SetTranslation({ 0, 0, 250 });
+            auto gltfModel = Primitives::LoadModel("data/models/glTF/DamagedHelmet.gltf");
 
-            mat.color = unicorn::video::Color::Red();
-            sun = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
-            sun->Scale({ 1, 1, 1 });
-            mat.color = unicorn::video::Color::Green();
-            mat.SetAlbedo(&texture);
-            earth = &Primitives::Sphere(*vkRenderer->SpawnMesh(mat), 1, 16, 16);
-            earth->Scale({ 2, 2, 2 });
-            earth->SetTranslation({ -15, 0, 50 });
-            sun->SetTranslation({ 15, 0, 50 });
+            pCameraFpsController->TranslateLocal({ 0, 0, 1 });
+            pCameraFpsController->SetOrientation({ 0, 0, -1 });
+            grassQuad->TranslateLocal({ 0, 0, -4 });
+            for (auto mesh : gltfModel)
+            {
+                mesh->TranslateLocal({ 0, 0, -5});
+                mesh->UpdateTransformMatrix();
+            }
+            pinkBoxGeometry->TranslateLocal({ -5, 0, -5 });
 
-            unicorn::video::Mesh* box = &Primitives::Box(*vkRenderer->SpawnMesh(mat));
+            meshes.push_back(pinkBoxGeometry);
+            meshes.insert(meshes.end(), gltfModel.begin(), gltfModel.end());
+            meshes.insert(meshes.end(), cubemap.begin(), cubemap.end());
+            meshes.push_back(grassQuad);
 
-            meshes.push_back(box);
-            meshes.push_back(earth);
-            meshes.push_back(sun);
-            meshes.push_back(x_plus);
-            meshes.push_back(x_minus);
-            meshes.push_back(z_plus);
+            for(auto mesh : meshes)
+            {
+                vkRenderer->AddMesh(mesh);
+            }
 
+            colorMaterial->SetColor(unicorn::video::Color::Blue());
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);
@@ -614,7 +608,10 @@ int main(int argc, char* argv[])
     delete pPerspectiveProjection;
     delete pOrthoProjection;
     delete ortho;
-
+    for(auto* mesh : meshes)
+    {
+        delete mesh;
+    }
     unicornRender->Deinit();
     delete unicornRender;
 

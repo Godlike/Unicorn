@@ -65,12 +65,14 @@ set(VIDEO_SOURCES
     source/Transform.cpp
 )
 
-add_library(video OBJECT
+set(VIDEO_ALL_SOURCES
     ${VIDEO_HEADERS}
     ${VIDEO_SOURCES}
     ${VULKAN_HEADERS}
     ${VULKAN_SOURCES}
 )
+
+add_library(video OBJECT ${VIDEO_ALL_SOURCES})
 
 include(InstallInfo)
 
@@ -86,3 +88,5 @@ install( DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/"
 if (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()
+
+MakeSolutionFilters("${VIDEO_ALL_SOURCES}")

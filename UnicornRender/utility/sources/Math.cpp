@@ -10,6 +10,7 @@
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace unicorn
 {
@@ -75,6 +76,12 @@ glm::vec3 RotateAroundPoint(glm::vec3 originalTranslation, float radians, glm::v
     glm::quat q = glm::angleAxis(radians, axis);
     outputTranslation = outputTranslation + q * -dir;
     return outputTranslation;
+}
+
+glm::mat4 AssimpMatrixToGlm(aiMatrix4x4 const& from)
+{
+    glm::mat4 const to = glm::make_mat4x4(from[0]);
+    return glm::transpose(to);
 }
 
 }

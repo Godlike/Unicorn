@@ -13,7 +13,7 @@ namespace unicorn
 namespace video
 {
 Material::Material()
-    : color(Color::Red())
+    : m_color(Color::Red())
     , m_isColored(true)
     , m_isWired(false)
     , m_isVisible(true)
@@ -21,31 +21,48 @@ Material::Material()
 {
 }
 
-void Material::SetAlbedo(Texture const* albedo)
+void Material::SetAlbedo(std::shared_ptr<Texture> albedo)
 {
-    m_isColored = false;
-    if(albedo == nullptr || !albedo->IsLoaded())
+    if(nullptr == albedo)
     {
-        LOG_ERROR("Setting not loaded texture to material!");
+        m_isColored = true;
+
+        m_albedo = nullptr;
+
         return;
     }
+
+    if(!albedo->IsLoaded())
+    {
+        LOG_ERROR("Setting not loaded texture to material!");
+
+        return;
+    }
+
+    m_isColored = false;
+
     m_albedo = albedo;
+
+    DataUpdated.emit();
 }
 
 void Material::SetIsWired(bool wireframe)
 {
     m_isWired = wireframe;
+
+    DataUpdated.emit();
 }
 
 void Material::SetIsColored(bool colored)
 {
     m_isColored = colored;
+
+    DataUpdated.emit();
 }
 
 void Material::RemoveAlbedo()
 {
     SetAlbedo(nullptr);
-    m_isColored = true;
 }
 
 bool Material::IsColored() const
@@ -61,6 +78,8 @@ bool Material::IsWired() const
 void Material::SetIsVisible(bool visible)
 {
     m_isVisible = visible;
+
+    DataUpdated.emit();
 }
 
 bool Material::IsVisible() const
@@ -68,9 +87,22 @@ bool Material::IsVisible() const
     return m_isVisible;
 }
 
-const Texture* Material::GetAlbedo() const
+std::shared_ptr<Texture> Material::GetAlbedo() const
 {
     return m_albedo;
 }
+
+void Material::SetColor(glm::vec3 color)
+{
+    m_color = color;
+
+    DataUpdated.emit();
+}
+
+glm::vec3 Material::GetColor() const
+{
+    return m_color;
+}
+
 }
 }

@@ -33,10 +33,12 @@ set(UTILITY_SOURCES
     sources/Math.cpp
 )
 
-add_library(utility OBJECT
+set(UTILITY_ALL_SOURCES
     ${UTILITY_HEADERS}
     ${UTILITY_SOURCES}
 )
+
+add_library(utility OBJECT ${UTILITY_ALL_SOURCES})
 
 include(InstallInfo)
 
@@ -56,3 +58,5 @@ install( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
 if (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()
+
+MakeSolutionFilters("${UTILITY_ALL_SOURCES}")
