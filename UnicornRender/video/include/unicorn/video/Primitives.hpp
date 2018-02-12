@@ -57,6 +57,7 @@ public:
     * Supported formats:
     * - gltf 2.0 (without binary glb)
     * - obj
+    * - fbx (without embedded textures)
     *
     * @todo use storage handler when assimp's issues regarding loading from memory are fixed
     *

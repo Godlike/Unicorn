@@ -36,6 +36,7 @@ void OrthographicCamera::UpdateProjection()
     m_cameraProjection = glm::ortho(-xScaled, xScaled,
                                     -yScaled, yScaled,
                                     m_back, m_front);
+    m_cameraProjection[1][1] *= -1; // For vulkan rendering.
 }
 
 void OrthographicCamera::SetScale(float scale)

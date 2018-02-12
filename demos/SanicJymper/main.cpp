@@ -236,11 +236,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(0, 0, time * speed));
+                pCameraFpsController->TranslateByBasis(glm::vec3(0, 0, time * speed));
             }
             else
             {
-                pCamera2DController->TranslateLocal(glm::vec3(0, time * speed, 0));
+                pCamera2DController->TranslateByBasis(glm::vec3(0, time * speed, 0));
             }
             break;
         }
@@ -248,11 +248,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(0, 0, time * -speed));
+                pCameraFpsController->TranslateByBasis(glm::vec3(0, 0, time * -speed));
             }
             else
             {
-                pCamera2DController->TranslateLocal(glm::vec3(0, time * -speed, 0));
+                pCamera2DController->TranslateByBasis(glm::vec3(0, time * -speed, 0));
             }
             break;
         }
@@ -260,11 +260,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
+                pCameraFpsController->TranslateByBasis(glm::vec3(time * -speed, 0, 0));
             }
             else
             {
-                pCamera2DController->TranslateLocal(glm::vec3(time * -speed, 0, 0));
+                pCamera2DController->TranslateByBasis(glm::vec3(time * -speed, 0, 0));
             }
             break;
         }
@@ -272,11 +272,11 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(time * speed, 0, 0));
+                pCameraFpsController->TranslateByBasis(glm::vec3(time * speed, 0, 0));
             }
             else
             {
-                pCamera2DController->TranslateLocal(glm::vec3(time * speed, 0, 0));
+                pCamera2DController->TranslateByBasis(glm::vec3(time * speed, 0, 0));
             }
             break;
         }
@@ -284,7 +284,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
             {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(0, time * speed, 0));
+                pCameraFpsController->TranslateByBasis(glm::vec3(0, time * speed, 0));
             }
             break;
         }
@@ -292,7 +292,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
         {
             if (isPerspective)
             {
-                pCameraFpsController->TranslateLocal(glm::vec3(0, time * -speed, 0));
+                pCameraFpsController->TranslateByBasis(glm::vec3(0, time * -speed, 0));
             }
             break;
         }
@@ -572,15 +572,10 @@ int main(int argc, char* argv[])
 
             auto gltfModel = Primitives::LoadModel("data/models/glTF/DamagedHelmet.gltf");
 
-            pCameraFpsController->TranslateLocal({ 0, 0, 1 });
-            pCameraFpsController->SetOrientation({ 0, 0, -1 });
-            grassQuad->TranslateLocal({ 0, 0, -4 });
-            for (auto mesh : gltfModel)
-            {
-                mesh->TranslateLocal({ 0, 0, -5});
-                mesh->UpdateTransformMatrix();
-            }
-            pinkBoxGeometry->TranslateLocal({ -5, 0, -5 });
+            pCameraFpsController->TranslateWorld({ 0, 0, 10 });
+            grassQuad->SetOrientation({1, 0, -1});
+            grassQuad->TranslateByBasis({ 0, 0, -10 });
+            pinkBoxGeometry->TranslateWorld({ -5, 0, -10 });
 
             meshes.push_back(pinkBoxGeometry);
             meshes.insert(meshes.end(), gltfModel.begin(), gltfModel.end());
