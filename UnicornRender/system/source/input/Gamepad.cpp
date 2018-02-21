@@ -8,7 +8,7 @@
 
 #include <unicorn/system/adapter/Helper.hpp>
 
-#include <mule/Logger.hpp>
+#include <unicorn/utility/InternalLoggers.hpp>
 
 namespace unicorn
 {
@@ -52,7 +52,7 @@ void Gamepad::UpdateData()
 
         if (!m_axes.empty() && axes.size() != m_axes.size())
         {
-            LOG_WARNING("Gamepad[%d]: number of axes changed during runtime", m_id);
+            LOG_INPUT->Warning("Gamepad[{}]: number of axes changed during runtime", m_id);
         }
 
         m_axes.resize(axes.size());
@@ -65,7 +65,7 @@ void Gamepad::UpdateData()
 
         if (!m_buttons.empty() && buttons.size() != m_buttons.size())
         {
-            LOG_WARNING("Gamepad[%d]: number of buttons changed during runtime", m_id);
+            LOG_INPUT->Warning("Gamepad[{}]: number of buttons changed during runtime", m_id);
         }
 
         m_buttons.resize(buttons.size());

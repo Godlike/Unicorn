@@ -8,7 +8,7 @@
 #include <unicorn/video/Texture.hpp>
 #include <unicorn/utility/Math.hpp>
 
-#include <mule/Logger.hpp>
+#include <unicorn/utility/InternalLoggers.hpp>
 
 #include <glm/gtc/constants.hpp>
 #include <assimp/Importer.hpp>
@@ -296,7 +296,7 @@ std::list<Mesh*> Primitives::LoadModel(std::string const& path)
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
-        LOG_ERROR("ERROR importing %s mesh : %s", path.c_str(),
+        LOG_VIDEO->Error("ERROR importing {} mesh : {}", path.c_str(),
             importer.GetErrorString());
         return meshes;
     }

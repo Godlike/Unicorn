@@ -6,7 +6,6 @@
 
 #include <unicorn/video/vulkan/Renderer.hpp>
 #include <unicorn/Settings.hpp>
-#include <mule/Logger.hpp>
 #include <unicorn/video/vulkan/ShaderProgram.hpp>
 #include <unicorn/system/Manager.hpp>
 #include <unicorn/system/Window.hpp>
@@ -17,6 +16,8 @@
 #include <unicorn/utility/Memory.hpp>
 #include <unicorn/video/Texture.hpp>
 #include <unicorn/video/Material.hpp>
+
+#include <unicorn/utility/InternalLoggers.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -75,7 +76,7 @@ bool Renderer::Init()
         return false;
     }
 
-    LOG_INFO("Renderer initialization started.");
+    LOG_VULKAN->Info("Renderer initialization started.");
 
     if(!CreateSurface() ||
         !PickPhysicalDevice() ||
@@ -101,7 +102,7 @@ bool Renderer::Init()
 
     m_isInitialized = true;
 
-    LOG_INFO("Renderer initialized correctly.");
+    LOG_VULKAN->Info("Renderer initialized correctly.");
 
     return true;
 }
@@ -118,7 +119,7 @@ void Renderer::Deinit()
                     DeleteVkMesh(pVkMesh);
                 }
 
-                LOG_DEBUG("Deleted %u stray vk meshes", static_cast<uint32_t>(m_vkMeshes.size()));
+                LOG_VULKAN->Debug("Deleted {} stray vk meshes", static_cast<uint32_t>(m_vkMeshes.size()));
 
                 m_vkMeshes.clear();
             }
@@ -139,7 +140,7 @@ void Renderer::Deinit()
         FreeSurface();
         FreeLogicalDevice();
 
-        LOG_INFO("Render shutdown correctly.");
+        LOG_VULKAN->Info("Render shutdown correctly.");
     }
 
     m_isInitialized = false;
@@ -216,13 +217,13 @@ bool Renderer::QuerySwapChainSupport(SwapChainSupportDetails& details, const vk:
     std::tie(result, details.formats) = device.getSurfaceFormatsKHR(m_vkWindowSurface);
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Can't get surface formats khr.");
+        LOG_VULKAN->Error("Can't get surface formats khr.");
         return false;
     }
     std::tie(result, details.presentModes) = device.getSurfacePresentModesKHR(m_vkWindowSurface);
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Can't get surface present modes khr.");
+        LOG_VULKAN->Error("Can't get surface present modes khr.");
         return false;
     }
     return true;
@@ -302,7 +303,7 @@ bool Renderer::Render()
 
 void Renderer::OnWindowDestroyed(system::Window* pWindow)
 {
-    LOG_INFO("Window destroyed, deinitializing renderer");
+    LOG_VULKAN->Info("Window destroyed, deinitializing renderer");
 
     m_pWindow = nullptr;
 
@@ -318,7 +319,7 @@ void Renderer::OnWindowSizeChanged(system::Window* pWindow, std::pair<int32_t, i
 
     if(!RecreateSwapChain())
     {
-        LOG_ERROR("Can't recreate swapchain!");
+        LOG_VULKAN->Error("Can't recreate swapchain!");
     }
 }
 
@@ -375,7 +376,7 @@ bool Renderer::AddMesh(Mesh* mesh)
     auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
     if (!AllocateMaterial(*mesh, *vkmesh))
     {
-        LOG_ERROR("Can't allocate material!");
+        LOG_VULKAN->Error("Can't allocate material!");
         return false;
     }
     vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
@@ -672,7 +673,7 @@ bool Renderer::PickPhysicalDevice()
     std::tie(result, devices) = m_contextInstance.enumeratePhysicalDevices();
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Failed to enumerate physical devices.");
+        LOG_VULKAN->Error("Failed to enumerate physical devices.");
         return false;
     }
     for(const auto& device : devices)
@@ -686,7 +687,7 @@ bool Renderer::PickPhysicalDevice()
 
     if(!m_vkPhysicalDevice)
     {
-        LOG_ERROR("Failed to find a suitable GPU!");
+        LOG_VULKAN->Error("Failed to find a suitable GPU!");
         return false;
     }
     m_physicalDeviceProperties = m_vkPhysicalDevice.getProperties();
@@ -731,7 +732,7 @@ bool Renderer::CreateLogicalDevice()
 
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Can't initialize Vulkan logical device!");
+        LOG_VULKAN->Error("Can't initialize Vulkan logical device!");
         return false;
     }
     m_graphicsQueue = m_vkLogicalDevice.getQueue(static_cast<uint32_t>(indices.graphicsFamily), 0);
@@ -745,7 +746,7 @@ bool Renderer::CreateSurface()
     if(!m_pWindow || m_systemManager.CreateVulkanSurfaceForWindow(*m_pWindow, m_contextInstance, nullptr,
                                                                   reinterpret_cast<VkSurfaceKHR*>(&m_vkWindowSurface)) != VK_SUCCESS)
     {
-        LOG_ERROR("Failed to create window surface!");
+        LOG_VULKAN->Error("Failed to create window surface!");
 
         return false;
     }
@@ -810,7 +811,7 @@ bool Renderer::CreateSwapChain()
     vk::Result result = m_vkLogicalDevice.createSwapchainKHR(&createInfo, {}, &newSwapChain);
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Failed to create Vulkan swap chain!");
+        LOG_VULKAN->Error("Failed to create Vulkan swap chain!");
         return false;
     }
 
@@ -823,7 +824,7 @@ bool Renderer::CreateSwapChain()
     std::tie(result, m_swapChainImages) = m_vkLogicalDevice.getSwapchainImagesKHR(m_vkSwapChain);
     if(imageCount != m_swapChainImages.size() || result != vk::Result::eSuccess)
     {
-        LOG_ERROR("SwapChain images not equal!");
+        LOG_VULKAN->Error("SwapChain images not equal!");
     }
     m_swapChainImageFormat = surfaceFormat.format;
     m_swapChainExtent = extent;
@@ -855,7 +856,7 @@ bool Renderer::CreateImageViews()
         vk::Result result = m_vkLogicalDevice.createImageView(&createInfo, {}, &m_swapChainImageViews[i]);
         if(result != vk::Result::eSuccess)
         {
-            LOG_ERROR("Failed to create image views!");
+            LOG_VULKAN->Error("Failed to create image views!");
             return false;
         }
     }
@@ -909,7 +910,7 @@ bool Renderer::CreateRenderPass()
     vk::Result result = m_vkLogicalDevice.createRenderPass(&renderPassInfo, {}, &m_renderPass);
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Failed to create render pass!");
+        LOG_VULKAN->Error("Failed to create render pass!");
         return false;
     }
 
@@ -945,7 +946,7 @@ bool Renderer::CreateDescriptionSetLayout()
     vk::Result result = m_vkLogicalDevice.createDescriptorPool(&poolCreateInfo, nullptr, &m_descriptorPool);
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Can't create descriptor pool!");
+        LOG_VULKAN->Error("Can't create descriptor pool!");
         return false;
     }
 
@@ -980,7 +981,7 @@ bool Renderer::CreateDescriptionSetLayout()
 
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Can't create descriptor set layout!");
+        LOG_VULKAN->Error("Can't create descriptor set layout!");
         return false;
     }
 
@@ -992,7 +993,7 @@ bool Renderer::CreateDescriptionSetLayout()
 
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Can't create descriptor set layout!");
+        LOG_VULKAN->Error("Can't create descriptor set layout!");
         return false;
     }
 
@@ -1005,7 +1006,7 @@ bool Renderer::CreateDescriptionSetLayout()
 
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Can't allocate descriptor sets!");
+        LOG_VULKAN->Error("Can't allocate descriptor sets!");
         return false;
     }
 
@@ -1023,7 +1024,7 @@ bool Renderer::CreateDescriptionSetLayout()
     result = m_vkLogicalDevice.createPipelineLayout(&pipelineLayoutInfo, nullptr, &m_pipelineLayout);
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Failed to create pipeline layout!");
+        LOG_VULKAN->Error("Failed to create pipeline layout!");
         return false;
     }
 
@@ -1039,7 +1040,7 @@ bool Renderer::CreateGraphicsPipeline()
 
     if(!m_shaderProgram->IsCreated())
     {
-        LOG_ERROR("Vulkan can't create shader program!");
+        LOG_VULKAN->Error("Vulkan can't create shader program!");
         return false;
     }
 
@@ -1103,7 +1104,7 @@ bool Renderer::CreateGraphicsPipeline()
 
     if(!m_shaderProgram->IsCreated())
     {
-        LOG_ERROR("Can't create shader module!");
+        LOG_VULKAN->Error("Can't create shader module!");
         return false;
     }
 
@@ -1130,7 +1131,7 @@ bool Renderer::CreateGraphicsPipeline()
     std::tie(result, m_pipelines.solid) = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo);
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Can't create solid pipeline.");
+        LOG_VULKAN->Error("Can't create solid pipeline.");
         return false;
     }
 
@@ -1143,7 +1144,7 @@ bool Renderer::CreateGraphicsPipeline()
         std::tie(result, m_pipelines.wired) = m_vkLogicalDevice.createGraphicsPipeline({}, pipelineInfo);
         if(result != vk::Result::eSuccess)
         {
-            LOG_ERROR("Can't create blend pipeline.");
+            LOG_VULKAN->Error("Can't create blend pipeline.");
             return false;
         }
     }
@@ -1177,7 +1178,7 @@ bool Renderer::CreateFramebuffers()
 
         if(result != vk::Result::eSuccess)
         {
-            LOG_ERROR("Failed to create framebuffer!");
+            LOG_VULKAN->Error("Failed to create framebuffer!");
             return false;
         }
     }
@@ -1194,7 +1195,7 @@ bool Renderer::CreateCommandPool()
     vk::Result result = m_vkLogicalDevice.createCommandPool(&poolInfo, {}, &m_commandPool);
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Failed to create command pool!");
+        LOG_VULKAN->Error("Failed to create command pool!");
         return false;
     }
 
@@ -1207,7 +1208,7 @@ bool Renderer::CreateDepthBuffer()
 
     if(!FindDepthFormat(m_depthImageFormat))
     {
-        LOG_ERROR("Not one of desired depth formats are not compatible!");
+        LOG_VULKAN->Error("Not one of desired depth formats are not compatible!");
         return false;
     }
     m_pDepthImage = new Image(m_vkPhysicalDevice,
@@ -1234,7 +1235,7 @@ bool Renderer::CreateCommandBuffers()
 
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Failed to allocate command buffers!");
+        LOG_VULKAN->Error("Failed to allocate command buffers!");
         return false;
     }
 
@@ -1333,7 +1334,7 @@ bool Renderer::CreateSemaphores()
         return true;
     }
 
-    LOG_ERROR("Failed to create semaphores!");
+    LOG_VULKAN->Error("Failed to create semaphores!");
     return false;
 }
 
@@ -1342,7 +1343,7 @@ bool Renderer::CreatePipelineCache()
     vk::PipelineCacheCreateInfo pipelineCacheCreateInfo;
     if(m_vkLogicalDevice.createPipelineCache(&pipelineCacheCreateInfo, nullptr, &pipelineCache) != vk::Result::eSuccess)
     {
-        LOG_ERROR( "Can't create pipeline cache!" );
+        LOG_VULKAN->Error( "Can't create pipeline cache!" );
         return false;
     }
     return true;
@@ -1354,14 +1355,14 @@ bool Renderer::LoadEngineHelpData()
     static std::string const path = "data/textures/replace_me.jpg";
     if(!texture.Load(path))
     {
-        LOG_ERROR( "Can't find texture with path - %s", path.c_str() );
+        LOG_VULKAN->Error( "Can't find texture with path - {}", path.c_str() );
         return false;
     }
     VkTexture* replaceMeTexture = new VkTexture(m_vkLogicalDevice);
 
     if(!replaceMeTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, texture))
     {
-        LOG_ERROR("Can't create 'replace me' texture - %s", path.c_str());
+        LOG_VULKAN->Error("Can't create 'replace me' texture - {}", path.c_str());
 
         delete replaceMeTexture;
 
@@ -1379,7 +1380,7 @@ bool Renderer::LoadEngineHelpData()
 
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Can't allocate descriptor sets!");
+        LOG_VULKAN->Error("Can't allocate descriptor sets!");
 
         replaceMeTexture->Delete();
         delete replaceMeTexture;
@@ -1417,7 +1418,7 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
 {
     vk::PhysicalDeviceProperties deviceProperties = device.getProperties();
 
-    LOG_INFO("Found GPU : %s", deviceProperties.deviceName);
+    LOG_VULKAN->Info("Found GPU : {}", deviceProperties.deviceName);
     QueueFamilyIndices indices = FindQueueFamilies(device);
     bool extensionsSupported = CheckDeviceExtensionSupport(device);
     bool swapChainAcceptable = false;
@@ -1437,7 +1438,7 @@ bool Renderer::IsDeviceSuitable(const vk::PhysicalDevice& device)
 
     if(indices.IsComplete() && extensionsSupported && swapChainAcceptable && deviceFeatures.samplerAnisotropy)
     {
-        LOG_INFO("Picked as main GPU : %s", deviceProperties.deviceName);
+        LOG_VULKAN->Info("Picked as main GPU : {}", deviceProperties.deviceName);
         m_gpuName = deviceProperties.deviceName;
         return true;
     }
@@ -1461,7 +1462,7 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
 
             if(!vkTexture->IsInitialized())
             {
-                LOG_ERROR("Can't allocate vulkan texture!");
+                LOG_VULKAN->Error("Can't allocate vulkan texture!");
 
                 delete vkTexture;
 
@@ -1479,7 +1480,7 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
 
             if(result != vk::Result::eSuccess)
             {
-                LOG_ERROR("Can't allocate sampler descriptor sets!");
+                LOG_VULKAN->Error("Can't allocate sampler descriptor sets!");
 
                 return false;
             }
@@ -1527,7 +1528,7 @@ bool Renderer::CheckDeviceExtensionSupport(const vk::PhysicalDevice& device)
     std::tie(result, availableExtensions) = device.enumerateDeviceExtensionProperties();
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Can't enumerate device extension properties.");
+        LOG_VULKAN->Error("Can't enumerate device extension properties.");
         return false;
     }
     auto deviceExtensions = Context::Instance().GetDeviceExtensions();
@@ -1554,14 +1555,14 @@ bool Renderer::Frame()
     {
         if(!RecreateSwapChain())
         {
-            LOG_ERROR("Can't recreate swapchain!");
+            LOG_VULKAN->Error("Can't recreate swapchain!");
             return false;
         }
         return true;
     }
     if(result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
     {
-        LOG_ERROR("Failed to acquire swap chain image!");
+        LOG_VULKAN->Error("Failed to acquire swap chain image!");
         return false;
     }
 
@@ -1586,7 +1587,7 @@ bool Renderer::Frame()
 
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("failed to submit draw command buffer!");
+        LOG_VULKAN->Error("failed to submit draw command buffer!");
         return false;
     }
 
@@ -1609,7 +1610,7 @@ bool Renderer::Frame()
     }
     if(result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
     {
-        LOG_ERROR("Failed to acquire swap chain image!");
+        LOG_VULKAN->Error("Failed to acquire swap chain image!");
         return false;
     }
 

@@ -5,9 +5,10 @@
 */
 
 #include <unicorn/video/vulkan/Buffer.hpp>
-#include <mule/Logger.hpp>
 #include <unicorn/video/vulkan/VulkanHelper.hpp>
 #include <unicorn/video/vulkan/Image.hpp>
+
+#include <unicorn/utility/InternalLoggers.hpp>
 
 namespace unicorn
 {
@@ -31,7 +32,7 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device,
 {
     if(size == 0)
     {
-        LOG_ERROR("Can't allocate zero Vulkan buffer on gpu!");
+        LOG_VULKAN->Error("Can't allocate zero Vulkan buffer on gpu!");
         return false;
     }
     m_device = device;
@@ -48,7 +49,7 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device,
     vk::Result result = m_device.createBuffer(&bufferInfo, nullptr, &m_buffer);
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Can't create vulkan buffer!");
+        LOG_VULKAN->Error("Can't create vulkan buffer!");
         return false;
     }
 
@@ -61,7 +62,7 @@ bool Buffer::Create(vk::PhysicalDevice physicalDevice, vk::Device device,
                                 vk::MemoryPropertyFlagBits::eHostVisible, req.size);
     if(!m_deviceMemory->IsInitialized())
     {
-        LOG_ERROR("Can't allocate memory on gpu!");
+        LOG_VULKAN->Error("Can't allocate memory on gpu!");
 
         delete m_deviceMemory;
         m_deviceMemory = nullptr;
@@ -99,7 +100,7 @@ void Buffer::Write(const void* pData) const
     }
     else
     {
-        LOG_WARNING("Can't write buffer, because it's not mapped!");
+        LOG_VULKAN->Warning("Can't write buffer, because it's not mapped!");
     }
 }
 

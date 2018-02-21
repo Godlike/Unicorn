@@ -6,8 +6,6 @@
 
 #include <unicorn/Settings.hpp>
 
-#include <mule/Logger.hpp>
-
 namespace unicorn
 {
 
@@ -19,7 +17,7 @@ Settings::Settings()
 {
 }
 
-void Settings::Init(int /*argc*/, char** /*argv*/, const std::string& /*logFileName*/)
+void Settings::Init(int /*argc*/, char** /*argv*/)
 {
 }
 

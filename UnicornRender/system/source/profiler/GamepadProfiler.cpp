@@ -9,7 +9,7 @@
 #include <unicorn/system/Manager.hpp>
 #include <unicorn/system/input/Gamepad.hpp>
 
-#include <mule/Logger.hpp>
+#include <unicorn/utility/InternalLoggers.hpp>
 
 #include <iomanip>
 #include <sstream>
@@ -22,7 +22,7 @@ namespace system
 GamepadProfiler::GamepadProfiler(Manager& manager)
     : m_systemManager( manager )
 {
-    LOG_INFO("GamepadProfiler created");
+    LOG_PROFILER->Info("GamepadProfiler created");
     m_systemManager.GamepadCreated.connect(this, &GamepadProfiler::OnGamepadCreated);
 }
 
@@ -30,15 +30,15 @@ GamepadProfiler::~GamepadProfiler()
 {
     m_systemManager.GamepadCreated.disconnect(this, &GamepadProfiler::OnGamepadCreated);
 
-    LOG_INFO("GamepadProfiler destroyed");
+    LOG_PROFILER->Info("GamepadProfiler destroyed");
 }
 
 void GamepadProfiler::OnGamepadCreated(input::Gamepad* const& pGamepad)
 {
-    LOG_INFO("Gamepad[%d]: created:"
-        "\r\n\t%8s\t%s"
-        "\r\n\t%8s\t%d"
-        "\r\n\t%8s\t%d"
+    LOG_PROFILER->Info("Gamepad[{}]: created:"
+        "\r\n\t{:>8}\t{}"
+        "\r\n\t{:>8}\t{}"
+        "\r\n\t{:>8}\t{}"
         , pGamepad->GetId()
         , "name", pGamepad->GetName().c_str()
         , "axes", static_cast<uint32_t>(pGamepad->GetAxes().size())
@@ -52,7 +52,7 @@ void GamepadProfiler::OnGamepadCreated(input::Gamepad* const& pGamepad)
 
 void GamepadProfiler::OnGamepadDestroyed(input::Gamepad* pGamepad)
 {
-    LOG_INFO("Gamepad[%d]: destroyed", pGamepad->GetId());
+    LOG_PROFILER->Info("Gamepad[{}]: destroyed", pGamepad->GetId());
 }
 
 void GamepadProfiler::OnGamepadUpdated(input::Gamepad* pGamepad)
@@ -81,7 +81,7 @@ void GamepadProfiler::OnGamepadUpdated(input::Gamepad* pGamepad)
         }
     }
 
-    LOG_INFO("Gamepad[%d]: updated: %s", pGamepad->GetId(), result.str().c_str());
+    LOG_PROFILER->Info("Gamepad[{}]: updated: {}", pGamepad->GetId(), result.str().c_str());
 }
 
 }

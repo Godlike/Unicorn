@@ -5,7 +5,6 @@
 */
 
 #include <unicorn/video/Mesh.hpp>
-#include <unicorn/utility/Logger.hpp>
 
 namespace unicorn
 {

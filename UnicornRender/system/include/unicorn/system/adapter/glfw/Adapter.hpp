@@ -72,7 +72,7 @@ public:
      *
      *  @return handle to newly created window
      */
-    static void* CreateWindow(int32_t width,
+    static void* CreateInternalWindow(int32_t width,
         int32_t height,
         const char* name,
         void* monitorHandle,

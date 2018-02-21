@@ -28,8 +28,8 @@ include(Utils)
 include(loguru)
 
 if (NOT MULE_FOUND)
-    option(MULE_BUILD_TESTS "Build Mule tests." OFF)
-    add_subdirectory(godlike/Mule)
+    include(MuleConfig)
+    add_subdirectory("${MULE_ROOT}" "${CMAKE_CURRENT_BINARY_DIR}/Mule")
 endif()
 
 include(stb)
@@ -119,12 +119,16 @@ add_subdirectory(utility)
 add_subdirectory(video)
 
 set(UNICORN_RENDER_HEADERS
+    include/unicorn/Settings.hpp
     include/unicorn/UnicornRender.hpp
-    include/unicorn/Settings.hpp)
+    include/unicorn/Loggers.hpp
+)
 
 set(UNICORN_RENDER_SOURCES
+    source/Loggers.cpp
+    source/Settings.cpp
     source/UnicornRender.cpp
-    source/Settings.cpp)
+)
 
 set(UNICORN_RENDER_EXTRA)
 

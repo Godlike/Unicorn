@@ -5,9 +5,11 @@
 */
 
 #include <unicorn/video/vulkan/ShaderProgram.hpp>
-#include <mule/asset/SimpleStorage.hpp>
-#include <mule/Logger.hpp>
 #include <unicorn/video/Mesh.hpp>
+
+#include <unicorn/utility/InternalLoggers.hpp>
+
+#include <mule/asset/SimpleStorage.hpp>
 
 namespace unicorn
 {
@@ -26,7 +28,7 @@ namespace unicorn
 
                 if (!simpleVertShaderHandler.IsValid() || !simpleFragShaderHandler.IsValid())
                 {
-                    LOG_ERROR("Can't find shaders!");
+                    LOG_VULKAN->Error("Can't find shaders!");
                     return;
                 }
 
@@ -35,7 +37,7 @@ namespace unicorn
 
                 if (shadersCreatedFailed)
                 {
-                    LOG_ERROR("Can't create shader module!");
+                    LOG_VULKAN->Error("Can't create shader module!");
                     return;
                 }
 
@@ -108,7 +110,7 @@ namespace unicorn
                 vk::ShaderModuleCreateInfo createInfo;
                 if (code.size() % sizeof(uint32_t) != 0)
                 {
-                    LOG_ERROR("Shader code size is not multiple of sizeof(uint32_t), look at VkShaderModuleCreateInfo(3) Manual Page.");
+                    LOG_VULKAN->Error("Shader code size is not multiple of sizeof(uint32_t), look at VkShaderModuleCreateInfo(3) Manual Page.");
                     return false;
                 }
                 createInfo.codeSize = code.size();
@@ -118,7 +120,7 @@ namespace unicorn
 
                 if (result != vk::Result::eSuccess)
                 {
-                    LOG_ERROR("Failed to create shader module!");
+                    LOG_VULKAN->Error("Failed to create shader module!");
                     return false;
                 }
 

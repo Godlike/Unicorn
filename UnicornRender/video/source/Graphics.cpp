@@ -7,13 +7,14 @@
 #include <unicorn/video/Graphics.hpp>
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/video/Camera.hpp>
-#include <mule/Logger.hpp>
 
 #include <unicorn/system/Manager.hpp>
 #include <unicorn/system/Window.hpp>
 
 #include <unicorn/video/vulkan/Context.hpp>
 #include <unicorn/video/vulkan/Renderer.hpp>
+
+#include <unicorn/utility/InternalLoggers.hpp>
 
 namespace unicorn
 {
@@ -42,19 +43,19 @@ bool Graphics::Init(const DriverType& driver)
 
     m_driver = driver;
 
-    LOG_INFO("Graphics initialization started.");
+    LOG_VIDEO->Info("Graphics initialization started.");
 
     switch (m_driver)
     {
     case DriverType::Vulkan:
         if (!m_systemManager.IsVulkanSupported())
         {
-            LOG_ERROR("Vulkan not supported!");
+            LOG_VIDEO->Error("Vulkan not supported!");
             return false;
         }
         if (!vulkan::Context::Instance().Initialize(m_systemManager))
         {
-            LOG_ERROR("Vulkan context not initialized!");
+            LOG_VIDEO->Error("Vulkan context not initialized!");
             return false;
         }
         break;
@@ -63,7 +64,7 @@ bool Graphics::Init(const DriverType& driver)
     }
     m_isInitialized = true;
 
-    LOG_INFO("Graphics initialized correctly.");
+    LOG_VIDEO->Info("Graphics initialized correctly.");
 
     return true;
 }
@@ -85,7 +86,7 @@ void Graphics::Deinit()
 
     if (m_isInitialized)
     {
-        LOG_INFO("Graphics shutdown correctly.");
+        LOG_VIDEO->Info("Graphics shutdown correctly.");
     }
 
     m_isInitialized = false;
@@ -122,7 +123,7 @@ system::Window* Graphics::SpawnWindow(int32_t width,
                                       system::Monitor* pMonitor,
                                       system::Window* pSharedWindow)
 {
-    return m_systemManager.CreateWindow(width, height, name, pMonitor, pSharedWindow);
+    return m_systemManager.CreateUnicornWindow(width, height, name, pMonitor, pSharedWindow);
 }
 
 system::Window* Graphics::GetFocusedWindow() const
@@ -181,7 +182,7 @@ void Graphics::ProcessExpiredRenderers()
 
             if (!m_systemManager.DestroyWindow(cit->second))
             {
-                LOG_WARNING("Failed to destroy window %s", cit->second->GetName().c_str());
+                LOG_VIDEO->Warning("Failed to destroy window {}", cit->second->GetName().c_str());
 
                 delete cit->second;
             }
@@ -200,14 +201,14 @@ Renderer* Graphics::SpawnRenderer(system::Window* window, Camera& camera)
             renderer = new vulkan::Renderer(m_systemManager, window, camera);
             if(!renderer->Init())
             {
-                LOG_ERROR("Can't Create Vulkan renderer!");
+                LOG_VIDEO->Error("Can't Create Vulkan renderer!");
                 delete renderer;
                 return nullptr;
             }
             BindWindowRenderer(window, renderer);
             break;
         default:
-            LOG_ERROR("Unexpected render type!");
+            LOG_VIDEO->Error("Unexpected render type!");
             break;
     }
     return renderer;

@@ -25,6 +25,13 @@
 #include <unicorn/video/OrthographicCamera.hpp>
 #include <unicorn/video/PerspectiveCamera.hpp>
 
+#include <unicorn/Loggers.hpp>
+
+#include <mule/Loggers.hpp>
+#include <mule/MuleUtilities.hpp>
+
+#include <spdlog/sinks/ansicolor_sink.h>
+
 #include <glm/glm.hpp>
 
 #include <ctime>
@@ -502,13 +509,45 @@ std::list<unicorn::video::Mesh*> MakeCubeMap()
 
 int main(int argc, char* argv[])
 {
+    auto ansiSink = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
+
+    {
+        mule::Loggers& loggers = mule::Loggers::Instance();
+
+        loggers.SetLoggerSettings(
+            1 // mule_storage
+            , mule::Loggers::Settings{
+                std::string("mule][storage")
+                , std::string("%+")
+                , mule::LogLevel::trace
+                , { ansiSink }
+            }
+        );
+    }
+
+    mule::MuleUtilities::Initialize();
+
     unicorn::Settings& settings = unicorn::Settings::Instance();
 
-    settings.Init(argc, argv, "Sanic_Jymper.log");
+    {
+        unicorn::Loggers& loggers = unicorn::Loggers::Instance();
+
+        loggers.SetLoggerSettings(
+            1 // unicorn_profiler
+            , unicorn::Loggers::Settings{
+                std::string("unicorn][profiler")
+                , std::string("%+")
+                , mule::LogLevel::info
+                , { ansiSink }
+            }
+        );
+    }
+
+    settings.Init(argc, argv);
     settings.SetApplicationName("SANIC JYMPER");
     auto* unicornRender = new unicorn::UnicornRender;
     timer = new unicorn::system::Timer(true);
-    if (unicornRender->Init())
+    if (unicornRender->Init(unicorn::UnicornRender::ProfilingMask::Monitor))
     {
         pGraphics = unicornRender->GetGraphics();
         pInput = unicornRender->GetInput();

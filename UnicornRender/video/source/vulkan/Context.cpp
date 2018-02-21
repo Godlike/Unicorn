@@ -6,7 +6,8 @@
 
 #include <unicorn/video/vulkan/Context.hpp>
 #include <unicorn/Settings.hpp>
-#include <mule/Logger.hpp>
+
+#include <unicorn/utility/InternalLoggers.hpp>
 
 namespace unicorn
 {
@@ -38,23 +39,23 @@ static VKAPI_ATTR vk::Bool32 VKAPI_CALL DebugCallback(VkDebugReportFlagsEXT flag
 {
     if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT)
     {
-        LOG_ERROR("VULKAN LAYER ERROR: %s", msg);
+        LOG_VULKAN->Error("VULKAN LAYER ERROR: {}", msg);
     }
     if (flags & VK_DEBUG_REPORT_WARNING_BIT_EXT)
     {
-        LOG_WARNING("VULKAN LAYER WARNING: %s", msg);
+        LOG_VULKAN->Warning("VULKAN LAYER WARNING: {}", msg);
     }
     if (flags & VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT)
     {
-        LOG_INFO("VULKAN LAYER PERFORMANCE: %s", msg);
+        LOG_VULKAN->Info("VULKAN LAYER PERFORMANCE: {}", msg);
     }
     if (flags & VK_DEBUG_REPORT_INFORMATION_BIT_EXT)
     {
-        LOG_INFO("VULKAN LAYER INFO: %s", msg);
+        LOG_VULKAN->Info("VULKAN LAYER INFO: {}", msg);
     }
     if (flags & VK_DEBUG_REPORT_DEBUG_BIT_EXT)
     {
-        LOG_INFO("VULKAN LAYER DEBUG: %s", msg);
+        LOG_VULKAN->Info("VULKAN LAYER DEBUG: {}", msg);
     }
     return VK_FALSE;
 }
@@ -63,7 +64,7 @@ bool Context::Initialize(system::Manager& manager)
 {
     if (s_enableValidationLayers && !CheckValidationLayerSupport())
     {
-        LOG_ERROR("Vulkan validation layers requested, but not available!");
+        LOG_VULKAN->Error("Vulkan validation layers requested, but not available!");
         return false;
     }
 
@@ -94,7 +95,7 @@ bool Context::Initialize(system::Manager& manager)
 
     if (vk::createInstance(&createInfo, nullptr, &m_vkInstance) != vk::Result::eSuccess)
     {
-        LOG_ERROR("Failed to create instance!");
+        LOG_VULKAN->Error("Failed to create instance!");
         return false;
     }
     SetupDebugCallback();
@@ -108,7 +109,7 @@ bool Context::CheckValidationLayerSupport()
     std::tie(result, availableLayers) = vk::enumerateInstanceLayerProperties();
     if (result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Can't enumerate instance layer properties!");
+        LOG_VULKAN->Error("Can't enumerate instance layer properties!");
         return false;
     }
     for (const char* layerName : m_validationLayers)
@@ -126,22 +127,22 @@ bool Context::CheckValidationLayerSupport()
 
         if (!layerFound)
         {
-            LOG_ERROR("Can't find required Vulkan layers: ");
+            LOG_VULKAN->Error("Can't find required Vulkan layers: ");
 
             for (auto& requiredLayer : m_validationLayers)
             {
-                LOG_ERROR("%s", requiredLayer);
+                LOG_VULKAN->Error("{}", requiredLayer);
             }
 
             return false;
         }
     }
 
-    LOG_INFO("Picked next Vulkan layers :");
+    LOG_VULKAN->Info("Picked next Vulkan layers :");
 
     for (auto& layer : m_validationLayers)
     {
-        LOG_INFO("%s", layer);
+        LOG_VULKAN->Info("{}", layer);
     }
 
     return true;
@@ -225,7 +226,7 @@ VkResult Context::CreateDebugReportCallbackEXT(const VkDebugReportCallbackCreate
     }
     else
     {
-        LOG_ERROR("Can't setup debug callback'");
+        LOG_VULKAN->Error("Can't setup debug callback'");
         return VK_ERROR_EXTENSION_NOT_PRESENT;
     }
 }
