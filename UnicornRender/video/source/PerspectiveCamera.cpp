@@ -30,6 +30,7 @@ void PerspectiveCamera::UpdateProjection()
                                           m_aspect,
                                           m_znear,
                                           m_zfar);
+    m_cameraProjection[1][1] *= -1; // For vulkan rendering.
 }
 
 void PerspectiveCamera::SetFov(float fov)

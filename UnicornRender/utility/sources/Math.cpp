@@ -6,7 +6,6 @@
 
 #include <unicorn/utility/Math.hpp>
 
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
