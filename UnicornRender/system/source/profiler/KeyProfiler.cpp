@@ -10,7 +10,7 @@
 
 #include <unicorn/system/input/Modifier.hpp>
 
-#include <unicorn/utility/Logger.hpp>
+#include <unicorn/utility/InternalLoggers.hpp>
 
 namespace unicorn
 {
@@ -20,7 +20,7 @@ namespace system
 KeyProfiler::KeyProfiler(Manager& manager)
     : m_systemManager( manager )
 {
-    LOG_INFO("KeyProfiler created");
+    LOG_PROFILER->Info("KeyProfiler created");
 
     m_systemManager.WindowCreated.connect(this, &KeyProfiler::OnWindowCreated);
 }
@@ -29,12 +29,12 @@ KeyProfiler::~KeyProfiler()
 {
     m_systemManager.WindowCreated.disconnect(this, &KeyProfiler::OnWindowCreated);
 
-    LOG_INFO("KeyProfiler destroyed");
+    LOG_PROFILER->Info("KeyProfiler destroyed");
 }
 
 void KeyProfiler::OnWindowCreated(Window* pWindow)
 {
-    LOG_INFO("KeyProfiler binds to Keyboard events of Window[%d]", pWindow->GetId());
+    LOG_PROFILER->Info("KeyProfiler binds to Keyboard events of Window[{}]", pWindow->GetId());
 
     pWindow->Keyboard.connect(this, &KeyProfiler::OnWindowKeyboard);
     pWindow->Unicode.connect(this, &KeyProfiler::OnWindowUnicode);
@@ -48,12 +48,12 @@ void KeyProfiler::OnWindowKeyboard(Window::KeyboardEvent const& keyboardEvent)
     input::Action const& action = keyboardEvent.action;
     input::Modifier::Mask const& modifiers = keyboardEvent.modifiers;
 
-    LOG_INFO("Window[%d]: Key input received: %s[%d] %s %s", pWindow->GetId(), input::Stringify(key), scancode, input::Stringify(action), input::Modifier::Stringify(modifiers).c_str());
+    LOG_PROFILER->Info("Window[{}]: Key input received: {}[{}] {} {}", pWindow->GetId(), input::Stringify(key), scancode, input::Stringify(action), input::Modifier::Stringify(modifiers).c_str());
 }
 
 void KeyProfiler::OnWindowUnicode(Window* pWindow, uint32_t unicode, input::Modifier::Mask modifiers)
 {
-    LOG_INFO("Window[%d]: unicode input received: %d %s", pWindow->GetId(), unicode, input::Modifier::Stringify(modifiers).c_str());
+    LOG_PROFILER->Info("Window[{}]: unicode input received: {} {}", pWindow->GetId(), unicode, input::Modifier::Stringify(modifiers).c_str());
 }
 
 }

@@ -324,7 +324,7 @@ void Adapter::ResetWindowHints()
     glfwDefaultWindowHints();
 }
 
-void* Adapter::CreateWindow(int32_t width,
+void* Adapter::CreateInternalWindow(int32_t width,
     int32_t height,
     const char* name,
     void* monitorHandle,

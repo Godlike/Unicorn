@@ -6,7 +6,8 @@
 
 #include <unicorn/video/Material.hpp>
 #include <unicorn/video/Texture.hpp>
-#include <unicorn/utility/Logger.hpp>
+
+#include <unicorn/utility/InternalLoggers.hpp>
 
 namespace unicorn
 {
@@ -36,7 +37,7 @@ void Material::SetAlbedo(std::shared_ptr<Texture> albedo)
 
     if(!albedo->IsLoaded())
     {
-        LOG_ERROR("Setting not loaded texture to material!");
+        LOG_VIDEO->Error("Setting not loaded texture to material!");
 
         return;
     }

@@ -8,7 +8,6 @@
 #define UNICORN_VIDEO_VULKAN_TEXTURE_HPP
 
 #include <unicorn/video/vulkan/Image.hpp>
-#include <unicorn/utility/Logger.hpp>
 
 #include <vulkan/vulkan.hpp>
 #include <wink/signal.hpp>

@@ -1,3 +1,11 @@
+/*
+* Copyright (C) 2018 by Godlike
+* This code is licensed under the MIT license (MIT)
+* (http://opensource.org/licenses/MIT)
+*/
+
+// Based on https://msdn.microsoft.com/en-us/library/windows/desktop/aa381058(v=vs.85).aspx
+
 #include <Windows.h>
 
 VS_VERSION_INFO VERSIONINFO

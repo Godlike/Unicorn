@@ -15,8 +15,6 @@
 
 #include <unicorn/system/input/Gamepad.hpp>
 
-#include <unicorn/utility/Logger.hpp>
-
 namespace unicorn
 {
 namespace system
@@ -32,7 +30,7 @@ Manager::~Manager()
     Deinit();
 }
 
-Window* Manager::CreateWindow(int32_t width,
+Window* Manager::CreateUnicornWindow(int32_t width,
     int32_t height,
     const std::string& name,
     Monitor* pMonitor,

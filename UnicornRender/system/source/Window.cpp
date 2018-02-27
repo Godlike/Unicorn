@@ -7,7 +7,6 @@
 #include <unicorn/system/Window.hpp>
 
 #include <unicorn/system/adapter/Helper.hpp>
-#include <unicorn/utility/Logger.hpp>
 
 namespace unicorn
 {
@@ -26,7 +25,7 @@ Window::Window(uint32_t id, int32_t width, int32_t height,
     , m_modifiers( input::Modifier::None )
     , m_handle( nullptr )
 {
-    m_handle = WINDOW_MANAGER_ADAPTER::CreateWindow(m_size.first
+    m_handle = WINDOW_MANAGER_ADAPTER::CreateInternalWindow(m_size.first
         , m_size.second
         , m_name.c_str()
         , m_pMonitor ? m_pMonitor->GetHandle() : nullptr

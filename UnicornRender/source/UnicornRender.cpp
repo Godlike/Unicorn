@@ -5,9 +5,7 @@
 */
 
 #include <unicorn/UnicornRender.hpp>
-#include <unicorn/utility/Logger.hpp>
 #include <unicorn/video/Graphics.hpp>
-#include <unicorn/utility/asset/SimpleStorage.hpp>
 
 #include <unicorn/system/Input.hpp>
 #include <unicorn/system/Manager.hpp>
@@ -17,6 +15,11 @@
 #include <unicorn/system/profiler/MonitorProfiler.hpp>
 #include <unicorn/system/profiler/MouseProfiler.hpp>
 #include <unicorn/system/profiler/WindowProfiler.hpp>
+
+#include <unicorn/utility/InternalLoggers.hpp>
+#include <unicorn/Loggers.hpp>
+
+#include <mule/asset/SimpleStorage.hpp>
 
 namespace
 {
@@ -38,6 +41,7 @@ static unicorn::system::GamepadProfiler* s_pGamepadProfiler = nullptr;
 
 namespace unicorn
 {
+
 UnicornRender::UnicornRender()
     : m_isInitialized(false)
     , m_pSystemManager(nullptr)
@@ -58,8 +62,10 @@ bool UnicornRender::Init(ProfilingMask::MaskType profilingMask)
         return false;
     }
 
-    unicorn::utility::asset::SimpleStorage::Instance();
-    LOG_INFO("Engine initialization started.");
+    Loggers::Instance().Reinitialize();
+
+    mule::asset::SimpleStorage::Instance();
+    LOG->Info("Engine initialization started.");
 
     m_pSystemManager = new system::Manager();
 
@@ -105,7 +111,7 @@ bool UnicornRender::Init(ProfilingMask::MaskType profilingMask)
 
     m_isInitialized = true;
 
-    LOG_INFO("Engine initialization finished.");
+    LOG->Info("Engine initialization finished.");
 
     return true;
 }
@@ -167,7 +173,7 @@ void UnicornRender::Deinit()
 
     if (m_isInitialized)
     {
-        LOG_INFO("Engine shutdown correctly.");
+        LOG->Info("Engine shutdown correctly.");
     }
 
     m_isInitialized = false;

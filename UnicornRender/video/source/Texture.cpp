@@ -4,9 +4,11 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#include <unicorn/utility/Logger.hpp>
 #include <unicorn/video/Texture.hpp>
-#include <unicorn/utility/asset/SimpleStorage.hpp>
+
+#include <unicorn/utility/InternalLoggers.hpp>
+
+#include <mule/asset/SimpleStorage.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -42,12 +44,12 @@ bool Texture::Load(const std::string& path)
 
     m_path = path;
 
-    utility::asset::SimpleStorage& storage = unicorn::utility::asset::SimpleStorage::Instance();
-    utility::asset::Handler textureHandler = storage.Get(m_path);
+    mule::asset::SimpleStorage& storage = mule::asset::SimpleStorage::Instance();
+    mule::asset::Handler textureHandler = storage.Get(m_path);
 
     if (!textureHandler.IsValid())
     {
-        LOG_ERROR("Can't find texture - %s", m_path.c_str());
+        LOG_VIDEO->Error("Can't find texture - {}", m_path.c_str());
         return false;
     }
 
@@ -62,7 +64,7 @@ bool Texture::Load(const std::string& path)
 
     if (!m_data)
     {
-        LOG_ERROR("Failed to load texture image with path - %s", m_path.c_str());
+        LOG_VIDEO->Error("Failed to load texture image with path - {}", m_path.c_str());
         return false;
     }
 
@@ -91,7 +93,7 @@ uint32_t Texture::Size() const
 {
     if(!m_initialized)
     {
-        LOG_WARNING("Texture not loaded!");
+        LOG_VIDEO->Warning("Texture not loaded!");
     }
     return m_size;
 }
@@ -100,7 +102,7 @@ uint8_t* Texture::Data() const
 {
     if(!m_initialized)
     {
-        LOG_WARNING("Texture not loaded!");
+        LOG_VIDEO->Warning("Texture not loaded!");
     }
     return m_data;
 }
@@ -109,7 +111,7 @@ uint32_t Texture::Width() const
 {
     if(!m_initialized)
     {
-        LOG_WARNING("Texture not loaded!");
+        LOG_VIDEO->Warning("Texture not loaded!");
     }
     return m_width;
 }
@@ -118,7 +120,7 @@ uint32_t Texture::Height() const
 {
     if(!m_initialized)
     {
-        LOG_WARNING("Texture not loaded!");
+        LOG_VIDEO->Warning("Texture not loaded!");
     }
     return m_height;
 }
@@ -127,7 +129,7 @@ std::string const& Texture::Path() const
 {
     if(!m_initialized)
     {
-        LOG_WARNING("Texture not loaded!");
+        LOG_VIDEO->Warning("Texture not loaded!");
     }
     return m_path;
 }
@@ -136,7 +138,7 @@ uint32_t Texture::GetId() const
 {
     if(!m_initialized)
     {
-        LOG_WARNING("Texture not loaded!");
+        LOG_VIDEO->Warning("Texture not loaded!");
     }
     return m_id;
 }

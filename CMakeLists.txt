@@ -43,3 +43,9 @@ if (${UNICORN_BUILD_TESTS})
 
     add_subdirectory(tests)
 endif()
+
+get_directory_property(UNICORN_HAS_PARENT PARENT_DIRECTORY)
+
+if (UNICORN_HAS_PARENT)
+    set(UNICORN_RENDER_LIB ${UNICORN_RENDER_LIB} PARENT_SCOPE)
+endif()
