@@ -87,10 +87,38 @@ public:
     /** @brief Returns color */
     UNICORN_EXPORT glm::vec3 GetColor() const;
 
+    /**
+     * @brief Sets sprite area
+     *
+     * @param x texture offset by x in pixels
+     * @param y texture offset by y in pixels
+     * @param width sprite width in pixels
+     * @param height sprite height in pixels
+     */
+    UNICORN_EXPORT void SetSpriteArea(int32_t x, int32_t y, int32_t width, int32_t height);
+
+    /**
+     * @brief Returns sprite area
+     *
+     * @return sprite area: {x, y, width, height}
+    */
+    UNICORN_EXPORT glm::vec4 GetSpriteArea() const;
+
+    /**
+    * @brief Returns normalized sprite area
+    *
+    * @return normalized sprite ares: {x, y, width, height}
+    */
+    UNICORN_EXPORT glm::vec4 GetNormalizedSpriteArea() const;
+
     /** @brief Signal for material update notification */
     wink::signal<wink::slot<void()>> DataUpdated;
 protected:
+    void NormalizeSpriteArea();
+
     glm::vec3 m_color;
+    glm::vec4 m_normSpriteArea;
+    glm::vec4 m_spriteArea;
 
     bool m_isColored;
     bool m_isWired;

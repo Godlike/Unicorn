@@ -15,6 +15,8 @@ namespace video
 {
 Material::Material()
     : m_color(Color::Red())
+    , m_normSpriteArea(0, 0, 1, 1)
+    , m_spriteArea(0)
     , m_isColored(true)
     , m_isWired(false)
     , m_isVisible(true)
@@ -43,6 +45,15 @@ void Material::SetAlbedo(std::shared_ptr<Texture> albedo)
     m_isColored = false;
 
     m_albedo = albedo;
+
+    if(m_spriteArea == glm::vec4(0))
+    {
+        SetSpriteArea(0, 0, m_albedo->Width(), m_albedo->Height());
+    }
+    else
+    {
+        NormalizeSpriteArea();
+    };
 
     DataUpdated.emit();
 }
@@ -103,6 +114,37 @@ void Material::SetColor(glm::vec3 color)
 glm::vec3 Material::GetColor() const
 {
     return m_color;
+}
+
+void Material::SetSpriteArea(int32_t x, int32_t y, int32_t width, int32_t height)
+{
+    m_spriteArea = { x, y, width, height };
+
+    NormalizeSpriteArea();
+
+    DataUpdated.emit();
+}
+
+glm::vec4 Material::GetSpriteArea() const
+{
+    return m_spriteArea;
+}
+
+glm::vec4 Material::GetNormalizedSpriteArea() const
+{
+    return m_normSpriteArea;
+}
+
+void Material::NormalizeSpriteArea()
+{
+    if (m_albedo->IsLoaded())
+    {
+        m_normSpriteArea = {
+            m_spriteArea.x / m_albedo->Width(),
+            m_spriteArea.y / m_albedo->Height(),
+            m_spriteArea.z / m_albedo->Width(),
+            m_spriteArea.w / m_albedo->Height() };
+    }
 }
 
 }

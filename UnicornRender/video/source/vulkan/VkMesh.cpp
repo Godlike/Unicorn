@@ -90,6 +90,7 @@ vk::Buffer VkMesh::GetIndexBuffer() const
 {
     return m_indexBuffer.GetVkBuffer();
 }
+
 void VkMesh::OnMaterialUpdated()
 {
     MaterialUpdated.emit(&m_mesh, this);
