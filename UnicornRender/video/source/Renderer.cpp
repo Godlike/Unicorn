@@ -7,7 +7,8 @@
 #include <unicorn/video/Renderer.hpp>
 #include <unicorn/system/Window.hpp>
 #include <unicorn/video/Camera.hpp>
-#include <unicorn/utility/Logger.hpp>
+
+#include <unicorn/utility/InternalLoggers.hpp>
 
 namespace unicorn
 {
@@ -23,7 +24,7 @@ Renderer::Renderer(system::Manager& manager, system::Window* window, Camera cons
 {
     if(m_pWindow == nullptr)
     {
-        LOG_ERROR("Window pointer in nullptr!");
+        LOG_VIDEO->Error("Window pointer in nullptr!");
     }
 }
 

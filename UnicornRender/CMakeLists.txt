@@ -26,6 +26,12 @@ add_definitions(-DVULKAN_HPP_NO_EXCEPTIONS
 include(GlmConfig)
 include(Utils)
 include(loguru)
+
+if (NOT MULE_FOUND)
+    include(MuleConfig)
+    add_subdirectory("${MULE_ROOT}" "${CMAKE_CURRENT_BINARY_DIR}/Mule")
+endif()
+
 include(stb)
 include(utility)
 include(system)
@@ -51,12 +57,6 @@ endif()
 include(InstallInfo)
 
 message(STATUS "Version: ${UNICORN_VERSION}")
-
-install( FILES ${LOGURU_INCLUDE_DIR}/loguru.hpp
-    DESTINATION ${UNICORN_INSTALL_INCLUDE_DIR}
-    COMPONENT unicorn_extra
-    PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
-)
 
 install( DIRECTORY ${WINK_SIGNALS_INCLUDE_DIR}/wink
     DESTINATION ${UNICORN_INSTALL_INCLUDE_DIR}
@@ -90,6 +90,7 @@ include_directories(
 
 include_directories(
     ${UNICORN_RENDER_INCLUDE_DIRS}
+    ${MULE_INCLUDE_DIR}
 )
 
 include_directories( SYSTEM
@@ -118,12 +119,16 @@ add_subdirectory(utility)
 add_subdirectory(video)
 
 set(UNICORN_RENDER_HEADERS
+    include/unicorn/Settings.hpp
     include/unicorn/UnicornRender.hpp
-    include/unicorn/Settings.hpp)
+    include/unicorn/Loggers.hpp
+)
 
 set(UNICORN_RENDER_SOURCES
+    source/Loggers.cpp
+    source/Settings.cpp
     source/UnicornRender.cpp
-    source/Settings.cpp)
+)
 
 set(UNICORN_RENDER_EXTRA)
 
@@ -160,6 +165,7 @@ set_target_properties(
 
 target_link_libraries(${UNICORN_RENDER_LIB}
     ${WINDOW_MANAGER_LIBS}
+    ${MULE_UTILITIES_LIB}
     ${VULKAN_LIBRARY}
     ${ASSIMP_LIB}
 )
@@ -244,6 +250,8 @@ elseif(WIN32)
     endif()
 endif()
 
+set(UNICORN_TEXTURE_DIRECTORY ${UNICORN_RENDER_ROOT}/data/textures)
+
 file(GLOB_RECURSE GLSL_SOURCE_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/data/shaders/*.frag"
     "${CMAKE_CURRENT_SOURCE_DIR}/data/shaders/*.vert"
@@ -259,7 +267,7 @@ foreach(GLSL ${GLSL_SOURCE_FILES})
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/models/"
         COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${UNICORN_RENDER_ROOT}/data/textures"
+            "${UNICORN_TEXTURE_DIRECTORY}"
             "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/textures"
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${UNICORN_RENDER_ROOT}/data/models"
@@ -295,11 +303,6 @@ add_custom_target(
 
 add_dependencies(${UNICORN_RENDER_LIB} CompileEngineData)
 
-install( FILES ${SPIRV_BINARY_FILES}
-    DESTINATION ${UNICORN_INSTALL_DATA_DIR}/data/shaders
-    COMPONENT unicorn_data
-)
-
 source_group("Shaders" FILES ${GLSL_SOURCE_FILES})
 source_group("Textures" FILES ${TEXTURES_FILES})
 source_group("Models" FILES ${MODELS_FILES})
@@ -323,3 +326,13 @@ if(WIN32)
         PROPERTIES FOLDER Unicorn
 )
 endif()
+
+install( FILES ${SPIRV_BINARY_FILES}
+    DESTINATION ${UNICORN_INSTALL_DATA_DIR}/data/shaders
+    COMPONENT unicorn_data
+)
+
+install( DIRECTORY ${UNICORN_TEXTURE_DIRECTORY}/
+    DESTINATION ${UNICORN_INSTALL_DATA_DIR}/data/textures
+    COMPONENT unicorn_data
+)

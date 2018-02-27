@@ -1,6 +1,3 @@
-[submodule "UnicornRender/external/loguru"]
-	path = UnicornRender/external/loguru
-	url = https://github.com/emilk/loguru.git
 [submodule "UnicornRender/external/glfw"]
 	path = UnicornRender/external/glfw
 	url = https://github.com/glfw/glfw.git
@@ -16,3 +13,6 @@
 [submodule "UnicornRender/external/assimp"]
 	path = UnicornRender/external/assimp
 	url = https://github.com/assimp/assimp.git
+[submodule "UnicornRender/godlike/Mule"]
+	path = UnicornRender/godlike/Mule
+	url = https://github.com/Godlike/Mule.git

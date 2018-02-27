@@ -59,6 +59,10 @@ public:
 
     /** @brief  Creates a window object
      *
+     *  @internal
+     *  Name has Unicorn in it because of conflict with <windows.h> macro CreateWindow
+     *  @endinternal
+     *
      *  @param  width           desired width
      *  @param  height          desired height
      *  @param  name            desired name
@@ -71,7 +75,7 @@ public:
      *
      *  @sa DestroyWindow()
      */
-    Window* CreateWindow(int32_t width,
+    Window* CreateUnicornWindow(int32_t width,
         int32_t height,
         const std::string& name,
         Monitor* pMonitor = nullptr,

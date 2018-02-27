@@ -5,8 +5,9 @@
 */
 
 #include <unicorn/video/vulkan/Image.hpp>
-#include <unicorn/utility/Logger.hpp>
 #include <unicorn/video/vulkan/VulkanHelper.hpp>
+
+#include <unicorn/utility/InternalLoggers.hpp>
 
 namespace unicorn
 {
@@ -48,7 +49,7 @@ Image::Image(vk::PhysicalDevice physicalDevice,
     vk::Result result = m_device.createImage(&imageInfo, nullptr, &m_image);
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Can't create Vulkan image!");
+        LOG_VULKAN->Error("Can't create Vulkan image!");
         return;
     }
 
@@ -62,7 +63,7 @@ Image::Image(vk::PhysicalDevice physicalDevice,
 
     if(!m_deviceMemory->IsInitialized())
     {
-        LOG_ERROR("Can't allocate memory for image!");
+        LOG_VULKAN->Error("Can't allocate memory for image!");
         return;
     }
 
@@ -96,7 +97,7 @@ Image::Image(vk::PhysicalDevice physicalDevice,
     result = m_device.createImageView(&imageViewInfo, nullptr, &m_imageView);
     if(result != vk::Result::eSuccess)
     {
-        LOG_ERROR("Can't create Vulkan image view!");
+        LOG_VULKAN->Error("Can't create Vulkan image view!");
         return;
     }
     m_initialized = true;
@@ -191,7 +192,7 @@ bool Image::TransitionLayout(const vk::Format& format,
     }
     else
     {
-        LOG_ERROR("Unsupported layout transition!");
+        LOG_VULKAN->Error("Unsupported layout transition!");
         return false;
     }
 

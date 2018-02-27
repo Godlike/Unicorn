@@ -8,7 +8,7 @@
 
 #include <unicorn/system/Manager.hpp>
 
-#include <unicorn/utility/Logger.hpp>
+#include <unicorn/utility/InternalLoggers.hpp>
 
 #include <vector>
 #include <cmath>
@@ -21,14 +21,14 @@ namespace system
 MonitorProfiler::MonitorProfiler(Manager& manager)
     : m_systemManager( manager )
 {
-    LOG_INFO("MonitorProfiler created");
+    LOG_PROFILER->Info("MonitorProfiler created");
 
     m_systemManager.MonitorCreated.connect(this, &MonitorProfiler::OnMonitorCreated);
 }
 
 MonitorProfiler::~MonitorProfiler()
 {
-    LOG_INFO("MonitorProfiler destroyed");
+    LOG_PROFILER->Info("MonitorProfiler destroyed");
 }
 
 void MonitorProfiler::OnMonitorCreated(Monitor* const& pMonitor)
@@ -39,12 +39,12 @@ void MonitorProfiler::OnMonitorCreated(Monitor* const& pMonitor)
     const std::pair<int32_t, int32_t>& physicalSize = pMonitor->GetPhysicalSize();
     const std::pair<int32_t, int32_t>& virtualPosition = pMonitor->GetVirtualPosition();
 
-    LOG_INFO("Monitor[%d]: created:"
-        "\r\n\t%16s\t%s"
-        "\r\n\t%16s\t%dx%d"
-        "\r\n\t%16s\t%d:%d"
-        "\r\n\t%16s\t%s"
-        "\r\n\t%16s\t%s"
+    LOG_PROFILER->Info("Monitor[{}]: created:"
+        "\r\n\t{:>16}\t{}"
+        "\r\n\t{:>16}\t{}x{}"
+        "\r\n\t{:>16}\t{}:{}"
+        "\r\n\t{:>16}\t{}"
+        "\r\n\t{:>16}\t{}"
         , id
         , "name", pMonitor->GetName().c_str()
         , "physical size", physicalSize.first, physicalSize.second
@@ -61,8 +61,8 @@ void MonitorProfiler::OnMonitorCreated(Monitor* const& pMonitor)
     for (uint32_t i = 0; i < videoModes.size(); ++i)
     {
         const VideoMode& mode = videoModes[i];
-        LOG_INFO("Monitor[%d] video mode[%*d]%s: %dx%d@%dHz R%d G%d B%d"
-            , id, counterChars, i, (currentVideoMode == mode) ? "*" : " "
+        LOG_PROFILER->Info("Monitor[{}] video mode[{:>{}}]{}: {}x{}@{}Hz R{} G{} B{}"
+            , id, i, counterChars, (currentVideoMode == mode) ? "*" : " "
             , mode.width, mode.height
             , mode.refreshRate
             , mode.rgbBitDepth[0], mode.rgbBitDepth[1], mode.rgbBitDepth[2]
@@ -72,7 +72,7 @@ void MonitorProfiler::OnMonitorCreated(Monitor* const& pMonitor)
 
 void MonitorProfiler::OnMonitorStateChanged(Monitor* pMonitor, Monitor::State state)
 {
-    LOG_INFO("Monitor[%d]: connected state changed to %s",
+    LOG_PROFILER->Info("Monitor[{}]: connected state changed to {}",
         pMonitor->GetId(),
         pMonitor->GetState() != MonitorMemento::State::Unknown ?
             (pMonitor->GetState() == MonitorMemento::State::Connected ?
