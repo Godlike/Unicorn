@@ -39,7 +39,14 @@ include(video)
 include(WinkSignals)
 include(assimp)
 
+# Force BUILD_SHARED_LIBS to be OFF while saving initial value to temp variable
+set(TMP_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Force GLFW to build static library" FORCE)
+
 add_subdirectory(${ASSIMP_ROOT_DIR})
+
+# Restore initial BUILD_SHARED_LIBS value
+set(BUILD_SHARED_LIBS ${TMP_BUILD_SHARED_LIBS} CACHE BOOL "Restored initial BUILD_SHARED_LIBS value" FORCE)
 
 if(WIN32)
     set_target_properties (

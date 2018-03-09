@@ -6,6 +6,8 @@
 
 #include <unicorn/utility/Math.hpp>
 
+#include <assimp/matrix4x4.inl>
+
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/quaternion.hpp>
