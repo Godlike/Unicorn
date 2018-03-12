@@ -18,6 +18,7 @@
 #include <unicorn/video/Primitives.hpp>
 #include <unicorn/video/Texture.hpp>
 #include <unicorn/video/Material.hpp>
+#include <unicorn/video/Text.hpp>
 
 #include <unicorn/video/Camera.hpp>
 #include <unicorn/video/Camera2DController.hpp>
@@ -573,6 +574,7 @@ int main(int argc, char* argv[])
         {
             using unicorn::video::Primitives;
 
+            unicorn::video::Text helloWorldText;
             auto cubemap = MakeCubeMap();
             auto spriteTexture = std::make_shared<unicorn::video::Texture>();
             spriteTexture->Load("data/textures/sprite.png");
