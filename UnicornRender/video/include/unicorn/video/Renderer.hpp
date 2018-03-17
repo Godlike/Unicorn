@@ -77,6 +77,12 @@ public:
     UNICORN_EXPORT virtual bool AddMesh(Mesh* mesh) = 0;
 
     /**
+     * @brief Adds text to render system
+     * TODO: Finish documentation
+     */
+    UNICORN_EXPORT virtual bool AddText(std::string, float x, float y) = 0;
+
+    /**
     * @brief Removes internal rendering mesh data from rendering system
     *
     * @note pMesh is not invalidated within the method

@@ -265,6 +265,7 @@ foreach(GLSL ${GLSL_SOURCE_FILES})
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/shaders/"
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/textures/"
         COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/models/"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/fonts/"
         COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${UNICORN_TEXTURE_DIRECTORY}"
@@ -272,6 +273,9 @@ foreach(GLSL ${GLSL_SOURCE_FILES})
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${UNICORN_RENDER_ROOT}/data/models"
             "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/models"
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${UNICORN_RENDER_ROOT}/data/fonts"
+            "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/data/fonts"
         DEPENDS ${GLSL})
     list(APPEND SPIRV_BINARY_FILES ${SPIRV})
 endforeach(GLSL)

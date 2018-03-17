@@ -16,10 +16,14 @@
 #include <unicorn/utility/Memory.hpp>
 #include <unicorn/video/Texture.hpp>
 #include <unicorn/video/Material.hpp>
+#include <unicorn/video/Primitives.hpp>
 
 #include <unicorn/utility/InternalLoggers.hpp>
+#include <mule/asset/SimpleStorage.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
+#define STB_TRUETYPE_IMPLEMENTATION
+#include <stb_truetype.h>
 
 #include <set>
 #include <algorithm>
@@ -388,6 +392,20 @@ bool Renderer::AddMesh(Mesh* mesh)
 
     ResizeUnifromModelBuffer(vkmesh);
 
+    return true;
+}
+
+bool Renderer::AddText(std::string, float x, float y)
+{
+    auto* glyphQuad = new unicorn::video::Mesh;
+    Primitives::Quad(*glyphQuad);
+
+    float const fbW = m_swapChainExtent.width;
+    float const fbH = m_swapChainExtent.height;
+
+    float ass = fbW + fbH;
+    ass += 1;
+    AddMesh(glyphQuad);
     return true;
 }
 
@@ -1414,6 +1432,22 @@ bool Renderer::LoadEngineHelpData()
     m_pReplaceMeMaterial->pool = m_descriptorPool;
 
     m_materials.push_back(m_pReplaceMeMaterial);
+
+    // Loading font
+    std::string const fontPath = "data/fonts/consolas.ttf";
+    auto& storage = mule::asset::SimpleStorage::Instance();
+    mule::asset::Handler fontHandler = storage.Get(fontPath);
+
+    if (!fontHandler.IsValid())
+    {
+        LOG_VIDEO->Error("Can't find font - {}", fontPath.c_str());
+        return false;
+    }
+
+    stbtt_fontinfo font;
+    auto ttf_buffer = fontHandler.GetContent().GetBuffer().data();
+    stbtt_InitFont(&font, ttf_buffer
+            , stbtt_GetFontOffsetForIndex(ttf_buffer,0));
 
     return true;
 }
