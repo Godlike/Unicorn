@@ -97,6 +97,8 @@ public:
      */
     UNICORN_EXPORT void SetSpriteArea(int32_t x, int32_t y, int32_t width, int32_t height);
 
+    UNICORN_EXPORT void SetNormalizedSpriteArea(float x, float y, float width, float height);
+
     /**
      * @brief Returns sprite area
      *

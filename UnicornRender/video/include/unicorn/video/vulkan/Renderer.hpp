@@ -14,6 +14,7 @@
 #include <unicorn/video/vulkan/Context.hpp>
 
 #include <vulkan/vulkan.hpp>
+#include <stb_truetype.h>
 
 #include <list>
 #include <vector>
@@ -98,7 +99,7 @@ public:
     bool Render() override;
     bool RecreateSwapChain();
     bool AddMesh(Mesh* mesh) override;
-    bool AddText(std::string, float x, float y) override;
+    bool AddText(std::string text, float x, float y) override;
     bool DeleteMesh(Mesh const* pMesh) override;
     void SetDepthTest(bool enabled) override;
 
@@ -136,6 +137,8 @@ private:
     std::list<VkMesh*> m_vkMeshes;
     Image* m_pDepthImage;
     std::shared_ptr<VkMaterial> m_pReplaceMeMaterial;
+    std::shared_ptr<VkMaterial> m_pFontMaterial;
+    std::unique_ptr<stbtt_packedchar[]> charInfo;
 
     std::list<std::weak_ptr<VkMaterial>> m_materials;
 

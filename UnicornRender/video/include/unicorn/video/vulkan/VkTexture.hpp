@@ -29,8 +29,9 @@ public:
     /**
      * @brief Default constructor for VkTexture
      * @param device device which allocate from
+     * @param format texture format, default is RGB8_unorm
      */
-    VkTexture(vk::Device device);
+    VkTexture(vk::Device device, vk::Format format = vk::Format::eR8G8B8A8Unorm);
 
     /** @brief Returns descriptor image info */
     const vk::DescriptorImageInfo& GetDescriptorImageInfo() const;
@@ -60,6 +61,7 @@ private:
     Image* m_vkImage;
     vk::Sampler m_sampler;
     bool m_isInitialized;
+    vk::Format m_format;
 };
 }
 }

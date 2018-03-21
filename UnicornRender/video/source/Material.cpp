@@ -125,6 +125,13 @@ void Material::SetSpriteArea(int32_t x, int32_t y, int32_t width, int32_t height
     DataUpdated.emit();
 }
 
+void Material::SetNormalizedSpriteArea(float x, float y, float width, float height)
+{
+    m_spriteArea = { x, y, width, height };
+
+    DataUpdated.emit();
+}
+
 glm::vec4 Material::GetSpriteArea() const
 {
     return m_spriteArea;

@@ -98,6 +98,12 @@ public:
 protected:
     bool m_isInitialized;
 
+    glm::ivec2 const m_fontAtlasRes;
+    glm::ivec2 const m_fontOversample;
+    uint32_t const m_firstChar;
+    uint32_t const m_charCount;
+    uint32_t const m_fontSize;
+
     //! Reference to window manager
     system::Manager& m_systemManager;
     //! Pointer to associated window

@@ -395,17 +395,58 @@ bool Renderer::AddMesh(Mesh* mesh)
     return true;
 }
 
-bool Renderer::AddText(std::string, float x, float y)
+bool Renderer::AddText(std::string text, float x, float y)
 {
-    auto* glyphQuad = new unicorn::video::Mesh;
-    Primitives::Quad(*glyphQuad);
+    float offsetX = 0, offsetY = 0;
 
-    float const fbW = m_swapChainExtent.width;
-    float const fbH = m_swapChainExtent.height;
+    for (auto c : text)
+    {
+        stbtt_aligned_quad q;
 
-    float ass = fbW + fbH;
-    ass += 1;
-    AddMesh(glyphQuad);
+        stbtt_GetPackedQuad(charInfo.get(), m_fontAtlasRes.x, m_fontAtlasRes.y,
+            c - m_firstChar, &offsetX, &offsetY, &q, 1);
+
+        // std::vector<Vertex> vertices;
+        // vertices.push_back({{q.x0, q.y0, 0}, {q.s0, q.t0}});
+        // vertices.push_back({{q.x0, q.y1, 0}, {q.s0, q.t1}});
+        // vertices.push_back({{q.x1, q.y1, 0}, {q.s1, q.t1}});
+        // vertices.push_back({{q.x0, q.y1, 0}, {q.s0, q.t1}});
+
+    //     std::vector<Vertex> vertices{{
+    //     {{-0.5f, -0.5f, 0.0f},{0.0f, 1.0f}} ,
+    //     {{0.5f, -0.5f, 0.0f},{1.0f, 1.0f}} ,
+    //     {{0.5f, 0.5f, 0.0f},{1.0f, 0.0f}},
+    //     {{-0.5f, 0.5f, 0.0f},{0.0f, 0.0f}},
+    // }};
+
+        std::vector<Vertex> vertices{{
+            {{-0.5f, -0.5f, 0.5f}, {0.0f, 1.0f}},
+            {{0.5f, -0.5f, 0.5f}, {1.0f, 1.0f}},
+            {{0.5f, 0.5f, 0.5f}, {1.0f, 0.0f}},
+            {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}}
+        }};
+
+        unicorn::video::Mesh* mesh = new unicorn::video::Mesh;
+        mesh->SetMeshData(vertices, {0, 1, 2, 0, 2, 3});
+        auto fontMaterial = std::make_shared<unicorn::video::Material>();
+        //fontMaterial->SetSpriteArea(0, 0, 10, 10);
+        //fontMaterial->SetNormalizedSpriteArea(0.5, 0.5, 0.5, 0.5);
+        fontMaterial->SetIsColored(true);
+        mesh->SetMaterial(fontMaterial);
+
+        auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
+        vkmesh->pMaterial = m_pFontMaterial;
+        // vkmesh->pMaterial = m_pReplaceMeMaterial;
+        vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
+        vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
+
+        vkmesh->AllocateOnGPU();
+
+        m_vkMeshes.push_back(vkmesh);
+
+        ResizeUnifromModelBuffer(vkmesh);
+    }
+
     return true;
 }
 
@@ -1300,7 +1341,7 @@ bool Renderer::CreateCommandBuffers()
                 {
                     glm::vec4 colorPush(
                         vkMeshMaterial->GetColor(), // xyz - color
-                        vkMeshMaterial->IsColored() // w - boolean flag for 1 enabled color or 0 disabled color
+                        0 // w - boolean flag for 1 enabled color or 0 disabled color
                     );
 
                     if(vkMeshMaterial->IsWired())
@@ -1444,11 +1485,103 @@ bool Renderer::LoadEngineHelpData()
         return false;
     }
 
-    stbtt_fontinfo font;
-    auto ttf_buffer = fontHandler.GetContent().GetBuffer().data();
-    stbtt_InitFont(&font, ttf_buffer
-            , stbtt_GetFontOffsetForIndex(ttf_buffer,0));
+    uint8_t* atlasData = new uint8_t[m_fontAtlasRes.x * m_fontAtlasRes.y]; // TODO: free
 
+    stbtt_pack_context context;
+
+    if (!stbtt_PackBegin(&context, atlasData, m_fontAtlasRes.x, m_fontAtlasRes.y, 0, 1, nullptr))
+    {
+        LOG_VIDEO->Error("Failed to initialize font");
+
+        return false;
+    }
+
+    stbtt_PackSetOversampling(&context, m_fontOversample.x, m_fontOversample.y);
+
+    charInfo = std::make_unique<stbtt_packedchar[]>(m_charCount);
+
+    if (!stbtt_PackFontRange(&context, fontHandler.GetContent().GetBuffer().data(),
+        0, m_fontSize, m_firstChar, m_charCount, charInfo.get()))
+    {
+        LOG_VIDEO->Error("Failed to pack font");
+
+        return false;
+    }
+
+    stbtt_PackEnd(&context);
+
+    Texture fontTexture;
+
+    if(!fontTexture.Load(atlasData, m_fontAtlasRes.x, m_fontAtlasRes.y))
+    {
+        LOG_VULKAN->Error( "Can't load font texture" );
+        return false;
+    }
+
+    VkTexture* atlasVkTexture = new VkTexture(m_vkLogicalDevice, vk::Format::eR8Unorm);
+
+    if(!atlasVkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, fontTexture))
+    {
+        LOG_VULKAN->Error("Can't allocate font atlas texture");
+
+        delete atlasVkTexture;
+
+        return false;
+    }
+
+    vk::DescriptorSetAllocateInfo fontAllocInfo;
+    fontAllocInfo.descriptorPool = m_descriptorPool;
+    fontAllocInfo.descriptorSetCount = 1;
+    fontAllocInfo.pSetLayouts = &m_descriptorSetLayouts[1];
+
+    vk::DescriptorSet fontDescriptorSet;
+
+    result = m_vkLogicalDevice.allocateDescriptorSets(&fontAllocInfo, &fontDescriptorSet);
+
+    if(result != vk::Result::eSuccess)
+    {
+        LOG_VULKAN->Error("Can't allocate descriptor sets!");
+
+        atlasVkTexture->Delete();
+        delete atlasVkTexture;
+
+        return false;
+    }
+
+    vk::WriteDescriptorSet fontImageDescriptorSet;
+    fontImageDescriptorSet.setDstSet(fontDescriptorSet);
+    fontImageDescriptorSet.setDescriptorType(vk::DescriptorType::eCombinedImageSampler);
+    fontImageDescriptorSet.setDescriptorCount(1);
+    fontImageDescriptorSet.setPImageInfo(&atlasVkTexture->GetDescriptorImageInfo());
+
+    m_vkLogicalDevice.updateDescriptorSets(1, &fontImageDescriptorSet, 0, nullptr);
+
+    m_pFontMaterial = std::shared_ptr<VkMaterial>(new VkMaterial, [](VkMaterial* p)
+    {
+        p->texture->Delete();
+        p->device.freeDescriptorSets(p->pool, p->descriptorSet);
+        delete p;
+    });
+
+    m_pFontMaterial->texture = atlasVkTexture;
+    m_pFontMaterial->descriptorSet = fontDescriptorSet;
+    m_pFontMaterial->handle = texture.GetId();
+    m_pFontMaterial->device = m_vkLogicalDevice;
+    m_pFontMaterial->pool = m_descriptorPool;
+
+    m_materials.push_back(m_pFontMaterial);
+
+    // Image* fontAtlasImage = new Image(m_vkPhysicalDevice, m_vkLogicalDevice, vk::Format::eR8Unorm,
+    //                                     vk::ImageUsageFlagBits::eTransferDst
+    //                                     | vk::ImageUsageFlagBits::eSampled
+    //                                     | vk::ImageUsageFlagBits::eColorAttachment,
+    //                                     m_fontAtlasRes.x,
+    //                                     m_fontAtlasRes.y);
+
+    // Texture* atlasTexture = new Texture;
+    // atlasTexture->Load(atlasData, m_fontAtlasRes.x, m_fontAtlasRes.y);
+
+    // https://github.com/0xc0dec/demos/blob/master/src/StbTrueType.cpp
     return true;
 }
 
@@ -1548,7 +1681,7 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
         }
         else
         {
-            vkmesh.pMaterial = (*meshMaterialIt).lock();;
+            vkmesh.pMaterial = (*meshMaterialIt).lock();
         }
     }
     else

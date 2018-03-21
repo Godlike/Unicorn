@@ -39,6 +39,14 @@ public:
     UNICORN_EXPORT bool Load(std::string const& path);
 
     /**
+     * @brief Loads texture from memory
+     * @param path path to texture
+     //TODO: FINISH DOC
+     * @return true if loaded successful and false if not
+     */
+    UNICORN_EXPORT bool Load(unsigned char* memory, uint32_t width, uint32_t height);
+
+    /**
      * @brief Checks if texture was loaded
      * @return true if loaded and false if not
      */

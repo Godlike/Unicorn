@@ -18,7 +18,6 @@
 #include <unicorn/video/Primitives.hpp>
 #include <unicorn/video/Texture.hpp>
 #include <unicorn/video/Material.hpp>
-#include <unicorn/video/Text.hpp>
 
 #include <unicorn/video/Camera.hpp>
 #include <unicorn/video/Camera2DController.hpp>
@@ -574,7 +573,6 @@ int main(int argc, char* argv[])
         {
             using unicorn::video::Primitives;
 
-            unicorn::video::Text helloWorldText;
             auto cubemap = MakeCubeMap();
             auto spriteTexture = std::make_shared<unicorn::video::Texture>();
             spriteTexture->Load("data/textures/sprite.png");
@@ -603,19 +601,24 @@ int main(int argc, char* argv[])
             pCameraFpsController->TranslateWorld({ 0, 0, 10 });
             pinkBoxGeometry->TranslateWorld({ -5, 0, -10 });
 
+            for (auto mesh : gltfModel)
+            {
+                mesh->TranslateWorld({5, 5, 0});
+            }
+
             meshes.insert(meshes.end(), gltfModel.begin(), gltfModel.end());
             meshes.insert(meshes.end(), cubemap.begin(), cubemap.end());
             meshes.push_back(pinkBoxGeometry);
 
-            for (uint32_t i = 0; i < 32; ++i)
-            {
-                unicorn::video::Mesh* grassQuad = new unicorn::video::Mesh;
-                Primitives::Quad(*grassQuad);
-                grassQuad->SetMaterial(grassMaterial);
-                glm::vec3 const randomTranslate = { std::rand() % 10 - 5, 0, std::rand() % 10 - 5 };
-                grassQuad->TranslateWorld(randomTranslate);
-                meshes.push_back(grassQuad);
-            }
+            // for (uint32_t i = 0; i < 32; ++i)
+            // {
+            //     unicorn::video::Mesh* grassQuad = new unicorn::video::Mesh;
+            //     Primitives::Quad(*grassQuad);
+            //     grassQuad->SetMaterial(grassMaterial);
+            //     glm::vec3 const randomTranslate = { std::rand() % 10 - 5, 0, std::rand() % 10 - 5 };
+            //     grassQuad->TranslateWorld(randomTranslate);
+            //     meshes.push_back(grassQuad);
+            // }
 
             for(auto mesh : meshes)
             {
@@ -623,6 +626,8 @@ int main(int argc, char* argv[])
             }
 
             spriteMaterial->SetSpriteArea(32, 32, 32, 32);
+
+            vkRenderer->AddText("X", 0, 0);
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);

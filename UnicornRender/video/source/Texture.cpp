@@ -74,6 +74,20 @@ bool Texture::Load(const std::string& path)
     return true;
 }
 
+bool Texture::Load(unsigned char* memory, uint32_t width, uint32_t height)
+{
+    // TODO: memcpy memory to internal data
+    m_data = memory;
+
+    m_width = width;
+    m_height = height;
+
+    m_size = m_width * m_height;
+
+    m_initialized = true;
+    return true;
+}
+
 bool Texture::IsLoaded() const
 {
     return m_initialized;
