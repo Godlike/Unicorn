@@ -406,37 +406,49 @@ bool Renderer::AddText(std::string text, float x, float y)
         stbtt_GetPackedQuad(charInfo.get(), m_fontAtlasRes.x, m_fontAtlasRes.y,
             c - m_firstChar, &offsetX, &offsetY, &q, 1);
 
-        // std::vector<Vertex> vertices;
-        // vertices.push_back({{q.x0, q.y0, 0}, {q.s0, q.t0}});
-        // vertices.push_back({{q.x0, q.y1, 0}, {q.s0, q.t1}});
-        // vertices.push_back({{q.x1, q.y1, 0}, {q.s1, q.t1}});
-        // vertices.push_back({{q.x0, q.y1, 0}, {q.s0, q.t1}});
-
-    //     std::vector<Vertex> vertices{{
-    //     {{-0.5f, -0.5f, 0.0f},{0.0f, 1.0f}} ,
-    //     {{0.5f, -0.5f, 0.0f},{1.0f, 1.0f}} ,
-    //     {{0.5f, 0.5f, 0.0f},{1.0f, 0.0f}},
-    //     {{-0.5f, 0.5f, 0.0f},{0.0f, 0.0f}},
-    // }};
-
+        // BUG: CarpeNeco, here Im get texture coordinates making some sort of sprite.
+        // Im pass to this function only 'X' char. So whats idea first of all you interested to show simpe font atlas
+        // When you will look at font atlas, locate X char.
+        // Uncomment this to show font atlas
+        // std::vector<Vertex> vertices{{
+        //     {{q.x0, q.y0, 0}, {0, 1}},
+        //     {{q.x1, q.y0, 0}, {1, 1}},
+        //     {{q.x1, q.y1, 0}, {1, 0}},
+        //     {{q.x0, q.y1, 0}, {0, 0}}
+        // }};
+        // Then we will pass t1 s1, because them are working
+        // Notice how X now located in right bottom corner
+        // std::vector<Vertex> vertices{{
+        //     {{q.x0, q.y0, 0}, {0, q.t1}},
+        //     {{q.x1, q.y0, 0}, {q.s1, q.t1}},
+        //     {{q.x1, q.y1, 0}, {q.s1, 0}},
+        //     {{q.x0, q.y1, 0}, {0, 0}}
+        // }};
+        // Now we pass only s0 to limit font from only left side
+        // This will not work on intel integrated (at least at my one in 7700k with Ubuntu 16.04)
+        // But will work on Nvidia (1060 6gb)
+        // std::vector<Vertex> vertices{{
+        //     {{q.x0, q.y0, 0}, {q.s0, 1}},
+        //     {{q.x1, q.y0, 0}, {1, 1}},
+        //     {{q.x1, q.y1, 0}, {1, 0}},
+        //     {{q.x0, q.y1, 0}, {q.s0, 0}}
+        // }};
+        // And this is complete variant of whole idea
         std::vector<Vertex> vertices{{
-            {{-0.5f, -0.5f, 0.5f}, {0.0f, 1.0f}},
-            {{0.5f, -0.5f, 0.5f}, {1.0f, 1.0f}},
-            {{0.5f, 0.5f, 0.5f}, {1.0f, 0.0f}},
-            {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}}
+            {{q.x0, q.y0, 0}, {q.s0, q.t1}},
+            {{q.x1, q.y0, 0}, {q.s1, q.t1}},
+            {{q.x1, q.y1, 0}, {q.s1, q.t0}},
+            {{q.x0, q.y1, 0}, {q.s0, q.t0}}
         }};
 
         unicorn::video::Mesh* mesh = new unicorn::video::Mesh;
         mesh->SetMeshData(vertices, {0, 1, 2, 0, 2, 3});
         auto fontMaterial = std::make_shared<unicorn::video::Material>();
-        //fontMaterial->SetSpriteArea(0, 0, 10, 10);
-        //fontMaterial->SetNormalizedSpriteArea(0.5, 0.5, 0.5, 0.5);
         fontMaterial->SetIsColored(true);
         mesh->SetMaterial(fontMaterial);
 
         auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
         vkmesh->pMaterial = m_pFontMaterial;
-        // vkmesh->pMaterial = m_pReplaceMeMaterial;
         vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
         vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
 
