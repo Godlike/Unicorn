@@ -80,7 +80,12 @@ install( DIRECTORY ${GLM_INCLUDE_DIR}/glm
             PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
 )
 
-if (UNIX)
+if (APPLE)
+    find_library(VULKAN_LIBRARY vulkan.1 HINTS
+        "$ENV{VULKAN_SDK}/lib")
+    find_path(VULKAN_INCLUDE_DIR NAMES vulkan/vulkan.h HINTS
+        "$ENV{VULKAN_SDK}/include")
+elseif (UNIX)
     find_library(Vulkan REQUIRED)
 endif()
 

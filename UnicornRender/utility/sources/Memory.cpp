@@ -15,7 +15,7 @@ void* AlignedAlloc(size_t size, size_t alignment)
     void* data = nullptr;
     #if defined(_MSC_VER) || defined(__MINGW32__)
     data = _aligned_malloc(size, alignment);
-    #elif defined(__linux__)
+    #elif defined(__linux__) || defined(__APPLE__)
     int res = posix_memalign(&data, alignment, size);
     if ( res != 0 )
     {
@@ -31,7 +31,7 @@ void AlignedFree(void* data)
 {
     #if defined(_MSC_VER) || defined(__MINGW32__)
     _aligned_free(data);
-    #elif defined(__linux__)
+    #elif defined(__linux__) || defined(__APPLE__)
     free(data);
     #else
     static_assert(false, "Platform not supported.");
