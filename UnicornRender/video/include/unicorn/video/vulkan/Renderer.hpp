@@ -135,6 +135,7 @@ private:
     } m_pipelines;
 
     std::list<VkMesh*> m_vkMeshes;
+
     Image* m_pDepthImage;
     std::shared_ptr<VkMaterial> m_pReplaceMeMaterial;
     std::shared_ptr<VkMaterial> m_pFontMaterial;

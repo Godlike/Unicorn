@@ -627,7 +627,7 @@ int main(int argc, char* argv[])
 
             spriteMaterial->SetSpriteArea(32, 32, 32, 32);
 
-            vkRenderer->AddText("X", 0, 0);
+            vkRenderer->AddText("Hello There", 0, 0);
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);
