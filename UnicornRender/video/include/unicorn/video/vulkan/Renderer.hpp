@@ -55,13 +55,6 @@ struct SwapChainSupportDetails
     std::vector<vk::PresentModeKHR> presentModes;
 };
 
-/** @brief Camera data */
-struct UniformCameraData
-{
-    glm::mat4 view = glm::mat4();
-    glm::mat4 projection = glm::mat4();
-};
-
 /** @brief Struct which holds all models uniform data for sending to shader */
 struct UniformAllMeshesData
 {
@@ -135,6 +128,7 @@ private:
     } m_pipelines;
 
     std::list<VkMesh*> m_vkMeshes;
+
     Image* m_pDepthImage;
     std::shared_ptr<VkMaterial> m_pReplaceMeMaterial;
     std::shared_ptr<VkMaterial> m_pFontMaterial;
@@ -144,13 +138,15 @@ private:
 
     std::array<vk::DescriptorSetLayout, 2> m_descriptorSetLayouts; // 0 - mvp, 1 - albedo
     vk::DescriptorSet m_mvpDescriptorSet;
+    vk::DescriptorSet m_2dMvpDescriptorSet;
 
     ShaderProgram* m_shaderProgram;
+
     Buffer m_uniformViewProjection;
+    Buffer m_uniformViewProjection2D;
     Buffer m_uniformModel;
     size_t m_dynamicAlignment;
     UniformAllMeshesData m_uniformModelsData;
-    UniformCameraData m_uniformCameraData;
 
     vk::Instance const m_contextInstance;
 

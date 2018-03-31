@@ -11,6 +11,8 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include <vector>
+
 namespace unicorn
 {
 namespace video
@@ -21,7 +23,7 @@ namespace vulkan
 struct VkMaterial
 {
     uint32_t handle = 0;
-    vk::DescriptorSet descriptorSet = nullptr;
+    std::vector<vk::DescriptorSet> descriptorSets;
     VkTexture* texture = nullptr;
     vk::Device device = nullptr;
     vk::DescriptorPool pool = nullptr;

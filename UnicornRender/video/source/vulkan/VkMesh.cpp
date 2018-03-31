@@ -54,21 +54,42 @@ void VkMesh::AllocateOnGPU()
     Buffer stagingBuffer;
     //Vertexes filling
     auto size = sizeof(m_mesh.GetVertices()[0]) * m_mesh.GetVertices().size();
-    stagingBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, size);
-    m_vertexBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, size);
+    stagingBuffer.Create(m_physicalDevice, m_device,
+        vk::BufferUsageFlagBits::eTransferSrc,
+        vk::MemoryPropertyFlagBits::eHostVisible |
+        vk::MemoryPropertyFlagBits::eHostCoherent, size);
+
+    m_vertexBuffer.Create(m_physicalDevice, m_device,
+        vk::BufferUsageFlagBits::eVertexBuffer |
+        vk::BufferUsageFlagBits::eTransferDst,
+        vk::MemoryPropertyFlagBits::eDeviceLocal, size);
 
     stagingBuffer.Map();
     stagingBuffer.Write(m_mesh.GetVertices().data());
-    stagingBuffer.CopyToBuffer(m_pool, m_queue, m_vertexBuffer, m_vertexBuffer.GetSize());
+
+    stagingBuffer.CopyToBuffer(m_pool, m_queue,
+        m_vertexBuffer,
+        m_vertexBuffer.GetSize());
+
     stagingBuffer.Destroy();
     //Indexes filling
     size = sizeof(m_mesh.GetIndices()[0]) * m_mesh.GetIndices().size();
 
-    stagingBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, size);
+    stagingBuffer.Create(m_physicalDevice, m_device,
+        vk::BufferUsageFlagBits::eTransferSrc,
+        vk::MemoryPropertyFlagBits::eHostVisible |
+        vk::MemoryPropertyFlagBits::eHostCoherent, size);
+
     stagingBuffer.Map();
-    m_indexBuffer.Create(m_physicalDevice, m_device, vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eDeviceLocal, size);
+
+    m_indexBuffer.Create(m_physicalDevice, m_device,
+        vk::BufferUsageFlagBits::eIndexBuffer |
+        vk::BufferUsageFlagBits::eTransferDst,
+        vk::MemoryPropertyFlagBits::eDeviceLocal, size);
+
     stagingBuffer.Write(m_mesh.GetIndices().data());
-    stagingBuffer.CopyToBuffer(m_pool, m_queue, m_indexBuffer, m_indexBuffer.GetSize());
+    stagingBuffer.CopyToBuffer(m_pool, m_queue, m_indexBuffer,
+        m_indexBuffer.GetSize());
     stagingBuffer.Destroy();
 
     m_valid = true;

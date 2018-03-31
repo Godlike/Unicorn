@@ -95,6 +95,9 @@ public:
 
     //! Main view camera, must never be nullptr
     Camera const* camera;
+
+    //! Main UI camera, must never be nullptr
+    Camera const* uiCamera;
 protected:
     bool m_isInitialized;
 

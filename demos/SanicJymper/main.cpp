@@ -563,13 +563,14 @@ int main(int argc, char* argv[])
             return -1;
         }
         vkRenderer->Destroyed.connect(&onRendererDestroyed);
-
         // Configuring cameras
         pPerspectiveProjection = new unicorn::video::PerspectiveCamera(*pWindow0, perspective->projection);
         pOrthoProjection = new unicorn::video::OrthographicCamera(*pWindow0, ortho->projection);
 
         pCameraFpsController = new unicorn::video::CameraFpsController(perspective->view);
         pCamera2DController = new unicorn::video::Camera2DController(ortho->view);
+
+        vkRenderer->uiCamera = ortho; // TODO: remove
         {
             using unicorn::video::Primitives;
 
@@ -627,7 +628,7 @@ int main(int argc, char* argv[])
 
             spriteMaterial->SetSpriteArea(32, 32, 32, 32);
 
-            vkRenderer->AddText("X", 0, 0);
+            vkRenderer->AddText("Hello There", 0, 0);
 
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);
