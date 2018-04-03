@@ -563,13 +563,21 @@ int main(int argc, char* argv[])
             return -1;
         }
         vkRenderer->Destroyed.connect(&onRendererDestroyed);
-
+        unicorn::video::Camera cam;
         // Configuring cameras
         pPerspectiveProjection = new unicorn::video::PerspectiveCamera(*pWindow0, perspective->projection);
-        pOrthoProjection = new unicorn::video::OrthographicCamera(*pWindow0, ortho->projection);
+        pOrthoProjection = new unicorn::video::OrthographicCamera(*pWindow0, cam.projection);
 
         pCameraFpsController = new unicorn::video::CameraFpsController(perspective->view);
-        pCamera2DController = new unicorn::video::Camera2DController(ortho->view);
+        pCamera2DController = new unicorn::video::Camera2DController(cam.view);
+
+        ortho->view = glm::mat4(1.0);
+        ortho->projection = glm::ortho(0.f, static_cast<float>(pWindow0->GetSize().first),
+                                       0.f, static_cast<float>(pWindow0->GetSize().second),
+                                       -1.f, 1.f);
+        //ortho->projection[1][1] *= -1; // For vulkan rendering.
+
+        vkRenderer->uiCamera = ortho; // TODO: remove
         {
             using unicorn::video::Primitives;
 
@@ -627,8 +635,8 @@ int main(int argc, char* argv[])
 
             spriteMaterial->SetSpriteArea(32, 32, 32, 32);
 
-            vkRenderer->AddText("Hello There", 0, 0);
-
+            vkRenderer->AddText("Hello There", 400, 400);
+            vkRenderer->AddText("I'm Unicorn", 400, 370);
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);
             pWindow0->Keyboard.connect(&onWindowKeyboard);

@@ -377,7 +377,11 @@ bool Renderer::AddMesh(Mesh* mesh)
 {
     assert(nullptr != mesh);
 
-    auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
+    auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice,
+        m_commandPool, m_graphicsQueue, *mesh
+        ,m_renderPass, m_pipelineLayout, m_swapChainExtent,
+        "data/shaders/UberShader.vert.spv", "data/shaders/UberShader.frag.spv");
+
     if (!AllocateMaterial(*mesh, *vkmesh))
     {
         LOG_VULKAN->Error("Can't allocate material!");
@@ -397,6 +401,12 @@ bool Renderer::AddMesh(Mesh* mesh)
 
 bool Renderer::AddText(std::string text, float x, float y)
 {
+    // const Settings& settings = Settings::Instance();
+
+    // float scale = 0.01;
+    // float offsetX = - settings.GetApplicationWidth() / 2.,
+    //       offsetY = - settings.GetApplicationHeight() / 2.;
+
     float offsetX = 0, offsetY = 0;
 
     for (auto c : text)
@@ -406,7 +416,6 @@ bool Renderer::AddText(std::string text, float x, float y)
         stbtt_GetPackedQuad(charInfo.get(), m_fontAtlasRes.x, m_fontAtlasRes.y,
             c - m_firstChar, &offsetX, &offsetY, &q, 1);
 
-        // And this is complete variant of whole idea
         std::vector<Vertex> vertices{{
             {{q.x0, -q.y1, 0}, {q.s0, q.t1}},
             {{q.x0, -q.y0, 0}, {q.s0, q.t0}},
@@ -417,10 +426,16 @@ bool Renderer::AddText(std::string text, float x, float y)
         unicorn::video::Mesh* mesh = new unicorn::video::Mesh;
         mesh->SetMeshData(vertices, {0, 1, 2, 0, 2, 3});
         auto fontMaterial = std::make_shared<unicorn::video::Material>();
-        fontMaterial->SetIsColored(true);
         mesh->SetMaterial(fontMaterial);
 
-        auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice, m_commandPool, m_graphicsQueue, *mesh);
+        mesh->TranslateWorld({ x, y, 0.0 });
+        mesh->UpdateTransformMatrix();
+
+        auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice,
+            m_commandPool, m_graphicsQueue, *mesh,
+            m_renderPass, m_pipelineLayout, m_swapChainExtent,
+            "data/shaders/text.vert.spv", "data/shaders/text.frag.spv");
+
         vkmesh->pMaterial = m_pFontMaterial;
         vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
         vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
@@ -636,21 +651,38 @@ bool Renderer::PrepareUniformBuffers()
 {
     auto uboAlignment = static_cast<size_t>(m_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment);
     m_dynamicAlignment = (sizeof(glm::mat4) / uboAlignment) * uboAlignment + ((sizeof(glm::mat4) % uboAlignment) > 0 ? uboAlignment : 0);
+    //3D camera uniform
+    m_uniformViewProjection.Create(m_vkPhysicalDevice, m_vkLogicalDevice,
+        vk::BufferUsageFlagBits::eUniformBuffer,
+        vk::MemoryPropertyFlagBits::eHostVisible |
+        vk::MemoryPropertyFlagBits::eHostCoherent,
+        sizeof(Camera));
 
-    m_uniformCameraData.projection = camera->projection;
-    m_uniformCameraData.view = camera->view;
-
-    m_uniformViewProjection.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible
-        | vk::MemoryPropertyFlagBits::eHostCoherent, sizeof(UniformCameraData));
     m_uniformViewProjection.Map();
-    m_uniformViewProjection.Write(&m_uniformCameraData);
+    m_uniformViewProjection.Write(camera);
+    uiCamera = new Camera;
+    //2D camera uniform
+    m_uniformViewProjection2D.Create(m_vkPhysicalDevice, m_vkLogicalDevice,
+        vk::BufferUsageFlagBits::eUniformBuffer,
+        vk::MemoryPropertyFlagBits::eHostVisible |
+        vk::MemoryPropertyFlagBits::eHostCoherent,
+        sizeof(Camera));
 
-    m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice, vk::BufferUsageFlagBits::eUniformBuffer, vk::MemoryPropertyFlagBits::eHostVisible, m_dynamicAlignment);
+    m_uniformViewProjection2D.Map();
+    m_uniformViewProjection2D.Write(uiCamera);
+
+    m_uniformModel.Create(m_vkPhysicalDevice, m_vkLogicalDevice,
+        vk::BufferUsageFlagBits::eUniformBuffer,
+        vk::MemoryPropertyFlagBits::eHostVisible,
+        m_dynamicAlignment);
+
     return true;
 }
 
 void Renderer::UpdateViewProjectionDescriptorSet()
 {
+    std::array<vk::WriteDescriptorSet, 2> writeDescrSets;
+
     vk::WriteDescriptorSet viewProjectionWriteSet;
     viewProjectionWriteSet.dstSet = m_mvpDescriptorSet;
     viewProjectionWriteSet.descriptorType = vk::DescriptorType::eUniformBuffer;
@@ -658,7 +690,17 @@ void Renderer::UpdateViewProjectionDescriptorSet()
     viewProjectionWriteSet.pBufferInfo = &m_uniformViewProjection.GetDescriptorInfo();
     viewProjectionWriteSet.descriptorCount = 1;
 
-    m_vkLogicalDevice.updateDescriptorSets(1, &viewProjectionWriteSet, 0, nullptr);
+    vk::WriteDescriptorSet viewProjectionWriteSet2D;
+    viewProjectionWriteSet2D.dstSet = m_2dMvpDescriptorSet;
+    viewProjectionWriteSet2D.descriptorType = vk::DescriptorType::eUniformBuffer;
+    viewProjectionWriteSet2D.dstBinding = 0;
+    viewProjectionWriteSet2D.pBufferInfo = &m_uniformViewProjection2D.GetDescriptorInfo();
+    viewProjectionWriteSet2D.descriptorCount = 1;
+
+    writeDescrSets[0] = viewProjectionWriteSet;
+    writeDescrSets[1] = viewProjectionWriteSet2D;
+
+    m_vkLogicalDevice.updateDescriptorSets(writeDescrSets.size(), writeDescrSets.data(), 0, nullptr);
 }
 
 void Renderer::UpdateModelDescriptorSet() const
@@ -671,13 +713,16 @@ void Renderer::UpdateModelDescriptorSet() const
     modelWriteSet.descriptorCount = 1;
 
     m_vkLogicalDevice.updateDescriptorSets(1, &modelWriteSet, 0, nullptr);
+
+    modelWriteSet.dstSet = m_2dMvpDescriptorSet;
+
+    m_vkLogicalDevice.updateDescriptorSets(1, &modelWriteSet, 0, nullptr);
 }
 
 void Renderer::UpdateUniformBuffer()
 {
-    m_uniformCameraData.projection = camera->projection;
-    m_uniformCameraData.view = camera->view;
-    m_uniformViewProjection.Write(&m_uniformCameraData);
+    m_uniformViewProjection.Write(camera);
+    m_uniformViewProjection2D.Write(uiCamera);
 }
 
 void Renderer::UpdateDynamicUniformBuffer()
@@ -967,11 +1012,11 @@ bool Renderer::CreateDescriptionSetLayout()
 
     vk::DescriptorPoolSize descriptorViewProjectionPoolSize;
     descriptorViewProjectionPoolSize.type = vk::DescriptorType::eUniformBuffer;
-    descriptorViewProjectionPoolSize.descriptorCount = 1;
+    descriptorViewProjectionPoolSize.descriptorCount = 2;
 
     vk::DescriptorPoolSize descriptorModelPoolSize;
     descriptorModelPoolSize.type = vk::DescriptorType::eUniformBufferDynamic;
-    descriptorModelPoolSize.descriptorCount = 1;
+    descriptorModelPoolSize.descriptorCount = 2;
 
     vk::DescriptorPoolSize descriptorSamplerPoolSize;
     descriptorSamplerPoolSize.type = vk::DescriptorType::eCombinedImageSampler;
@@ -1054,6 +1099,19 @@ bool Renderer::CreateDescriptionSetLayout()
         return false;
     }
 
+    vk::DescriptorSetAllocateInfo allocInfo2D;
+    allocInfo2D.descriptorPool = m_descriptorPool;
+    allocInfo2D.descriptorSetCount = 1;
+    allocInfo2D.pSetLayouts = &m_descriptorSetLayouts[0];
+
+    result = m_vkLogicalDevice.allocateDescriptorSets(&allocInfo2D, &m_2dMvpDescriptorSet);
+
+    if(result != vk::Result::eSuccess)
+    {
+        LOG_VULKAN->Error("Can't allocate descriptor sets!");
+        return false;
+    }
+
     vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
     pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(m_descriptorSetLayouts.size());
     pipelineLayoutInfo.pSetLayouts = m_descriptorSetLayouts.data();
@@ -1080,7 +1138,9 @@ bool Renderer::CreateGraphicsPipeline()
     vk::Result result;
     FreeGraphicsPipeline();
 
-    m_shaderProgram = new ShaderProgram(m_vkLogicalDevice, "data/shaders/UberShader.vert.spv", "data/shaders/UberShader.frag.spv");
+    m_shaderProgram = new ShaderProgram(m_vkLogicalDevice,
+        "data/shaders/UberShader.vert.spv",
+        "data/shaders/UberShader.frag.spv");
 
     if(!m_shaderProgram->IsCreated())
     {
@@ -1330,39 +1390,31 @@ bool Renderer::CreateCommandBuffers()
                 {
                     glm::vec4 colorPush(
                         vkMeshMaterial->GetColor(), // xyz - color
-                        0 // w - boolean flag for 1 enabled color or 0 disabled color
+                        vkMeshMaterial->IsColored() // w - boolean flag for 1 enabled color or 0 disabled color
                     );
 
-                    if(vkMeshMaterial->IsWired())
-                    {
-                        m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_pipelines.wired);
-                    }
-                    else
-                    {
-                        m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, m_pipelines.solid);
-                    }
+                    m_commandBuffers[i].bindPipeline(vk::PipelineBindPoint::eGraphics, pVkMesh->m_pipeline);
+                    m_commandBuffers[i].pushConstants(m_pipelineLayout,
+                        vk::ShaderStageFlagBits::eVertex, 0,
+                        sizeof(glm::vec4), glm::value_ptr(colorPush));
 
-                    m_commandBuffers[i].pushConstants(m_pipelineLayout, vk::ShaderStageFlagBits::eVertex, 0, sizeof(glm::vec4), glm::value_ptr(colorPush));
-
-                    m_commandBuffers[i].pushConstants(m_pipelineLayout, vk::ShaderStageFlagBits::eVertex, sizeof(glm::vec4), sizeof(glm::vec4),
-                        glm::value_ptr(vkMeshMaterial->GetNormalizedSpriteArea()));
+                    m_commandBuffers[i].pushConstants(m_pipelineLayout,
+                        vk::ShaderStageFlagBits::eVertex, sizeof(glm::vec4),
+                        sizeof(glm::vec4), glm::value_ptr(
+                            vkMeshMaterial->GetNormalizedSpriteArea()));
 
                     vk::Buffer vertexBuffer[] = {pVkMesh->GetVertexBuffer()};
                     uint32_t dynamicOffset = j * static_cast<uint32_t>(m_dynamicAlignment);
                     m_commandBuffers[i].bindVertexBuffers(0, 1, vertexBuffer, offsets);
                     m_commandBuffers[i].bindIndexBuffer(pVkMesh->GetIndexBuffer(), 0, vk::IndexType::eUint32);
 
-                    std::array<vk::DescriptorSet, 2> descriptorSets;
-                    // Set 0: Scene descriptor set containing global matrices
-                    descriptorSets[0] = m_mvpDescriptorSet;
-                    // Set 1: Per-Material descriptor set containing bound images
-                    descriptorSets[1] = pVkMesh->pMaterial->descriptorSet;
-
                     m_commandBuffers[i].bindDescriptorSets(vk::PipelineBindPoint::eGraphics, m_pipelineLayout,
-                        0, static_cast<uint32_t>(descriptorSets.size()),
-                        descriptorSets.data(), 1, &dynamicOffset);
+                        0, static_cast<uint32_t>(pVkMesh->pMaterial->descriptorSets.size()),
+                        pVkMesh->pMaterial->descriptorSets.data(), 1, &dynamicOffset);
 
-                    m_commandBuffers[i].drawIndexed(static_cast<uint32_t>(pVkMesh->GetMesh().GetIndices().size()), 1, 0, 0, 0);
+                    m_commandBuffers[i].drawIndexed(
+                        static_cast<uint32_t>(
+                            pVkMesh->GetMesh().GetIndices().size()), 1, 0, 0, 0);
 
                     ++j;
                 }
@@ -1412,7 +1464,8 @@ bool Renderer::LoadEngineHelpData()
     }
     VkTexture* replaceMeTexture = new VkTexture(m_vkLogicalDevice);
 
-    if(!replaceMeTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, texture))
+    if(!replaceMeTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice,
+        m_commandPool, m_graphicsQueue, texture))
     {
         LOG_VULKAN->Error("Can't create 'replace me' texture - {}", path.c_str());
 
@@ -1451,12 +1504,15 @@ bool Renderer::LoadEngineHelpData()
     m_pReplaceMeMaterial = std::shared_ptr<VkMaterial>(new VkMaterial, [](VkMaterial* p)
     {
         p->texture->Delete();
-        p->device.freeDescriptorSets(p->pool, p->descriptorSet);
+        p->device.freeDescriptorSets(p->pool,
+            p->descriptorSets.size(),
+            p->descriptorSets.data());
         delete p;
     });
 
     m_pReplaceMeMaterial->texture = replaceMeTexture;
-    m_pReplaceMeMaterial->descriptorSet = descriptorSet;
+    m_pReplaceMeMaterial->descriptorSets.push_back(m_mvpDescriptorSet);
+    m_pReplaceMeMaterial->descriptorSets.push_back(descriptorSet);
     m_pReplaceMeMaterial->handle = texture.GetId();
     m_pReplaceMeMaterial->device = m_vkLogicalDevice;
     m_pReplaceMeMaterial->pool = m_descriptorPool;
@@ -1509,7 +1565,8 @@ bool Renderer::LoadEngineHelpData()
 
     VkTexture* atlasVkTexture = new VkTexture(m_vkLogicalDevice, vk::Format::eR8Unorm);
 
-    if(!atlasVkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice, m_commandPool, m_graphicsQueue, fontTexture))
+    if(!atlasVkTexture->Create(m_vkPhysicalDevice, m_vkLogicalDevice,
+        m_commandPool, m_graphicsQueue, fontTexture))
     {
         LOG_VULKAN->Error("Can't allocate font atlas texture");
 
@@ -1548,29 +1605,21 @@ bool Renderer::LoadEngineHelpData()
     m_pFontMaterial = std::shared_ptr<VkMaterial>(new VkMaterial, [](VkMaterial* p)
     {
         p->texture->Delete();
-        p->device.freeDescriptorSets(p->pool, p->descriptorSet);
+        p->device.freeDescriptorSets(p->pool,
+            p->descriptorSets.size(),
+            p->descriptorSets.data());
         delete p;
     });
 
     m_pFontMaterial->texture = atlasVkTexture;
-    m_pFontMaterial->descriptorSet = fontDescriptorSet;
+    m_pFontMaterial->descriptorSets.push_back(m_2dMvpDescriptorSet);
+    m_pFontMaterial->descriptorSets.push_back(fontDescriptorSet);
     m_pFontMaterial->handle = texture.GetId();
     m_pFontMaterial->device = m_vkLogicalDevice;
     m_pFontMaterial->pool = m_descriptorPool;
 
     m_materials.push_back(m_pFontMaterial);
 
-    // Image* fontAtlasImage = new Image(m_vkPhysicalDevice, m_vkLogicalDevice, vk::Format::eR8Unorm,
-    //                                     vk::ImageUsageFlagBits::eTransferDst
-    //                                     | vk::ImageUsageFlagBits::eSampled
-    //                                     | vk::ImageUsageFlagBits::eColorAttachment,
-    //                                     m_fontAtlasRes.x,
-    //                                     m_fontAtlasRes.y);
-
-    // Texture* atlasTexture = new Texture;
-    // atlasTexture->Load(atlasData, m_fontAtlasRes.x, m_fontAtlasRes.y);
-
-    // https://github.com/0xc0dec/demos/blob/master/src/StbTrueType.cpp
     return true;
 }
 
@@ -1656,12 +1705,15 @@ bool Renderer::AllocateMaterial(const Mesh& mesh, VkMesh& vkmesh)
             vkmesh.pMaterial = std::shared_ptr<VkMaterial>(new VkMaterial, [](VkMaterial* p)
                                                    {
                                                        p->texture->Delete();
-                                                       p->device.freeDescriptorSets(p->pool, p->descriptorSet);
+                                                       p->device.freeDescriptorSets(p->pool,
+                                                                p->descriptorSets.size(),
+                                                                p->descriptorSets.data());
                                                        delete p;
                                                    });
 
             vkmesh.pMaterial->texture = vkTexture;
-            vkmesh.pMaterial->descriptorSet = descriptorSet;
+            vkmesh.pMaterial->descriptorSets.push_back(m_mvpDescriptorSet);
+            vkmesh.pMaterial->descriptorSets.push_back(descriptorSet);
             vkmesh.pMaterial->handle = meshAlbedoHandle;
             vkmesh.pMaterial->device = m_vkLogicalDevice;
             vkmesh.pMaterial->pool = m_descriptorPool;

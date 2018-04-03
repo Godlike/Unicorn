@@ -85,6 +85,8 @@ glm::mat4 const& Transform::GetModelMatrix() const
 void Transform::Scale(glm::vec3 scale)
 {
     m_scale = scale;
+
+    m_isDirty = true;
 }
 
 void Transform::TranslateByBasis(glm::vec3 distance)

@@ -10,6 +10,8 @@
 #include <unicorn/video/Mesh.hpp>
 #include <unicorn/video/vulkan/Buffer.hpp>
 #include <unicorn/video/vulkan/VkMaterial.hpp>
+#include <unicorn/video/vulkan/ShaderProgram.hpp>
+#include <unicorn/utility/InternalLoggers.hpp>
 
 #include <vulkan/vulkan.hpp>
 #include <wink/signal.hpp>
@@ -34,7 +36,11 @@ public:
      * @param queue Which queue to use to buffer copying
      * @param mesh Geometry data
      */
-    VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice, vk::CommandPool pool, vk::Queue queue, Mesh& mesh);
+    VkMesh(vk::Device device, vk::PhysicalDevice physicalDevice,
+        vk::CommandPool pool, vk::Queue queue, Mesh& mesh,
+        vk::RenderPass& renderPass, vk::PipelineLayout& pipelineLayout,
+        vk::Extent2D& wapChainExtent, std::string vertexShader, std::string fragmentShader);
+
     ~VkMesh();
 
     /**
@@ -100,6 +106,9 @@ public:
     * @brief Signal for material update
     */
     wink::signal<wink::slot<void(Mesh*, VkMesh*)>> MaterialUpdated;
+
+
+    vk::Pipeline m_pipeline;
 private:
     bool m_valid;
 
@@ -110,6 +119,12 @@ private:
     vk::Queue m_queue;
 
     Mesh& m_mesh;
+    ShaderProgram* m_shaderProgram;
+    vk::RenderPass m_renderPass;
+    vk::PipelineLayout m_pipelineLayout;
+    vk::Extent2D m_swapChainExtent;
+    std::string m_vertexShader;
+    std::string m_fragmentShader;
 };
 }
 }

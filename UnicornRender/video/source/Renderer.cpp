@@ -21,7 +21,7 @@ Renderer::Renderer(system::Manager& manager, system::Window* window, Camera cons
     , m_fontOversample(2, 2)
     , m_firstChar(' ')
     , m_charCount('~' - ' ')
-    , m_fontSize(40)
+    , m_fontSize(30)
     , m_systemManager(manager)
     , m_pWindow(window)
     , m_backgroundColor({ {0.0f, 0.0f, 0.0f, 0.0f} })
