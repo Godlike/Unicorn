@@ -4,12 +4,13 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#ifndef UNICORN_VIDEO_RENDERER_HPP
-#define UNICORN_VIDEO_RENDERER_HPP
+#ifndef UNICORN_VIDEO_IRENDERER_HPP
+#define UNICORN_VIDEO_IRENDERER_HPP
 
 #include <unicorn/video/Mesh.hpp>
 #include <unicorn/video/Color.hpp>
 #include <unicorn/video/Camera.hpp>
+#include <unicorn/video/Text.hpp>
 
 #include <glm/glm.hpp>
 
@@ -32,7 +33,7 @@ namespace video
 /**
  * @brief Abstract class for all renderer system
  */
-class Renderer
+class IRenderer
 {
 public:
     /**
@@ -41,14 +42,14 @@ public:
      * @param[in,out] window output window
      * @param[in] camera main camera
      */
-    Renderer(system::Manager& manager, system::Window* window, Camera const& camera);
+    IRenderer(system::Manager& manager, system::Window* window, Camera const& camera);
 
-    virtual ~Renderer();
+    virtual ~IRenderer();
 
-    Renderer(Renderer const& other) = delete;
-    Renderer(Renderer&& other) = delete;
-    Renderer& operator=(Renderer const& other) = delete;
-    Renderer& operator=(Renderer&& other) = delete;
+    IRenderer(IRenderer const& other) = delete;
+    IRenderer(IRenderer&& other) = delete;
+    IRenderer& operator=(IRenderer const& other) = delete;
+    IRenderer& operator=(IRenderer&& other) = delete;
 
     virtual bool Init() = 0;
     virtual void Deinit() = 0;
@@ -61,7 +62,7 @@ public:
      *  Event is emitted with the following signature:
      *  -# renderer pointer
      */
-    wink::signal<wink::slot<void(Renderer*)>> Destroyed;
+    wink::signal<wink::slot<void(IRenderer*)>> Destroyed;
 
     /**
      * @brief Turns on or off depth test
@@ -80,7 +81,7 @@ public:
      * @brief Adds text to render system
      * TODO: Finish documentation
      */
-    UNICORN_EXPORT virtual bool AddText(std::string, float x, float y) = 0;
+    UNICORN_EXPORT virtual bool AddText(Text* text) = 0;
 
     /**
     * @brief Removes internal rendering mesh data from rendering system
@@ -92,6 +93,8 @@ public:
     * @return true if data was found and succesfully deleted
     */
     UNICORN_EXPORT virtual bool DeleteMesh(Mesh const* pMesh) = 0;
+
+    UNICORN_EXPORT virtual bool DeleteText(Text const* pMesh) = 0;
 
     //! Main view camera, must never be nullptr
     Camera const* camera;
@@ -119,4 +122,4 @@ protected:
 }
 }
 
-#endif // UNICORN_VIDEO_RENDERER_HPP
+#endif // UNICORN_VIDEO_IRENDERER_HPP

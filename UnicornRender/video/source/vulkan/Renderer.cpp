@@ -50,7 +50,7 @@ bool QueueFamilyIndices::IsComplete() const
 }
 
 Renderer::Renderer(system::Manager& manager, system::Window* window, Camera const& camera)
-    : video::Renderer(manager, window, camera)
+    : video::IRenderer(manager, window, camera)
     , m_pDepthImage(nullptr)
     , m_contextInstance(Context::Instance().GetVkInstance())
     , m_hasDirtyMeshes(false)
@@ -399,8 +399,9 @@ bool Renderer::AddMesh(Mesh* mesh)
     return true;
 }
 
-bool Renderer::AddText(std::string text, float x, float y)
+bool Renderer::AddText(Text* text)
 {
+    assert(nullptr != text);
     // const Settings& settings = Settings::Instance();
 
     // float scale = 0.01;
@@ -409,7 +410,11 @@ bool Renderer::AddText(std::string text, float x, float y)
 
     float offsetX = 0, offsetY = 0;
 
-    for (auto c : text)
+    std::list<Mesh*> glyphQuads;
+
+    text->TextUpdated.connect(this, &Renderer::OnTextChanged);
+
+    for (auto c : text->GetText())
     {
         stbtt_aligned_quad q;
 
@@ -423,12 +428,12 @@ bool Renderer::AddText(std::string text, float x, float y)
             {{q.x1, -q.y1, 0}, {q.s1, q.t1}}
         }};
 
-        unicorn::video::Mesh* mesh = new unicorn::video::Mesh;
+        Mesh* mesh = new unicorn::video::Mesh;
         mesh->SetMeshData(vertices, {0, 1, 2, 0, 2, 3});
         auto fontMaterial = std::make_shared<unicorn::video::Material>();
         mesh->SetMaterial(fontMaterial);
 
-        mesh->TranslateWorld({ x, y, 0.0 });
+        mesh->TranslateWorld({ text->GetPosition().x, text->GetPosition().y, 0.0 });
         mesh->UpdateTransformMatrix();
 
         auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice,
@@ -443,9 +448,13 @@ bool Renderer::AddText(std::string text, float x, float y)
         vkmesh->AllocateOnGPU();
 
         m_vkMeshes.push_back(vkmesh);
+        glyphQuads.push_back(mesh);
 
         ResizeUnifromModelBuffer(vkmesh);
     }
+
+    m_textQuads.emplace(text, glyphQuads);
+
 
     return true;
 }
@@ -470,6 +479,13 @@ bool Renderer::DeleteMesh(const Mesh* pMesh)
     return false;
 }
 
+bool Renderer::DeleteText(const Text* pText)
+{
+    assert(nullptr != pText);
+
+    return false;
+}
+
 void Renderer::SetDepthTest(bool enabled)
 {
     m_depthTestEnabled = enabled;
@@ -480,6 +496,57 @@ void Renderer::DeleteVkMesh(VkMesh* pVkMesh)
 {
     pVkMesh->DeallocateOnGPU();
     delete pVkMesh;
+}
+
+void Renderer::OnTextChanged(Text* text)
+{
+    for(Mesh* mesh : m_textQuads.at(text))
+    {
+        DeleteMesh(mesh);
+    }
+
+    m_textQuads.at(text).clear();
+
+    float offsetX = 0, offsetY = 0;
+
+    for (auto c : text->GetText())
+    {
+        stbtt_aligned_quad q;
+
+        stbtt_GetPackedQuad(charInfo.get(), m_fontAtlasRes.x, m_fontAtlasRes.y,
+            c - m_firstChar, &offsetX, &offsetY, &q, 1);
+
+        std::vector<Vertex> vertices{ {
+            { { q.x0, -q.y1, 0 },{ q.s0, q.t1 } },
+        { { q.x0, -q.y0, 0 },{ q.s0, q.t0 } },
+        { { q.x1, -q.y0, 0 },{ q.s1, q.t0 } },
+        { { q.x1, -q.y1, 0 },{ q.s1, q.t1 } }
+            } };
+
+        Mesh* mesh = new unicorn::video::Mesh;
+        mesh->SetMeshData(vertices, { 0, 1, 2, 0, 2, 3 });
+        auto fontMaterial = std::make_shared<unicorn::video::Material>();
+        mesh->SetMaterial(fontMaterial);
+
+        mesh->TranslateWorld({ text->GetPosition().x, text->GetPosition().y, 0.0 });
+        mesh->UpdateTransformMatrix();
+
+        auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice,
+            m_commandPool, m_graphicsQueue, *mesh,
+            m_renderPass, m_pipelineLayout, m_swapChainExtent,
+            "data/shaders/text.vert.spv", "data/shaders/text.frag.spv");
+
+        vkmesh->pMaterial = m_pFontMaterial;
+        vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
+        vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
+
+        vkmesh->AllocateOnGPU();
+
+        m_vkMeshes.push_back(vkmesh);
+        m_textQuads.at(text).push_back(mesh);
+
+        ResizeUnifromModelBuffer(vkmesh);
+    }
 }
 
 void Renderer::FreeSurface()

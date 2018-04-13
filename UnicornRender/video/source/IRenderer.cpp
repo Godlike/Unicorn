@@ -4,7 +4,7 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#include <unicorn/video/Renderer.hpp>
+#include <unicorn/video/IRenderer.hpp>
 #include <unicorn/system/Window.hpp>
 #include <unicorn/video/Camera.hpp>
 
@@ -14,7 +14,7 @@ namespace unicorn
 {
 namespace video
 {
-Renderer::Renderer(system::Manager& manager, system::Window* window, Camera const& camera)
+IRenderer::IRenderer(system::Manager& manager, system::Window* window, Camera const& camera)
     : camera(&camera)
     , m_isInitialized(false)
     , m_fontAtlasRes(1024, 1024)
@@ -33,13 +33,13 @@ Renderer::Renderer(system::Manager& manager, system::Window* window, Camera cons
     }
 }
 
-Renderer::~Renderer()
+IRenderer::~IRenderer()
 {
     Destroyed.emit(this);
     Destroyed.clear();
 }
 
-void Renderer::SetBackgroundColor(const glm::vec3& backgroundColor)
+void IRenderer::SetBackgroundColor(const glm::vec3& backgroundColor)
 {
     m_backgroundColor[0] = backgroundColor.r;
     m_backgroundColor[1] = backgroundColor.g;

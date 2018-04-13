@@ -14,10 +14,11 @@
 #include <unicorn/system/input/Action.hpp>
 #include <unicorn/system/input/Key.hpp>
 #include <unicorn/system/input/Modifier.hpp>
-#include <unicorn/video/Renderer.hpp>
+#include <unicorn/video/IRenderer.hpp>
 #include <unicorn/video/Primitives.hpp>
 #include <unicorn/video/Texture.hpp>
 #include <unicorn/video/Material.hpp>
+#include <unicorn/video/Text.hpp>
 
 #include <unicorn/video/Camera.hpp>
 #include <unicorn/video/Camera2DController.hpp>
@@ -43,12 +44,12 @@
 
 static unicorn::video::Graphics* pGraphics = nullptr;
 static unicorn::system::Timer* timer = nullptr;
-static unicorn::video::Renderer* vkRenderer = nullptr;
+static unicorn::video::IRenderer* vkRenderer = nullptr;
 static unicorn::system::Input* pInput = nullptr;
 static bool depthTest = true;
 unicorn::system::Window* pWindow0 = nullptr;
 std::list<unicorn::video::Mesh*> meshes;
-
+unicorn::video::Text* fpsText;
 float deltaTime = 0.0f; // Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
 
@@ -66,6 +67,7 @@ unicorn::video::OrthographicCamera* pOrthoProjection = nullptr;
 
 std::shared_ptr<unicorn::video::Material> spriteMaterial;
 
+
 void onLogicFrame(unicorn::UnicornRender* /*render*/)
 {
     float const currentFrame = static_cast<float>(timer->ElapsedMilliseconds().count()) / 1000;
@@ -75,6 +77,11 @@ void onLogicFrame(unicorn::UnicornRender* /*render*/)
     {
         return;
     }
+
+    std::string fpsString = "Millinseconds : ";
+    fpsString += std::to_string(newDeltatime / 1000.f);
+
+    fpsText->SetText(fpsString);
 
     deltaTime = newDeltatime;
 
@@ -380,7 +387,7 @@ void onWindowKeyboard(unicorn::system::Window::KeyboardEvent const& keyboardEven
     }
 }
 
-void onRendererDestroyed(unicorn::video::Renderer* pRenderer)
+void onRendererDestroyed(unicorn::video::IRenderer* pRenderer)
 {
     if(vkRenderer == pRenderer)
     {
@@ -634,9 +641,10 @@ int main(int argc, char* argv[])
             }
 
             spriteMaterial->SetSpriteArea(32, 32, 32, 32);
+            fpsText = new unicorn::video::Text("Hello There", { 400, 400, 0 }, 11);
 
-            vkRenderer->AddText("Hello There", 400, 400);
-            vkRenderer->AddText("I'm Unicorn", 400, 370);
+            vkRenderer->AddText(fpsText);
+
             pWindow0->MousePosition.connect(&onCursorPositionChanged);
             pWindow0->Scroll.connect(&onMouseScrolled);
             pWindow0->Keyboard.connect(&onWindowKeyboard);

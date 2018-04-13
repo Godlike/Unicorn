@@ -29,7 +29,7 @@ class Window;
 
 namespace video
 {
-class Renderer;
+class IRenderer;
 struct Camera;
 
 enum class DriverType
@@ -150,10 +150,10 @@ public:
     *  @param  camera main camera
     *  @return Pointer to newly created Renderer, nullptr if any error occured.
     */
-    UNICORN_EXPORT Renderer* SpawnRenderer(system::Window* window, Camera& camera);
+    UNICORN_EXPORT IRenderer* SpawnRenderer(system::Window* window, Camera& camera);
 
     /** @brief Binds renderer to window. */
-    UNICORN_EXPORT void BindWindowRenderer(system::Window* pWindow, Renderer* pRenderer);
+    UNICORN_EXPORT void BindWindowRenderer(system::Window* pWindow, IRenderer* pRenderer);
 
     /** @brief  Event triggered every time new window is created
      *
@@ -171,7 +171,7 @@ public:
 
 private:
     //! Renderer-Window pair type
-    typedef std::pair<Renderer*, system::Window*> RendererWindowPair;
+    typedef std::pair<IRenderer*, system::Window*> RendererWindowPair;
 
     /** @brief  Helper class generating hash for Renderer-Window pair */
     struct RendererWindowPairHash
@@ -179,7 +179,7 @@ private:
         /** @brief  Calculates hash */
         std::size_t operator()(RendererWindowPair const& pair) const
         {
-            return std::hash<Renderer*>()(pair.first) ^
+            return std::hash<IRenderer*>()(pair.first) ^
                     std::hash<system::Window*>()(pair.second);
         }
     };

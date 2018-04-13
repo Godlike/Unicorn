@@ -5,7 +5,7 @@
 */
 
 #include <unicorn/video/Graphics.hpp>
-#include <unicorn/video/Renderer.hpp>
+#include <unicorn/video/IRenderer.hpp>
 #include <unicorn/video/Camera.hpp>
 
 #include <unicorn/system/Manager.hpp>
@@ -144,7 +144,7 @@ const std::vector<system::Monitor*>& Graphics::GetMonitors() const
     return m_systemManager.GetMonitors();
 }
 
-void Graphics::BindWindowRenderer(system::Window* pWindow, video::Renderer* pRenderer)
+void Graphics::BindWindowRenderer(system::Window* pWindow, video::IRenderer* pRenderer)
 {
     m_renderers.insert(RendererWindowPair(pRenderer, pWindow));
 }
@@ -192,7 +192,7 @@ void Graphics::ProcessExpiredRenderers()
     }
 }
 
-Renderer* Graphics::SpawnRenderer(system::Window* window, Camera& camera)
+IRenderer* Graphics::SpawnRenderer(system::Window* window, Camera& camera)
 {
     vulkan::Renderer* renderer = nullptr;
     switch (m_driver)

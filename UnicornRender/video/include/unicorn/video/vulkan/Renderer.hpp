@@ -7,7 +7,7 @@
 #ifndef UNICORN_VIDEO_VULKAN_RENDERER_HPP
 #define UNICORN_VIDEO_VULKAN_RENDERER_HPP
 
-#include <unicorn/video/Renderer.hpp>
+#include <unicorn/video/IRenderer.hpp>
 #include <unicorn/video/vulkan/VkMesh.hpp>
 #include <unicorn/video/vulkan/Image.hpp>
 #include <unicorn/video/vulkan/VkTexture.hpp>
@@ -19,6 +19,7 @@
 #include <list>
 #include <vector>
 #include <functional>
+#include <unordered_map>
 
 namespace unicorn
 {
@@ -66,7 +67,7 @@ class UniformObject;
 class Image;
 
 /** @brief Vulkan renderer backend */
-class Renderer : public video::Renderer
+class Renderer : public video::IRenderer
 {
 public:
     /**
@@ -92,8 +93,9 @@ public:
     bool Render() override;
     bool RecreateSwapChain();
     bool AddMesh(Mesh* mesh) override;
-    bool AddText(std::string text, float x, float y) override;
+    bool AddText(Text* text) override;
     bool DeleteMesh(Mesh const* pMesh) override;
+    bool DeleteText(Text const* text) override;
     void SetDepthTest(bool enabled) override;
 
 private:
@@ -128,6 +130,7 @@ private:
     } m_pipelines;
 
     std::list<VkMesh*> m_vkMeshes;
+    std::unordered_map<Text*, std::list<Mesh*>> m_textQuads;
 
     Image* m_pDepthImage;
     std::shared_ptr<VkMaterial> m_pReplaceMeMaterial;
@@ -156,6 +159,8 @@ private:
     static const uint32_t s_swapChainAttachmentsAmount;
 
     static void DeleteVkMesh(VkMesh* pVkMesh);
+
+    void OnTextChanged(Text* text);
 
     void FreeSurface();
     void FreeLogicalDevice();

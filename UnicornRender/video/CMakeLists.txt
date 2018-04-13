@@ -34,7 +34,7 @@ set(VULKAN_SOURCES
 
 set(VIDEO_HEADERS
     include/unicorn/video/Graphics.hpp
-    include/unicorn/video/Renderer.hpp
+    include/unicorn/video/IRenderer.hpp
     include/unicorn/video/Camera.hpp
     include/unicorn/video/Camera2DController.hpp
     include/unicorn/video/CameraProjection.hpp
@@ -52,7 +52,7 @@ set(VIDEO_HEADERS
 
 set(VIDEO_SOURCES
     source/Graphics.cpp
-    source/Renderer.cpp
+    source/IRenderer.cpp
     source/Camera2DController.cpp
     source/CameraProjection.cpp
     source/OrthographicCamera.cpp
