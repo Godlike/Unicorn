@@ -73,12 +73,12 @@ namespace unicorn
                 m_attributeDescription.at(0).setBinding(0);
                 m_attributeDescription.at(0).setLocation(0);
                 m_attributeDescription.at(0).setFormat(vk::Format::eR32G32B32Sfloat);
-                m_attributeDescription.at(0).setOffset(offsetof(Vertex, pos));
+                m_attributeDescription.at(0).setOffset(0); // FixMe (offsetof(Vertex, pos));
                 //Texture coordinates
                 m_attributeDescription.at(1).setBinding(0);
                 m_attributeDescription.at(1).setLocation(1);
                 m_attributeDescription.at(1).setFormat(vk::Format::eR32G32B32Sfloat);
-                m_attributeDescription.at(1).setOffset(offsetof(Vertex, tc));
+                m_attributeDescription.at(1).setOffset(offsetof(Vertex, pos)); // FixMe (offsetof(Vertex, tc))
             }
 
             void ShaderProgram::CreateVertexInputInfo()
