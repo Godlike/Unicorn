@@ -500,17 +500,20 @@ void Renderer::DeleteVkMesh(VkMesh* pVkMesh)
 
 void Renderer::OnTextChanged(Text* text)
 {
-    for(Mesh* mesh : m_textQuads.at(text))
+    int32_t diffSize = m_textQuads.at(text).size() - text->GetSize();
+    //Remove unnecessary quads
+    for (int32_t i = 0; i < diffSize; ++i)
     {
-        DeleteMesh(mesh);
+        DeleteMesh(m_textQuads.at(text).back());
+        m_textQuads.at(text).pop_back();
     }
-
-    m_textQuads.at(text).clear();
 
     float offsetX = 0, offsetY = 0;
 
     for (auto c : text->GetText())
     {
+        std::list<Mesh*>::iterator mesh = m_textQuads.at(text).begin();
+        
         stbtt_aligned_quad q;
 
         stbtt_GetPackedQuad(charInfo.get(), m_fontAtlasRes.x, m_fontAtlasRes.y,
@@ -522,30 +525,13 @@ void Renderer::OnTextChanged(Text* text)
         { { q.x1, -q.y0, 0 },{ q.s1, q.t0 } },
         { { q.x1, -q.y1, 0 },{ q.s1, q.t1 } }
             } };
+        
+ /*       auto *m = *mesh;
 
-        Mesh* mesh = new unicorn::video::Mesh;
-        mesh->SetMeshData(vertices, { 0, 1, 2, 0, 2, 3 });
-        auto fontMaterial = std::make_shared<unicorn::video::Material>();
-        mesh->SetMaterial(fontMaterial);
-
-        mesh->TranslateWorld({ text->GetPosition().x, text->GetPosition().y, 0.0 });
-        mesh->UpdateTransformMatrix();
-
-        auto vkmesh = new VkMesh(m_vkLogicalDevice, m_vkPhysicalDevice,
-            m_commandPool, m_graphicsQueue, *mesh,
-            m_renderPass, m_pipelineLayout, m_swapChainExtent,
-            "data/shaders/text.vert.spv", "data/shaders/text.frag.spv");
-
-        vkmesh->pMaterial = m_pFontMaterial;
-        vkmesh->ReallocatedOnGpu.connect(this, &vulkan::Renderer::ResizeUnifromModelBuffer);
-        vkmesh->MaterialUpdated.connect(this, &vulkan::Renderer::OnMeshMaterialUpdated);
-
-        vkmesh->AllocateOnGPU();
-
-        m_vkMeshes.push_back(vkmesh);
-        m_textQuads.at(text).push_back(mesh);
-
-        ResizeUnifromModelBuffer(vkmesh);
+        m->SetMeshData(vertices, { 0, 1, 2, 0, 2, 3 });
+        m->SetTranslation({ text->GetPosition().x, text->GetPosition().y, 0.0 });
+        m->UpdateTransformMatrix();
+        ++mesh;*/
     }
 }
 
