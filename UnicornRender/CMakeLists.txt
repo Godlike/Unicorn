@@ -41,7 +41,7 @@ include(assimp)
 
 # Force BUILD_SHARED_LIBS to be OFF while saving initial value to temp variable
 set(TMP_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "Force GLFW to build static library" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Force assimp to build static library" FORCE)
 
 add_subdirectory(${ASSIMP_ROOT_DIR})
 
@@ -76,6 +76,18 @@ install( DIRECTORY ${WINK_SIGNALS_INCLUDE_DIR}/wink
 )
 
 install( DIRECTORY ${GLM_INCLUDE_DIR}/glm
+    DESTINATION ${UNICORN_INSTALL_INCLUDE_DIR}
+    COMPONENT unicorn_extra
+    FILES_MATCHING
+        PATTERN "*.hpp"
+            PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
+        PATTERN "*.h"
+            PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
+        PATTERN "*.inl"
+            PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ
+)
+
+install( DIRECTORY ${ASSIMP_INCLUDE_DIR}/assimp
     DESTINATION ${UNICORN_INSTALL_INCLUDE_DIR}
     COMPONENT unicorn_extra
     FILES_MATCHING
