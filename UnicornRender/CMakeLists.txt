@@ -5,6 +5,8 @@
 cmake_minimum_required(VERSION 3.2)
 cmake_policy(VERSION 3.2)
 
+set(CMAKE_CXX_STANDARD 14)
+
 if (NOT DEFINED UNICORN_RENDER_NAME)
     set(UNICORN_RENDER_NAME "UnicornRender" CACHE STRING "Project name for Unicorn Render library")
 endif()
@@ -125,11 +127,15 @@ if (BUILD_SHARED_LIBS)
 endif()
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -Werror -pedantic")
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=unused-command-line-argument")
+    endif()
+
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -pedantic")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s -O3")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g3 -ggdb3 -O0")
 elseif(WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++14 /MP /W3") # remove loguru and put spdlog -> /WX
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /W3") # remove loguru and put spdlog -> /WX
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 

@@ -10,7 +10,7 @@ option(UNICORN_BUILD_DOCUMENTATION "Build UnicornRender documentation" OFF)
 option(UNICORN_BUILD_DEMOS "Build UnicornRender demo projects" ON)
 option(UNICORN_BUILD_TESTS "Build UnicornRender tests" ON)
 
-message(STATUS "${PROJECT_NAME} configuration:")
+message(STATUS "${PROJECT_NAME} ${CMAKE_BUILD_TYPE} configuration:")
 message(STATUS "-- UNICORN_BUILD_DOCUMENTATION: ${UNICORN_BUILD_DOCUMENTATION}")
 message(STATUS "-- UNICORN_BUILD_DEMOS: ${UNICORN_BUILD_DEMOS}")
 message(STATUS "-- UNICORN_BUILD_TESTS: ${UNICORN_BUILD_TESTS}")
