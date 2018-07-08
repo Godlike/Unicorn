@@ -9,11 +9,13 @@ project(Unicorn)
 option(UNICORN_BUILD_DOCUMENTATION "Build UnicornRender documentation" OFF)
 option(UNICORN_BUILD_DEMOS "Build UnicornRender demo projects" ON)
 option(UNICORN_BUILD_TESTS "Build UnicornRender tests" ON)
+option(BUILD_SHARED_LIBS "Build shared libs" ON)
 
 message(STATUS "${PROJECT_NAME} ${CMAKE_BUILD_TYPE} configuration:")
 message(STATUS "-- UNICORN_BUILD_DOCUMENTATION: ${UNICORN_BUILD_DOCUMENTATION}")
 message(STATUS "-- UNICORN_BUILD_DEMOS: ${UNICORN_BUILD_DEMOS}")
 message(STATUS "-- UNICORN_BUILD_TESTS: ${UNICORN_BUILD_TESTS}")
+message(STATUS "-- BUILD_SHARED_LIBS: ${BUILD_SHARED_LIBS}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 

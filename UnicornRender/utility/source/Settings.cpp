@@ -4,9 +4,11 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#include <unicorn/Settings.hpp>
+#include <unicorn/utility/Settings.hpp>
 
 namespace unicorn
+{
+namespace utility
 {
 
 Settings::Settings()
@@ -21,4 +23,5 @@ void Settings::Init(int /*argc*/, char** /*argv*/)
 {
 }
 
+}
 }

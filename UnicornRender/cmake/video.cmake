@@ -5,8 +5,3 @@
 set(UNICORN_RENDER_VIDEO_DIR
     "${UNICORN_RENDER_ROOT}/video"
 )
-
-set(UNICORN_RENDER_VIDEO_LIB
-    video
-)
-

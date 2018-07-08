@@ -6,7 +6,3 @@ set(UNICORN_RENDER_UTILITY_DIR
     "${UNICORN_RENDER_ROOT}/utility"
 )
 
-set(UNICORN_RENDER_UTILITY_LIB
-    utility
-)
-
