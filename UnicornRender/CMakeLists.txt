@@ -111,7 +111,6 @@ include_directories(
 
 include_directories(
     ${UNICORN_RENDER_INCLUDE_DIRS}
-    ${MULE_INCLUDE_DIR}
 )
 
 include_directories( SYSTEM
@@ -171,7 +170,7 @@ if (MSVC)
     )
 endif()
 
-add_library(${UNICORN_RENDER_LIB}
+add_library(${PROJECT_NAME}
     ${UNICORN_RENDER_HEADERS}
     ${UNICORN_RENDER_SOURCES}
     ${UNICORN_RENDER_EXTRA}
@@ -181,21 +180,30 @@ add_library(${UNICORN_RENDER_LIB}
     $<TARGET_OBJECTS:${UNICORN_RENDER_SYSTEM_LIB}>
 )
 
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+add_library(Unicorn::Render ALIAS ${PROJECT_NAME})
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${UNICORN_RENDER_INCLUDE_DIRS}
+)
+
 set_target_properties(
-    ${UNICORN_RENDER_LIB}
+    ${PROJECT_NAME}
     PROPERTIES
         VERSION ${UNICORN_VERSION}
         SOVERSION ${UNICORN_SOVERSION}
 )
 
-target_link_libraries(${UNICORN_RENDER_LIB}
+target_link_libraries(${PROJECT_NAME}
     ${WINDOW_MANAGER_LIBS}
-    ${MULE_UTILITIES_LIB}
+    Mule::Utilities
+
     ${VULKAN_LIBRARY}
     ${ASSIMP_LIB}
 )
 
-install( TARGETS ${UNICORN_RENDER_LIB}
+install( TARGETS ${PROJECT_NAME}
     COMPONENT unicorn_libraries
     RUNTIME DESTINATION ${UNICORN_INSTALL_LIBRARY_DIR}
     LIBRARY DESTINATION ${UNICORN_INSTALL_LIBRARY_DIR}
