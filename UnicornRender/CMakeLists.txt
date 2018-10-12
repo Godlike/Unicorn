@@ -2,16 +2,16 @@
 # This code is licensed under the MIT license (MIT)
 # (http://opensource.org/licenses/MIT)
 
-cmake_minimum_required(VERSION 3.2)
-cmake_policy(VERSION 3.2)
+cmake_minimum_required(VERSION 3.8)
+cmake_policy(VERSION 3.8)
 
-set(CMAKE_CXX_STANDARD 14)
+project(UnicornRender)
 
-if (NOT DEFINED UNICORN_RENDER_NAME)
-    set(UNICORN_RENDER_NAME "UnicornRender" CACHE STRING "Project name for Unicorn Render library")
-endif()
+add_library(${PROJECT_NAME})
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+add_library(Unicorn::Render ALIAS ${PROJECT_NAME})
 
-project(${UNICORN_RENDER_NAME})
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -109,18 +109,6 @@ include_directories(
     ${VULKAN_INCLUDE_DIR}
 )
 
-include_directories(
-    ${UNICORN_RENDER_INCLUDE_DIRS}
-)
-
-include_directories( SYSTEM
-    ${WINK_SIGNALS_INCLUDE_DIR}
-    ${GLM_INCLUDE_DIR}
-    ${LOGURU_INCLUDE_DIR}
-    ${STB_INCLUDE_DIR}
-    ${ASSIMP_INCLUDE_DIRS}
-)
-
 if (BUILD_SHARED_LIBS)
     add_definitions(-D${UNICORN_RENDER_LIB}_EXPORTS)
 endif()
@@ -143,14 +131,12 @@ add_subdirectory(utility)
 add_subdirectory(video)
 
 set(UNICORN_RENDER_HEADERS
-    include/unicorn/Settings.hpp
     include/unicorn/UnicornRender.hpp
     include/unicorn/Loggers.hpp
 )
 
 set(UNICORN_RENDER_SOURCES
     source/Loggers.cpp
-    source/Settings.cpp
     source/UnicornRender.cpp
 )
 
@@ -170,22 +156,24 @@ if (MSVC)
     )
 endif()
 
-add_library(${PROJECT_NAME}
-    ${UNICORN_RENDER_HEADERS}
-    ${UNICORN_RENDER_SOURCES}
-    ${UNICORN_RENDER_EXTRA}
-
-    $<TARGET_OBJECTS:${UNICORN_RENDER_UTILITY_LIB}>
-    $<TARGET_OBJECTS:${UNICORN_RENDER_VIDEO_LIB}>
-    $<TARGET_OBJECTS:${UNICORN_RENDER_SYSTEM_LIB}>
+target_sources(${PROJECT_NAME}
+    PRIVATE
+        ${UNICORN_RENDER_HEADERS}
+        ${UNICORN_RENDER_SOURCES}
+        ${UNICORN_RENDER_EXTRA}
 )
 
-add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
-add_library(Unicorn::Render ALIAS ${PROJECT_NAME})
+
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${UNICORN_RENDER_INCLUDE_DIRS}
+)
+
+target_include_directories(${PROJECT_NAME}
+    SYSTEM
+        PUBLIC
+            ${WINK_SIGNALS_INCLUDE_DIR}
 )
 
 set_target_properties(
@@ -198,6 +186,9 @@ set_target_properties(
 target_link_libraries(${PROJECT_NAME}
     ${WINDOW_MANAGER_LIBS}
     Mule::Utilities
+    Unicorn::Render::Video
+    Unicorn::Render::System
+    Unicorn::Render::Utility
 
     ${VULKAN_LIBRARY}
     ${ASSIMP_LIB}

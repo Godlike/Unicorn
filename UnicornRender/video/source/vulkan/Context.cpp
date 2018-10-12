@@ -5,7 +5,7 @@
 */
 
 #include <unicorn/video/vulkan/Context.hpp>
-#include <unicorn/Settings.hpp>
+#include <unicorn/utility/Settings.hpp>
 
 #include <unicorn/utility/InternalLoggers.hpp>
 
@@ -68,7 +68,7 @@ bool Context::Initialize(system::Manager& manager)
         return false;
     }
 
-    const Settings& settings = Settings::Instance();
+    const utility::Settings& settings = utility::Settings::Instance();
 
     vk::ApplicationInfo appInfo(settings.GetApplicationName().c_str(),
                                 VK_MAKE_VERSION(1, 0, 0),

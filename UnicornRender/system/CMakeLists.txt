@@ -2,13 +2,16 @@
 # This code is licensed under the MIT license (MIT)
 # (http://opensource.org/licenses/MIT)
 
-cmake_minimum_required(VERSION 3.0)
-cmake_policy(VERSION 3.0)
+cmake_minimum_required(VERSION 3.8)
+cmake_policy(VERSION 3.8)
 
-include_directories(
-    ${UNICORN_RENDER_SYSTEM_INCLUDE_DIR}
-    ${WINDOW_MANAGER_ADAPTER_INCLUDE_DIR}
-)
+project(UnicornRender_System)
+
+add_library(${PROJECT_NAME} STATIC)
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+add_library(Unicorn::Render::System ALIAS ${PROJECT_NAME})
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 set(SYSTEM_HEADERS
     include/unicorn/system/Input.hpp
@@ -83,7 +86,30 @@ set(SYSTEM_ALL_SOURCES
     ${SYSTEM_SOURCES}
 )
 
-add_library(system OBJECT ${SYSTEM_ALL_SOURCES})
+target_sources(${PROJECT_NAME}
+    PRIVATE
+        ${SYSTEM_ALL_SOURCES}
+)
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+
+    PRIVATE
+        ${WINDOW_MANAGER_ADAPTER_INCLUDE_DIR}
+)
+
+target_include_directories(${PROJECT_NAME}
+    SYSTEM
+        PUBLIC
+            ${WINK_SIGNALS_INCLUDE_DIR}
+)
+
+target_link_libraries(${PROJECT_NAME}
+    PUBLIC
+        Unicorn::Render::Utility
+        Mule::Utilities
+)
 
 include(InstallInfo)
 

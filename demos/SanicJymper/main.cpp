@@ -9,7 +9,7 @@
 #include <unicorn/system/Window.hpp>
 #include <unicorn/system/WindowHint.hpp>
 #include <unicorn/system/CustomValue.hpp>
-#include <unicorn/Settings.hpp>
+#include <unicorn/utility/Settings.hpp>
 #include <unicorn/system/Input.hpp>
 #include <unicorn/system/input/Action.hpp>
 #include <unicorn/system/input/Key.hpp>
@@ -509,7 +509,7 @@ int main(int argc, char* argv[])
 
     mule::MuleUtilities::Initialize();
 
-    unicorn::Settings& settings = unicorn::Settings::Instance();
+    unicorn::utility::Settings& settings = unicorn::utility::Settings::Instance();
 
     {
         unicorn::Loggers& loggers = unicorn::Loggers::Instance();
@@ -643,5 +643,5 @@ int main(int argc, char* argv[])
     unicornRender->Deinit();
     delete unicornRender;
 
-    unicorn::Settings::Destroy();
+    unicorn::utility::Settings::Destroy();
 }

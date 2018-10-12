@@ -4,8 +4,8 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#ifndef UNICORN_SETTINGS_HPP
-#define UNICORN_SETTINGS_HPP
+#ifndef UNICORN_UTILITY_SETTINGS_HPP
+#define UNICORN_UTILITY_SETTINGS_HPP
 
 #include <unicorn/utility/SharedMacros.hpp>
 #include <mule/templates/Singleton.hpp>
@@ -14,6 +14,8 @@
 #include <cstdint>
 
 namespace unicorn
+{
+namespace utility
 {
 
 /** @brief  Provides an access to application settings */
@@ -100,5 +102,6 @@ private:
     std::string m_unicornEngineName;
 };
 }
+}
 
-#endif // UNICORN_SETTINGS_HPP
+#endif // UNICORN_UTILITY_SETTINGS_HPP
