@@ -342,12 +342,9 @@ if(WIN32)
     )
     set_target_properties (
         CompileEngineData
-        UnicornRender
-        system
-        utility
-        video
-        PROPERTIES FOLDER Unicorn
-)
+        ${PROJECT_NAME}
+        PROPERTIES FOLDER ${UNICORN_IDE_FOLDER}
+    )
 endif()
 
 install( FILES ${SPIRV_BINARY_FILES}

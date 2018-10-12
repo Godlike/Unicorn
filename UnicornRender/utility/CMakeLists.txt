@@ -57,6 +57,12 @@ target_link_libraries(${PROJECT_NAME}
         Mule::Utilities
 )
 
+if (WIN32)
+    set_target_properties(${PROJECT_NAME}
+        PROPERTIES FOLDER ${UNICORN_IDE_FOLDER}
+    )
+endif()
+
 include(InstallInfo)
 
 install( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
