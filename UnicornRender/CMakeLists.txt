@@ -184,7 +184,6 @@ set_target_properties(
 )
 
 target_link_libraries(${PROJECT_NAME}
-    ${WINDOW_MANAGER_LIBS}
     Mule::Utilities
     Unicorn::Render::Video
     Unicorn::Render::System

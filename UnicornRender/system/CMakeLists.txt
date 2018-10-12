@@ -109,6 +109,9 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
         Unicorn::Render::Utility
         Mule::Utilities
+
+    INTERFACE
+        ${WINDOW_MANAGER_LIBS}
 )
 
 include(InstallInfo)
