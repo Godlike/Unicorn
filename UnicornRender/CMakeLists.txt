@@ -7,11 +7,15 @@ cmake_policy(VERSION 3.8)
 
 project(UnicornRender)
 
+set(UNICORN_LIB_ALIAS Unicorn::Render)
+
 add_library(${PROJECT_NAME})
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
-add_library(Unicorn::Render ALIAS ${PROJECT_NAME})
+add_library(${UNICORN_LIB_ALIAS} ALIAS ${PROJECT_NAME})
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
+
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -163,8 +167,6 @@ target_sources(${PROJECT_NAME}
         ${UNICORN_RENDER_EXTRA}
 )
 
-
-
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         ${UNICORN_RENDER_INCLUDE_DIRS}
@@ -183,14 +185,26 @@ set_target_properties(
         SOVERSION ${UNICORN_SOVERSION}
 )
 
-target_link_libraries(${PROJECT_NAME}
-    Mule::Utilities
-    Unicorn::Render::Video
-    Unicorn::Render::System
-    Unicorn::Render::Utility
+set(EXPORT_SYMBOLS_PREFIX)
+set(EXPORT_SYMBOLS_SUFFIX)
 
-    ${VULKAN_LIBRARY}
-    ${ASSIMP_LIB}
+if (UNIX)
+    set(EXPORT_SYMBOLS_PREFIX "-Wl,--whole-archive")
+    set(EXPORT_SYMBOLS_SUFFIX "-Wl,--no-whole-archive")
+endif()
+
+target_link_libraries(${PROJECT_NAME}
+    PUBLIC
+        Mule::Utilities
+        ${VULKAN_LIBRARY}
+        ${ASSIMP_LIB}
+
+    PRIVATE
+        ${EXPORT_SYMBOLS_PREFIX}
+        Unicorn::Render::Video
+        Unicorn::Render::System
+        Unicorn::Render::Utility
+        ${EXPORT_SYMBOLS_SUFFIX}
 )
 
 install( TARGETS ${PROJECT_NAME}
@@ -210,22 +224,27 @@ install( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
 include(CMakePackageConfigHelpers)
 
 write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/UnicornRenderConfigVersion.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
     VERSION ${UNICORN_VERSION}
     COMPATIBILITY SameMajorVersion
 )
 
 configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/UnicornRenderConfig.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/UnicornRenderConfig.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake.gen
 
     @ONLY
 )
 
+file(GENERATE
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+    INPUT ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake.gen
+)
+
 install(
     FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/UnicornRenderConfig.cmake
-        ${CMAKE_CURRENT_BINARY_DIR}/UnicornRenderConfigVersion.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
     DESTINATION ${UNICORN_INSTALL_LIBRARY_DIR}
     COMPONENT unicorn_headers
 )
