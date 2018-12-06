@@ -7,8 +7,6 @@
 #ifndef UNICORN_SYSTEM_INPUT_HPP
 #define UNICORN_SYSTEM_INPUT_HPP
 
-#include <unicorn/utility/SharedMacros.hpp>
-
 #include <wink/event_queue.hpp>
 
 #include <map>
@@ -51,16 +49,16 @@ public:
      *
      *  @return clipboard string or empty string if some problem occured
      */
-    UNICORN_EXPORT std::string GetClipboard() const;
+    std::string GetClipboard() const;
 
     /** @brief  Sets clipboard data
      *
      *  @param  data    new clipboard data
      */
-    UNICORN_EXPORT void SetClipboard(const std::string& data) const;
+    void SetClipboard(const std::string& data) const;
 
     /** @brief  Returns a map of connected gamepads */
-    UNICORN_EXPORT const std::map<uint32_t, input::Gamepad*>& GetGamepads() const;
+    const std::map<uint32_t, input::Gamepad*>& GetGamepads() const;
 
     /** @brief  Process all inputs */
     void Process();

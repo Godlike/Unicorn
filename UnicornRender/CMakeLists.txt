@@ -9,13 +9,13 @@ project(UnicornRender)
 
 set(UNICORN_LIB_ALIAS Unicorn::Render)
 
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 add_library(${PROJECT_NAME} "")
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 add_library(${UNICORN_LIB_ALIAS} ALIAS ${PROJECT_NAME})
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
-
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -161,21 +161,28 @@ target_sources(${PROJECT_NAME}
         ${UNICORN_RENDER_HEADERS}
         ${UNICORN_RENDER_SOURCES}
         ${UNICORN_RENDER_EXTRA}
+
+        $<TARGET_OBJECTS:Unicorn::Render::System>
+        $<TARGET_OBJECTS:Unicorn::Render::Utility>
+        $<TARGET_OBJECTS:Unicorn::Render::Video>
 )
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${SLEIPNIR_INSTALL_INCLUDE_DIR}>
-        $<TARGET_PROPERTY:Unicorn::Render::Video,INTERFACE_INCLUDE_DIRECTORIES>
-        $<TARGET_PROPERTY:Unicorn::Render::System,INTERFACE_INCLUDE_DIRECTORIES>
-        $<TARGET_PROPERTY:Unicorn::Render::Utility,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
 target_include_directories(${PROJECT_NAME}
     SYSTEM
         PUBLIC
             ${WINK_SIGNALS_INCLUDE_DIR}
+
+            # These generator expressions include both regular and system include directories
+            # Files in regular include directories are validated via their corresponding targets
+            $<TARGET_PROPERTY:Unicorn::Render::Video,INTERFACE_INCLUDE_DIRECTORIES>
+            $<TARGET_PROPERTY:Unicorn::Render::System,INTERFACE_INCLUDE_DIRECTORIES>
+            $<TARGET_PROPERTY:Unicorn::Render::Utility,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
 set_target_properties(
@@ -185,14 +192,6 @@ set_target_properties(
         SOVERSION ${UNICORN_SOVERSION}
 )
 
-set(EXPORT_SYMBOLS_PREFIX)
-set(EXPORT_SYMBOLS_SUFFIX)
-
-if (UNIX)
-    set(EXPORT_SYMBOLS_PREFIX "-Wl,--whole-archive")
-    set(EXPORT_SYMBOLS_SUFFIX "-Wl,--no-whole-archive")
-endif()
-
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
         Mule::Utilities
@@ -200,11 +199,7 @@ target_link_libraries(${PROJECT_NAME}
         ${ASSIMP_LIB}
 
     PRIVATE
-        ${EXPORT_SYMBOLS_PREFIX}
-        Unicorn::Render::Video
-        Unicorn::Render::System
-        Unicorn::Render::Utility
-        ${EXPORT_SYMBOLS_SUFFIX}
+        ${WINDOW_MANAGER_LIBS}
 )
 
 install( TARGETS ${PROJECT_NAME}

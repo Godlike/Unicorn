@@ -7,7 +7,9 @@ cmake_policy(VERSION 3.8)
 
 project(UnicornRender_System)
 
-add_library(${PROJECT_NAME} STATIC "")
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+add_library(${PROJECT_NAME} OBJECT "")
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 add_library(Unicorn::Render::System ALIAS ${PROJECT_NAME})
 
@@ -103,15 +105,9 @@ target_include_directories(${PROJECT_NAME}
     SYSTEM
         PUBLIC
             ${WINK_SIGNALS_INCLUDE_DIR}
-)
 
-target_link_libraries(${PROJECT_NAME}
-    PUBLIC
-        Unicorn::Render::Utility
-        Mule::Utilities
-
-    INTERFACE
-        ${WINDOW_MANAGER_LIBS}
+        PRIVATE
+            $<TARGET_PROPERTY:Unicorn::Render::Utility,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
 if (WIN32)
@@ -134,7 +130,13 @@ install( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
 )
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+    set_target_properties(
+        ${PROJECT_NAME}
+
+        PROPERTIES
+
+        POSITION_INDEPENDENT_CODE ON
+    )
 endif()
 
 MakeSolutionFilters("${SYSTEM_ALL_SOURCES}")

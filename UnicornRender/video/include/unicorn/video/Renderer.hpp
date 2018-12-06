@@ -54,7 +54,7 @@ public:
     virtual void Deinit() = 0;
     virtual bool Render() = 0;
 
-    UNICORN_EXPORT void SetBackgroundColor(const glm::vec3& backgroundColor);
+    void SetBackgroundColor(const glm::vec3& backgroundColor);
 
     /** @brief  Event triggered from destructor before the renderer is destroyed
      *
@@ -67,14 +67,14 @@ public:
      * @brief Turns on or off depth test
      * @param [in] enabled if true - depth test is enabled, false - disabled
      */
-    UNICORN_EXPORT virtual void SetDepthTest(bool enabled) = 0;
+    virtual void SetDepthTest(bool enabled) = 0;
 
     /**
     * @brief Adds mesh to the rendering system
     * @param [in] mesh mesh data
     * @return true if mesh was successfully added to the system
     */
-    UNICORN_EXPORT virtual bool AddMesh(Mesh* mesh) = 0;
+    virtual bool AddMesh(Mesh* mesh) = 0;
 
     /**
     * @brief Removes internal rendering mesh data from rendering system
@@ -85,7 +85,7 @@ public:
     *
     * @return true if data was found and succesfully deleted
     */
-    UNICORN_EXPORT virtual bool DeleteMesh(Mesh const* pMesh) = 0;
+    virtual bool DeleteMesh(Mesh const* pMesh) = 0;
 
     //! Main view camera, must never be nullptr
     Camera const* camera;

@@ -7,8 +7,6 @@
 #ifndef UNICORN_SYSTEM_GAMMA_RAMP_HPP
 #define UNICORN_SYSTEM_GAMMA_RAMP_HPP
 
-#include <unicorn/utility/SharedMacros.hpp>
-
 #include <cstdint>
 
 namespace unicorn
@@ -25,7 +23,7 @@ namespace system
 struct GammaRamp
 {
     /** @brief  Constructs gamma ramp object */
-    UNICORN_EXPORT GammaRamp();
+    GammaRamp();
 
     /** @brief  Constructs a copy of @p other
      *
@@ -33,7 +31,7 @@ struct GammaRamp
      *
      *  @param  other   GammaRamp object to copy data from
      */
-    UNICORN_EXPORT GammaRamp(const GammaRamp& other);
+    GammaRamp(const GammaRamp& other);
 
     /** @brief  Copies all data from @p other
      *
@@ -43,13 +41,13 @@ struct GammaRamp
      *
      *  @return reference to this
      */
-    UNICORN_EXPORT GammaRamp& operator=(const GammaRamp& other);
+    GammaRamp& operator=(const GammaRamp& other);
 
     /** @brief  Constructs a new object from @p other moving all data
      *
      *  @param  other   GammaRamp object to move data from
      */
-    UNICORN_EXPORT GammaRamp(GammaRamp&& other);
+    GammaRamp(GammaRamp&& other);
 
     /** @brief  Moves all data from @p other
      *
@@ -57,10 +55,10 @@ struct GammaRamp
      *
      *  @return reference to this
      */
-    UNICORN_EXPORT GammaRamp& operator=(GammaRamp&& other);
+    GammaRamp& operator=(GammaRamp&& other);
 
     /** @brief  Destructs gamma ramp object and deallocates all allocated space */
-    UNICORN_EXPORT ~GammaRamp();
+    ~GammaRamp();
 
     //! Size of each channel
     uint32_t size;
