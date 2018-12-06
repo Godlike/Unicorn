@@ -7,7 +7,6 @@
 #ifndef UNICORN_VIDEO_CAMERA2DCONTROLLER_HPP
 #define UNICORN_VIDEO_CAMERA2DCONTROLLER_HPP
 
-#include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/video/Transform.hpp>
 
 namespace unicorn
@@ -24,10 +23,10 @@ public:
      *
      * @param[out] cameraView target camera view matix
      */
-    UNICORN_EXPORT Camera2DController(glm::mat4& cameraView);
+    Camera2DController(glm::mat4& cameraView);
 
     /** @brief Calculates and updates camera view matrix */
-    UNICORN_EXPORT void Update();
+    void Update();
 private:
     glm::mat4& m_cameraView;
 };

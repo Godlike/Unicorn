@@ -16,10 +16,7 @@ Settings::Settings()
     , m_height(480)
     , m_applicationName("SAMPLE NAME")
     , m_unicornEngineName("Unicorn Render")
-{
-}
-
-void Settings::Init(int /*argc*/, char** /*argv*/)
+    , m_profilingMask(Settings::ProfilingMask::None)
 {
 }
 

@@ -17,6 +17,8 @@
 #include <unicorn/system/profiler/WindowProfiler.hpp>
 
 #include <unicorn/utility/InternalLoggers.hpp>
+#include <unicorn/utility/Settings.hpp>
+
 #include <unicorn/Loggers.hpp>
 
 #include <mule/asset/SimpleStorage.hpp>
@@ -55,7 +57,7 @@ UnicornRender::~UnicornRender()
     Deinit();
 }
 
-bool UnicornRender::Init(ProfilingMask::MaskType profilingMask)
+bool UnicornRender::Init()
 {
     if (m_isInitialized)
     {
@@ -69,31 +71,37 @@ bool UnicornRender::Init(ProfilingMask::MaskType profilingMask)
 
     m_pSystemManager = new system::Manager();
 
-    if (ProfilingMask::None != profilingMask)
     {
-        if (ProfilingMask::Window & profilingMask)
-        {
-            s_pWindowProfiler = new system::WindowProfiler(*m_pSystemManager);
-        }
+        using ProfilingMask = utility::Settings::ProfilingMask;
 
-        if (ProfilingMask::Monitor & profilingMask)
-        {
-            s_pMonitorProfiler = new system::MonitorProfiler(*m_pSystemManager);
-        }
+        ProfilingMask::MaskType const profilingMask = utility::Settings::Instance().GetProfilingMask();
 
-        if (ProfilingMask::Mouse & profilingMask)
+        if (ProfilingMask::None != profilingMask)
         {
-            s_pMouseProfiler = new system::MouseProfiler(*m_pSystemManager);
-        }
+            if (ProfilingMask::Window & profilingMask)
+            {
+                s_pWindowProfiler = new system::WindowProfiler(*m_pSystemManager);
+            }
 
-        if (ProfilingMask::Key & profilingMask)
-        {
-            s_pKeyProfiler = new system::KeyProfiler(*m_pSystemManager);
-        }
+            if (ProfilingMask::Monitor & profilingMask)
+            {
+                s_pMonitorProfiler = new system::MonitorProfiler(*m_pSystemManager);
+            }
 
-        if (ProfilingMask::Gamepad & profilingMask)
-        {
-            s_pGamepadProfiler = new system::GamepadProfiler(*m_pSystemManager);
+            if (ProfilingMask::Mouse & profilingMask)
+            {
+                s_pMouseProfiler = new system::MouseProfiler(*m_pSystemManager);
+            }
+
+            if (ProfilingMask::Key & profilingMask)
+            {
+                s_pKeyProfiler = new system::KeyProfiler(*m_pSystemManager);
+            }
+
+            if (ProfilingMask::Gamepad & profilingMask)
+            {
+                s_pGamepadProfiler = new system::GamepadProfiler(*m_pSystemManager);
+            }
         }
     }
 

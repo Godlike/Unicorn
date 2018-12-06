@@ -7,7 +7,6 @@
 #ifndef UNICORN_VIDEO_MESH_HPP
 #define UNICORN_VIDEO_MESH_HPP
 
-#include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/video/Material.hpp>
 #include <unicorn/video/Transform.hpp>
 
@@ -38,10 +37,10 @@ class Mesh : public Transform
 {
 public:
     /** @brief Constructs mesh */
-    UNICORN_EXPORT Mesh();
+    Mesh();
 
     /** @brief Destructs mesh */
-    UNICORN_EXPORT ~Mesh();
+    ~Mesh();
 
     /**
     * @brief Updates vertices and indices geometry
@@ -49,35 +48,35 @@ public:
     * @param[in] vertices vertices data
     * @param[in] indices indices data
     */
-    UNICORN_EXPORT void SetMeshData(std::vector<Vertex> const& vertices, std::vector<uint32_t> const& indices);
+    void SetMeshData(std::vector<Vertex> const& vertices, std::vector<uint32_t> const& indices);
 
     /**
     * @brief Sets new material
     *
     * @param[in] material material to be used for current mesh
     */
-    UNICORN_EXPORT void SetMaterial(std::shared_ptr<Material> material);
+    void SetMaterial(std::shared_ptr<Material> material);
 
     /**
      * @brief Returns mesh vertices
      *
      * @return Mesh vertices
      */
-    UNICORN_EXPORT const std::vector<Vertex>& GetVertices() const;
+    const std::vector<Vertex>& GetVertices() const;
 
     /**
     * @brief Returns mesh indices
     *
     * @return Mesh indices
     */
-    UNICORN_EXPORT std::vector<uint32_t> const& GetIndices() const;
+    std::vector<uint32_t> const& GetIndices() const;
 
     /**
     * @brief Returns mesh material
     *
     * @return mesh material data
     */
-    UNICORN_EXPORT std::shared_ptr<Material> GetMaterial() const;
+    std::shared_ptr<Material> GetMaterial() const;
 
     /** @brief Event triggered when material is changed */
     wink::signal<wink::slot<void()>> MaterialUpdated;

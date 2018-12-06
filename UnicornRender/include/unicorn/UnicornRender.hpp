@@ -7,7 +7,6 @@
 #ifndef UNICORN_RENDER_HPP
 #define UNICORN_RENDER_HPP
 
-#include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/system/Timer.hpp>
 
 #include <wink/signal.hpp>
@@ -36,22 +35,8 @@ class Manager;
 class UnicornRender
 {
 public:
-    /** @brief Bit mask class describing profiling settings */
-    struct ProfilingMask
-    {
-        typedef uint16_t MaskType;
-
-        static const MaskType None      = 0;
-
-        static const MaskType Window    = 1 << 0;
-        static const MaskType Monitor   = 1 << 1;
-        static const MaskType Mouse     = 1 << 2;
-        static const MaskType Key       = 1 << 3;
-        static const MaskType Gamepad   = 1 << 4;
-    };
-
     /** @brief  Constructs an empty render */
-    UNICORN_EXPORT UnicornRender();
+    UnicornRender();
 
     /** @brief  Destructs render
      *
@@ -59,7 +44,7 @@ public:
      *
      *  @sa Deinit()
      */
-    UNICORN_EXPORT ~UnicornRender();
+    ~UnicornRender();
 
     UnicornRender(const UnicornRender& other) = delete;
     UnicornRender& operator=(const UnicornRender& other) = delete;
@@ -75,19 +60,19 @@ public:
      *
      *  @return @c true if initialization was successful, @c false otherwise
      */
-    UNICORN_EXPORT bool Init(ProfilingMask::MaskType profilingMask = ProfilingMask::None);
+    bool Init();
 
     /** @brief  Render's main loop */
-    UNICORN_EXPORT void Run();
+    void Run();
 
     /** @brief  Deinitializes the render
      *
      *  Deinitializes @ref m_pGraphics
      */
-    UNICORN_EXPORT void Deinit();
+    void Deinit();
 
     /** @brief  Returns pointer to the graphics system */
-    UNICORN_EXPORT video::Graphics* GetGraphics() const { return m_pGraphics; }
+    video::Graphics* GetGraphics() const { return m_pGraphics; }
 
     /** @brief  Returns pointer to the input system */
     system::Input* GetInput() const { return m_pInput; }

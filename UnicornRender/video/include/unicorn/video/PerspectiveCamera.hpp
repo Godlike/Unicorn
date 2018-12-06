@@ -7,7 +7,6 @@
 #ifndef UNICORN_VIDEO_PERSPECTIVECAMERA_HPP
 #define UNICORN_VIDEO_PERSPECTIVECAMERA_HPP
 
-#include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/video/CameraProjection.hpp>
 #include <unicorn/system/Window.hpp>
 
@@ -23,19 +22,19 @@ static float constexpr FAR_PERSPECTIVE_FRUSTRUM_PLANE = 100000.f;
 class PerspectiveCamera final : public CameraProjection
 {
 public:
-    UNICORN_EXPORT PerspectiveCamera(system::Window& window, glm::mat4& cameraProj);
+    PerspectiveCamera(system::Window& window, glm::mat4& cameraProj);
 
     /** @brief Sets field of view */
-    UNICORN_EXPORT void SetFov(float fov);
+    void SetFov(float fov);
 
     /** @brief Sets near Z plane */
-    UNICORN_EXPORT void SetZNear(float znear);
+    void SetZNear(float znear);
 
     /** @brief Sets far Z plane */
-    UNICORN_EXPORT void SetZFar(float zfar);
+    void SetZFar(float zfar);
 
     /** @brief Returns field of view */
-    UNICORN_EXPORT float GetFov() const;
+    float GetFov() const;
 
     /** @brief Recalculates perspective */
     void UpdateProjection() override;

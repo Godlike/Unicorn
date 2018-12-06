@@ -16,8 +16,6 @@
 #include <unicorn/system/input/Modifier.hpp>
 #include <unicorn/system/input/MouseButton.hpp>
 
-#include <unicorn/utility/SharedMacros.hpp>
-
 #include <wink/signal.hpp>
 #include <wink/event_queue.hpp>
 
@@ -67,7 +65,7 @@ public:
     ~Window();
 
     /** @brief  Checks if window should be closed */
-    UNICORN_EXPORT bool ShouldClose() const;
+    bool ShouldClose() const;
 
     /** @brief  Sets flag if window should be closed
      *
@@ -76,98 +74,98 @@ public:
      *
      *  @param  flag    new value
      */
-    UNICORN_EXPORT void SetShouldClose(bool flag) const;
+    void SetShouldClose(bool flag) const;
 
     /** @brief  Returns the id of the window */
-    UNICORN_EXPORT uint32_t GetId() const { return m_id; }
+    uint32_t GetId() const { return m_id; }
 
     /** @brief  Returns the name of the window */
-    UNICORN_EXPORT const std::string& GetName() const { return m_name; }
+    const std::string& GetName() const { return m_name; }
 
     /** @brief  Sets the name of the window
      *
      *  @param  name    new name of the window
      */
-    UNICORN_EXPORT void SetName(const std::string& name);
+    void SetName(const std::string& name);
 
     /** @brief  Returns the size of the window */
-    UNICORN_EXPORT const std::pair<int32_t, int32_t>& GetSize() const { return m_size; }
+    const std::pair<int32_t, int32_t>& GetSize() const { return m_size; }
 
     /** @brief  Sets window size
      *
      *  @param  size    pair of new values as (width, height)
      */
-    UNICORN_EXPORT void SetSize(std::pair<int32_t, int32_t> size);
+    void SetSize(std::pair<int32_t, int32_t> size);
 
     /** @brief  Sets window size limits
      *
      *  @param  minSize     pair of lower boundaries as (width, height)
      *  @param  maxSize     pair of higher boundaries as (width, height)
      */
-    UNICORN_EXPORT void SetSizeLimits(std::pair<int32_t, int32_t> minSize, std::pair<int32_t, int32_t> maxSize);
+    void SetSizeLimits(std::pair<int32_t, int32_t> minSize, std::pair<int32_t, int32_t> maxSize);
 
     /** @brief  Sets aspect ratio for window
      *
      *  @param  ratio   pair of values as (width, height)
      */
-    UNICORN_EXPORT void SetAspectRatio(std::pair<int32_t, int32_t> ratio);
+    void SetAspectRatio(std::pair<int32_t, int32_t> ratio);
 
     /** @brief  Returns the position of the window */
-    UNICORN_EXPORT const std::pair<int32_t, int32_t>& GetPosition() const { return m_position; }
+    const std::pair<int32_t, int32_t>& GetPosition() const { return m_position; }
 
     /** @brief  Sets window position
      *
      *  @param  position    pair of new values as (x, y)
      */
-    UNICORN_EXPORT void SetPosition(std::pair<int32_t, int32_t> position);
+    void SetPosition(std::pair<int32_t, int32_t> position);
 
     /** @brief  Minimizes window */
-    UNICORN_EXPORT void Minimize();
+    void Minimize();
 
     /** @brief  Restores window from minimize/maximize */
-    UNICORN_EXPORT void Restore();
+    void Restore();
 
     /** @brief  Maximizes window */
-    UNICORN_EXPORT void Maximize();
+    void Maximize();
 
     /** @brief  Returns @c true if window has focus, @c false otherwise */
-    UNICORN_EXPORT bool IsFocused() const { return m_focus; }
+    bool IsFocused() const { return m_focus; }
 
     /** @brief  Brings window to front and sets input focus */
-    UNICORN_EXPORT void Focus();
+    void Focus();
 
     /** @brief  Makes window invisible */
-    UNICORN_EXPORT void Hide();
+    void Hide();
 
     /** @brief  Makes window visible */
-    UNICORN_EXPORT void Show();
+    void Show();
 
     /** @brief  Sets a cursor shape for a window
      *
      *  @param  shape   cursor shape
      */
-    UNICORN_EXPORT void SetCursorShape(CursorShape shape);
+    void SetCursorShape(CursorShape shape);
 
     /** @brief  Returns a mouse mode for a window
      *
      *  @return mouse mode
      */
-    UNICORN_EXPORT MouseMode GetMouseMode() const;
+    MouseMode GetMouseMode() const;
 
     /** @brief  Sets mouse mode for a window
      *
      *  @param  mode    mouse mode
      */
-    UNICORN_EXPORT void SetMouseMode(MouseMode mode);
+    void SetMouseMode(MouseMode mode);
 
     /** @brief  Returns a set of pressed keys */
-    UNICORN_EXPORT const std::set<input::MouseButton>& GetPressedMouseButtons() const { return m_pressedMouseButtons; }
+    const std::set<input::MouseButton>& GetPressedMouseButtons() const { return m_pressedMouseButtons; }
 
     /** @brief  Returns a set of pressed keys */
-    UNICORN_EXPORT const std::set<input::Key>& GetPressedKeys() const { return m_pressedKeys; }
+    const std::set<input::Key>& GetPressedKeys() const { return m_pressedKeys; }
 
     /** @brief  Returns a handle provided by window manager adapter */
-    UNICORN_EXPORT void* GetHandle() const { return m_handle; }
+    void* GetHandle() const { return m_handle; }
 
     /** @brief  Clears @ref MouseButton and @ref Keyboard event queues
      *

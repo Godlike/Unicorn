@@ -7,7 +7,6 @@
 #ifndef UNICORN_UTILITY_SETTINGS_HPP
 #define UNICORN_UTILITY_SETTINGS_HPP
 
-#include <unicorn/utility/SharedMacros.hpp>
 #include <mule/templates/Singleton.hpp>
 
 #include <string>
@@ -22,65 +21,70 @@ namespace utility
 class Settings : public mule::templates::Singleton<Settings>
 {
 public:
-    /** @brief  Initializes logging system
-     *
-     *  @param  argc        argument count
-     *  @param  argv        arguments
-     */
-    UNICORN_EXPORT void Init(int argc, char* argv[]);
+    /** @brief Bit mask class describing profiling settings */
+    struct ProfilingMask
+    {
+        typedef uint16_t MaskType;
 
-    /** @brief  Returns application width
-     *
-     *  @return width
-     */
-    UNICORN_EXPORT uint32_t GetApplicationWidth() const { return m_width; }
+        static const MaskType None      = 0;
 
-    /** @brief  Returns application height
-     *
-     *  @return height
-     */
-    UNICORN_EXPORT uint32_t GetApplicationHeight() const { return m_height; }
+        static const MaskType Window    = 1 << 0;
+        static const MaskType Monitor   = 1 << 1;
+        static const MaskType Mouse     = 1 << 2;
+        static const MaskType Key       = 1 << 3;
+        static const MaskType Gamepad   = 1 << 4;
+    };
+
+    //! Returns application width
+    uint32_t GetApplicationWidth() const { return m_width; }
+
+    //! Returns application height
+    uint32_t GetApplicationHeight() const { return m_height; }
 
     /** @brief  Sets application width
      *
      *  @param  width   new width
      */
-    UNICORN_EXPORT void SetApplicationWidth(uint32_t width) { m_width = width; }
+    void SetApplicationWidth(uint32_t width) { m_width = width; }
 
     /** @brief  Sets application height
      *
      *  @param  height   new height
      */
-    UNICORN_EXPORT void SetApplicationHeight(uint32_t height) { m_height = height; }
+    void SetApplicationHeight(uint32_t height) { m_height = height; }
 
-    /** @brief  Returns application name
-     *
-     *  @return application name
-     */
-    UNICORN_EXPORT const std::string& GetApplicationName() const { return m_applicationName; }
+    //! Returns application name
+    const std::string& GetApplicationName() const { return m_applicationName; }
 
-    /** @brief  Returns engine name
-     *
-     *  @return engine name
-     */
-    UNICORN_EXPORT const std::string& GetUnicornEngineName() const { return m_unicornEngineName; }
+    //! Returns engine name
+    const std::string& GetUnicornEngineName() const { return m_unicornEngineName; }
 
     /** @brief  Sets an application name
      *
      *  @param  name new name
      */
-    UNICORN_EXPORT void SetApplicationName(const std::string&& name) { m_applicationName = name; }
+    void SetApplicationName(const std::string&& name) { m_applicationName = name; }
 
     /** @brief  Sets an engine name
      *
      *  @param  name new name
      */
-    UNICORN_EXPORT void SetUnicornEngineName(const std::string&& name) { m_unicornEngineName = name; }
+    void SetUnicornEngineName(const std::string&& name) { m_unicornEngineName = name; }
+
+    //! Returns profiling mask
+    ProfilingMask::MaskType GetProfilingMask() const { return m_profilingMask; }
+
+    /** @brief  Sets profiling mask
+     *
+     *  @param  profilingMask   new profiling mask
+     */
+    void SetProfilingMask(ProfilingMask::MaskType profilingMask) { m_profilingMask = profilingMask; }
+
 private:
     friend class mule::templates::Singleton<Settings>;
 
     /** @brief  Constructs an object with default settings */
-    UNICORN_EXPORT Settings();
+    Settings();
     ~Settings() = default;
 
     Settings(const Settings& other) = delete;
@@ -100,6 +104,9 @@ private:
 
     //! Engine name
     std::string m_unicornEngineName;
+
+    //! Profiling mask
+    ProfilingMask::MaskType m_profilingMask;
 };
 }
 }

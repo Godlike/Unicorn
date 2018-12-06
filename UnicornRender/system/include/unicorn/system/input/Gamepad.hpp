@@ -7,8 +7,6 @@
 #ifndef UNICORN_SYSTEM_INPUT_GAMEPAD_HPP
 #define UNICORN_SYSTEM_INPUT_GAMEPAD_HPP
 
-#include <unicorn/utility/SharedMacros.hpp>
-
 #include <wink/signal.hpp>
 
 #include <cstdint>
@@ -39,16 +37,16 @@ public:
     ~Gamepad();
 
     /** @brief  Returns the id of the gamepad */
-    UNICORN_EXPORT uint32_t GetId() const { return m_id; }
+    uint32_t GetId() const { return m_id; }
 
     /** @brief  Returns the name of the gamepad */
-    UNICORN_EXPORT const std::string& GetName() const { return m_name; }
+    const std::string& GetName() const { return m_name; }
 
     /** @brief  Returns the current state of all axes of the gamepad */
-    UNICORN_EXPORT const std::vector<float>& GetAxes() const { return m_axes; }
+    const std::vector<float>& GetAxes() const { return m_axes; }
 
     /** @brief  Returns the current state of all axes of the gamepad */
-    UNICORN_EXPORT const std::vector<bool>& GetButtons() const { return m_buttons; }
+    const std::vector<bool>& GetButtons() const { return m_buttons; }
 
     /** @brief  Refresh axes and buttons */
     void UpdateData();

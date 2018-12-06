@@ -7,8 +7,6 @@
 #ifndef UNICORN_VIDEO_TRANSFORM_HPP
 #define UNICORN_VIDEO_TRANSFORM_HPP
 
-#include <unicorn/utility/SharedMacros.hpp>
-
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -29,7 +27,7 @@ public:
     virtual ~Transform() = default;
 
     /** @brief Returns true if transformations must be recalculated @sa UpdateTransformMatrix, false otherwise */
-    UNICORN_EXPORT bool IsDirty() const;
+    bool IsDirty() const;
 
     /**
      * @brief Updates orientation with provided up vector
@@ -38,7 +36,7 @@ public:
      *
      * @param[in] upVector new up vector
      */
-    UNICORN_EXPORT void SetUp(glm::vec3 upVector);
+    void SetUp(glm::vec3 upVector);
 
     /**
      * @brief Sets the world axes and updates orientation
@@ -49,7 +47,7 @@ public:
      * @param[in]  y world axis
      * @param[in]  z world axis
      */
-    UNICORN_EXPORT void SetWorldAxes(glm::vec3 x, glm::vec3 y, glm::vec3 z);
+    void SetWorldAxes(glm::vec3 x, glm::vec3 y, glm::vec3 z);
 
     /**
      * @brief Sets world translation
@@ -58,42 +56,42 @@ public:
      *
      * @param[in]  translate new translate vector
      */
-    UNICORN_EXPORT void SetTranslation(glm::vec3 translate);
+    void SetTranslation(glm::vec3 translate);
 
     /**
      * @brief Returns direction vector
      *
      * @return direction
      */
-    UNICORN_EXPORT glm::vec3 GetDirection() const;
+    glm::vec3 GetDirection() const;
 
     /**
      * @brief Returns right vector
      *
      * @return right vector
      */
-    UNICORN_EXPORT glm::vec3 GetRight() const;
+    glm::vec3 GetRight() const;
 
     /**
      * @brief Returns up vector
      *
      * @return up vector
      */
-    UNICORN_EXPORT glm::vec3 GetUp() const;
+    glm::vec3 GetUp() const;
 
     /**
      * @brief Returns world translation
      *
      * @return world translation
      */
-    UNICORN_EXPORT glm::vec3 GetTranslation() const;
+    glm::vec3 GetTranslation() const;
 
     /**
      * @brief Returns model matrix
      *
      * @return model matrix
      */
-    UNICORN_EXPORT glm::mat4 const& GetModelMatrix() const;
+    glm::mat4 const& GetModelMatrix() const;
 
     /**
      * @brief Scales object
@@ -106,7 +104,7 @@ public:
      *
      * @param[in] scale basis scale factors
      */
-    UNICORN_EXPORT void Scale(glm::vec3 scale);
+    void Scale(glm::vec3 scale);
 
     /**
      * @brief Adds given @p distance to the translation vector with respect to current up, right and forward orientation vectors
@@ -115,7 +113,7 @@ public:
      *
      * @param[in] distance per component distance
      */
-    UNICORN_EXPORT void TranslateByBasis(glm::vec3 distance);
+    void TranslateByBasis(glm::vec3 distance);
 
     /**
     * @brief Applies transform from given matrix
@@ -124,7 +122,7 @@ public:
     *
     * @param[in] transformMatrix matrix containing the transformation
     */
-    UNICORN_EXPORT void TransformByMatrix(glm::mat4 const& transformMatrix);
+    void TransformByMatrix(glm::mat4 const& transformMatrix);
 
     /**
      * @brief Translates by world axes
@@ -133,7 +131,7 @@ public:
      *
      * @param[in] distance per component distance
      */
-    UNICORN_EXPORT void TranslateWorld(glm::vec3 distance);
+    void TranslateWorld(glm::vec3 distance);
 
     /**
      * @brief Rotates by all axes counterclockwise
@@ -142,7 +140,7 @@ public:
      *
      * @param[in] rotation amount of radians at each axis
      */
-    UNICORN_EXPORT void Rotate(glm::vec3 rotation);
+    void Rotate(glm::vec3 rotation);
 
     /**
      * @brief Rotates by quaternion
@@ -151,7 +149,7 @@ public:
      *
      * @param[in] rotation quaternion
      */
-    UNICORN_EXPORT void Rotate(glm::quat rotation);
+    void Rotate(glm::quat rotation);
 
     /**
      * @brief Rotates around axis
@@ -161,7 +159,7 @@ public:
      * @param[in] angleRadians amount of radians to rotate
      * @param[in] axis axis of rotation
      */
-    UNICORN_EXPORT void Rotate(float angleRadians, glm::vec3 axis);
+    void Rotate(float angleRadians, glm::vec3 axis);
 
     /**
      * @brief Sets new orientation quaternion
@@ -170,7 +168,7 @@ public:
      *
      * @param[in] quat new orientation
      */
-    UNICORN_EXPORT void SetOrientation(glm::quat quat);
+    void SetOrientation(glm::quat quat);
 
     /**
      * @brief Updates orientation with provided direction
@@ -179,7 +177,7 @@ public:
      *
      * @param[in] direction new direction vector
      */
-    UNICORN_EXPORT void SetOrientation(glm::vec3 direction);
+    void SetOrientation(glm::vec3 direction);
 
     /**
      * @brief Generates new orientation from provided direction and up vector
@@ -189,7 +187,7 @@ public:
      * @param[in] direction new direction vector
      * @param[in] upVector new up vector
      */
-    UNICORN_EXPORT void SetOrientation(glm::vec3 direction, glm::vec3 upVector);
+    void SetOrientation(glm::vec3 direction, glm::vec3 upVector);
 
     /**
      * @brief Constructs orientation from per component rotation
@@ -198,7 +196,7 @@ public:
      *
      * @param[in] rotation per axis rotation
      */
-    UNICORN_EXPORT void SetRotation(glm::vec3 rotation);
+    void SetRotation(glm::vec3 rotation);
 
     /** @brief Recalculates all transformation components and updates transform matrix */
     void UpdateTransformMatrix();
