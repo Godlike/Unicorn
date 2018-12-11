@@ -525,11 +525,11 @@ int main(int argc, char* argv[])
         );
     }
 
-    settings.Init(argc, argv);
     settings.SetApplicationName("SANIC JYMPER");
+    settings.SetProfilingMask(unicorn::utility::Settings::ProfilingMask::Monitor);
     auto* unicornRender = new unicorn::UnicornRender;
     timer = new unicorn::system::Timer(true);
-    if (unicornRender->Init(unicorn::UnicornRender::ProfilingMask::Monitor))
+    if (unicornRender->Init())
     {
         pGraphics = unicornRender->GetGraphics();
         pInput = unicornRender->GetInput();

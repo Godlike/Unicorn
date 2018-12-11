@@ -9,7 +9,7 @@ project(UnicornRender)
 
 set(UNICORN_LIB_ALIAS Unicorn::Render)
 
-add_library(${PROJECT_NAME})
+add_library(${PROJECT_NAME} "")
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 add_library(${UNICORN_LIB_ALIAS} ALIAS ${PROJECT_NAME})
 
@@ -113,10 +113,6 @@ include_directories(
     ${VULKAN_INCLUDE_DIR}
 )
 
-if (BUILD_SHARED_LIBS)
-    add_definitions(-D${UNICORN_RENDER_LIB}_EXPORTS)
-endif()
-
 if (UNIX)
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=unused-command-line-argument")
@@ -169,7 +165,11 @@ target_sources(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
-        ${UNICORN_RENDER_INCLUDE_DIRS}
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${SLEIPNIR_INSTALL_INCLUDE_DIR}>
+        $<TARGET_PROPERTY:Unicorn::Render::Video,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:Unicorn::Render::System,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:Unicorn::Render::Utility,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -253,18 +253,15 @@ if (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 endif()
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    # Workaround for a bug regarding __builtin_cpu_supports("sse2") call on GCC 5+
-    # Call is made by STB but is not directly a bug in STB
-    target_link_libraries(${UNICORN_RENDER_LIB} -lgcc_s -lgcc)
-endif()
-
 if (UNICORN_BUILD_DOCUMENTATION)
     find_package(Doxygen)
 
     if (DOXYGEN_FOUND)
         set(DOXYGEN_INPUT_DIRS
-            ${UNICORN_RENDER_INCLUDE_DIRS}
+            "${UNICORN_RENDER_ROOT}/include"
+            "${UNICORN_RENDER_ROOT}/system/include"
+            "${UNICORN_RENDER_ROOT}/video/include"
+            "${UNICORN_RENDER_ROOT}/utility/include"
         )
         set(DOXYGEN_PROJECT_NAME ${PROJECT_NAME})
         string(REPLACE ";" " " DOXYGEN_INPUT "${DOXYGEN_INPUT_DIRS}")

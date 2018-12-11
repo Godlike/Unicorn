@@ -7,7 +7,7 @@ cmake_policy(VERSION 3.8)
 
 project(UnicornRender_Utility)
 
-add_library(${PROJECT_NAME} STATIC)
+add_library(${PROJECT_NAME} STATIC "")
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 add_library(Unicorn::Render::Utility ALIAS ${PROJECT_NAME})
 
