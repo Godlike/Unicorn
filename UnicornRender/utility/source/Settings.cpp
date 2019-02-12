@@ -4,9 +4,11 @@
 * (http://opensource.org/licenses/MIT)
 */
 
-#include <unicorn/Settings.hpp>
+#include <unicorn/utility/Settings.hpp>
 
 namespace unicorn
+{
+namespace utility
 {
 
 Settings::Settings()
@@ -14,11 +16,9 @@ Settings::Settings()
     , m_height(480)
     , m_applicationName("SAMPLE NAME")
     , m_unicornEngineName("Unicorn Render")
+    , m_profilingMask(Settings::ProfilingMask::None)
 {
 }
 
-void Settings::Init(int /*argc*/, char** /*argv*/)
-{
 }
-
 }

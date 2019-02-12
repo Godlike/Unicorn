@@ -7,7 +7,6 @@
 #ifndef UNICORN_VIDEO_PRIMITIVES_HPP
 #define UNICORN_VIDEO_PRIMITIVES_HPP
 
-#include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/video/Mesh.hpp>
 
 #include <string>
@@ -27,7 +26,7 @@ public:
     *  @param[in, out] mesh geometry mesh
     *  @return reference to filled mesh
     */
-    UNICORN_EXPORT static Mesh& Box(Mesh& mesh);
+    static Mesh& Box(Mesh& mesh);
 
     /**
     *  @brief Fills given mesh with quad data
@@ -35,7 +34,7 @@ public:
     *  @param[in, out] mesh geometry mesh
     *  @return reference to updated mesh
     */
-    UNICORN_EXPORT static Mesh& Quad(Mesh& mesh);
+    static Mesh& Quad(Mesh& mesh);
 
     /**
     *  @brief Fills given mesh with sphere data
@@ -47,7 +46,7 @@ public:
     *  @attention `rings * sectors` must be less than `std::vector<Vertex>::max_size()`
     *  @return reference to updated mesh
     */
-    UNICORN_EXPORT static Mesh& Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors);
+    static Mesh& Sphere(Mesh& mesh, float radius, uint32_t rings, uint32_t sectors);
 
     /**
     @brief Loads and processes model
@@ -64,7 +63,7 @@ public:
     *  @param[in] path path to model
     *  @return list of pointers to meshes
     */
-    UNICORN_EXPORT static std::list<Mesh*> LoadModel(std::string const& path);
+    static std::list<Mesh*> LoadModel(std::string const& path);
 };
 }
 }

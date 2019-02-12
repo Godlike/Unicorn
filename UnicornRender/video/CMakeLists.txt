@@ -2,8 +2,18 @@
 # This code is licensed under the MIT license (MIT)
 # (http://opensource.org/licenses/MIT)
 
-cmake_minimum_required(VERSION 3.0)
-cmake_policy(VERSION 3.0)
+cmake_minimum_required(VERSION 3.8)
+cmake_policy(VERSION 3.8)
+
+project(UnicornRender_Video)
+
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+add_library(${PROJECT_NAME} OBJECT "")
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+add_library(Unicorn::Render::Video ALIAS ${PROJECT_NAME})
+
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 set(VULKAN_HEADERS
     include/unicorn/video/vulkan/Context.hpp
@@ -72,7 +82,36 @@ set(VIDEO_ALL_SOURCES
     ${VULKAN_SOURCES}
 )
 
-add_library(video OBJECT ${VIDEO_ALL_SOURCES})
+target_sources(${PROJECT_NAME}
+    PRIVATE
+        ${VIDEO_ALL_SOURCES}
+)
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_include_directories(${PROJECT_NAME}
+    SYSTEM
+        PUBLIC
+            ${GLM_INCLUDE_DIR}
+
+            $<TARGET_PROPERTY:Mule::Utilities,INTERFACE_INCLUDE_DIRECTORIES>
+
+            $<TARGET_PROPERTY:Unicorn::Render::System,INTERFACE_INCLUDE_DIRECTORIES>
+
+        PRIVATE
+            ${STB_INCLUDE_DIR}
+
+            $<TARGET_PROPERTY:Unicorn::Render::Utility,INTERFACE_INCLUDE_DIRECTORIES>
+)
+
+if (WIN32)
+    set_target_properties(${PROJECT_NAME}
+        PROPERTIES FOLDER ${UNICORN_IDE_FOLDER}
+    )
+endif()
 
 include(InstallInfo)
 
@@ -86,7 +125,13 @@ install( DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/"
 )
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+    set_target_properties(
+        ${PROJECT_NAME}
+
+        PROPERTIES
+
+        POSITION_INDEPENDENT_CODE ON
+    )
 endif()
 
 MakeSolutionFilters("${VIDEO_ALL_SOURCES}")

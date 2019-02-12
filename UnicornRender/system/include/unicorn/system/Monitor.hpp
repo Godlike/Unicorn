@@ -11,8 +11,6 @@
 #include <unicorn/system/MonitorMemento.hpp>
 #include <unicorn/system/VideoMode.hpp>
 
-#include <unicorn/utility/SharedMacros.hpp>
-
 #include <wink/signal.hpp>
 
 #include <cstdint>
@@ -50,37 +48,37 @@ public:
     ~Monitor();
 
     /** @brief  Returns the id of the monitor */
-    UNICORN_EXPORT uint32_t GetId() const { return m_id; }
+    uint32_t GetId() const { return m_id; }
 
     /** @brief  Returns the name of the monitor */
-    UNICORN_EXPORT const std::string& GetName() const { return m_name; }
+    const std::string& GetName() const { return m_name; }
 
     /** @brief  Returns the physical size of the monitor */
-    UNICORN_EXPORT const std::pair<int32_t, int32_t>& GetPhysicalSize() const { return m_physicalSize; }
+    const std::pair<int32_t, int32_t>& GetPhysicalSize() const { return m_physicalSize; }
 
     /** @brief  Returns the virtual position of the monitor */
-    UNICORN_EXPORT std::pair<int32_t, int32_t> GetVirtualPosition() const;
+    std::pair<int32_t, int32_t> GetVirtualPosition() const;
 
     /** @brief  Returns the vector of video modes supoported by this monitor */
-    UNICORN_EXPORT const std::vector<VideoMode>& GetVideoModes() const { return m_modes; }
+    const std::vector<VideoMode>& GetVideoModes() const { return m_modes; }
 
     /** @brief  Returns video mode currently being used by this monitor */
-    UNICORN_EXPORT VideoMode GetActiveVideoMode() const;
+    VideoMode GetActiveVideoMode() const;
 
     /** @brief  Returns the gamma ramp of the monitor */
-    UNICORN_EXPORT GammaRamp GetGammaRamp() const;
+    GammaRamp GetGammaRamp() const;
 
     /** @brief  Sets gamma ramp for the monitor
      *
      *  @param  gammaRamp   new gamma ramp to be set
      */
-    UNICORN_EXPORT void SetGammaRamp(const GammaRamp& gammaRamp);
+    void SetGammaRamp(const GammaRamp& gammaRamp);
 
     /** @brief  Sets gamma ramp for the monitor
      *
      *  @param  gammaRamp   new gamma ramp to be set
      */
-    UNICORN_EXPORT void SetGammaRamp(GammaRamp&& gammaRamp);
+    void SetGammaRamp(GammaRamp&& gammaRamp);
 
     /** @brief  Generates gamma ramp for given gamma
      *
@@ -88,22 +86,22 @@ public:
      *
      *  @return @c true if gamma was set, @c false otherwise
      */
-    UNICORN_EXPORT bool SetGamma(float gamma);
+    bool SetGamma(float gamma);
 
     /** @brief  Returns @c true if the monitor is primary, @c false otherwise */
-    UNICORN_EXPORT bool IsPrimary() const;
+    bool IsPrimary() const;
 
     /** @brief  Returns current state of monitor */
-    UNICORN_EXPORT State GetState() const { return m_state; }
+    State GetState() const { return m_state; }
 
     /** @brief  Sets monitor state
      *
      *  @param  state   new monitor state
      */
-    UNICORN_EXPORT void SetState(State state) { m_state = state; }
+    void SetState(State state) { m_state = state; }
 
     /** @brief  Returns a handle provided by window manager adapter */
-    UNICORN_EXPORT void* GetHandle() { return m_handle; }
+    void* GetHandle() { return m_handle; }
 
     /** @brief  Event triggered when monitor state is changed (connected/disconnected)
      *

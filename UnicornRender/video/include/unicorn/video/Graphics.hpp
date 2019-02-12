@@ -7,7 +7,6 @@
 #ifndef UNICORN_VIDEO_GRAPHICS_HPP
 #define UNICORN_VIDEO_GRAPHICS_HPP
 
-#include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/system/WindowHint.hpp>
 
 #include <wink/signal.hpp>
@@ -93,7 +92,7 @@ public:
     *
     *  @return a pointer to newly created window object
     */
-    UNICORN_EXPORT system::Window* SpawnWindow(int32_t width,
+    system::Window* SpawnWindow(int32_t width,
                                                int32_t height,
                                                std::string const& name,
                                                system::Monitor* pMonitor = nullptr,
@@ -104,15 +103,15 @@ public:
     *  @return pointer to currently focused window or @c nullptr if there is
     *          no focused window controlled by the program
     */
-    UNICORN_EXPORT system::Window* GetFocusedWindow() const;
+    system::Window* GetFocusedWindow() const;
 
     /** @brief Enable or disable depth test
     *   @param enabled Enabled if true and disabled if false
     */
-    UNICORN_EXPORT void SetDepthTest(bool enabled);
+    void SetDepthTest(bool enabled);
 
     /** @brief  Returns the list of known monitors */
-    UNICORN_EXPORT const std::vector<system::Monitor*>& GetMonitors() const;
+    const std::vector<system::Monitor*>& GetMonitors() const;
 
     /** @brief  Returns monitor associated with given @p window
     *
@@ -122,7 +121,7 @@ public:
     *          or @c nullptr if something went wrong or the window is not in
     *          fullscreen mode
     */
-    UNICORN_EXPORT system::Monitor* GetWindowMonitor(system::Window const& window) const;
+    system::Monitor* GetWindowMonitor(system::Window const& window) const;
 
     /** @brief  Sets monitor to be used by @p  window for fullscreen mode
     *
@@ -132,7 +131,7 @@ public:
     *  @param  size        desired size as (width, height)
     *  @param  refreshRate desired refresh rate
     */
-    UNICORN_EXPORT void SetWindowMonitor(system::Window const& window,
+    void SetWindowMonitor(system::Window const& window,
                                          system::Monitor* pMonitor,
                                          std::pair<int32_t, int32_t> const& position,
                                          std::pair<int32_t, int32_t> const& size,
@@ -143,17 +142,17 @@ public:
     *  @param  hint    window creation hint
     *  @param  value   new value
     */
-    UNICORN_EXPORT void SetWindowCreationHint(system::WindowHint hint, int32_t value) const;
+    void SetWindowCreationHint(system::WindowHint hint, int32_t value) const;
 
     /** @brief  Spawn new DriverType based Renderer
     *  @param  window output window
     *  @param  camera main camera
     *  @return Pointer to newly created Renderer, nullptr if any error occured.
     */
-    UNICORN_EXPORT Renderer* SpawnRenderer(system::Window* window, Camera& camera);
+    Renderer* SpawnRenderer(system::Window* window, Camera& camera);
 
     /** @brief Binds renderer to window. */
-    UNICORN_EXPORT void BindWindowRenderer(system::Window* pWindow, Renderer* pRenderer);
+    void BindWindowRenderer(system::Window* pWindow, Renderer* pRenderer);
 
     /** @brief  Event triggered every time new window is created
      *

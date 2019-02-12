@@ -7,8 +7,6 @@
 #ifndef UNICORN_VIDEO_TEXTURE_HPP
 #define UNICORN_VIDEO_TEXTURE_HPP
 
-#include <unicorn/utility/SharedMacros.hpp>
-
 #include <cstdint>
 #include <string>
 
@@ -26,59 +24,59 @@ public:
      * @brief Constructor which loads data from path
      * @param path path to texture
      */
-    UNICORN_EXPORT Texture(std::string const& path = std::string());
+    Texture(std::string const& path = std::string());
 
     /** @brief Destructs texture, calls FreeData() */
-    UNICORN_EXPORT ~Texture();
+    ~Texture();
 
     /**
      * @brief Loads texture from provided path
      * @param path path to texture
      * @return true if loaded successful and false if not
      */
-    UNICORN_EXPORT bool Load(std::string const& path);
+    bool Load(std::string const& path);
 
     /**
      * @brief Checks if texture was loaded
      * @return true if loaded and false if not
      */
-    UNICORN_EXPORT bool IsLoaded() const;
+    bool IsLoaded() const;
 
     /**
      * @brief Returns size of texture
      * @return size of texture, 0 if was not loaded
      */
-    UNICORN_EXPORT uint32_t Size() const;
+    uint32_t Size() const;
 
     /**
      * @brief Returns pointer to texture data
      * @return pointer to texture data, nullptr if was not loaded
      */
-    UNICORN_EXPORT uint8_t* Data() const;
+    uint8_t* Data() const;
 
     /**
      * @brief Returns width of texture
      * @return width of texture, 0 if was not loaded
      */
-    UNICORN_EXPORT uint32_t Width() const;
+    uint32_t Width() const;
 
     /**
      * @brief Returns height of texture
      * @return height of texture, 0 if was not loaded
      */
-    UNICORN_EXPORT uint32_t Height() const;
+    uint32_t Height() const;
 
     /**
      * @brief Returns path of loaded texture
      * @return const reference to path of texture or empty line, if texture was not loaded
      */
-    UNICORN_EXPORT std::string const& Path() const;
+    std::string const& Path() const;
 
     /**
      * @brief Returns Id of loaded texture
      * @return id of texture, 0 if was not loaded
      */
-    UNICORN_EXPORT uint32_t GetId() const;
+    uint32_t GetId() const;
 private:
     /** @brief Remove texture data from memory */
     void FreeData();

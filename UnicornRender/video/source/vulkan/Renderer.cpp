@@ -5,7 +5,7 @@
 */
 
 #include <unicorn/video/vulkan/Renderer.hpp>
-#include <unicorn/Settings.hpp>
+#include <unicorn/utility/Settings.hpp>
 #include <unicorn/video/vulkan/ShaderProgram.hpp>
 #include <unicorn/system/Manager.hpp>
 #include <unicorn/system/Window.hpp>
@@ -261,7 +261,7 @@ vk::PresentModeKHR Renderer::ChooseSwapPresentMode(const std::vector<vk::Present
 
 vk::Extent2D Renderer::ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& capabilities) const
 {
-    const Settings& settings = Settings::Instance();
+    const utility::Settings& settings = utility::Settings::Instance();
 
     if(capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
     {

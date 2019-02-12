@@ -7,7 +7,6 @@
 #ifndef UNICORN_VIDEO_CAMERAFPSCONTROLLER_HPP
 #define UNICORN_VIDEO_CAMERAFPSCONTROLLER_HPP
 
-#include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/video/Transform.hpp>
 
 namespace unicorn
@@ -24,22 +23,22 @@ public:
      *
      * @param[out] cameraView reference to camera view
      */
-    UNICORN_EXPORT CameraFpsController(glm::mat4& cameraView);
+    CameraFpsController(glm::mat4& cameraView);
 
     /** @brief Updates view matrix by taking diff between past and new mouse coordinates */
-    UNICORN_EXPORT void UpdateView(float x, float y);
+    void UpdateView(float x, float y);
 
     /** @brief Sets mouse coordinates without updating view matrix */
-    UNICORN_EXPORT void SetViewPositions(float x, float y);
+    void SetViewPositions(float x, float y);
 
     /** @brief Sets flag to update mouse position in next UpdateView call
      *
      *  Mouse position updating without orientation recalculation
      */
-    UNICORN_EXPORT void ResetView();
+    void ResetView();
 
     /** @brief Calculates and updates camera view matrix */
-    UNICORN_EXPORT void Update();
+    void Update();
 private:
     /** @brief Calculates orientation in space */
     virtual void UpdateOrientation() override;

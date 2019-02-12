@@ -1,6 +1,6 @@
 /*
 * Copyright (C) 2017 by Godlike
-* This code is licensed under the MIT license (MIT) 
+* This code is licensed under the MIT license (MIT)
 * (http://opensource.org/licenses/MIT)
 */
 
@@ -8,7 +8,6 @@
 #define UNICORN_SYSTEM_TIMER_HPP
 
 #include <chrono>
-#include <unicorn/utility/SharedMacros.hpp>
 
 namespace unicorn
 {
@@ -29,26 +28,26 @@ public:
      * @brief Constructs Timer object.
      * @param run If true, timer will reset in constuctor.
      */
-    UNICORN_EXPORT Timer(bool run = false);
+    Timer(bool run = false);
     /**
      * @brief Resets timer.
      */
-    UNICORN_EXPORT void Reset();
+    void Reset();
     /**
      * @brief Returns time in milliseconds
      * @return Time in milliseconds
      */
-    UNICORN_EXPORT Milliseconds ElapsedMilliseconds() const;
+    Milliseconds ElapsedMilliseconds() const;
     /**
     * @brief Returns time in seconds
     * @return Time in seconds
     */
-    UNICORN_EXPORT Seconds ElapsedSeconds() const;
+    Seconds ElapsedSeconds() const;
     /**
     * @brief Returns time in minutes
     * @return Time in minutes
     */
-    UNICORN_EXPORT Minutes ElapsedMinutes() const;
+    Minutes ElapsedMinutes() const;
 
 private:
     HighResolutionClock::time_point m_start;

@@ -3,17 +3,11 @@
 # (http://opensource.org/licenses/MIT)
 
 set(UNICORN_RENDER_NAME "UnicornRender" CACHE STRING "Project name for Unicorn Render library")
+set(UNICORN_IDE_FOLDER "Unicorn" CACHE STRING "Project folder for IDE")
 
 if (NOT DEFINED UNICORN_RENDER_ROOT)
     set(UNICORN_RENDER_ROOT "${CMAKE_CURRENT_LIST_DIR}/../UnicornRender" CACHE STRING "Path to Unicorn Render root directory")
 endif()
-
-set(UNICORN_RENDER_INCLUDE_DIRS
-    "${UNICORN_RENDER_ROOT}/include"
-    "${UNICORN_RENDER_ROOT}/system/include"
-    "${UNICORN_RENDER_ROOT}/video/include"
-    "${UNICORN_RENDER_ROOT}/utility/include"
-    CACHE LIST "List of Unicorn Render include directories")
 
 list(APPEND CMAKE_MODULE_PATH "${UNICORN_RENDER_ROOT}/cmake")
 

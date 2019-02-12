@@ -7,7 +7,6 @@
 #ifndef UNICORN_VIDEO_CAMERA_HPP
 #define UNICORN_VIDEO_CAMERA_HPP
 
-#include <unicorn/utility/SharedMacros.hpp>
 #include <unicorn/system/Window.hpp>
 
 #include <glm/glm.hpp>
